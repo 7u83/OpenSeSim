@@ -2,6 +2,7 @@ package StockExchange;
 
 public class SellOrder extends Order {
 
+        @Override
 	public int compareTo(Order o) {
 	
 		if (o.limit < limit) {
