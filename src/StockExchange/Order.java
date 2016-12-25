@@ -3,14 +3,22 @@ package StockExchange;
 public abstract class Order implements Comparable<Order> {
 
     /**
-     * when
+     * When the order was created
      */
     public long timestamp = 0;
+
+    /**
+     * Number of shares
+     */
     public long size;
+
+    /**
+     * Limit price
+     */
     public double limit;
-//	long time;
-    double money = 0;
-//	public long shares=0;
+
+ //   double money = 0;
+
     public long id = 0;
     public Account account = null;
 
