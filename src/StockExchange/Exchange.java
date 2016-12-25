@@ -28,7 +28,7 @@ public class Exchange extends Thread {
     }
 
     // Here we store the list of quote receivers
-    TreeSet<QuoteReceiver> qrlist = new TreeSet<QuoteReceiver>();
+    TreeSet<QuoteReceiver> qrlist = new TreeSet();
 
     public void AddQuoteReceiver(QuoteReceiver qr) {
         qrlist.add(qr);
@@ -52,7 +52,7 @@ public class Exchange extends Thread {
     long lastsize;
 
     // Order orderlist[];
-    TreeSet<BuyOrder> bid = new TreeSet<BuyOrder>();
+    TreeSet<BuyOrder> bid = new TreeSet();
     TreeSet<SellOrder> ask = new TreeSet<SellOrder>();
 
     private final Semaphore available = new Semaphore(1, true);

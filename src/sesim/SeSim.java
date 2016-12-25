@@ -5,6 +5,8 @@
  */
 package sesim;
 
+import StockExchange.*;
+
 /**
  *
  * @author tube
@@ -15,6 +17,10 @@ public class SeSim {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        Exchange se = new StockExchange.Exchange();
+        se.start();
+        
+        
         // TODO code application logic here
     }
     
