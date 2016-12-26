@@ -13,11 +13,14 @@ import SeSim.Exchange;
  */
 public class MainWin extends javax.swing.JFrame {
     
+    static SeSim.Exchange se;
+    
     
     /**
      * Creates new form MainWin
      */
     public MainWin() {
+               
         initComponents();
     }
 
@@ -30,22 +33,17 @@ public class MainWin extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
         jButton1 = new javax.swing.JButton();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         orderBook1 = new Gui.OrderBook();
-        orderBook = new Gui.OrderBook();
         MainMenu = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         FileNew = new javax.swing.JMenuItem();
+        FileRun = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
 
         jButton1.setText("jButton1");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -54,20 +52,41 @@ public class MainWin extends javax.swing.JFrame {
             }
         });
 
+        jMenuItem1.setText("jMenuItem1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 200));
-        getContentPane().setLayout(new java.awt.GridLayout());
-        getContentPane().add(orderBook);
 
+        jLabel1.setText("jLabel1");
+        getContentPane().add(jLabel1, java.awt.BorderLayout.LINE_START);
+
+        jLabel2.setText("jLabel2");
+        getContentPane().add(jLabel2, java.awt.BorderLayout.CENTER);
+
+        jButton2.setText("jButton2");
+        getContentPane().add(jButton2, java.awt.BorderLayout.LINE_END);
+        getContentPane().add(orderBook1, java.awt.BorderLayout.PAGE_END);
+
+        FileMenu.setBackground(new java.awt.Color(254, 203, 1));
+        FileMenu.setBorder(null);
         FileMenu.setText("File");
 
         FileNew.setText("New");
+        FileNew.setBorder(null);
         FileNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 FileNewActionPerformed(evt);
             }
         });
         FileMenu.add(FileNew);
+
+        FileRun.setText("Run");
+        FileRun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FileRunActionPerformed(evt);
+            }
+        });
+        FileMenu.add(FileRun);
 
         MainMenu.add(FileMenu);
 
@@ -88,10 +107,30 @@ public class MainWin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void FileRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileRunActionPerformed
+        se.start();
+    }//GEN-LAST:event_FileRunActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
+        se = new Exchange();
+        
+        SeSim.BuyOrder bo = new SeSim.BuyOrder();
+        bo.limit=20.0;
+        bo.size=12;
+        bo.timestamp=12;
+        se.SendOrder(bo);
+        
+        SeSim.BuyOrder bo1 = new SeSim.BuyOrder();
+        bo1.limit=27.0;
+        bo1.size=123;
+        bo1.timestamp=922;
+        se.SendOrder(bo1);
+        
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -115,10 +154,7 @@ public class MainWin extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        
-        SeSim.Exchange se = new Exchange();
-        se.start();
-        
+                
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -130,12 +166,14 @@ public class MainWin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu FileMenu;
     private javax.swing.JMenuItem FileNew;
+    private javax.swing.JMenuItem FileRun;
     private javax.swing.JMenuBar MainMenu;
     private javax.swing.JButton jButton1;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private Gui.OrderBook orderBook;
+    private javax.swing.JMenuItem jMenuItem1;
     private Gui.OrderBook orderBook1;
     // End of variables declaration//GEN-END:variables
 }

@@ -52,8 +52,8 @@ public class Exchange extends Thread {
     long lastsize;
 
     // Order orderlist[];
-    TreeSet<BuyOrder> bid = new TreeSet<>();
-    TreeSet<SellOrder> ask = new TreeSet<>();
+    public TreeSet<BuyOrder> bid = new TreeSet<>();
+    public TreeSet<SellOrder> ask = new TreeSet<>();
 
     private final Semaphore available = new Semaphore(1, true);
 
@@ -252,7 +252,7 @@ public class Exchange extends Thread {
             try {
                 sleep(1500);
             } catch (InterruptedException e) {
-                System.out.println("Interrupted");
+                System.out.println("I was Interrupted");
             }
             print_current();
 
