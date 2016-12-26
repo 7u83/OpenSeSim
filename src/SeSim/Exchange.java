@@ -110,8 +110,8 @@ public class Exchange extends Thread {
     public void CancelOrder(Order o) {
         Lock();
 //		System.out.println("Cancel BuyOrder");
-        bid.remove(o);
-        ask.remove(o);
+        bid.remove((BuyOrder)o);
+        ask.remove((SellOrder)o);
         o.status = OrderStatus.canceled;
         Unlock();
 
