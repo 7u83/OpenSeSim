@@ -26,11 +26,19 @@
 package Traders;
 
 import SeSim.Trader;
+import SeSim.BuyOrder;
+
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ManTrader {
+public class ManTrader extends Trader{
+    @Override
+    public void trade(){
+        
+        BuyOrder o = new BuyOrder();
+    
+    }
     
 }
