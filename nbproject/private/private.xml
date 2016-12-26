@@ -6,7 +6,9 @@
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Trader.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/TraderRun.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/MTrader.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/build.xml</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Order.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/ControlPanel.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/MainWin.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/RandomTrader.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/OrderBook.java</file>
@@ -16,9 +18,11 @@
             <file>file:/home/tube/NetBeansProjects/SeSim/nbproject/build-impl.xml</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Exchange.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/BuyOrder.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/Traders/ManTrader.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/README.md</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Logger.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/SellOrder.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/LICENSE</file>
         </group>
     </open-files>
 </project-private>

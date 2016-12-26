@@ -41,6 +41,7 @@ public class MainWin extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         orderBook1 = new Gui.OrderBook();
         controlPanel2 = new Gui.ControlPanel();
+        chart1 = new Gui.Chart();
         MainMenu = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         FileNew = new javax.swing.JMenuItem();
@@ -66,6 +67,19 @@ public class MainWin extends javax.swing.JFrame {
         getContentPane().add(jLabel2, java.awt.BorderLayout.CENTER);
         getContentPane().add(orderBook1, java.awt.BorderLayout.PAGE_END);
         getContentPane().add(controlPanel2, java.awt.BorderLayout.LINE_END);
+
+        javax.swing.GroupLayout chart1Layout = new javax.swing.GroupLayout(chart1);
+        chart1.setLayout(chart1Layout);
+        chart1Layout.setHorizontalGroup(
+            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 273, Short.MAX_VALUE)
+        );
+        chart1Layout.setVerticalGroup(
+            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 151, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(chart1, java.awt.BorderLayout.CENTER);
 
         FileMenu.setBackground(new java.awt.Color(254, 203, 1));
         FileMenu.setText("File");
@@ -188,6 +202,7 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenuItem FileNew;
     private javax.swing.JMenuItem FileRun;
     private javax.swing.JMenuBar MainMenu;
+    private Gui.Chart chart1;
     private Gui.ControlPanel controlPanel2;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
