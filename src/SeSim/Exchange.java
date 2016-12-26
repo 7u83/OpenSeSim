@@ -6,6 +6,18 @@ import java.util.concurrent.*;
 import SeSim.Order.OrderStatus;
 
 public class Exchange extends Thread {
+    
+     /**
+     * Histrory of all quotes
+     */
+    public ArrayList<Quote> quoteHistory;
+    
+    /**
+     * Constructor
+     */
+    public Exchange() {
+        this.quoteHistory = new ArrayList<>();
+    }
 
     // Class to describe an executed order
     public class Quote {
@@ -42,7 +54,7 @@ public class Exchange extends Thread {
         }
     }
 
-    public ArrayList<Quote> quoteHistory = new ArrayList<>();
+   
 
     // long time = 0;
     double price = 12.9;

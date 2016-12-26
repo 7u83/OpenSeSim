@@ -48,11 +48,102 @@ import SeSim.Exchange;
  */
 public class Chart extends javax.swing.JPanel implements Exchange.QuoteReceiver {
 
+    SeSim.Exchange se;
+
+    private DefaultHighLowDataset createDataset() {
+
+        System.out.print("Making Data");
+        int s = se.quoteHistory.size();
+        System.out.print(("SIZE"));
+        System.out.println(s);
+
+        int serice = 115;
+
+        Date[] date = new Date[serice];
+        double[] high = new double[serice];
+        double[] low = new double[serice];
+        double[] open = new double[serice];
+        double[] close = new double[serice];
+        double[] volume = new double[serice];
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2008, 5, 1);
+
+        for (int i = 0; i < serice; i++) {
+            date[i] = createData(2008, 8, i + 1);
+            high[i] = 30 + Math.round(10) + new Double(Math.random() * 20.0);
+            low[i] = 30 + Math.round(10) + new Double(Math.random() * 20.0);
+            open[i] = 10 + Math.round(10) + new Double(Math.random() * 20.0);
+            close[i] = 10 + Math.round(10) + new Double(Math.random() * 20.0);
+            volume[i] = 10.0 + new Double(Math.random() * 20.0);
+        }
+
+        DefaultHighLowDataset data = new DefaultHighLowDataset("", date, high,
+                low, open, close, volume);
+        return data;
+    }
+
+    private Date createData(int year, int month, int date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month - 1, date);
+        return calendar.getTime();
+    }
+
+    private JFreeChart createChart(final DefaultHighLowDataset dataset) {
+//		final JFreeChart chart = ChartFactory.createCandlestickChart(
+        //"Candlestick Demo", "Time", "Price", dataset, false);
+
+//		final JFreeChart chart = ChartFactory.createCandlestickChart(
+//				"Candlestick Demo", "Time", "Price", dataset, false);
+        final JFreeChart chart = ChartFactory.createXYLineChart(
+                "Hallo", "X acse", "yachse", dataset,
+                PlotOrientation.VERTICAL,
+                true, // include legend
+                true, // tooltips
+                false // urls;
+        );
+
+        //"Candlestick Demo", "Time", "Price", dataset, false);
+        return chart;
+    }
+
     /**
      * Creates new form Chart
      */
     public Chart() {
         initComponents();
+
+        this.se = MainWin.se;
+        if (this.se == null) {
+            return;
+        }
+
+        final DefaultHighLowDataset dataset = createDataset();
+        final JFreeChart chart = createChart(dataset);
+
+        final ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new java.awt.Dimension(800, 350));
+        //	setContentPane(chartPanel);
+        initChart(chartPanel);
+
+    }
+
+    private void initChart(ChartPanel chart) {
+
+        // orderBook1 = new Gui.OrderBook();
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(chart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(16, Short.MAX_VALUE))
+        );
     }
 
     /**
@@ -77,7 +168,6 @@ public class Chart extends javax.swing.JPanel implements Exchange.QuoteReceiver 
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
-
     public void UpdateQuote(Exchange.Quote q) {
         System.out.print("Quote received");
         System.out.println(q.price);
