@@ -1,11 +1,13 @@
 package SeSim;
 
-public interface Trader {
+public abstract class Trader {
 
-  //  String name = null;
+    String name = null;
 
-    public void trade();
+    public abstract void trade();
     public Account account = new Account();
+    
+    
 //	public Exchange ex=null;
 
 };

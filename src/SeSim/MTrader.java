@@ -2,7 +2,7 @@ package SeSim;
 
 import java.util.Random;
 
-public class MTrader implements Trader {
+public class MTrader extends Trader {
 
     Exchange ex;
     Random rand;

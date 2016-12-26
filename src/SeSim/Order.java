@@ -42,7 +42,7 @@ public abstract class Order implements Comparable<Order> {
         return String.format("%.2f", limit);
     }
 
-    String format_size() {
+    String format_volume() {
         return String.format("%d", volume);
     }
 

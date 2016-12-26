@@ -3,14 +3,13 @@ package SeSim;
 import java.util.Random;
 import SeSim.Order.OrderStatus;
 
-public class RandomTrader extends ThreadedTrader {
+public class RandomTrader extends Trader {
 
 //	public Account account=new Account();
     Exchange ex = null;
     Random rand = new Random();
 
-    public String name;
-
+    
     // my current order
     private Order myorder = null;
 

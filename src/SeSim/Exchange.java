@@ -95,9 +95,9 @@ public class Exchange extends Thread {
 
         Logger.info(
                 String.format("BID: %s(%s)  LAST: %.2f(%d)  ASK: %s(%s)\n",
-                        b.format_limit(), b.format_size(),
+                        b.format_limit(), b.format_volume(),
                         lastprice, lastsize,
-                        a.format_limit(), a.format_size())
+                        a.format_limit(), a.format_volume())
         );
 
     }
@@ -193,6 +193,11 @@ public class Exchange extends Thread {
     public void ExecuteOrder(BuyOrder o) {
         // SellOrder op = ask.peek();
 
+    }
+    
+    private void InitOrder(Order o){
+        double moneyNeeded = o.volume * o.limit;
+        
     }
 
     public void SendOrder(SellOrder o) {

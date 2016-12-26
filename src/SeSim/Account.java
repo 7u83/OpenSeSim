@@ -12,6 +12,9 @@ public class Account {
      */
     public double money = 0;
 
+    /**
+     * Name of this account
+     */
     public String name = "";
 
     public boolean orderpending = false;
