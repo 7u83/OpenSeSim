@@ -54,8 +54,10 @@ public class ControlPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridLayout(3, 0));
 
-        jButton2.setBackground(new java.awt.Color(65, 255, 0));
-        jButton2.setText("Buy");
+        jButton2.setBackground(new java.awt.Color(181, 0, 12));
+        jButton2.setFont(jButton2.getFont().deriveFont(jButton2.getFont().getStyle() | java.awt.Font.BOLD, jButton2.getFont().getSize()+12));
+        jButton2.setForeground(new java.awt.Color(254, 254, 254));
+        jButton2.setText("Sell");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -69,6 +71,9 @@ public class ControlPanel extends javax.swing.JPanel {
 
         add(jScrollPane1);
 
+        jButton3.setBackground(new java.awt.Color(5, 94, 1));
+        jButton3.setFont(jButton3.getFont().deriveFont(jButton3.getFont().getStyle() | java.awt.Font.BOLD, jButton3.getFont().getSize()+12));
+        jButton3.setForeground(new java.awt.Color(254, 254, 254));
         jButton3.setText("Buy");
         add(jButton3);
     }// </editor-fold>//GEN-END:initComponents

@@ -8,7 +8,7 @@ import SeSim.Order.OrderStatus;
 public class Exchange extends Thread {
     
      /**
-     * Histrory of all quotes
+     * Histrory of quotes
      */
     public ArrayList<Quote> quoteHistory;
     

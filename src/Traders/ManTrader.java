@@ -34,6 +34,11 @@ import SeSim.BuyOrder;
  * @author 7u83 <7u83@mail.ru>
  */
 public class ManTrader extends Trader{
+    
+    public void ManTrader(){
+        this.name = "ManTrader";
+    }
+    
     @Override
     public void trade(){
         
