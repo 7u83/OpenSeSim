@@ -48,9 +48,17 @@ public class OrderBook extends javax.swing.JPanel {
 
     public OrderBook() {
         this.se = MainWin.se;
-        bid = new SListModel(se.bid);
-
+        
+        
         initComponents();
+
+        if (this.se == null){
+            return;
+        }
+       
+        bid = new SListModel(se.bid);
+        BidList.setModel(bid);
+        
     }
 
     /**
@@ -70,7 +78,6 @@ public class OrderBook extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         AskList = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
 
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
         layout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
@@ -95,7 +102,11 @@ public class OrderBook extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(jLabel3, gridBagConstraints);
 
-        BidList.setModel(bid);
+        BidList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", " " };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         BidList.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         BidList.setMinimumSize(new java.awt.Dimension(52, 200));
         BidList.setName(""); // NOI18N
@@ -133,10 +144,6 @@ public class OrderBook extends javax.swing.JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 5;
         add(jLabel2, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 10;
-        gridBagConstraints.gridy = 0;
-        add(jSeparator1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -148,6 +155,5 @@ public class OrderBook extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

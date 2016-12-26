@@ -6,6 +6,9 @@
 package Gui;
 
 import SeSim.Exchange;
+import SeSim.BuyOrder;
+import javax.swing.UIManager;
+import javax.swing.*;
 
 /**
  *
@@ -14,13 +17,12 @@ import SeSim.Exchange;
 public class MainWin extends javax.swing.JFrame {
     
     static SeSim.Exchange se;
-    
-    
+
     /**
      * Creates new form MainWin
      */
     public MainWin() {
-               
+        
         initComponents();
     }
 
@@ -37,8 +39,8 @@ public class MainWin extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
         orderBook1 = new Gui.OrderBook();
+        controlPanel2 = new Gui.ControlPanel();
         MainMenu = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         FileNew = new javax.swing.JMenuItem();
@@ -55,20 +57,17 @@ public class MainWin extends javax.swing.JFrame {
         jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(400, 200));
+        setMinimumSize(new java.awt.Dimension(640, 480));
 
         jLabel1.setText("jLabel1");
         getContentPane().add(jLabel1, java.awt.BorderLayout.LINE_START);
 
         jLabel2.setText("jLabel2");
         getContentPane().add(jLabel2, java.awt.BorderLayout.CENTER);
-
-        jButton2.setText("jButton2");
-        getContentPane().add(jButton2, java.awt.BorderLayout.LINE_END);
         getContentPane().add(orderBook1, java.awt.BorderLayout.PAGE_END);
+        getContentPane().add(controlPanel2, java.awt.BorderLayout.LINE_END);
 
         FileMenu.setBackground(new java.awt.Color(254, 203, 1));
-        FileMenu.setBorder(null);
         FileMenu.setText("File");
 
         FileNew.setText("New");
@@ -119,26 +118,47 @@ public class MainWin extends javax.swing.JFrame {
         se = new Exchange();
         
         SeSim.BuyOrder bo = new SeSim.BuyOrder();
-        bo.limit=20.0;
-        bo.size=12;
-        bo.timestamp=12;
+        bo.limit = 20.0;
+        bo.size = 12;
+        bo.timestamp = 12;
         se.SendOrder(bo);
         
         SeSim.BuyOrder bo1 = new SeSim.BuyOrder();
-        bo1.limit=27.0;
-        bo1.size=123;
-        bo1.timestamp=922;
+        bo1.limit = 27.0;
+        bo1.size = 123;
+        bo1.timestamp = 922;
         se.SendOrder(bo1);
         
+        for (int i = 0; i < 130; i++) {
+            BuyOrder o = new BuyOrder();
+            o.size = 90 + i;
+            o.limit = 80 + i;
+            se.SendOrder(o);
+            
+        }
+     
+
         
+  try {
+            // Set cross-platform Java L&F (also called "Metal")
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+    } 
+    catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+      System.out.print("Alles muell\n");
+    }
+        // handle exception
+        // handle exception
+        // handle exception
+        
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
+   /*     try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Motif".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -152,9 +172,9 @@ public class MainWin extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        */
         //</editor-fold>
 
-                
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -168,8 +188,8 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenuItem FileNew;
     private javax.swing.JMenuItem FileRun;
     private javax.swing.JMenuBar MainMenu;
+    private Gui.ControlPanel controlPanel2;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu2;
