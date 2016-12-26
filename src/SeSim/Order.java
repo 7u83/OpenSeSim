@@ -10,7 +10,7 @@ public abstract class Order implements Comparable<Order> {
     /**
      * Number of shares
      */
-    public long size;
+    public long volume;
 
     /**
      * Limit price
@@ -43,7 +43,7 @@ public abstract class Order implements Comparable<Order> {
     }
 
     String format_size() {
-        return String.format("%d", size);
+        return String.format("%d", volume);
     }
 
     Order() {

@@ -79,7 +79,7 @@ public class Exchange extends Thread {
         if (bid.isEmpty()) {
             b = new BuyOrder();
             b.limit = -1;
-            b.size = 0;
+            b.volume = 0;
         } else {
             b = bid.first();
         }
@@ -87,7 +87,7 @@ public class Exchange extends Thread {
         if (ask.isEmpty()) {
             a = new SellOrder();
             a.limit = -1;
-            a.size = 0;
+            a.volume = 0;
 
         } else {
             a = ask.first();
@@ -128,7 +128,7 @@ public class Exchange extends Thread {
             BuyOrder b = bid.first();
             SellOrder a = ask.first();
 
-            if (a.size == 0) {
+            if (a.volume == 0) {
                 // This order is fully executed, remove 
                 a.account.orderpending = false;
                 a.status = OrderStatus.executed;
@@ -136,7 +136,7 @@ public class Exchange extends Thread {
                 continue;
             }
 
-            if (b.size == 0) {
+            if (b.volume == 0) {
                 // 
                 b.account.orderpending = false;
                 b.status = OrderStatus.executed;
@@ -160,15 +160,15 @@ public class Exchange extends Thread {
 
                 long size = 0;
 
-                if (b.size >= a.size) {
-                    size = a.size;
+                if (b.volume >= a.volume) {
+                    size = a.volume;
                 } else {
-                    size = b.size;
+                    size = b.volume;
                 }
 
                 b.account.Buy(a.account, size, price);
-                b.size -= size;
-                a.size -= size;
+                b.volume -= size;
+                a.volume -= size;
 
                 lastprice = price;
                 lastsize = size;
@@ -233,10 +233,10 @@ public class Exchange extends Thread {
      */
     public double getlastprice() {
         /*
-		 * SellOrder so = new SellOrder(); so.limit=1000.0; so.size=500;
+		 * SellOrder so = new SellOrder(); so.limit=1000.0; so.volume=500;
 		 * SendOrder(so);
 		 * 
-		 * BuyOrder bo = new BuyOrder(); bo.limit=1001.0; bo.size=300;
+		 * BuyOrder bo = new BuyOrder(); bo.limit=1001.0; bo.volume=300;
 		 * SendOrder(bo);
          */
 

@@ -119,19 +119,19 @@ public class MainWin extends javax.swing.JFrame {
         
         SeSim.BuyOrder bo = new SeSim.BuyOrder();
         bo.limit = 20.0;
-        bo.size = 12;
+        bo.volume = 12;
         bo.timestamp = 12;
         se.SendOrder(bo);
         
         SeSim.BuyOrder bo1 = new SeSim.BuyOrder();
         bo1.limit = 27.0;
-        bo1.size = 123;
+        bo1.volume = 123;
         bo1.timestamp = 922;
         se.SendOrder(bo1);
         
         for (int i = 0; i < 130; i++) {
             BuyOrder o = new BuyOrder();
-            o.size = 90 + i;
+            o.volume = 90 + i;
             o.limit = 80 + i;
             se.SendOrder(o);
             

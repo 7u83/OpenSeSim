@@ -28,7 +28,7 @@ public class Account {
         SellOrder o = new SellOrder();
         o.account = this;
         o.limit = limit;
-        o.size = size;
+        o.volume = size;
 
         orderpending = true;
         ex.SendOrder(o);
@@ -43,7 +43,7 @@ public class Account {
 
         BuyOrder o = new BuyOrder();
         o.limit = limit;
-        o.size = size;
+        o.volume = size;
         o.account = this;
         orderpending = true;
         ex.SendOrder(o);
