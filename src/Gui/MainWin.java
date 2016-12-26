@@ -29,15 +29,15 @@ public class MainWin extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
         jButton1 = new javax.swing.JButton();
-        orderBook2 = new Gui.OrderBook();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        orderBook1 = new Gui.OrderBook();
+        orderBook = new Gui.OrderBook();
+        MainMenu = new javax.swing.JMenuBar();
+        FileMenu = new javax.swing.JMenu();
+        FileNew = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         jList1.setModel(new javax.swing.AbstractListModel<String>() {
@@ -55,38 +55,34 @@ public class MainWin extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridBagLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        getContentPane().add(orderBook2, gridBagConstraints);
+        setMinimumSize(new java.awt.Dimension(400, 200));
+        getContentPane().setLayout(new java.awt.GridLayout());
+        getContentPane().add(orderBook);
 
-        jMenu1.setText("File");
+        FileMenu.setText("File");
 
-        jMenuItem1.setText("New");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        FileNew.setText("New");
+        FileNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                FileNewActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        FileMenu.add(FileNew);
 
-        jMenuBar1.add(jMenu1);
+        MainMenu.add(FileMenu);
 
         jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        MainMenu.add(jMenu2);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(MainMenu);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void FileNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileNewActionPerformed
         System.out.print("Menu 0 called\n");
         
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_FileNewActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
@@ -132,13 +128,14 @@ public class MainWin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu FileMenu;
+    private javax.swing.JMenuItem FileNew;
+    private javax.swing.JMenuBar MainMenu;
     private javax.swing.JButton jButton1;
     private javax.swing.JList<String> jList1;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
-    private Gui.OrderBook orderBook2;
+    private Gui.OrderBook orderBook;
+    private Gui.OrderBook orderBook1;
     // End of variables declaration//GEN-END:variables
 }

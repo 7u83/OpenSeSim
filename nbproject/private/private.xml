@@ -3,20 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/Account.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/BuyOrder.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/ThreadedTrader.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/README.md</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/Exchange.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/RandomTrader.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/SeSim.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/SellOrder.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/Logger.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/Order.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/TraderRun.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Trader.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/TraderRun.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/MTrader.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Order.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/MainWin.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/RandomTrader.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/OrderBook.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/ThreadedTrader.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/manifest.mf</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/Trader.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/StockExchange/MTrader.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Account.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/nbproject/build-impl.xml</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Exchange.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/BuyOrder.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/README.md</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Logger.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/SellOrder.java</file>
         </group>
     </open-files>
 </project-private>
