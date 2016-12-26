@@ -1,4 +1,4 @@
-package StockExchange;
+package SeSim;
 
 public class TraderRun extends Thread {
 

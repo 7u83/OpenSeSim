@@ -1,4 +1,4 @@
-package StockExchange;
+package SeSim;
 
 public interface Trader {
 

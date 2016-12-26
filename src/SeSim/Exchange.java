@@ -1,9 +1,9 @@
-package StockExchange;
+package SeSim;
 
 import java.util.*;
 import java.util.concurrent.*;
 
-import StockExchange.Order.OrderStatus;
+import SeSim.Order.OrderStatus;
 
 public class Exchange extends Thread {
 

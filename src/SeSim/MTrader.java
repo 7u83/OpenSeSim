@@ -1,4 +1,4 @@
-package StockExchange;
+package SeSim;
 
 import java.util.Random;
 

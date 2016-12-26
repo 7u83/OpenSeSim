@@ -1,4 +1,4 @@
-package StockExchange;
+package SeSim;
 
 public abstract class ThreadedTrader extends Thread implements Trader {
 

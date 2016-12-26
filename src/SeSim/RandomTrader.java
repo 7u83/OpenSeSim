@@ -1,7 +1,7 @@
-package StockExchange;
+package SeSim;
 
 import java.util.Random;
-import StockExchange.Order.OrderStatus;
+import SeSim.Order.OrderStatus;
 
 public class RandomTrader extends ThreadedTrader {
 
