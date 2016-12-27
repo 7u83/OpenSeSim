@@ -96,7 +96,7 @@ public class Chart extends javax.swing.JPanel implements Exchange.QuoteReceiver 
 //		final JFreeChart chart = ChartFactory.createCandlestickChart(
 //				"Candlestick Demo", "Time", "Price", dataset, false);
         final JFreeChart chart = ChartFactory.createXYLineChart(
-                "Hallo", "X acse", "yachse", dataset,
+                "The Chart", "X axis ", "Y axis", dataset,
                 PlotOrientation.VERTICAL,
                 true, // include legend
                 true, // tooltips

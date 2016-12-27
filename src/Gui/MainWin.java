@@ -29,21 +29,35 @@ import SeSim.Exchange;
 import SeSim.BuyOrder;
 import javax.swing.UIManager;
 import javax.swing.*;
+import SeSim.*;
+
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class MainWin extends javax.swing.JFrame {
-    
-    static SeSim.Exchange se;
 
+    static SeSim.Exchange se;
+    static SeSim.Account myAccount;
+    
     /**
      * Creates new form MainWin
      */
     public MainWin() {
-        
         initComponents();
+        
+      
+        //myAccount.money=1500.70;
+        //myAccount.shares=250;
+        
+       /* class x extends Account{
+            public void x(){
+                tube=13;
+            }
+        }
+        */
+        
     }
 
     /**
@@ -121,7 +135,7 @@ public class MainWin extends javax.swing.JFrame {
 
     private void FileNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileNewActionPerformed
         System.out.print("Menu 0 called\n");
-        
+
     }//GEN-LAST:event_FileNewActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -136,49 +150,50 @@ public class MainWin extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
+
         se = new Exchange();
-        
+        myAccount = new Account(1000,100000000.0);
+
+        /*
         SeSim.BuyOrder bo = new SeSim.BuyOrder();
         bo.limit = 20.0;
         bo.volume = 12;
         bo.timestamp = 12;
         se.SendOrder(bo);
-        
+
         SeSim.BuyOrder bo1 = new SeSim.BuyOrder();
         bo1.limit = 27.0;
         bo1.volume = 123;
         bo1.timestamp = 922;
         se.SendOrder(bo1);
-        
+
         for (int i = 0; i < 130; i++) {
             BuyOrder o = new BuyOrder();
             o.volume = 90 + i;
             o.limit = 80 + i;
             se.SendOrder(o);
-            
-        }
-     
 
-        
-  try {
+        }
+        */
+
+        try {
             // Set cross-platform Java L&F (also called "Metal")
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-    } 
-    catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-      System.out.print("Alles muell\n");
-    }
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException |
+                InstantiationException | IllegalAccessException e) {
+            System.out.print("Alles muell\n");
+        }
         // handle exception
         // handle exception
         // handle exception
-        
+
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-   /*     try {
+ /*     try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Motif".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -194,7 +209,7 @@ public class MainWin extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        */
+         */
         //</editor-fold>
 
         /* Create and display the form */

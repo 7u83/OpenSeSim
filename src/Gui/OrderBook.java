@@ -45,40 +45,56 @@ public class OrderBook extends javax.swing.JPanel {
 
         @Override
         public Object getElementAt(int index) {
+
+            SeSim.Order o = (SeSim.Order) model.toArray()[index];
+
+            return "<html>"
+                    + "<div style=\"border:1px solid black;\">"
+                    +o.limit
+                    +"</div>"
+                    +"<div style=\"align:right; border:1px solid blue; \">"
+                    +o.volume
+                    +"</div>"
+                    +"</html>"; 
             
-            SeSim.Order o = (SeSim.Order)model.toArray()[index];
-            
-            return o.limit; //model.toArray()[index];
-           
+
+
         }
 
         @Override
         public int getSize() {
             return model.size();
         }
-        
-        
-        
 
     }
 
     SeSim.Exchange se;
-    
+
     SListModel bid;
+    SListModel ask;
 
     public OrderBook() {
         this.se = MainWin.se;
-        
-        
+
         initComponents();
 
-        if (this.se == null){
+        if (this.se == null) {
             return;
         }
-       
+System.out.print("Order boo init\n");
+
+        MainWin.myAccount.Sell(100, 20.0, MainWin.se);
+        MainWin.myAccount.Sell(100, 10.0, MainWin.se);   
+
         bid = new SListModel(se.bid);
         BidList.setModel(bid);
+
+        MainWin.myAccount.Buy(100, 2.0, MainWin.se);
+        MainWin.myAccount.Buy(100, 1.0, MainWin.se);        
         
+        ask = new SListModel(se.ask);
+        //AskList.setModel(ask);
+
     }
 
     /**
@@ -95,20 +111,18 @@ public class OrderBook extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         BidList = new javax.swing.JList<>();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        AskList = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        AskList = new javax.swing.JTable();
 
-        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
-        layout.rowHeights = new int[] {0, 5, 0, 5, 0};
-        setLayout(layout);
+        setPreferredSize(new java.awt.Dimension(500, 262));
+        setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Bid");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
         add(jLabel1, gridBagConstraints);
@@ -116,11 +130,13 @@ public class OrderBook extends javax.swing.JPanel {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Ask");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 8;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(jLabel3, gridBagConstraints);
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 226));
 
         BidList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", " " };
@@ -130,50 +146,75 @@ public class OrderBook extends javax.swing.JPanel {
         BidList.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         BidList.setMinimumSize(new java.awt.Dimension(52, 200));
         BidList.setName(""); // NOI18N
+        BidList.setPreferredSize(new java.awt.Dimension(100, 392));
         jScrollPane1.setViewportView(BidList);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         add(jScrollPane1, gridBagConstraints);
 
-        AskList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        AskList.setMinimumSize(new java.awt.Dimension(52, 200));
-        AskList.setName(""); // NOI18N
-        jScrollPane2.setViewportView(AskList);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        add(jScrollPane2, gridBagConstraints);
-
         jLabel2.setForeground(new java.awt.Color(255, 0, 0));
         jLabel2.setText("20.00");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.gridwidth = 2;
         add(jLabel2, gridBagConstraints);
+
+        jScrollPane4.setMinimumSize(new java.awt.Dimension(300, 150));
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(100, 150));
+
+        AskList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"#0010", "50.00", "100"},
+                {"#0071", "120.25", "30"},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "ID", "Price", "Volume"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        AskList.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
+        AskList.setOpaque(false);
+        AskList.setPreferredSize(new java.awt.Dimension(100, 72));
+        AskList.setRowSelectionAllowed(false);
+        jScrollPane4.setViewportView(AskList);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        add(jScrollPane4, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList<String> AskList;
+    private javax.swing.JTable AskList;
     private javax.swing.JList<String> BidList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane4;
     // End of variables declaration//GEN-END:variables
 }

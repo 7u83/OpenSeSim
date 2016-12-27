@@ -1,16 +1,17 @@
 package SeSim;
 
-public class Account {
-
+final public class Account {
+    
+    
     /**
      * Number of shares in this account
      */
-    public long shares = 0;
+    protected long shares = 0;
 
     /**
      * Ammount of money in this account
      */
-    public double money = 0;
+    protected double money = 0;
 
     /**
      * Name of this account
@@ -18,8 +19,20 @@ public class Account {
     public String name = "";
 
     public boolean orderpending = false;
+    
+       
+    public Account(long shares, double money ) {
+        this.shares=shares;
+        this.money=money;
+    }
+    
+    public Account(){
+       this(0,0.0);
+    }
 
-    private double bound_money;
+   // private double bound_money;
+    
+    
 
     public void print_current() {
         System.out.printf("%s shares: %d credit: %.2f\n",
@@ -27,12 +40,11 @@ public class Account {
         );
     }
 
-    public SellOrder Sell(long size, double limit, Exchange ex) {
+    public SellOrder Sell(long volume, double limit, Exchange ex) {
         SellOrder o = new SellOrder();
         o.account = this;
         o.limit = limit;
-        o.volume = size;
-
+        o.volume = volume;
         orderpending = true;
         ex.SendOrder(o);
         return o;

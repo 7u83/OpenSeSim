@@ -47,23 +47,23 @@ public class ControlPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton2 = new javax.swing.JButton();
+        SellButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jButton3 = new javax.swing.JButton();
+        BuyButton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridLayout(3, 0));
 
-        jButton2.setBackground(new java.awt.Color(181, 0, 12));
-        jButton2.setFont(jButton2.getFont().deriveFont(jButton2.getFont().getStyle() | java.awt.Font.BOLD, jButton2.getFont().getSize()+12));
-        jButton2.setForeground(new java.awt.Color(254, 254, 254));
-        jButton2.setText("Sell");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        SellButton.setBackground(new java.awt.Color(181, 0, 12));
+        SellButton.setFont(SellButton.getFont().deriveFont(SellButton.getFont().getStyle() | java.awt.Font.BOLD, SellButton.getFont().getSize()+12));
+        SellButton.setForeground(new java.awt.Color(254, 254, 254));
+        SellButton.setText("Sell");
+        SellButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                SellButtonActionPerformed(evt);
             }
         });
-        add(jButton2);
+        add(SellButton);
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -71,21 +71,33 @@ public class ControlPanel extends javax.swing.JPanel {
 
         add(jScrollPane1);
 
-        jButton3.setBackground(new java.awt.Color(5, 94, 1));
-        jButton3.setFont(jButton3.getFont().deriveFont(jButton3.getFont().getStyle() | java.awt.Font.BOLD, jButton3.getFont().getSize()+12));
-        jButton3.setForeground(new java.awt.Color(254, 254, 254));
-        jButton3.setText("Buy");
-        add(jButton3);
+        BuyButton.setBackground(new java.awt.Color(5, 94, 1));
+        BuyButton.setFont(BuyButton.getFont().deriveFont(BuyButton.getFont().getStyle() | java.awt.Font.BOLD, BuyButton.getFont().getSize()+12));
+        BuyButton.setForeground(new java.awt.Color(254, 254, 254));
+        BuyButton.setText("Buy");
+        BuyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BuyButtonActionPerformed(evt);
+            }
+        });
+        add(BuyButton);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void SellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellButtonActionPerformed
+        System.out.print("SellPressed\n");
+        MainWin.myAccount.Sell(100, 520.0, MainWin.se);
+    }//GEN-LAST:event_SellButtonActionPerformed
+
+    private void BuyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyButtonActionPerformed
+        System.out.print("Buy Pressed\n");
+        //MainWin.myAccount.Buy(100, 120.0, MainWin.se);
+        MainWin.myAccount.Buy(100, 1.0, MainWin.se);
+    }//GEN-LAST:event_BuyButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton BuyButton;
+    private javax.swing.JButton SellButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables

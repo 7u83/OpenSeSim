@@ -5,17 +5,32 @@ import java.util.concurrent.*;
 
 import SeSim.Order.OrderStatus;
 
+/**
+ *
+ * @author tube
+ */
 public class Exchange extends Thread {
+
     
-     /**
+    
+    
+    
+    
+    // Here we store the list of quote receivers
+    private final TreeSet<QuoteReceiver> qrlist;
+
+    /**
      * Histrory of quotes
      */
     public ArrayList<Quote> quoteHistory;
-    
+
     /**
      * Constructor
      */
     public Exchange() {
+        this.ask = new TreeSet<>();
+        this.bid = new TreeSet<>();
+        this.qrlist = new TreeSet<>();
         this.quoteHistory = new ArrayList<>();
     }
 
@@ -39,9 +54,6 @@ public class Exchange extends Thread {
         void UpdateQuote(Quote q);
     }
 
-    // Here we store the list of quote receivers
-    TreeSet<QuoteReceiver> qrlist = new TreeSet<>();
-
     public void AddQuoteReceiver(QuoteReceiver qr) {
         qrlist.add(qr);
     }
@@ -54,18 +66,15 @@ public class Exchange extends Thread {
         }
     }
 
-   
-
     // long time = 0;
     double price = 12.9;
     long orderid = 1;
 
     double lastprice = 300.0;
     long lastsize;
-
-    // Order orderlist[];
-    public TreeSet<BuyOrder> bid = new TreeSet<>();
-    public TreeSet<SellOrder> ask = new TreeSet<>();
+    
+    public TreeSet<BuyOrder> bid;
+    public TreeSet<SellOrder> ask;
 
     private final Semaphore available = new Semaphore(1, true);
 
@@ -80,6 +89,10 @@ public class Exchange extends Thread {
 
     private void Unlock() {
         available.release();
+    }
+    
+    public void getBidBook(){
+        
     }
 
     public void print_current() {
@@ -117,13 +130,14 @@ public class Exchange extends Thread {
     public void TransferMoney(Account src, Account dst, double money) {
         src.money -= money;
         dst.money += money;
+              
     }
 
     public void CancelOrder(Order o) {
         Lock();
 //		System.out.println("Cancel BuyOrder");
-        bid.remove((BuyOrder)o);
-        ask.remove((SellOrder)o);
+        bid.remove((BuyOrder) o);
+        ask.remove((SellOrder) o);
         o.status = OrderStatus.canceled;
         Unlock();
 
@@ -206,19 +220,23 @@ public class Exchange extends Thread {
         // SellOrder op = ask.peek();
 
     }
-    
-    private void InitOrder(Order o){
+
+    private boolean InitOrder(Order o) {
         double moneyNeeded = o.volume * o.limit;
-        
+        return true;
     }
 
     public void SendOrder(SellOrder o) {
 //		System.out.println("EX Sellorder");
         Lock();
+        boolean rc = InitOrder(o);
+        
         o.timestamp = System.currentTimeMillis();
         o.id = orderid++;
         ask.add(o);
+               
         Unlock();
+        
         Lock();
         OrderMatching();
         Unlock();
@@ -231,6 +249,7 @@ public class Exchange extends Thread {
         o.timestamp = System.currentTimeMillis();
         o.id = orderid++;
         bid.add(o);
+               
         Unlock();
         Lock();
         OrderMatching();
