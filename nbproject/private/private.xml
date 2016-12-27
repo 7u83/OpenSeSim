@@ -16,8 +16,10 @@
             <file>file:/home/tube/NetBeansProjects/SeSim/nbproject/build-impl.xml</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Exchange.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/Chart.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/nbproject/project.properties</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/OrderBookCell.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/AskBook.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/BidBook.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/build.xml</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/OrderBookPanel.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/RandomTrader.java</file>
