@@ -74,8 +74,8 @@ public class Exchange extends Thread {
     double lastprice = 300.0;
     long lastsize;
     
-    public TreeSet<BuyOrder> bid;
-    public TreeSet<SellOrder> ask;
+    public TreeSet<Order> bid;
+    public TreeSet<Order> ask;
 
     private final Semaphore available = new Semaphore(1, true);
 
@@ -93,7 +93,7 @@ public class Exchange extends Thread {
     }
     
     public ArrayList geAskBook(int n){
-        ArrayList ret = new ArrayList();
+        ArrayList <Order> ret= new ArrayList<>();
         Iterator it=ask.iterator();
         for(int i=0;i<n && it.hasNext();i++){
             SellOrder o;
@@ -106,7 +106,7 @@ public class Exchange extends Thread {
     }
     
        public ArrayList geBidBook(int n){
-        ArrayList ret = new ArrayList();
+        ArrayList <Order> ret = new ArrayList<>();
         Iterator it=bid.iterator();
         for(int i=0;i<n && it.hasNext();i++){
             BuyOrder o;
@@ -122,8 +122,8 @@ public class Exchange extends Thread {
 
     public void print_current() {
 
-        BuyOrder b;
-        SellOrder a;
+        Order b;
+        Order a;
 
         //String bid;
         if (bid.isEmpty()) {
@@ -176,8 +176,8 @@ public class Exchange extends Thread {
                 return;
             }
 
-            BuyOrder b = bid.first();
-            SellOrder a = ask.first();
+            Order b = bid.first();
+            Order a = ask.first();
 
             if (a.volume == 0) {
                 // This order is fully executed, remove 
@@ -251,6 +251,7 @@ public class Exchange extends Thread {
         return true;
     }
 
+    /*
     public void SendOrder(SellOrder o) {
 //		System.out.println("EX Sellorder");
         Lock();
@@ -263,11 +264,42 @@ public class Exchange extends Thread {
         Unlock();
         
         Lock();
-        OrderMatching();
+ //       OrderMatching();
         Unlock();
 
     }
+*/
+    
+    private void addOrder(Order o){
+        switch (o.type){
+            case buy:
+                bid.add(o);
+                break;
+            case sell:
+                ask.add(o);
+                break;
+            default:
+                return;
+        }
+        
+            
+    }
+    
+  
+    public void SendOrder(Order o){
+        Lock();
+        o.timestamp = System.currentTimeMillis();
+        boolean rc = InitOrder(o);
+        
+        System.out.print(o.timestamp+" TS:\n");
+        
+        o.id = orderid++;        
+        addOrder(o);
+        Unlock();
+    }
 
+    
+/*
     public void SendOrder(BuyOrder o) {
         //System.out.println("EX Buyorder");
         Lock();
@@ -277,11 +309,11 @@ public class Exchange extends Thread {
                
         Unlock();
         Lock();
-        OrderMatching();
+//        OrderMatching();
         Unlock();
 
     }
-
+*/
     /*
 	 * public void SendOrder(Order o){
 	 * 
@@ -308,6 +340,10 @@ public class Exchange extends Thread {
         return 0.7;
     }
 
+    /**
+     *
+     */
+    @Override
     public void run() {
         while (true) {
             try {

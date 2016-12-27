@@ -26,6 +26,7 @@
 package Gui;
 
 //import SeSim.*;
+import static java.lang.Thread.sleep;
 import javax.swing.AbstractListModel;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -51,6 +52,14 @@ public class OrderBookPanel extends javax.swing.JPanel {
         MainWin.myAccount.Sell(100, 19.5, MainWin.se);
         MainWin.myAccount.Sell(100, 19.5, MainWin.se);
         MainWin.myAccount.Sell(100, 19.3, MainWin.se);
+
+
+                    try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println("Interrupted");
+                return;
+            }
 
 
         MainWin.myAccount.Sell(310, 6112.156, MainWin.se);
@@ -86,7 +95,7 @@ public class OrderBookPanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         bidBook1 = new Gui.BidBook();
 
-        setPreferredSize(new java.awt.Dimension(150, 262));
+        setPreferredSize(new java.awt.Dimension(220, 262));
         setLayout(new java.awt.GridBagLayout());
 
         askBook1.setPreferredSize(new java.awt.Dimension(200, 200));

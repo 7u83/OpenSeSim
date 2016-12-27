@@ -1,16 +1,20 @@
 package SeSim;
 
 public class SellOrder extends Order {
-
+/*
     @Override
     public int compareTo(Order o) {
-
-        if (o.limit < limit) {
-            return 1;
-        }
-        if (o.limit > limit) {
-            return -1;
-        }
-        return 0;
+        
+        return super.compareTo(o);
+        
+    }
+    
+    public SellOrder(){
+        type=OrderType.buy;
+    }
+*/
+    
+     public SellOrder(){
+        type=OrderType.sell;
     }
 }

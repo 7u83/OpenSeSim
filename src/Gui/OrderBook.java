@@ -29,6 +29,12 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.concurrent.Callable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
+
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
 
 /**
  *
@@ -37,6 +43,26 @@ import javax.swing.table.AbstractTableModel;
 public abstract class OrderBook extends javax.swing.JPanel {
 
     abstract ArrayList getArrayList();
+    
+    public class DateCellRenderer extends DefaultTableCellRenderer {
+
+    String pattern;
+    public DateCellRenderer(String pattern){
+        this.pattern = pattern;
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    
+        renderer.setBackground(hdr_color);
+        //renderer.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+           // renderer.setText("Halloe");
+    
+        return renderer;
+    }
+}
+    Color hdr_color = Color.LIGHT_GRAY;
 
     boolean getDesc() {
         return false;
@@ -104,11 +130,42 @@ public abstract class OrderBook extends javax.swing.JPanel {
     public OrderBook() {
         System.out.print("init Orderbook]\n");
         initComponents();
+        
+        this.setBorder(BorderFactory.createEmptyBorder());
+        this.orderBookScroller.setBorder(BorderFactory.createBevelBorder(0));
 
         if (MainWin.se == null) {
             return;
         }
         this.orderBookList.setModel(new SListModel());
+        orderBookList.setBorder(BorderFactory.createEmptyBorder());
+        
+        JTableHeader h = this.orderBookList.getTableHeader();
+             h.setBackground(hdr_color);
+             
+      h.setForeground(Color.green);
+      
+      
+      
+  //    h.setDefaultRenderer(this.orderBookList.getCellRenderer(0, 0));
+//      h.setBorder(BorderFactory.createLineBorder(Color.yellow));
+      
+      h.setDefaultRenderer(new DateCellRenderer("Hhu"));
+      
+      
+/*      h.getColumnModel().getColumn(0).setCellRenderer(new TableCellRenderer(){
+                @Override
+        public Component getTableCellRendererComponent(
+                JTable x, Object value, boolean isSelected, 
+                boolean hasFocus, int row, int column) {
+            JComponent component = (JComponent)orderBookList.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(orderBookList, value, false, false, -1, -2);
+            component.setBackground(new Color(250, 250, 250));
+            component.setBorder(BorderFactory.createEmptyBorder());
+            return component;
+        }  
+    });
+  */    
+
     }
 
     /**
@@ -120,7 +177,7 @@ public abstract class OrderBook extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        orderBookScroller = new javax.swing.JScrollPane();
         orderBookList = new javax.swing.JTable();
 
         orderBookList.setModel(new javax.swing.table.DefaultTableModel(
@@ -168,23 +225,24 @@ public abstract class OrderBook extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(orderBookList);
+        orderBookList.setFocusable(false);
+        orderBookScroller.setViewportView(orderBookList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+            .addComponent(orderBookScroller, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(orderBookScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable orderBookList;
+    private javax.swing.JScrollPane orderBookScroller;
     // End of variables declaration//GEN-END:variables
 }
