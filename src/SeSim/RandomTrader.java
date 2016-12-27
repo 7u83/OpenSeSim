@@ -13,12 +13,16 @@ public class RandomTrader extends Trader {
     // my current order
     private Order myorder = null;
 
-    public RandomTrader(Exchange ex, long shares, double money) {
+    public RandomTrader(Account account) {
+        super(account);
+    }
+
+ /*   public RandomTrader(Exchange ex, long shares, double money) {
         account.money = money;
         account.shares = shares;
         this.ex = ex;
     }
-
+*/
     public void DoBuy() {
 
         if (myorder != null) {
@@ -54,7 +58,7 @@ public class RandomTrader extends Trader {
 
         long size = (int) (account.shares);
 
-        myorder = account.Sell(size, limit, ex);
+        myorder = account.sell(size, limit);
     }
 
     public void trade() {

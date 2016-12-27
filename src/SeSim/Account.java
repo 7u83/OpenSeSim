@@ -1,7 +1,13 @@
 package SeSim;
 
+import java.util.*;
+
 final public class Account {
     
+    /**
+     * Exchange this account belongs to
+     */
+    protected Exchange se;
     
     /**
      * Number of shares in this account
@@ -21,13 +27,15 @@ final public class Account {
     public boolean orderpending = false;
     
        
-    public Account(long shares, double money ) {
+    public Account(Exchange se, long shares, double money ) {
         this.shares=shares;
         this.money=money;
+        this.se=se;
+        pending = new TreeSet();
     }
     
     public Account(){
-       this(0,0.0);
+       //this(,0.0);
     }
 
    // private double bound_money;
@@ -39,14 +47,16 @@ final public class Account {
                 name, shares, money
         );
     }
+    
+    TreeSet pending;
 
-    public SellOrder Sell(long volume, double limit, Exchange ex) {
+    public SellOrder sell(long volume, double limit) {
         SellOrder o = new SellOrder();
         o.account = this;
         o.limit = limit;
         o.volume = volume;
         orderpending = true;
-        ex.SendOrder(o);
+        se.SendOrder(o);
         return o;
 
     }
@@ -66,11 +76,13 @@ final public class Account {
 
     }
 
+    /*
     public void Buy(Account a, long size, double price) {
         shares += size;
         money -= price * size;
         a.shares -= size;
         a.money += price * size;
     }
+*/
 
 }

@@ -7,13 +7,17 @@ public class MTrader extends Trader {
     Exchange ex;
     Random rand;
 
-    public MTrader(Exchange ex1, long shares, double money) {
+    public MTrader(Account account) {
+        super(account);
+    }
+
+/*    public MTrader(Exchange ex1, long shares, double money) {
         account.money = money;
         account.shares = shares;
         this.ex = ex;
         rand = new Random();
     }
-
+*/
     public void DoBuy() {
         //	System.out.println("AAA");
 
@@ -33,7 +37,7 @@ public class MTrader extends Trader {
         long size = (int) (account.money / limit);
 
         account.Buy(size, limit, ex);
-        return;
+        
     }
 
     public void DoSell() {
@@ -53,7 +57,7 @@ public class MTrader extends Trader {
 
         long size = (int) (account.shares);
 
-        account.Sell(size, limit, ex);
+        account.sell(size, limit);
         return;
     }
 
@@ -77,7 +81,7 @@ public class MTrader extends Trader {
             return;
         }
 
-        //System.out.printf("MyPrice: %.2f\n",price);
+        //System.out.printf("MyPrice: %.2f\n",theprice);
     }
 
 }

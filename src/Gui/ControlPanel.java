@@ -85,7 +85,7 @@ public class ControlPanel extends javax.swing.JPanel {
 
     private void SellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellButtonActionPerformed
         System.out.print("SellPressed\n");
-        MainWin.myAccount.Sell(100, 520.0, MainWin.se);
+//        MainWin.myAccount.Sell(100, 520.0, MainWin.se);
     }//GEN-LAST:event_SellButtonActionPerformed
 
     private void BuyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyButtonActionPerformed

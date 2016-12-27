@@ -42,35 +42,6 @@ public class OrderBookPanel extends javax.swing.JPanel {
 
     public OrderBookPanel() {
         this.se = MainWin.se;
-        MainWin.myAccount.Sell(100, 820.0, MainWin.se);
-        MainWin.myAccount.Sell(100, 90.0, MainWin.se);
-        MainWin.myAccount.Sell(310, 112.156, MainWin.se);
-        MainWin.myAccount.Sell(3, 112.156, MainWin.se);
-        MainWin.myAccount.Sell(9, 1112.156, MainWin.se);
-        MainWin.myAccount.Sell(17, 122.156, MainWin.se);
-        MainWin.myAccount.Sell(100, 120.0, MainWin.se);
-        MainWin.myAccount.Sell(100, 19.5, MainWin.se);
-        MainWin.myAccount.Sell(100, 19.5, MainWin.se);
-        MainWin.myAccount.Sell(100, 19.3, MainWin.se);
-
-
-                    try {
-                sleep(1000);
-            } catch (InterruptedException e) {
-                System.out.println("Interrupted");
-                return;
-            }
-
-
-        MainWin.myAccount.Sell(310, 6112.156, MainWin.se);
-        MainWin.myAccount.Sell(3, 7112.156, MainWin.se);
-
-        MainWin.myAccount.Buy(100, 2.0, MainWin.se);
-        MainWin.myAccount.Buy(100, 3.0, MainWin.se);
-        MainWin.myAccount.Buy(100, 2.0, MainWin.se);
-        MainWin.myAccount.Buy(100, 1.0, MainWin.se);
-        MainWin.myAccount.Buy(100, 3.0, MainWin.se);
-        MainWin.myAccount.Buy(100, 5.0, MainWin.se);
 
         initComponents();
 

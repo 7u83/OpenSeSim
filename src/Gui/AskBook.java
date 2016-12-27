@@ -35,7 +35,7 @@ public class AskBook extends OrderBook {
 
     @Override
     ArrayList getArrayList() {
-        return MainWin.se.geAskBook(10);
+        return MainWin.se.getAskBook(10);
     }
     
     @Override

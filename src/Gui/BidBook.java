@@ -35,7 +35,7 @@ public class BidBook extends OrderBook{
 
     @Override
     ArrayList getArrayList() {
-        return MainWin.se.geBidBook(10);
+        return MainWin.se.getBidBook(10);
     }
     
 }

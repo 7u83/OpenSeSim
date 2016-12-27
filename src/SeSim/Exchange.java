@@ -3,7 +3,6 @@ package SeSim;
 import java.util.*;
 import java.util.concurrent.*;
 
-
 import SeSim.Order.OrderStatus;
 
 /**
@@ -11,14 +10,6 @@ import SeSim.Order.OrderStatus;
  * @author tube
  */
 public class Exchange extends Thread {
-
-    
-    
-    
-    
-    
-    // Here we store the list of quote receivers
-    private final TreeSet<QuoteReceiver> qrlist;
 
     /**
      * Histrory of quotes
@@ -55,7 +46,22 @@ public class Exchange extends Thread {
         void UpdateQuote(Quote q);
     }
 
-    public void AddQuoteReceiver(QuoteReceiver qr) {
+    /**
+     *
+     */
+    public interface BookReceiver {
+
+        void UpdateOrderBook();
+    }
+
+    // Here we store the list of quote receivers
+    private final TreeSet<QuoteReceiver> qrlist;
+
+    /**
+     *
+     * @param qr
+     */
+    public void addQuoteReceiver(QuoteReceiver qr) {
         qrlist.add(qr);
     }
 
@@ -68,12 +74,12 @@ public class Exchange extends Thread {
     }
 
     // long time = 0;
-    double price = 12.9;
+    double theprice = 12.9;
     long orderid = 1;
 
     double lastprice = 300.0;
-    long lastsize;
-    
+    long lastsvolume;
+
     public TreeSet<Order> bid;
     public TreeSet<Order> ask;
 
@@ -91,34 +97,41 @@ public class Exchange extends Thread {
     private void Unlock() {
         available.release();
     }
-    
-    public ArrayList geAskBook(int n){
-        ArrayList <Order> ret= new ArrayList<>();
-        Iterator it=ask.iterator();
-        for(int i=0;i<n && it.hasNext();i++){
-            SellOrder o;
-            o = (SellOrder)it.next();
+
+    private ArrayList<Order> getBook(TreeSet<Order> book, int depth) {
+        ArrayList<Order> ret = new ArrayList<>();
+        Iterator<Order> it = book.iterator();
+        for (int i = 0; i < depth && it.hasNext(); i++) {
+            Order o;
+            o = it.next();
             ret.add(o);
-            System.out.print("Order"+o.limit);
+            System.out.print("Order" + o.limit);
             System.out.println();
         }
         return ret;
+
     }
-    
-       public ArrayList geBidBook(int n){
-        ArrayList <Order> ret = new ArrayList<>();
-        Iterator it=bid.iterator();
-        for(int i=0;i<n && it.hasNext();i++){
-            BuyOrder o;
-            o = (BuyOrder)it.next();
-            ret.add(o);
-            System.out.print("Order"+o.limit);
-            System.out.println();
-        }
-        return ret;
+
+    /**
+     * Get the "ask" orderbook
+     *
+     * @param depth Number oder Orders to retrieve from orderbook
+     * @return Orderbook
+     */
+    public ArrayList<Order> getAskBook(int depth) {
+        return getBook(ask, depth);
+
     }
-    
-    
+
+    /**
+     * Get the "bid" oderbook
+     *
+     * @param depth Number oder Orders to retrieve from orderbook
+     * @return Orderbook
+     */
+    public ArrayList<Order> getBidBook(int depth) {
+        return getBook(bid, depth);
+    }
 
     public void print_current() {
 
@@ -143,11 +156,10 @@ public class Exchange extends Thread {
             a = ask.first();
         }
 
-        Logger.info(
-                String.format("BID: %s(%s)  LAST: %.2f(%d)  ASK: %s(%s)\n",
-                        b.format_limit(), b.format_volume(),
-                        lastprice, lastsize,
-                        a.format_limit(), a.format_volume())
+        Logger.info(String.format("BID: %s(%s)  LAST: %.2f(%d)  ASK: %s(%s)\n",
+                b.format_limit(), b.format_volume(),
+                lastprice, lastsvolume,
+                a.format_limit(), a.format_volume())
         );
 
     }
@@ -155,7 +167,7 @@ public class Exchange extends Thread {
     public void TransferMoney(Account src, Account dst, double money) {
         src.money -= money;
         dst.money += money;
-              
+
     }
 
     public void CancelOrder(Order o) {
@@ -167,10 +179,25 @@ public class Exchange extends Thread {
         Unlock();
 
     }
+    
+    /**
+     * Transfer shares from one account to another account
+     * @param src source account
+     * @param dst destination account
+     * @param volumen number of shares
+     * @param price price
+     */
+    protected void transferShares(Account src, Account dst, long volume, double price){
+        dst.shares += volume;
+        src.shares -= volume;        
+        dst.money -= price * volume;
+        src.money += price * volume;      
+    }
 
     public void OrderMatching() {
 
         while (true) {
+
             if (bid.isEmpty() || ask.isEmpty()) {
                 // nothing to do
                 return;
@@ -188,7 +215,7 @@ public class Exchange extends Thread {
             }
 
             if (b.volume == 0) {
-                // 
+                // This order is fully executed, remove 
                 b.account.orderpending = false;
                 b.status = OrderStatus.executed;
                 bid.pollFirst();
@@ -209,24 +236,28 @@ public class Exchange extends Thread {
                     price = a.limit;
                 }
 
-                long size = 0;
+                long volume;
 
                 if (b.volume >= a.volume) {
-                    size = a.volume;
+                    volume = a.volume;
                 } else {
-                    size = b.volume;
+                    volume = b.volume;
                 }
 
-                b.account.Buy(a.account, size, price);
-                b.volume -= size;
-                a.volume -= size;
+                transferShares(a.account,b.account,volume,price);
+                
+         //       b.account.Buy(a.account, volume, price);
+                
+                
+                b.volume -= volume;
+                a.volume -= volume;
 
                 lastprice = price;
-                lastsize = size;
+                lastsvolume = volume;
 
                 Quote q = new Quote();
 
-                q.size = size;
+                q.size = volume;
                 q.price = price;
                 q.time = System.currentTimeMillis();
 
@@ -251,55 +282,32 @@ public class Exchange extends Thread {
         return true;
     }
 
-    /*
-    public void SendOrder(SellOrder o) {
-//		System.out.println("EX Sellorder");
-        Lock();
-        boolean rc = InitOrder(o);
-        
-        o.timestamp = System.currentTimeMillis();
-        o.id = orderid++;
-        ask.add(o);
-               
-        Unlock();
-        
-        Lock();
- //       OrderMatching();
-        Unlock();
-
-    }
-*/
-    
-    private void addOrder(Order o){
-        switch (o.type){
+    private boolean addOrder(Order o) {
+        switch (o.type) {
             case buy:
-                bid.add(o);
-                break;
+                return bid.add(o);
+
             case sell:
-                ask.add(o);
-                break;
-            default:
-                return;
+                return ask.add(o);
         }
-        
-            
+
+        return false;
     }
-    
-  
-    public void SendOrder(Order o){
+
+    public void SendOrder(Order o) {
         Lock();
         o.timestamp = System.currentTimeMillis();
         boolean rc = InitOrder(o);
-        
-        System.out.print(o.timestamp+" TS:\n");
-        
-        o.id = orderid++;        
+        System.out.print(o.timestamp + " TS:\n");
+        o.id = orderid++;
         addOrder(o);
-        Unlock();
+        OrderMatching();
+        Unlock();      
+        
+        
     }
 
-    
-/*
+    /*
     public void SendOrder(BuyOrder o) {
         //System.out.println("EX Buyorder");
         Lock();
@@ -313,8 +321,8 @@ public class Exchange extends Thread {
         Unlock();
 
     }
-*/
-    /*
+     */
+ /*
 	 * public void SendOrder(Order o){
 	 * 
 	 * 
@@ -333,7 +341,7 @@ public class Exchange extends Thread {
 		 * SendOrder(bo);
          */
 
-        return price;
+        return theprice;
     }
 
     public double sendOrder(Account o) {

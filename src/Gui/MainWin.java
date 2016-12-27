@@ -30,6 +30,7 @@ import SeSim.BuyOrder;
 import javax.swing.UIManager;
 import javax.swing.*;
 import SeSim.*;
+import Traders.*;
 
 
 /**
@@ -40,6 +41,7 @@ public class MainWin extends javax.swing.JFrame {
 
     static SeSim.Exchange se;
     static SeSim.Account myAccount;
+    static Traders.ManTrader myTrader;
     
     /**
      * Creates new form MainWin
@@ -156,7 +158,10 @@ public class MainWin extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         se = new Exchange();
-        myAccount = new Account(1000,100000000.0);
+        myAccount = new Account(se,1000,100000000.0);
+        myTrader = new Traders.ManTrader(myAccount);
+        
+        
         
         SeSim.SellOrder so = new SeSim.SellOrder();
         so.limit = 20.0;
@@ -164,29 +169,6 @@ public class MainWin extends javax.swing.JFrame {
         so.timestamp = 12;
         se.SendOrder(so);
         
-
-        /*
-        SeSim.BuyOrder bo = new SeSim.BuyOrder();
-        bo.limit = 20.0;
-        bo.volume = 12;
-        bo.timestamp = 12;
-        se.SendOrder(bo);
-
-        SeSim.BuyOrder bo1 = new SeSim.BuyOrder();
-        bo1.limit = 27.0;
-        bo1.volume = 123;
-        bo1.timestamp = 922;
-        se.SendOrder(bo1);
-
-        for (int i = 0; i < 130; i++) {
-            BuyOrder o = new BuyOrder();
-            o.volume = 90 + i;
-            o.limit = 80 + i;
-            se.SendOrder(o);
-
-        }
-        */
-
         try {
             // Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
