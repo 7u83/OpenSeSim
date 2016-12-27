@@ -3,6 +3,7 @@ package SeSim;
 import java.util.*;
 import java.util.concurrent.*;
 
+
 import SeSim.Order.OrderStatus;
 
 /**
@@ -91,9 +92,33 @@ public class Exchange extends Thread {
         available.release();
     }
     
-    public void getBidBook(){
-        
+    public ArrayList geAskBook(int n){
+        ArrayList ret = new ArrayList();
+        Iterator it=ask.iterator();
+        for(int i=0;i<n && it.hasNext();i++){
+            SellOrder o;
+            o = (SellOrder)it.next();
+            ret.add(o);
+            System.out.print("Order"+o.limit);
+            System.out.println();
+        }
+        return ret;
     }
+    
+       public ArrayList geBidBook(int n){
+        ArrayList ret = new ArrayList();
+        Iterator it=bid.iterator();
+        for(int i=0;i<n && it.hasNext();i++){
+            BuyOrder o;
+            o = (BuyOrder)it.next();
+            ret.add(o);
+            System.out.print("Order"+o.limit);
+            System.out.println();
+        }
+        return ret;
+    }
+    
+    
 
     public void print_current() {
 

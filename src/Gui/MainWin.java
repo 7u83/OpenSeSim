@@ -71,10 +71,8 @@ public class MainWin extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         jMenuItem1 = new javax.swing.JMenuItem();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        orderBook1 = new Gui.OrderBook();
         controlPanel2 = new Gui.ControlPanel();
+        orderBookPanel1 = new Gui.OrderBookPanel();
         chart2 = new Gui.Chart();
         MainMenu = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
@@ -93,14 +91,20 @@ public class MainWin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 480));
-
-        jLabel1.setText("jLabel1");
-        getContentPane().add(jLabel1, java.awt.BorderLayout.LINE_START);
-
-        jLabel2.setText("jLabel2");
-        getContentPane().add(jLabel2, java.awt.BorderLayout.CENTER);
-        getContentPane().add(orderBook1, java.awt.BorderLayout.PAGE_END);
         getContentPane().add(controlPanel2, java.awt.BorderLayout.LINE_END);
+        getContentPane().add(orderBookPanel1, java.awt.BorderLayout.LINE_START);
+
+        javax.swing.GroupLayout chart2Layout = new javax.swing.GroupLayout(chart2);
+        chart2.setLayout(chart2Layout);
+        chart2Layout.setHorizontalGroup(
+            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 287, Short.MAX_VALUE)
+        );
+        chart2Layout.setVerticalGroup(
+            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 582, Short.MAX_VALUE)
+        );
+
         getContentPane().add(chart2, java.awt.BorderLayout.CENTER);
 
         FileMenu.setBackground(new java.awt.Color(254, 203, 1));
@@ -153,6 +157,13 @@ public class MainWin extends javax.swing.JFrame {
 
         se = new Exchange();
         myAccount = new Account(1000,100000000.0);
+        
+        SeSim.SellOrder so = new SeSim.SellOrder();
+        so.limit = 20.0;
+        so.volume = 12;
+        so.timestamp = 12;
+        se.SendOrder(so);
+        
 
         /*
         SeSim.BuyOrder bo = new SeSim.BuyOrder();
@@ -228,10 +239,8 @@ public class MainWin extends javax.swing.JFrame {
     private Gui.Chart chart2;
     private Gui.ControlPanel controlPanel2;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
-    private Gui.OrderBook orderBook1;
+    private Gui.OrderBookPanel orderBookPanel1;
     // End of variables declaration//GEN-END:variables
 }
