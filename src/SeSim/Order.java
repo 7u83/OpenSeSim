@@ -38,11 +38,9 @@ public abstract class Order implements Comparable<Order> {
         if (o.limit > limit) {
             r=1;
         }
-        if (r==0)
-            return 0;
         
         if (type==OrderType.ask)
-            return 1-r;
+            return -r;
         
         return r;
         
@@ -60,12 +58,12 @@ public abstract class Order implements Comparable<Order> {
         if (r!=0)
             return r;
        
-        if (o.timestamp> timestamp)
+    /*    if (o.timestamp> timestamp)
             return -1;
         
         if (o.timestamp<timestamp)
             return 1;
-
+*/
         
         if (o.id>id)
             return -1;
