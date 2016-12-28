@@ -35,9 +35,14 @@ public abstract class Trader {
     public void sell(long shares, double limit){
         account.sell(shares, limit);
     }
+
+    public void buy(long shares, double limit){
+        account.buy(shares, limit);
+    }
     
     /**
      * Construct a Trader object
+     * @param account Account for this trader
      */
     public Trader(Account account){
         this.account=account;

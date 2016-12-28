@@ -84,15 +84,11 @@ public class ControlPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellButtonActionPerformed
-        System.out.print("SellPressed\n");
-//        MainWin.myAccount.Sell(100, 520.0, MainWin.se);
-        MainWin.myAccount.sell(100, 13.0);
+        MainWin.myAccount.sell(81, 55.0);
     }//GEN-LAST:event_SellButtonActionPerformed
 
     private void BuyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyButtonActionPerformed
-        System.out.print("Buy Pressed\n");
-        //MainWin.myAccount.Buy(100, 120.0, MainWin.se);
-        MainWin.myAccount.buy(100, 1.0);
+        MainWin.myAccount.buy(44, 66.0);
     }//GEN-LAST:event_BuyButtonActionPerformed
 
 

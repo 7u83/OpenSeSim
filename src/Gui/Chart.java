@@ -52,10 +52,10 @@ public class Chart extends javax.swing.JPanel implements Exchange.QuoteReceiver 
 
     private DefaultHighLowDataset createDataset() {
 
-        System.out.print("Making Data");
+//        System.out.print("Making Data");
         int s = se.quoteHistory.size();
-        System.out.print(("SIZE"));
-        System.out.println(s);
+//        System.out.print(("SIZE"));
+//        System.out.println(s);
 
         int serice = 115;
 

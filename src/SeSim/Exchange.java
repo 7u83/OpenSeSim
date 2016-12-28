@@ -76,7 +76,7 @@ public class Exchange extends Thread {
         bookreceivers.add(br);
     }
     
-    void UpdateBookReceivers(OrderType t) {
+    void updateBookReceivers(OrderType t) {
         ArrayList <BookReceiver> bookreceivers;
         bookreceivers = selectBookReceiver(t);
         
@@ -121,7 +121,7 @@ public class Exchange extends Thread {
         try {
             available.acquire();
         } catch (InterruptedException e) {
-            System.out.println("Interrupted");
+            System.out.println("Interrupted\n");
         }
 
     }
@@ -155,8 +155,8 @@ public class Exchange extends Thread {
             Order o;
             o = it.next();
             ret.add(o);
-            System.out.print("Order" + o.limit);
-            System.out.println();
+            //System.out.print("Order" + o.limit);
+            //System.out.println();
         }
         return ret;
 
@@ -203,9 +203,10 @@ public class Exchange extends Thread {
 
     public void CancelOrder(Order o) {
         Lock();
-//		System.out.println("Cancel BuyOrder");
-        bid.remove((BuyOrder) o);
-        ask.remove((SellOrder) o);
+        TreeSet <Order> book = this.selectOrderBook(o.type);
+        book.remove(o);
+        this.updateBookReceivers(o.type);
+        o.account.pending.remove(o);
         o.status = OrderStatus.canceled;
         Unlock();
 
@@ -241,7 +242,11 @@ public class Exchange extends Thread {
                 // This order is fully executed, remove 
                 a.account.orderpending = false;
                 a.status = OrderStatus.executed;
+                
+                a.account.pending.remove(a);
+                
                 ask.pollFirst();
+                this.updateBookReceivers(OrderType.ask);
                 continue;
             }
 
@@ -249,7 +254,9 @@ public class Exchange extends Thread {
                 // This order is fully executed, remove 
                 b.account.orderpending = false;
                 b.status = OrderStatus.executed;
+                b.account.pending.remove(b);
                 bid.pollFirst();
+                this.updateBookReceivers(OrderType.bid);                
                 continue;
             }
 
@@ -293,6 +300,9 @@ public class Exchange extends Thread {
                 q.time = System.currentTimeMillis();
 
                 this.UpdateQuoteReceivers(q);
+                this.updateBookReceivers(OrderType.bid);
+                this.updateBookReceivers(OrderType.ask);
+                
 
                 //quoteHistory.add(q);
                 continue;
@@ -330,7 +340,7 @@ public class Exchange extends Thread {
         }
         
         if (ret)
-            this.UpdateBookReceivers(o.type);
+            this.updateBookReceivers(o.type);
         
         return ret;
     }
@@ -343,9 +353,10 @@ public class Exchange extends Thread {
 
         Lock();        
         o.timestamp = System.currentTimeMillis();
-        System.out.print(o.timestamp + " TS:\n");
+        //System.out.print(o.timestamp + " TS:\n");
         o.id = orderid++;
         addOrder(o);
+        o.account.pending.add(o);
         OrderMatching();
         Unlock();      
         
@@ -386,7 +397,7 @@ public class Exchange extends Thread {
 		 * SendOrder(bo);
          */
 
-        return theprice;
+        return lastprice;
     }
 
     public double sendOrder(Account o) {

@@ -1,13 +1,13 @@
 package SeSim;
 
-public abstract class ThreadedTrader extends Thread  {
+public class TraderRunner extends Thread  {
 
-    protected long sleeptime = 100;
-
-    public void RandomTrader(Exchange ex, long shares, double money) {
-        //	this.ex=ex;
-        
-
+    protected long sleeptime = 1000;
+    
+    Trader trader;
+    
+    public TraderRunner(Trader trader){
+        this.trader=trader;
     }
 
     public void run() {
@@ -18,8 +18,7 @@ public abstract class ThreadedTrader extends Thread  {
                 System.out.println("Interrupted");
                 return;
             }
-//            trade();
+            trader.trade();
         }
     }
-
 }

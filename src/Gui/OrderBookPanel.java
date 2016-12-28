@@ -49,7 +49,7 @@ public class OrderBookPanel extends javax.swing.JPanel {
         if (this.se == null) {
             return;
         }
-        System.out.print("Order boo init\n");
+     //   System.out.print("Order boo init\n");
 
     }
 

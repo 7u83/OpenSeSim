@@ -2,28 +2,32 @@ package SeSim;
 
 import java.util.*;
 
+
 final public class Account {
     
     /**
      * Exchange this account belongs to
      */
-    protected Exchange se;
+    public Exchange se;
     
     /**
      * Number of shares in this account
      */
-    protected long shares = 0;
+    public long shares = 0;
 
     /**
      * Ammount of money in this account
      */
-    protected double money = 0;
+    public double money = 0;
 
     /**
      * Name of this account
      */
     public String name = "";
 
+    
+    public ArrayList <Order> pending;
+    
     public boolean orderpending = false;
     
        
@@ -31,7 +35,7 @@ final public class Account {
         this.shares=shares;
         this.money=money;
         this.se=se;
-        pending = new TreeSet();
+        pending = new ArrayList<>();
     }
     
     public Account(){
@@ -48,7 +52,7 @@ final public class Account {
         );
     }
     
-    TreeSet pending;
+
 
     public Order sell(long volume, double limit) {
         SellOrder o = new SellOrder();

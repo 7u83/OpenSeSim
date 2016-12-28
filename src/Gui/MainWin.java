@@ -47,21 +47,10 @@ public class MainWin extends javax.swing.JFrame {
      * Creates new form MainWin
      */
     public MainWin() {
-        
-        myTrader.sell(100, 230);
-        myTrader.sell(10, 123.12);
+     
         initComponents();
-        
-      
-        //myAccount.money=1500.70;
-        //myAccount.shares=250;
-        
-       /* class x extends Account{
-            public void x(){
-                tube=13;
-            }
-        }
-        */
+     
+     
         
     }
 
@@ -143,7 +132,7 @@ public class MainWin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void FileNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileNewActionPerformed
-        System.out.print("Menu 0 called\n");
+        
 
     }//GEN-LAST:event_FileNewActionPerformed
 
@@ -164,26 +153,23 @@ public class MainWin extends javax.swing.JFrame {
         myAccount = new Account(se,1000,100000000.0);
         myTrader = new Traders.ManTrader(myAccount);
         
+/*        Account otherAccount = new Account(se,1000,1000);
+        Traders.ManTrader otherTrader = new Traders.ManTrader(otherAccount);
+        otherTrader.sell(80, 22.70);
         
-        
-      /*  SeSim.SellOrder so = new SeSim.SellOrder();
-        so.limit = 20.0;
-        so.volume = 12;
-        so.timestamp = 12;
-        se.SendOrder(so);
-        */
+*/
+        Account traccount = new Account(se,5500,1000000.0);
+        RandomTrader rt = new RandomTrader(traccount);
+        TraderRunner tr = new TraderRunner(rt);
+        tr.start();
+
         
         try {
             // Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException |
                 InstantiationException | IllegalAccessException e) {
-            System.out.print("Alles muell\n");
         }
-        // handle exception
-        // handle exception
-        // handle exception
-
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

@@ -140,7 +140,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
      * Creates new form OrderBook
      */
     public OrderBook() {
-        System.out.print("init Orderbook]\n");
+        //System.out.print("init Orderbook]\n");
         initComponents();
 
         this.setBorder(BorderFactory.createEmptyBorder());
