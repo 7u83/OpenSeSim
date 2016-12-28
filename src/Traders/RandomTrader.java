@@ -1,10 +1,10 @@
 package Traders;
 
 import SeSim.Account;
-import SeSim.Exchange;
 import SeSim.Order;
 import java.util.Random;
 import SeSim.Trader;
+import SeSim.TraderConfig;
 
 public class RandomTrader extends Trader {
 
@@ -12,8 +12,8 @@ public class RandomTrader extends Trader {
 
     // my current order
     //private Order myorder = null;
-    public RandomTrader(Account account) {
-        super(account);
+    public RandomTrader(Account account,TraderConfig config) {
+        super(account,config);
     }
 
     public void doBuy() {

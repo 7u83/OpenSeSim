@@ -7,8 +7,8 @@ public class MTrader extends Trader {
     Exchange ex;
     Random rand;
 
-    public MTrader(Account account) {
-        super(account);
+    public MTrader(Account account,TraderConfig config) {
+        super(account,config);
     }
 
 /*    public MTrader(Exchange ex1, long shares, double money) {

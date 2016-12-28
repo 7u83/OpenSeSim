@@ -25,30 +25,10 @@
  */
 package SeSim;
 
-public abstract class Trader {
-
-    public String name = null;
-
-    public abstract void trade();
-    public Account account; 
-    public TraderConfig config;
+/**
+ *
+ * @author 7u83 <7u83@mail.ru>
+ */
+public abstract class TraderConfig {
     
-    public void sell(long shares, double limit){
-        account.sell(shares, limit);
-    }
-
-    public void buy(long shares, double limit){
-        account.buy(shares, limit);
-    }
-    
-    /**
-     * Construct a Trader object
-     * @param account Account for this trader
-     */
-    public Trader(Account account, TraderConfig config){
-        this.account=account;
-        this.config=config;
-    }
-       
-
-};
+}

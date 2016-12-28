@@ -151,7 +151,7 @@ public class MainWin extends javax.swing.JFrame {
 
         se = new Exchange();
         myAccount = new Account(se,1000,100000000.0);
-        myTrader = new Traders.ManTrader(myAccount);
+        myTrader = new Traders.ManTrader(myAccount,null);
         
 /*        Account otherAccount = new Account(se,1000,1000);
         Traders.ManTrader otherTrader = new Traders.ManTrader(otherAccount);
@@ -159,7 +159,7 @@ public class MainWin extends javax.swing.JFrame {
         
 */
         Account traccount = new Account(se,5500,1000000.0);
-        RandomTrader rt = new RandomTrader(traccount);
+        RandomTrader rt = new RandomTrader(traccount,null);
         TraderRunner tr = new TraderRunner(rt);
         tr.start();
 
