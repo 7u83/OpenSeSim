@@ -28,10 +28,9 @@ package Gui;
 import SeSim.Exchange;
 import java.util.ArrayList;
 import java.util.Formatter;
-import java.util.concurrent.Callable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
-
+import javax.swing.SwingUtilities;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -40,17 +39,20 @@ import javax.swing.table.*;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-
-
 /**
- * OderBook Class 
+ * OderBook Class
  */
-public abstract class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiver{
+public abstract class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiver {
 
+    
+    OrderBookListModel model;
+    
     abstract ArrayList getOrderBook();
 
     private Color hdr_color = Color.LIGHT_GRAY;
+
     private class OrderBookCellRenderer extends DefaultTableCellRenderer {
+
         @Override
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus,
@@ -62,19 +64,35 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             return renderer;
         }
     }
-    
-       @Override
+
+    @Override
     public void UpdateOrderBook() {
-       // System.out.print("I have got an update on bid\n");
-        model.update();
+        
+        class Updater implements Runnable{
+            OrderBookListModel model;
+            ArrayList newlist;
+            
+            @Override
+            public void run() {
+                model.update(this.newlist);
+            }
+
+            Updater(OrderBookListModel model, ArrayList newlist){
+                this.model = model;
+                this.newlist = newlist;
+            }
+             
+        }
+        ArrayList newlist = getOrderBook();
+        SwingUtilities.invokeLater(new Updater(this.model,newlist));
+
     }
-    
 
     boolean getDesc() {
         return false;
     }
-    
-    protected OrderBookListModel model;
+
+//    protected OrderBookListModel model;
 
     protected class OrderBookListModel extends AbstractTableModel {
 
@@ -82,15 +100,24 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
         private boolean desc = false;
 
         public OrderBookListModel() {
-            update();
-        }
-        
-        
-        public void update(){
+            System.out.print("CREATING A NEW MODEL\n");
+//            update();
             list = getOrderBook();
-            this.fireTableDataChanged();
         }
 
+        int update_calls = 0;
+        int colcount_calls = 0;
+
+        public void update(ArrayList newlist) {
+            list = newlist; //getOrderBook();
+            this.fireTableDataChanged();
+            
+            this.update_calls++;
+            int hc = this.hashCode();
+            System.out.print("Update/ColCalls = " + update_calls + "/" + colcount_calls + " HC: " + hc + "\n");
+        }
+ 
+        
         @Override
         public String getColumnName(int c) {
             switch (c) {
@@ -106,6 +133,8 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
 
         @Override
         public int getRowCount() {
+            colcount_calls++;
+            System.out.print("Update/ColCalls = " + update_calls + "/" + colcount_calls + "\n");
             return list.size();
         }
 
@@ -117,6 +146,10 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
         @Override
         public Object getValueAt(int r, int c) {
             SeSim.Order o;
+
+            int s = list.size();
+            //System.out.print("Looking for Value at" + r + ":" + c + " w size:" + s + "\n");
+
             if (!getDesc()) {
                 o = (SeSim.Order) list.get(r);
             } else {
@@ -150,9 +183,9 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             return;
         }
 
-        model = new OrderBookListModel();
-
+        this.model = new OrderBookListModel();
         this.orderBookList.setModel(model);
+        
         orderBookList.setBorder(BorderFactory.createEmptyBorder());
 
         JTableHeader h = this.orderBookList.getTableHeader();
@@ -219,6 +252,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
                 return canEdit [columnIndex];
             }
         });
+        orderBookList.setDoubleBuffered(true);
         orderBookList.setFocusable(false);
         orderBookScroller.setViewportView(orderBookList);
 

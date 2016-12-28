@@ -55,7 +55,7 @@ public class RandomTrader extends Trader {
     private boolean monitorTrades() {
         int numpending = account.pending.size();
         
-        System.out.print("RT: Monitoring trades - Pending: "+numpending+"\n");
+       // System.out.print("RT: Monitoring trades - Pending: "+numpending+"\n");
         if (numpending == 0) {
             System.out.print("RT: pending = 0 - return false\n");
             return false;
@@ -64,7 +64,7 @@ public class RandomTrader extends Trader {
         Order o = account.pending.get(0);
         long age = o.getAge();
         
-        System.out.print("RT: age is: "+age+"\n");
+       // System.out.print("RT: age is: "+age+"\n");
 
         if (age > 10000) {
             account.se.CancelOrder(o);
@@ -72,14 +72,14 @@ public class RandomTrader extends Trader {
             return false;
         }
         
-        System.out.print("RT: monitor return true\n");
+        //System.out.print("RT: monitor return true\n");
         return true;
     }
 
     public void trade() {
         
         
-        System.out.print("RT: Now trading\n");
+      //  System.out.print("RT: Now trading\n");
 
         if (monitorTrades()) {
             return;

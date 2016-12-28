@@ -84,7 +84,15 @@ public class Exchange extends Thread {
         while (i.hasNext()) {
             i.next().UpdateOrderBook();
         }
+/*    try {
+                sleep(50);
+            } catch (InterruptedException e) {
+                System.out.println("I was Interrupted");
+      }
+
+*/        
     }
+        
 
     // Here we store the list of quote receivers
     private final TreeSet<QuoteReceiver> qrlist;

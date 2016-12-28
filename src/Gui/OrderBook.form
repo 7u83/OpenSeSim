@@ -73,6 +73,7 @@
                 <Column editable="false" title="Title 3" type="java.lang.Object"/>
               </Table>
             </Property>
+            <Property name="doubleBuffered" type="boolean" value="true"/>
             <Property name="focusable" type="boolean" value="false"/>
           </Properties>
         </Component>
