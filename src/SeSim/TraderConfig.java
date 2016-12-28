@@ -29,6 +29,8 @@ package SeSim;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class TraderConfig {
+public abstract class TraderConfig{
+    String name;
     
+    public abstract Trader createTrader(Exchange se, long shares, double money);
 }

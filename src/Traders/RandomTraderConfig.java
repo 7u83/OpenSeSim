@@ -23,42 +23,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package SeSim;
+package Traders;
 
-public abstract class Trader {
+import SeSim.*;
 
-    public String name = null;
+/**
+ *
+ * @author 7u83 <7u83@mail.ru>
+ */
+public class RandomTraderConfig extends TraderConfig {
 
-    public abstract void trade();
-    public Account account; 
-    public TraderConfig config;
-    
-    public void sell(long shares, double limit){
-        account.sell(shares, limit);
-    }
+    public long maxage = 1000 * 10 * 1;
 
-    public void buy(long shares, double limit){
-        account.buy(shares, limit);
-    }
-    
     /**
-     * Construct a Trader object
-     * @param account Account for this trader
-     * @param config Configration for this trader
+     *
+     * @param se
+     * @param shares
+     * @param money
+     * @return
      */
-    public Trader(Account account, TraderConfig config){
-        this.account=account;
-        this.config=config;
+    @Override
+    public Trader createTrader(Exchange se, long shares, double money) {
+        Account a = new Account(se, shares, money);
+        return new RandomTrader(a, this);
     }
+  
     
-    /**
-     * Construct a Trader object w/o config
-     * The Trader object shoul initialize a default config
-     * @param account
-     */
-    public Trader(Account account){
-        this(account,null);
-    }
-       
 
-};
+}

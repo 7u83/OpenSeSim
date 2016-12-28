@@ -25,40 +25,19 @@
  */
 package SeSim;
 
-public abstract class Trader {
+/**
+ *
+ * @author 7u83 <7u83@mail.ru>
+ */
+public class AutoTraders {
 
-    public String name = null;
+    public void add(int n, TraderConfig config, Exchange se, long shares, double money) {
 
-    public abstract void trade();
-    public Account account; 
-    public TraderConfig config;
-    
-    public void sell(long shares, double limit){
-        account.sell(shares, limit);
+        for (int i = 0; i < n; i++) {
+            Trader trader = config.createTrader(se, shares, money);
+            TraderRunner tr = new TraderRunner(trader);
+            tr.start();
+        }
     }
 
-    public void buy(long shares, double limit){
-        account.buy(shares, limit);
-    }
-    
-    /**
-     * Construct a Trader object
-     * @param account Account for this trader
-     * @param config Configration for this trader
-     */
-    public Trader(Account account, TraderConfig config){
-        this.account=account;
-        this.config=config;
-    }
-    
-    /**
-     * Construct a Trader object w/o config
-     * The Trader object shoul initialize a default config
-     * @param account
-     */
-    public Trader(Account account){
-        this(account,null);
-    }
-       
-
-};
+}

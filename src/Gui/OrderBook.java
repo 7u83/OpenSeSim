@@ -100,7 +100,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
         private boolean desc = false;
 
         public OrderBookListModel() {
-            System.out.print("CREATING A NEW MODEL\n");
+  //          System.out.print("CREATING A NEW MODEL\n");
 //            update();
             list = getOrderBook();
         }
@@ -114,7 +114,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             
             this.update_calls++;
             int hc = this.hashCode();
-            System.out.print("Update/ColCalls = " + update_calls + "/" + colcount_calls + " HC: " + hc + "\n");
+            //System.out.print("Update/ColCalls = " + update_calls + "/" + colcount_calls + " HC: " + hc + "\n");
         }
  
         
@@ -134,7 +134,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
         @Override
         public int getRowCount() {
             colcount_calls++;
-            System.out.print("Update/ColCalls = " + update_calls + "/" + colcount_calls + "\n");
+//            System.out.print("Update/ColCalls = " + update_calls + "/" + colcount_calls + "\n");
             return list.size();
         }
 

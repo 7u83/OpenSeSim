@@ -158,10 +158,19 @@ public class MainWin extends javax.swing.JFrame {
         otherTrader.sell(80, 22.70);
         
 */
+
+/*
         Account traccount = new Account(se,5500,1000000.0);
         RandomTrader rt = new RandomTrader(traccount,null);
         TraderRunner tr = new TraderRunner(rt);
         tr.start();
+*/
+
+        AutoTraders at = new AutoTraders();
+        RandomTraderConfig rcfg = new RandomTraderConfig();
+        at.add(1000, rcfg, se, 1000, 10000);
+        
+     //   at.add(10, rcfg, se, 1000000, 0);
 
         
         try {
