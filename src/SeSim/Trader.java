@@ -32,6 +32,10 @@ public abstract class Trader {
     public abstract void trade();
     public Account account; 
     
+    public void sell(long shares, double limit){
+        account.sell(shares, limit);
+    }
+    
     /**
      * Construct a Trader object
      */

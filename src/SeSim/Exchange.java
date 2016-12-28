@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import SeSim.Order.OrderStatus;
+import SeSim.Order.OrderType;
 
 /**
  *
@@ -47,11 +48,42 @@ public class Exchange extends Thread {
     }
 
     /**
-     *
+     * Bookreceiver Interface
      */
     public interface BookReceiver {
-
         void UpdateOrderBook();
+    }
+    
+    
+   
+    
+    private ArrayList<BookReceiver> ask_bookreceivers = new ArrayList<>();
+    private ArrayList<BookReceiver> bid_bookreceivers = new ArrayList<>();
+    
+    private ArrayList <BookReceiver> selectBookReceiver(OrderType t){
+        switch (t){
+            case ask:
+                return ask_bookreceivers;
+            case bid:
+                return bid_bookreceivers;
+        }
+        return null;
+    }
+    
+    public void addBookReceiver(OrderType t, BookReceiver br){
+        ArrayList <BookReceiver> bookreceivers;
+        bookreceivers = selectBookReceiver(t);
+        bookreceivers.add(br);
+    }
+    
+    void UpdateBookReceivers(OrderType t) {
+        ArrayList <BookReceiver> bookreceivers;
+        bookreceivers = selectBookReceiver(t);
+        
+        Iterator<BookReceiver> i = bookreceivers.iterator();
+        while (i.hasNext()) {
+            i.next().UpdateOrderBook();
+        }
     }
 
     // Here we store the list of quote receivers
@@ -98,7 +130,25 @@ public class Exchange extends Thread {
         available.release();
     }
 
-    private ArrayList<Order> getBook(TreeSet<Order> book, int depth) {
+   
+    private TreeSet<Order> selectOrderBook(OrderType t){
+
+        switch(t){
+            case bid:
+                return this.bid;
+            case ask:
+                return this.ask;
+        }
+        return null;
+        
+    }
+    
+    public ArrayList<Order> getOrderBook(OrderType t, int depth) {
+        
+        TreeSet <Order> book = selectOrderBook(t);
+        if (book==null)
+            return null;
+        
         ArrayList<Order> ret = new ArrayList<>();
         Iterator<Order> it = book.iterator();
         for (int i = 0; i < depth && it.hasNext(); i++) {
@@ -112,26 +162,7 @@ public class Exchange extends Thread {
 
     }
 
-    /**
-     * Get the "ask" orderbook
-     *
-     * @param depth Number oder Orders to retrieve from orderbook
-     * @return Orderbook
-     */
-    public ArrayList<Order> getAskBook(int depth) {
-        return getBook(ask, depth);
-
-    }
-
-    /**
-     * Get the "bid" oderbook
-     *
-     * @param depth Number oder Orders to retrieve from orderbook
-     * @return Orderbook
-     */
-    public ArrayList<Order> getBidBook(int depth) {
-        return getBook(bid, depth);
-    }
+       
 
     public void print_current() {
 
@@ -282,29 +313,43 @@ public class Exchange extends Thread {
         return true;
     }
 
+    // Add an order to the orderbook
     private boolean addOrder(Order o) {
+        boolean ret=false;
         switch (o.type) {
-            case buy:
-                return bid.add(o);
+            case bid:
+                
+                System.out.print("Exchange adding bid oder \n");
+                ret = bid.add(o);
+                break;
 
-            case sell:
-                return ask.add(o);
+            case ask:
+                System.out.print("Exchange adding ask oder \n");                
+                ret = ask.add(o);
+                break;
         }
-
-        return false;
+        
+        if (ret)
+            this.UpdateBookReceivers(o.type);
+        
+        return ret;
     }
 
-    public void SendOrder(Order o) {
-        Lock();
-        o.timestamp = System.currentTimeMillis();
+    public Order SendOrder(Order o) {
+        
         boolean rc = InitOrder(o);
+        if (!rc)
+            return null;
+
+        Lock();        
+        o.timestamp = System.currentTimeMillis();
         System.out.print(o.timestamp + " TS:\n");
         o.id = orderid++;
         addOrder(o);
         OrderMatching();
         Unlock();      
         
-        
+        return o;
     }
 
     /*

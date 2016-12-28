@@ -50,30 +50,25 @@ final public class Account {
     
     TreeSet pending;
 
-    public SellOrder sell(long volume, double limit) {
+    public Order sell(long volume, double limit) {
         SellOrder o = new SellOrder();
         o.account = this;
         o.limit = limit;
         o.volume = volume;
         orderpending = true;
-        se.SendOrder(o);
-        return o;
-
+        return se.SendOrder(o);
     }
 
-    public BuyOrder Buy(long size, double limit, Exchange ex) {
-        if (size * limit > money) {
+    public Order buy(long volume, double limit) {
+        if (volume * limit > money) {
             return null;
         }
-
         BuyOrder o = new BuyOrder();
         o.limit = limit;
-        o.volume = size;
+        o.volume = volume;
         o.account = this;
         orderpending = true;
-        ex.SendOrder(o);
-        return o;
-
+        return se.SendOrder(o);
     }
 
     /*

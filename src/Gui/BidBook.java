@@ -25,17 +25,23 @@
  */
 package Gui;
 
+import SeSim.Exchange.*;
+import SeSim.Order.*;
 import java.util.ArrayList;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class BidBook extends OrderBook{
+public class BidBook extends OrderBook {
 
     @Override
-    ArrayList getArrayList() {
-        return MainWin.se.getBidBook(10);
+    ArrayList getOrderBook() {
+        return MainWin.se.getOrderBook(OrderType.bid,40);
     }
+
     
+    BidBook(){
+        MainWin.se.addBookReceiver(OrderType.bid,this);
+    }
 }

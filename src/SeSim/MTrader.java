@@ -36,7 +36,7 @@ public class MTrader extends Trader {
 //			System.out.println("HW");
         long size = (int) (account.money / limit);
 
-        account.Buy(size, limit, ex);
+        account.buy(size, limit);
         
     }
 

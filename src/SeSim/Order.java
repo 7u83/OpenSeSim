@@ -41,7 +41,7 @@ public abstract class Order implements Comparable<Order> {
         if (r==0)
             return 0;
         
-        if (type==OrderType.sell)
+        if (type==OrderType.ask)
             return 1-r;
         
         return r;
@@ -82,8 +82,8 @@ public abstract class Order implements Comparable<Order> {
         open, executed, canceled
     }
     
-    enum OrderType {
-        buy,sell
+    public enum OrderType {
+        bid,ask
     }
 
     OrderStatus status = OrderStatus.open;

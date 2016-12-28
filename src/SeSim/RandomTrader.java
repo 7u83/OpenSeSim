@@ -39,7 +39,7 @@ public class RandomTrader extends Trader {
 
         long size = (int) (account.money / (limit * 1));
 
-        myorder = account.Buy(size, limit, ex);
+        myorder = account.buy(size, limit);
         return;
     }
 

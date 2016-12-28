@@ -25,6 +25,7 @@
  */
 package Gui;
 
+import SeSim.Exchange;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.concurrent.Callable;
@@ -35,53 +36,64 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class OrderBook extends javax.swing.JPanel {
 
-    abstract ArrayList getArrayList();
-    
-    public class DateCellRenderer extends DefaultTableCellRenderer {
 
-    String pattern;
-    public DateCellRenderer(String pattern){
-        this.pattern = pattern;
+/**
+ * OderBook Class 
+ */
+public abstract class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiver{
+
+    abstract ArrayList getOrderBook();
+
+    private Color hdr_color = Color.LIGHT_GRAY;
+    private class OrderBookCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus,
+                int row, int column) {
+            DefaultTableCellRenderer renderer
+                    = (DefaultTableCellRenderer) super.getTableCellRendererComponent(
+                            table, value, isSelected, hasFocus, row, column);
+            renderer.setBackground(hdr_color);
+            return renderer;
+        }
     }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     
-        renderer.setBackground(hdr_color);
-        //renderer.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-           // renderer.setText("Halloe");
-    
-        return renderer;
+       @Override
+    public void UpdateOrderBook() {
+       // System.out.print("I have got an update on bid\n");
+        model.update();
     }
-}
-    Color hdr_color = Color.LIGHT_GRAY;
+    
 
     boolean getDesc() {
         return false;
     }
+    
+    protected OrderBookListModel model;
 
-    protected class SListModel extends AbstractTableModel {
+    protected class OrderBookListModel extends AbstractTableModel {
 
-        private ArrayList m;
+        private ArrayList list;
         private boolean desc = false;
 
-        public SListModel() {
-
-            m = getArrayList();
-
+        public OrderBookListModel() {
+            update();
+        }
+        
+        
+        public void update(){
+            list = getOrderBook();
+            this.fireTableDataChanged();
         }
 
         @Override
         public String getColumnName(int c) {
-            switch(c){
+            switch (c) {
                 case 0:
                     return "ID";
                 case 1:
@@ -94,7 +106,7 @@ public abstract class OrderBook extends javax.swing.JPanel {
 
         @Override
         public int getRowCount() {
-            return m.size();
+            return list.size();
         }
 
         @Override
@@ -106,9 +118,9 @@ public abstract class OrderBook extends javax.swing.JPanel {
         public Object getValueAt(int r, int c) {
             SeSim.Order o;
             if (!getDesc()) {
-                o = (SeSim.Order) m.get(r);
+                o = (SeSim.Order) list.get(r);
             } else {
-                o = (SeSim.Order) m.get(m.size() - r - 1);
+                o = (SeSim.Order) list.get(list.size() - r - 1);
             }
             Formatter f = new Formatter();
             switch (c) {
@@ -130,41 +142,23 @@ public abstract class OrderBook extends javax.swing.JPanel {
     public OrderBook() {
         System.out.print("init Orderbook]\n");
         initComponents();
-        
+
         this.setBorder(BorderFactory.createEmptyBorder());
         this.orderBookScroller.setBorder(BorderFactory.createBevelBorder(0));
 
         if (MainWin.se == null) {
             return;
         }
-        this.orderBookList.setModel(new SListModel());
+
+        model = new OrderBookListModel();
+
+        this.orderBookList.setModel(model);
         orderBookList.setBorder(BorderFactory.createEmptyBorder());
-        
+
         JTableHeader h = this.orderBookList.getTableHeader();
-             h.setBackground(hdr_color);
-             
-      h.setForeground(Color.green);
-      
-      
-      
-  //    h.setDefaultRenderer(this.orderBookList.getCellRenderer(0, 0));
-//      h.setBorder(BorderFactory.createLineBorder(Color.yellow));
-      
-      h.setDefaultRenderer(new DateCellRenderer("Hhu"));
-      
-      
-/*      h.getColumnModel().getColumn(0).setCellRenderer(new TableCellRenderer(){
-                @Override
-        public Component getTableCellRendererComponent(
-                JTable x, Object value, boolean isSelected, 
-                boolean hasFocus, int row, int column) {
-            JComponent component = (JComponent)orderBookList.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(orderBookList, value, false, false, -1, -2);
-            component.setBackground(new Color(250, 250, 250));
-            component.setBorder(BorderFactory.createEmptyBorder());
-            return component;
-        }  
-    });
-  */    
+        h.setBackground(hdr_color);
+        h.setForeground(Color.green);
+        h.setDefaultRenderer(new OrderBookCellRenderer());
 
     }
 

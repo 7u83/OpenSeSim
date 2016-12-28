@@ -47,6 +47,9 @@ public class MainWin extends javax.swing.JFrame {
      * Creates new form MainWin
      */
     public MainWin() {
+        
+        myTrader.sell(100, 230);
+        myTrader.sell(10, 123.12);
         initComponents();
         
       
@@ -163,11 +166,12 @@ public class MainWin extends javax.swing.JFrame {
         
         
         
-        SeSim.SellOrder so = new SeSim.SellOrder();
+      /*  SeSim.SellOrder so = new SeSim.SellOrder();
         so.limit = 20.0;
         so.volume = 12;
         so.timestamp = 12;
         se.SendOrder(so);
+        */
         
         try {
             // Set cross-platform Java L&F (also called "Metal")
