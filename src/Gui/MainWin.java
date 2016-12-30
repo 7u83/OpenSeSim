@@ -67,7 +67,7 @@ public class MainWin extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         controlPanel2 = new Gui.ControlPanel();
         orderBookPanel1 = new Gui.OrderBookPanel();
-        chart2 = new Gui.Chart();
+        zZChart1 = new Gui.Chart();
         MainMenu = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         FileNew = new javax.swing.JMenuItem();
@@ -87,19 +87,7 @@ public class MainWin extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(640, 480));
         getContentPane().add(controlPanel2, java.awt.BorderLayout.LINE_END);
         getContentPane().add(orderBookPanel1, java.awt.BorderLayout.LINE_START);
-
-        javax.swing.GroupLayout chart2Layout = new javax.swing.GroupLayout(chart2);
-        chart2.setLayout(chart2Layout);
-        chart2Layout.setHorizontalGroup(
-            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 287, Short.MAX_VALUE)
-        );
-        chart2Layout.setVerticalGroup(
-            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 582, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(chart2, java.awt.BorderLayout.CENTER);
+        getContentPane().add(zZChart1, java.awt.BorderLayout.CENTER);
 
         FileMenu.setBackground(new java.awt.Color(254, 203, 1));
         FileMenu.setText("File");
@@ -166,9 +154,9 @@ public class MainWin extends javax.swing.JFrame {
         tr.start();
 */
 
-        AutoTraders at = new AutoTraders();
+        AutoTraderLIst at = new AutoTraderLIst();
         RandomTraderConfig rcfg = new RandomTraderConfig();
-        at.add(1000, rcfg, se, 1000, 10000);
+        at.add(500, rcfg, se, 1000, 10000);
         
      //   at.add(10, rcfg, se, 1000000, 0);
 
@@ -217,11 +205,11 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenuItem FileNew;
     private javax.swing.JMenuItem FileRun;
     private javax.swing.JMenuBar MainMenu;
-    private Gui.Chart chart2;
     private Gui.ControlPanel controlPanel2;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
     private Gui.OrderBookPanel orderBookPanel1;
+    private Gui.Chart zZChart1;
     // End of variables declaration//GEN-END:variables
 }

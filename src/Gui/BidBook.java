@@ -37,11 +37,13 @@ public class BidBook extends OrderBook {
 
     @Override
     ArrayList getOrderBook() {
-        return MainWin.se.getOrderBook(OrderType.bid,40);
+        return MainWin.se.getOrderBook(OrderType.bid, 40);
     }
 
-    
-    BidBook(){
-        MainWin.se.addBookReceiver(OrderType.bid,this);
+    BidBook() {
+        if (MainWin.se == null) {
+            return;
+        }
+        MainWin.se.addBookReceiver(OrderType.bid, this);
     }
 }

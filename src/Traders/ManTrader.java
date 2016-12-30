@@ -45,7 +45,7 @@ public class ManTrader extends Trader{
 
     
     
-    @Override
+    
     public void trade(){
         
         BuyOrder o = new BuyOrder();

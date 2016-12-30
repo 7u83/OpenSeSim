@@ -32,5 +32,5 @@ package SeSim;
 public abstract class TraderConfig{
     String name;
     
-    public abstract Trader createTrader(Exchange se, long shares, double money);
+    public abstract AutoTrader createTrader(Exchange se, long shares, double money);
 }

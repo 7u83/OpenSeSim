@@ -23,48 +23,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package Traders;
+package SeSim;
 
-import SeSim.*;
+import static java.lang.Thread.sleep;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderConfig extends TraderConfig {
+public abstract class AutoTrader extends Trader implements Runnable {
 
-    //public long maxage = 1000 * 10 * 1;
-    
-    
-    /*public long hold_shares_min = 10;
-    
-    public long hold_shares_max = 30;
-
-    public float buy_volume_min = 10;
-    */
-    
-    /**
-     * If shares are selled, this specifies
-     * the minimum and maximum volume to be selled
-     */
-    public float[] sell_volume= {100,100};
-    public float[] sell_limit = {-15,100};
-    public int[] sell_order_wait = {5,33};
-    public int[] wait_after_sell = {20,33};
-
-    
-    public float[] buy_volume={100,100};
-    public float[] buy_limit = {-50,5};
-    public int[] buy_order_wait = {5,33};    
-    public int[] wait_after_buy = {20,33};
-
-    
-    @Override
-    public AutoTrader createTrader(Exchange se, long shares, double money) {
-        Account a = new Account(se, shares, money);
-        return new RandomTrader(a, this);
+    public AutoTrader(Account account, TraderConfig config) {
+        super(account, config);
     }
-  
-    
 
+    protected void doSleep(int seconds) {
+        try {
+            sleep(seconds*1000);
+        } catch (InterruptedException e) {
+        }
+
+    }
 }

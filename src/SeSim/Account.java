@@ -53,6 +53,19 @@ final public class Account {
     }
     
 
+    public boolean isRuined(){
+        
+        
+/*        System.out.print(
+                "Account: "
+                +money
+                +" / "
+                +shares
+                +"\n"
+        );
+        */
+        return this.money<=se.lastprice && this.shares<=0;
+    }
 
     public Order sell(long volume, double limit) {
         SellOrder o = new SellOrder();

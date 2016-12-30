@@ -23,7 +23,7 @@ public class Exchange extends Thread {
     public Exchange() {
         this.ask = new TreeSet<>();
         this.bid = new TreeSet<>();
-        this.qrlist = new TreeSet<>();
+        this.qrlist = new ArrayList<>();
         this.quoteHistory = new ArrayList<>();
     }
 
@@ -31,13 +31,27 @@ public class Exchange extends Thread {
     public class Quote {
 
         double bid;
-        double bid_size;
+        double bid_volume;
         double ask;
-        double ask_size;
+        double ask_volume;
 
         public double price;
-        public long size;
+        public long volume;
         public long time;
+        
+        public void print(){
+            System.out.print("Quite ("
+                    +time
+                    +") :"
+                    +price
+                    +" / "
+                    +volume
+                    +"\n"
+            );
+                                      
+                    
+            
+        }
     }
 
     // QuoteReceiver has to be implemented by objects that wants 
@@ -92,7 +106,7 @@ public class Exchange extends Thread {
     }
 
     // Here we store the list of quote receivers
-    private final TreeSet<QuoteReceiver> qrlist;
+    private final ArrayList<QuoteReceiver> qrlist;
 
     /**
      *
@@ -297,7 +311,7 @@ public class Exchange extends Thread {
 
                 Quote q = new Quote();
 
-                q.size = volume;
+                q.volume = volume;
                 q.price = price;
                 q.time = System.currentTimeMillis();
 
@@ -305,13 +319,14 @@ public class Exchange extends Thread {
                 this.updateBookReceivers(OrderType.bid);
                 this.updateBookReceivers(OrderType.ask);
 
-                System.out.print(
+/*                System.out.print(
                         "Executed: "
                         + q.price
                         + " / "
-                        + q.size
+                        + q.volume
                         + "\n"
                 );
+                */
 
                 //quoteHistory.add(q);
                 continue;

@@ -25,11 +25,13 @@
  */
 package SeSim;
 
+import static java.lang.Thread.sleep;
+
 public abstract class Trader {
 
     public String name = null;
 
-    public abstract void trade();
+    
     public Account account; 
     public TraderConfig config;
     
@@ -59,6 +61,9 @@ public abstract class Trader {
     public Trader(Account account){
         this(account,null);
     }
+    
+    
+
        
 
 };

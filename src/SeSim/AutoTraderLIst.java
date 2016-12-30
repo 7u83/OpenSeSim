@@ -29,12 +29,12 @@ package SeSim;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AutoTraders {
+public class AutoTraderLIst {
 
     public void add(int n, TraderConfig config, Exchange se, long shares, double money) {
 
         for (int i = 0; i < n; i++) {
-            Trader trader = config.createTrader(se, shares, money);
+            AutoTrader trader = config.createTrader(se, shares, money);
             TraderRunner tr = new TraderRunner(trader);
             tr.start();
         }

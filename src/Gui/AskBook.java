@@ -46,6 +46,9 @@ public class AskBook extends OrderBook {
     }
         
     public AskBook(){
+        if (MainWin.se == null) {
+            return;
+        }
         MainWin.se.addBookReceiver(OrderType.ask, this);
         
     }

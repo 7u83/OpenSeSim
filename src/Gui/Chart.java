@@ -25,125 +25,127 @@
  */
 package Gui;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import org.jfree.chart.plot.PlotOrientation;
-
+import java.util.Collections;
 import java.util.Date;
-
-import org.jfree.chart.ChartFactory;
+import java.util.List;
+import java.util.StringTokenizer;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.SegmentedTimeline;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.CandlestickRenderer;
+import org.jfree.data.xy.AbstractXYDataset;
+import org.jfree.data.xy.DefaultOHLCDataset;
+import org.jfree.data.xy.OHLCDataItem;
+import org.jfree.data.xy.XYDataset;
 
-import org.jfree.data.xy.DefaultHighLowDataset;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
-import org.jfree.chart.plot.PlotOrientation;
-
-import SeSim.Exchange;
+import SeSim.Exchange.*;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Chart extends javax.swing.JPanel implements Exchange.QuoteReceiver {
-
-    SeSim.Exchange se;
-
-    private DefaultHighLowDataset createDataset() {
-
-//        System.out.print("Making Data");
-        int s = se.quoteHistory.size();
-//        System.out.print(("SIZE"));
-//        System.out.println(s);
-
-        int serice = 115;
-
-        Date[] date = new Date[serice];
-        double[] high = new double[serice];
-        double[] low = new double[serice];
-        double[] open = new double[serice];
-        double[] close = new double[serice];
-        double[] volume = new double[serice];
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2008, 5, 1);
-
-        for (int i = 0; i < serice; i++) {
-            date[i] = createData(2008, 8, i + 1);
-            high[i] = 30 + Math.round(10) + new Double(Math.random() * 20.0);
-            low[i] = 30 + Math.round(10) + new Double(Math.random() * 20.0);
-            open[i] = 10 + Math.round(10) + new Double(Math.random() * 20.0);
-            close[i] = 10 + Math.round(10) + new Double(Math.random() * 20.0);
-            volume[i] = 10.0 + new Double(Math.random() * 20.0);
-        }
-
-        DefaultHighLowDataset data = new DefaultHighLowDataset("", date, high,
-                low, open, close, volume);
-        return data;
-    }
-
-    private Date createData(int year, int month, int date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month - 1, date);
-        return calendar.getTime();
-    }
-
-    private JFreeChart createChart(final DefaultHighLowDataset dataset) {
-//		final JFreeChart chart = ChartFactory.createCandlestickChart(
-        //"Candlestick Demo", "Time", "Price", dataset, false);
-
-//		final JFreeChart chart = ChartFactory.createCandlestickChart(
-//				"Candlestick Demo", "Time", "Price", dataset, false);
-        final JFreeChart chart = ChartFactory.createXYLineChart(
-                "The Chart", "X axis ", "Y axis", dataset,
-                PlotOrientation.VERTICAL,
-                true, // include legend
-                true, // tooltips
-                false // urls;
-        );
-
-        //"Candlestick Demo", "Time", "Price", dataset, false);
-        return chart;
-    }
+public class Chart extends javax.swing.JPanel implements QuoteReceiver{
 
     /**
      * Creates new form Chart
      */
     public Chart() {
         initComponents();
+        
 
-        this.se = MainWin.se;
-        if (this.se == null) {
+        String stockSymbol = "MSFT";
+        
+        DateAxis    domainAxis       = new DateAxis("Date");
+        NumberAxis  rangeAxis        = new NumberAxis("Price");
+        CandlestickRenderer renderer = new CandlestickRenderer();
+        XYDataset   dataset          = getDataSet(stockSymbol);
+
+        XYPlot mainPlot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
+
+        //Do some setting up, see the API Doc
+        renderer.setSeriesPaint(0, Color.BLACK);
+        renderer.setDrawVolume(false);
+        rangeAxis.setAutoRangeIncludesZero(false);
+        domainAxis.setTimeline( SegmentedTimeline.newMondayThroughFridayTimeline() );
+
+        //Now create the chart and chart panel
+        JFreeChart chart = new JFreeChart(stockSymbol, null, mainPlot, false);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(500, 270));
+
+        add(chartPanel);        
+        System.out.print("Hallo Welt\n");
+        
+        if (MainWin.se == null)
             return;
-        }
-
-        final DefaultHighLowDataset dataset = createDataset();
-        final JFreeChart chart = createChart(dataset);
-
-        final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(800, 350));
-        //	setContentPane(chartPanel);
-        initChart(chartPanel);
+        
+        MainWin.se.addQuoteReceiver(this);
 
     }
+    
+    
+       protected AbstractXYDataset getDataSet(String stockSymbol) {
+        //This is the dataset we are going to create
+        DefaultOHLCDataset result = null;
+        //This is the data needed for the dataset
+        OHLCDataItem[] data;
 
-    private void initChart(ChartPanel chart) {
+        //This is where we go get the data, replace with your own data source
+        data = getData(stockSymbol);
 
-        // orderBook1 = new Gui.OrderBook();
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(chart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(16, Short.MAX_VALUE))
-        );
+        //Create a dataset, an Open, High, Low, Close dataset
+        result = new DefaultOHLCDataset(stockSymbol, data);
+
+        return result;
+    }
+    //This method uses yahoo finance to get the OHLC data
+    protected OHLCDataItem[] getData(String stockSymbol) {
+        List<OHLCDataItem> dataItems = new ArrayList<OHLCDataItem>();
+        try {
+            String strUrl= "http://ichart.finance.yahoo.com/table.csv?s="+stockSymbol+"&a=0&b=1&c=2008&d=3&e=30&f=2008&ignore=.csv";
+            URL url = new URL(strUrl);
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            DateFormat df = new SimpleDateFormat("y-M-d");
+
+            String inputLine;
+            in.readLine();
+            while ((inputLine = in.readLine()) != null) {
+                StringTokenizer st = new StringTokenizer(inputLine, ",");
+
+                Date date       = df.parse( st.nextToken() );
+                double open     = Double.parseDouble( st.nextToken() );
+                double high     = Double.parseDouble( st.nextToken() );
+                double low      = Double.parseDouble( st.nextToken() );
+                double close    = Double.parseDouble( st.nextToken() );
+                double volume   = Double.parseDouble( st.nextToken() );
+                double adjClose = Double.parseDouble( st.nextToken() );
+
+                OHLCDataItem item = new OHLCDataItem(date, open, high, low, close, volume);
+                dataItems.add(item);
+            }
+            in.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Data from Yahoo is from newest to oldest. Reverse so it is oldest to newest
+        Collections.reverse(dataItems);
+
+        //Convert the list into an array
+        OHLCDataItem[] data = dataItems.toArray(new OHLCDataItem[dataItems.size()]);
+
+        return data;
     }
 
     /**
@@ -155,28 +157,22 @@ public class Chart extends javax.swing.JPanel implements Exchange.QuoteReceiver 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setPreferredSize(new java.awt.Dimension(300, 300));
+        jToggleButton2 = new javax.swing.JToggleButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.BorderLayout());
+
+        jToggleButton2.setText("jToggleButton2");
+        add(jToggleButton2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    @Override
-    public void UpdateQuote(Exchange.Quote q) {
-        System.out.print("Quote received");
-        System.out.println(q.price);
-
-    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton jToggleButton2;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void UpdateQuote(Quote q) {
+       q.print();
+        
+    }
 }
