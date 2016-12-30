@@ -25,46 +25,33 @@
  */
 package Traders;
 
-import SeSim.*;
+import SeSim.Account;
+import SeSim.AutoTrader;
+import SeSim.Exchange;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderConfig extends TraderConfig {
+public class SwitchingTraderConfig extends RandomTraderConfig {
 
-    //public long maxage = 1000 * 10 * 1;
-    
-    
-    /*public long hold_shares_min = 10;
-    
-    public long hold_shares_max = 30;
-
-    public float buy_volume_min = 10;
-    */
-    
-    /**
-     * If shares are selled, this specifies
-     * the minimum and maximum volume to be selled
-     */
-    public float[] sell_volume= {100,100};
-    public float[] sell_limit = {-15,100};
-    public int[] sell_order_wait = {5,33};
-    public int[] wait_after_sell = {2,10};
-
-    
-    public float[] buy_volume={100,100};
-    public float[] buy_limit = {-5,115};
-    public int[] buy_order_wait = {15,33};    
-    public int[] wait_after_buy = {20,33};
-
-    
     @Override
     public AutoTrader createTrader(Exchange se, long shares, double money) {
         Account a = new Account(se, shares, money);
-        return new RandomTrader(a, this);
+        System.out.print("Returning a new sw trader\n");
+        return new SwitchingTrader(a, this);
     }
-  
-    
 
+    public SwitchingTraderConfig() {
+
+        sell_volume = new float[]{100, 100};
+        sell_limit = new float[]{-15, 1};
+        sell_order_wait = new int[]{5, 10};
+        wait_after_sell = new int[]{2, 10};
+
+        buy_volume = new float[]{100, 100};
+        buy_limit = new float[]{-5, 115};
+        buy_order_wait = new int[]{15, 33};
+        wait_after_buy = new int[]{20, 33};
+    }
 }

@@ -15,7 +15,7 @@ public class Exchange extends Thread {
     /**
      * Histrory of quotes
      */
-    public ArrayList<Quote> quoteHistory;
+    public TreeSet<Quote> quoteHistory = new TreeSet<>();
 
     /**
      * Constructor
@@ -24,35 +24,20 @@ public class Exchange extends Thread {
         this.ask = new TreeSet<>();
         this.bid = new TreeSet<>();
         this.qrlist = new ArrayList<>();
-        this.quoteHistory = new ArrayList<>();
+        
+    }
+    
+    public SortedSet <Quote> getQuoteHistory(int seconds){
+        long ct = System.currentTimeMillis() - seconds * 1000;
+        Quote e = new Quote();
+        e.time=ct;
+        SortedSet<Quote> l = quoteHistory.tailSet(e);
+        return l;
+       
     }
 
     // Class to describe an executed order
-    public class Quote {
-
-        double bid;
-        double bid_volume;
-        double ask;
-        double ask_volume;
-
-        public double price;
-        public long volume;
-        public long time;
-        
-        public void print(){
-            System.out.print("Quite ("
-                    +time
-                    +") :"
-                    +price
-                    +" / "
-                    +volume
-                    +"\n"
-            );
-                                      
-                    
-            
-        }
-    }
+ 
 
     // QuoteReceiver has to be implemented by objects that wants 
     // to receive quote updates  	
@@ -97,7 +82,7 @@ public class Exchange extends Thread {
             i.next().UpdateOrderBook();
         }
         try {
-                sleep(0);
+                sleep(10);
             } catch (InterruptedException e) {
                 System.out.println("I was Interrupted");
       }
@@ -314,6 +299,10 @@ public class Exchange extends Thread {
                 q.volume = volume;
                 q.price = price;
                 q.time = System.currentTimeMillis();
+                
+                q.ask=a.limit;
+                q.bid=b.limit;
+                
 
                 this.UpdateQuoteReceivers(q);
                 this.updateBookReceivers(OrderType.bid);
@@ -328,7 +317,7 @@ public class Exchange extends Thread {
                 );
                 */
 
-                //quoteHistory.add(q);
+                quoteHistory.add(q);
                 continue;
 
             }

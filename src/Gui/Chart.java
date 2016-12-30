@@ -50,26 +50,27 @@ import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.XYDataset;
 
 import SeSim.Exchange.*;
+import SeSim.Quote;
+import java.util.SortedSet;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Chart extends javax.swing.JPanel implements QuoteReceiver{
+public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     /**
      * Creates new form Chart
      */
     public Chart() {
         initComponents();
-        
 
-        String stockSymbol = "MSFT";
-        
-        DateAxis    domainAxis       = new DateAxis("Date");
-        NumberAxis  rangeAxis        = new NumberAxis("Price");
+        String stockSymbol = "Schliemanz Koch AG";
+
+        DateAxis domainAxis = new DateAxis("Date");
+        NumberAxis rangeAxis = new NumberAxis("Price");
         CandlestickRenderer renderer = new CandlestickRenderer();
-        XYDataset   dataset          = getDataSet(stockSymbol);
+        XYDataset dataset = getDataSet(stockSymbol);
 
         XYPlot mainPlot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
 
@@ -77,43 +78,53 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver{
         renderer.setSeriesPaint(0, Color.BLACK);
         renderer.setDrawVolume(false);
         rangeAxis.setAutoRangeIncludesZero(false);
-        domainAxis.setTimeline( SegmentedTimeline.newMondayThroughFridayTimeline() );
+        domainAxis.setTimeline(SegmentedTimeline.newMondayThroughFridayTimeline());
 
         //Now create the chart and chart panel
         JFreeChart chart = new JFreeChart(stockSymbol, null, mainPlot, false);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 270));
 
-        add(chartPanel);        
+        add(chartPanel);
         System.out.print("Hallo Welt\n");
-        
-        if (MainWin.se == null)
+
+        if (MainWin.se == null) {
             return;
-        
+        }
+
         MainWin.se.addQuoteReceiver(this);
 
     }
-    
-    
-       protected AbstractXYDataset getDataSet(String stockSymbol) {
+
+    protected AbstractXYDataset getDataSet(String stockSymbol) {
         //This is the dataset we are going to create
         DefaultOHLCDataset result = null;
         //This is the data needed for the dataset
         OHLCDataItem[] data;
 
         //This is where we go get the data, replace with your own data source
-        data = getData(stockSymbol);
+        data = getData();
 
         //Create a dataset, an Open, High, Low, Close dataset
         result = new DefaultOHLCDataset(stockSymbol, data);
 
         return result;
     }
+
+    protected OHLCDataItem[] getData() {
+        List<OHLCDataItem> data = new ArrayList<>();
+
+        //return data.toArray(new <OHLCDataItem> rdata[]);
+        return data.toArray(new OHLCDataItem[data.size()]);
+
+    }
+
     //This method uses yahoo finance to get the OHLC data
-    protected OHLCDataItem[] getData(String stockSymbol) {
+    protected OHLCDataItem[] getData_old() {
+        String stockSymbol = "Schliemanz Koch AG";
         List<OHLCDataItem> dataItems = new ArrayList<OHLCDataItem>();
         try {
-            String strUrl= "http://ichart.finance.yahoo.com/table.csv?s="+stockSymbol+"&a=0&b=1&c=2008&d=3&e=30&f=2008&ignore=.csv";
+            String strUrl = "http://ichart.finance.yahoo.com/table.csv?s=" + stockSymbol + "&a=0&b=1&c=2008&d=3&e=30&f=2008&ignore=.csv";
             URL url = new URL(strUrl);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             DateFormat df = new SimpleDateFormat("y-M-d");
@@ -123,20 +134,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver{
             while ((inputLine = in.readLine()) != null) {
                 StringTokenizer st = new StringTokenizer(inputLine, ",");
 
-                Date date       = df.parse( st.nextToken() );
-                double open     = Double.parseDouble( st.nextToken() );
-                double high     = Double.parseDouble( st.nextToken() );
-                double low      = Double.parseDouble( st.nextToken() );
-                double close    = Double.parseDouble( st.nextToken() );
-                double volume   = Double.parseDouble( st.nextToken() );
-                double adjClose = Double.parseDouble( st.nextToken() );
+                Date date = df.parse(st.nextToken());
+                double open = Double.parseDouble(st.nextToken());
+                double high = Double.parseDouble(st.nextToken());
+                double low = Double.parseDouble(st.nextToken());
+                double close = Double.parseDouble(st.nextToken());
+                double volume = Double.parseDouble(st.nextToken());
+                double adjClose = Double.parseDouble(st.nextToken());
 
                 OHLCDataItem item = new OHLCDataItem(date, open, high, low, close, volume);
                 dataItems.add(item);
             }
             in.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         //Data from Yahoo is from newest to oldest. Reverse so it is oldest to newest
@@ -172,7 +182,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver{
 
     @Override
     public void UpdateQuote(Quote q) {
-       q.print();
-        
+        return;
+        //q.print();
+  /*      SortedSet s = MainWin.se.getQuoteHistory(60);
+        System.out.print(
+                "SortedSet size:"
+                + s.size()
+                + "\n"
+        );
+*/
     }
 }

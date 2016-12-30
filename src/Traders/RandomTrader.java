@@ -32,6 +32,10 @@ import SeSim.AutoTrader;
 import SeSim.TraderConfig;
 
 public class RandomTrader extends AutoTrader {
+    
+    protected enum Action {
+        sell,buy
+    }
 
     // config for this trader
     final private RandomTraderConfig myconfig;
@@ -58,9 +62,9 @@ public class RandomTrader extends AutoTrader {
         double r = rand.nextDouble();
         return (max - min) * r + min;
     }
-    
-    protected int getRandom(int[] minmax){
-        return (int)Math.round(getRandom(minmax[0],minmax[1]));
+
+    protected int getRandom(int[] minmax) {
+        return (int) Math.round(getRandom(minmax[0], minmax[1]));
     }
 
     /**
@@ -74,41 +78,36 @@ public class RandomTrader extends AutoTrader {
         double max = val * minmax[1] / 100.0;
         return getRandom(min, max);
     }
-    
-    
-    public boolean waitForOrder(long seconds){
-        
-        for (int i=0; (i<seconds) && (0!=account.pending.size());i++ ){
+
+    public boolean waitForOrder(long seconds) {
+
+        for (int i = 0; (i < seconds) && (0 != account.pending.size()); i++) {
             doSleep(1);
         }
-        
-        if (account.pending.size()!=0){
-            Order o=account.pending.get(0);
-            account.se.CancelOrder(o); 
+
+        if (account.pending.size() != 0) {
+            Order o = account.pending.get(0);
+            account.se.CancelOrder(o);
             return false;
         }
         return true;
     }
 
-        
-            
     public boolean doBuy() {
-        
-        double money = getRandomAmmount(account.money,myconfig.sell_volume);
+
+        double money = getRandomAmmount(account.money, myconfig.sell_volume);
 
         double lp = account.se.getlastprice();
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.buy_limit);
-        
-                
+
         long volume = (int) (money / (limit * 1));
-        if (volume<=0)
+        if (volume <= 0) {
             return false;
-        
-        
+        }
+
         buy(volume, limit);
         return waitForOrder(getRandom(myconfig.buy_order_wait));
-
 
     }
 
@@ -123,10 +122,10 @@ public class RandomTrader extends AutoTrader {
 
         sell(volume, limit);
         return waitForOrder(getRandom(myconfig.sell_order_wait));
-        
+
     }
 
-/*    private boolean monitorTrades() {
+    /*    private boolean monitorTrades() {
 
         int numpending = account.pending.size();
         if (numpending == 0) {
@@ -148,21 +147,20 @@ public class RandomTrader extends AutoTrader {
         //System.out.print("RT: monitor return true\n");
         return true;
     }
-*/
-    
+     */
     public void trade() {
 
         float am[] = {-10, 200};
 
         double x = Math.round(this.getRandomAmmount(1000, am));
-/*        System.out.print(
+        /*        System.out.print(
                 "Random:"
                 + x
                 + "\n"
         );
         
-*/        
-        /*
+         */
+ /*
         //  System.out.print("RT: Now trading\n");
         if (monitorTrades()) {
             return;
@@ -187,52 +185,65 @@ public class RandomTrader extends AutoTrader {
          */
     }
 
+    protected Action getAction() {
+        if (rand.nextInt(2)==0){
+            return Action.buy;
+        }
+        else{
+            return Action.sell;
+        }
+             
+            
+    }
+
     @Override
     public void run() {
 //        System.out.print("Starting Random Trader\n");
         while (true) {
-            // What next to do? (0=sell, 1=buy)
-            int action = rand.nextInt(2);
             
-            if (account.isRuined()){
+// What next to do? 
+            Action action = getAction();
+
+            if (account.isRuined()) {
 //                System.out.print("I'm ruined\n");
 //                System.exit(0);
             }
             boolean rc;
-        //    action=1;
-            switch(action){
-               
-                case 0: //sell
-                    if(account.shares<=0){
+            //    action=1;
+            switch (action) {
+
+                case sell:
+                    if (account.shares <= 0) {
                         // we have no shares
                         continue;
                     }
 //                    System.out.print("Sell\n");
                     rc = doSell();
-                    if (!rc)
+                    if (!rc) {
                         continue;
+                    }
 //                    System.out.print("Sold\n");
                     doSleep(getRandom(myconfig.wait_after_sell));
 //                    System.out.print("Next\n");
                     break;
-                case 1: //sell
-                    if(account.money<=0){
+                case buy:
+                    if (account.money <= 0) {
                         // we have no money
                         continue;
                     }
 //                    System.out.print("Sell\n");
                     rc = doBuy();
-                    if (!rc)
+                    if (!rc) {
                         continue;
+                    }
 //                    System.out.print("Bought\n");
                     doSleep(getRandom(myconfig.wait_after_buy));
 //                    System.out.print("Next\n");
                     break;
-                         
+
             }
-  //          doSleep(1);
-            
-            
+            //          doSleep(1);
+
         }
 
     }

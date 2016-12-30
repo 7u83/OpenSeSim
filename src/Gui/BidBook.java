@@ -40,7 +40,7 @@ public class BidBook extends OrderBook {
         return MainWin.se.getOrderBook(OrderType.bid, 40);
     }
 
-    BidBook() {
+    public BidBook() {
         if (MainWin.se == null) {
             return;
         }

@@ -23,48 +23,38 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package Traders;
-
-import SeSim.*;
+package SeSim;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderConfig extends TraderConfig {
+public class Quote implements Comparable {
 
-    //public long maxage = 1000 * 10 * 1;
-    
-    
-    /*public long hold_shares_min = 10;
-    
-    public long hold_shares_max = 30;
+    public double bid;
+    public double bid_volume;
+    public double ask;
+    public double ask_volume;
 
-    public float buy_volume_min = 10;
-    */
-    
-    /**
-     * If shares are selled, this specifies
-     * the minimum and maximum volume to be selled
-     */
-    public float[] sell_volume= {100,100};
-    public float[] sell_limit = {-15,100};
-    public int[] sell_order_wait = {5,33};
-    public int[] wait_after_sell = {2,10};
+    public double price;
+    public long volume;
+    public long time;
 
-    
-    public float[] buy_volume={100,100};
-    public float[] buy_limit = {-5,115};
-    public int[] buy_order_wait = {15,33};    
-    public int[] wait_after_buy = {20,33};
+    public void print() {
+        System.out.print("Quote ("
+                + time
+                + ") :"
+                + price
+                + " / "
+                + volume
+                + "\n"
+        );
 
-    
-    @Override
-    public AutoTrader createTrader(Exchange se, long shares, double money) {
-        Account a = new Account(se, shares, money);
-        return new RandomTrader(a, this);
     }
-  
-    
 
+    @Override
+    public int compareTo(Object o) {
+        Quote q = (Quote)o;
+        return (int)(this.time-q.time);
+    }
 }

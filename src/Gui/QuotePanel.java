@@ -25,32 +25,25 @@
  */
 package Gui;
 
-//import SeSim.*;
-import static java.lang.Thread.sleep;
-import javax.swing.AbstractListModel;
-import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.Formatter;
-import static java.lang.Thread.sleep;
+import SeSim.Quote;
+import java.awt.Color;
+import javax.swing.SwingUtilities;
+import java.util.*;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OrderBookPanel extends javax.swing.JPanel {
+public class QuotePanel extends javax.swing.JPanel implements SeSim.Exchange.QuoteReceiver{
 
-    SeSim.Exchange se;
-
-    public OrderBookPanel() {
-        this.se = MainWin.se;
-
+    /**
+     * Creates new form QuotePanel
+     */
+    public QuotePanel() {
         initComponents();
-
-        if (this.se == null) {
+        if (MainWin.se==null)
             return;
-        }
-     //   System.out.print("Order boo init\n");
-
+        MainWin.se.addQuoteReceiver(this);
     }
 
     /**
@@ -63,49 +56,87 @@ public class OrderBookPanel extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        askBook1 = new Gui.AskBook();
-        bidBook1 = new Gui.BidBook();
-        quotePanel2 = new Gui.QuotePanel();
+        jLabel2 = new javax.swing.JLabel();
+        lastPrice = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
-        setPreferredSize(new java.awt.Dimension(220, 262));
+        setBorder(null);
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {0};
-        layout.rowHeights = new int[] {0, 5, 0, 5, 0};
+        layout.columnWidths = new int[] {0, 5, 0, 5, 0};
+        layout.rowHeights = new int[] {0};
         setLayout(layout);
-
-        askBook1.setPreferredSize(new java.awt.Dimension(200, 200));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(askBook1, gridBagConstraints);
+        add(jLabel2, gridBagConstraints);
 
-        bidBook1.setPreferredSize(new java.awt.Dimension(200, 200));
+        lastPrice.setFont(lastPrice.getFont().deriveFont(lastPrice.getFont().getStyle() | java.awt.Font.BOLD, lastPrice.getFont().getSize()+4));
+        lastPrice.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lastPrice.setText("0.00");
+        lastPrice.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(bidBook1, gridBagConstraints);
+        gridBagConstraints.weightx = 0.9;
+        gridBagConstraints.weighty = 0.9;
+        add(lastPrice, gridBagConstraints);
 
-        quotePanel2.setOpaque(false);
-        quotePanel2.setPreferredSize(new java.awt.Dimension(587, 200));
+        jLabel3.setPreferredSize(new java.awt.Dimension(30, 18));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.weighty = 0.5;
-        add(quotePanel2, gridBagConstraints);
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        add(jLabel3, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private Gui.AskBook askBook1;
-    private Gui.BidBook bidBook1;
-    private Gui.QuotePanel quotePanel2;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel lastPrice;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void UpdateQuote(Quote q) {
+        class Updater implements Runnable {
+            QuotePanel qp;
+            String text="";
+            Color color = Color.BLUE;
+            
+
+            @Override
+            public void run() {
+                qp.lastPrice.setText(text);
+                qp.lastPrice.setForeground(color);
+            }
+            
+            
+        }
+        Updater  u= new Updater();
+        u.qp=this;
+        
+        if (q.price==q.bid){
+            u.color=new Color(172,0,0);
+        }
+        if (q.price==q.ask){
+            u.color=new Color(0,120,0); //.; //new Color(30,0,0);
+        }
+               
+        
+                
+        
+        u.text = String.format("%.2f\n(%d)", q.price,q.volume);
+        
+        SwingUtilities.invokeLater(u);
+        
+//        SortedSet s = MainWin.se.getQuoteHistory(5);
+        
+ //       System.out.print(
+ //               "SortedSet size:"
+ //               +s.size()
+ //               +"\n"
+ //       );
+        
+        //this.lastPrice.setText(lp);
+    }
 }
