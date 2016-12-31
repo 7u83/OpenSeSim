@@ -25,39 +25,27 @@
  */
 package SeSim;
 
-import static java.lang.Thread.sleep;
+import java.util.concurrent.Semaphore;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AutoTrader extends Trader implements Runnable {
+public class Locker {
 
-    public AutoTrader(Account account, TraderConfig config) {
-        super(account, config);
-    }
+    private final Semaphore avail = new Semaphore(1, true);
 
-    protected void doSleep(int seconds) {
+    public boolean lock() {
         try {
-            sleep(seconds*1000);
+            avail.acquire();
         } catch (InterruptedException e) {
+            return false;
         }
+        return true;
     }
-    
-    public void start(){
-        System.out.print("Starting AutoTrader\n");
-        class Runner extends Thread{
-            AutoTrader trader;
-            @Override
-            public void run(){
-                trader.run();
-            }
-        }
-        Runner r = new Runner();
-        r.trader=this;
-        r.start();
-        
+
+    public void unlock() {
+        avail.release();
     }
-    
-    
+
 }

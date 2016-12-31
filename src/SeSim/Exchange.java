@@ -27,14 +27,18 @@ public class Exchange extends Thread {
         
     }
     
-    public SortedSet <Quote> getQuoteHistory(int seconds){
-        long ct = System.currentTimeMillis() - seconds * 1000;
+    public TreeSet <Quote> getQuoteHistory(int seconds){
+        Quote last = quoteHistory.last();
+        long ct = last.time - seconds * 1000;
         Quote e = new Quote();
         e.time=ct;
         SortedSet<Quote> l = quoteHistory.tailSet(e);
-        return l;
+        return (TreeSet)l;
        
     }
+ 
+    
+    
 
     // Class to describe an executed order
  
@@ -102,7 +106,7 @@ public class Exchange extends Thread {
     }
 
     // send updated quotes to all quote receivers
-    void UpdateQuoteReceivers(Quote q) {
+    private void updateQuoteReceivers(Quote q) {
         Iterator<QuoteReceiver> i = qrlist.iterator();
         while (i.hasNext()) {
             i.next().UpdateQuote(q);
@@ -197,13 +201,13 @@ public class Exchange extends Thread {
 
     }
 
-    public void TransferMoney(Account src, Account dst, double money) {
+    public void transferMoney(Account src, Account dst, double money) {
         src.money -= money;
         dst.money += money;
 
     }
 
-    public void CancelOrder(Order o) {
+    public void cancelOrder(Order o) {
         Lock();
         TreeSet<Order> book = this.selectOrderBook(o.type);
         book.remove(o);
@@ -229,6 +233,8 @@ public class Exchange extends Thread {
         src.money += price * volume;
     }
 
+    long nextQuoteId=0;
+    
     public void OrderMatching() {
 
         while (true) {
@@ -300,11 +306,14 @@ public class Exchange extends Thread {
                 q.price = price;
                 q.time = System.currentTimeMillis();
                 
+                
+                
                 q.ask=a.limit;
                 q.bid=b.limit;
+                q.id = nextQuoteId++;
                 
 
-                this.UpdateQuoteReceivers(q);
+                this.updateQuoteReceivers(q);
                 this.updateBookReceivers(OrderType.bid);
                 this.updateBookReceivers(OrderType.ask);
 

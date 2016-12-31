@@ -30,7 +30,7 @@ package SeSim;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Quote implements Comparable {
-
+        
     public double bid;
     public double bid_volume;
     public double ask;
@@ -39,6 +39,8 @@ public class Quote implements Comparable {
     public double price;
     public long volume;
     public long time;
+    
+    Locker lock = new Locker();
 
     public void print() {
         System.out.print("Quote ("
@@ -51,10 +53,23 @@ public class Quote implements Comparable {
         );
 
     }
+    
+    public long id;
 
     @Override
     public int compareTo(Object o) {
+        int ret; 
         Quote q = (Quote)o;
-        return (int)(this.time-q.time);
+        
+        ret = (int)(this.time-q.time);
+        if (ret !=0)
+            return ret;
+        return (int)(this.id-q.id);
     }
+    
+ /*   Quote (){
+        lock.lock();
+        id=nextid++;
+        lock.unlock();
+    }*/
 }

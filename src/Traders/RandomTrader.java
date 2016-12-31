@@ -87,7 +87,7 @@ public class RandomTrader extends AutoTrader {
 
         if (account.pending.size() != 0) {
             Order o = account.pending.get(0);
-            account.se.CancelOrder(o);
+            account.se.cancelOrder(o);
             return false;
         }
         return true;
@@ -139,7 +139,7 @@ public class RandomTrader extends AutoTrader {
         // System.out.print("RT: age is: "+age+"\n");
         if (age > myconfig.maxage) {
             //         System.out.print("MaxAge is"+myconfig.maxage+"\n");
-            account.se.CancelOrder(o);
+            account.se.cancelOrder(o);
 //            System.out.print("Age reached - canel return false\n");
             return false;
         }
@@ -198,7 +198,7 @@ public class RandomTrader extends AutoTrader {
 
     @Override
     public void run() {
-//        System.out.print("Starting Random Trader\n");
+        System.out.print("Starting Random Trader\n");
         while (true) {
             
 // What next to do? 

@@ -37,6 +37,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Iterator;
+
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -52,6 +54,7 @@ import org.jfree.data.xy.XYDataset;
 import SeSim.Exchange.*;
 import SeSim.Quote;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  *
@@ -65,7 +68,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     public Chart() {
         initComponents();
 
-        String stockSymbol = "Schliemanz Koch AG";
+    //    String stockSymbol = "Schliemanz Koch AG";
+        String stockSymbol = "MSFT";
 
         DateAxis domainAxis = new DateAxis("Date");
         NumberAxis rangeAxis = new NumberAxis("Price");
@@ -111,9 +115,90 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         return result;
     }
 
+    
+    
+    
+    protected OHLCDataItem getOhlcData(long first, long last, TreeSet quotes ){
+        Quote e=new Quote(); 
+        e.time=first;
+        e.id=0;
+        
+        
+        SortedSet<Quote> l = quotes.tailSet(e);
+        
+        double open=0;
+        double high=0;
+        double low=0;
+        double close=0;
+        double volume;
+              
+        Iterator <Quote>it = l.iterator();
+        
+        
+        Quote q;
+        q = it.next();
+        open=q.price;
+
+        high=q.price;
+        low=q.price;
+        volume = q.volume;
+        
+        
+        while (it.hasNext() && q.time<last){
+            q = it.next();
+
+            
+            if (q.price>high)
+                high = q.price;
+            if (q.price<low)
+                low=q.price;
+            
+            volume += q.volume;
+ 
+        }
+        close=q.price;       
+        
+        Date date = new Date(first);
+        return new OHLCDataItem(
+                date, open, high, low, close, volume
+        );
+    }
+    
+    
+    
     protected OHLCDataItem[] getData() {
         List<OHLCDataItem> data = new ArrayList<>();
+        
+        TreeSet <Quote>s = MainWin.se.getQuoteHistory(60);
+        Iterator <Quote>i = s.iterator();
+        
+        
+        this.getOhlcData(0, System.currentTimeMillis(), s);
+        
+        
+//               OHLCDataItem item = new OHLCDataItem();
+               
+        
+                long t=0;
+  //              if ()
+                
+                
+    //            Quote q  = i.next();
+      //          OHLCDataItem item = new OHLCDataItem(
+        //                date, open, high, low, close, volume);
 
+/*                double open = 
+                double high = 
+                double low = 
+                double close = 
+                double volume = Double.parseDouble(st.nextToken());
+                double adjClose = Double.parseDouble(st.nextToken());
+           */
+                
+//                data.add(item);            
+
+        
+        
         //return data.toArray(new <OHLCDataItem> rdata[]);
         return data.toArray(new OHLCDataItem[data.size()]);
 
@@ -121,7 +206,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     //This method uses yahoo finance to get the OHLC data
     protected OHLCDataItem[] getData_old() {
-        String stockSymbol = "Schliemanz Koch AG";
+        String stockSymbol = "MSFT";
         List<OHLCDataItem> dataItems = new ArrayList<OHLCDataItem>();
         try {
             String strUrl = "http://ichart.finance.yahoo.com/table.csv?s=" + stockSymbol + "&a=0&b=1&c=2008&d=3&e=30&f=2008&ignore=.csv";
@@ -154,6 +239,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
         //Convert the list into an array
         OHLCDataItem[] data = dataItems.toArray(new OHLCDataItem[dataItems.size()]);
+        
+        System.out.print("Return oghls old data items\n");
 
         return data;
     }

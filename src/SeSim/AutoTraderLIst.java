@@ -35,8 +35,9 @@ public class AutoTraderLIst {
 
         for (int i = 0; i < n; i++) {
             AutoTrader trader = config.createTrader(se, shares, money);
-            TraderRunner tr = new TraderRunner(trader);
-            tr.start();
+         //   TraderRunner tr = new TraderRunner(trader);
+                       
+            trader.start();
         }
     }
 

@@ -158,8 +158,8 @@ public class MainWin extends javax.swing.JFrame {
         RandomTraderConfig rcfg = new RandomTraderConfig();
         at.add(1000, rcfg, se, 1000, 10000);
         
-        SwitchingTraderConfig scfg = new SwitchingTraderConfig();
-        at.add(1, scfg, se, 1000000, 0);
+        //SwitchingTraderConfig scfg = new SwitchingTraderConfig();
+        //at.add(1, scfg, se, 1000000, 0);
 
         
      //   at.add(10, rcfg, se, 1000000, 0);
