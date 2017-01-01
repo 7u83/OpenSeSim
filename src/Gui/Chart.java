@@ -118,14 +118,31 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     
     
     
-    protected OHLCDataItem getOhlcData(long first, long last, TreeSet quotes ){
+    protected OHLCDataItem getOhlcData(long first, long last, SortedSet <Quote> quotes ){
         Quote e=new Quote(); 
         e.time=first;
         e.id=0;
         
+        Quote qq = quotes.first();
+        System.out.print(String.format
+        ("Quote First %f %d %d \n", qq.price,qq.time,qq.id)
+        );
         
-        SortedSet<Quote> l = quotes.tailSet(e);
         
+        System.out.print("Qzitesn"+quotes.size() +"\n");
+
+        
+        
+        
+        Quote z = new Quote();
+        z.id=-1;
+        z.time=0;
+     
+          
+       SortedSet<Quote> l = quotes.tailSet(z);
+  
+             System.exit(0);        
+       
         double open=0;
         double high=0;
         double low=0;
@@ -169,11 +186,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     protected OHLCDataItem[] getData() {
         List<OHLCDataItem> data = new ArrayList<>();
         
-        TreeSet <Quote>s = MainWin.se.getQuoteHistory(60);
+        SortedSet <Quote>s = MainWin.se.getQuoteHistory(60);
+        this.getOhlcData(0, System.currentTimeMillis(), s);
+    
+        
+        
         Iterator <Quote>i = s.iterator();
         
         
-        this.getOhlcData(0, System.currentTimeMillis(), s);
+        
         
         
 //               OHLCDataItem item = new OHLCDataItem();

@@ -27,13 +27,27 @@ public class Exchange extends Thread {
         
     }
     
-    public TreeSet <Quote> getQuoteHistory(int seconds){
+    public SortedSet <Quote> getQuoteHistory(int seconds){
         Quote last = quoteHistory.last();
         long ct = last.time - seconds * 1000;
         Quote e = new Quote();
         e.time=ct;
+        e.time=-1;
+        e.id=3;
+        SortedSet <Quote> qqq  =this.quoteHistory;
+ 
+        
         SortedSet<Quote> l = quoteHistory.tailSet(e);
-        return (TreeSet)l;
+        e.id=-1;
+        SortedSet<Quote> ll = l.tailSet(e);
+        
+        int size = qqq.size();
+        long fid = qqq.first().id;
+        
+        System.out.print("SS0: "+qqq.first().id+"\n");
+        
+        
+        return ll;
        
     }
  

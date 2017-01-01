@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, tobias
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,54 +23,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package SeSim;
+package Gui;
+
+import java.util.*;
+
 
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tobias
  */
-public class Quote implements Comparable {
+public class test {
+    public static void main(String args[]){
+        SortedSet <String>s = new TreeSet<>();
+        s.add("b");
+        s.add("e");
+        s.add("z");
         
-    public double bid;
-    public double bid_volume;
-    public double ask;
-    public double ask_volume;
-
-    public double price;
-    public long volume;
-    public long time;
-    
-    Locker lock = new Locker();
-
-    public void print() {
-        System.out.print("Quote ("
-                + time
-                + ") :"
-                + price
-                + " / "
-                + volume
-                + "\n"
-        );
-
-    }
-    
-    public long id;
-
-    @Override
-    public int compareTo(Object o) {
-        int ret; 
-        Quote q = (Quote)o;
+        SortedSet <String> ts = s.tailSet("d");
         
-     /*   ret = (int)(this.time-q.time);
-        if (ret !=0)
-            return ret;
-        */
-        return (int)(this.id-q.id);
+        SortedSet <String> ts2 = ts.tailSet("n");
+        
+        
+        System.out.print(String.format("First: %s\n", ts2.first()));
     }
-    
- /*   Quote (){
-        lock.lock();
-        id=nextid++;
-        lock.unlock();
-    }*/
 }

@@ -48,15 +48,15 @@ public class RandomTraderConfig extends TraderConfig {
      * the minimum and maximum volume to be selled
      */
     public float[] sell_volume= {100,100};
-    public float[] sell_limit = {-15,100};
-    public int[] sell_order_wait = {5,33};
-    public int[] wait_after_sell = {2,10};
+    public float[] sell_limit = {-15,15};
+    public int[] sell_order_wait = {15,33};
+    public int[] wait_after_sell = {10,30};
 
     
     public float[] buy_volume={100,100};
-    public float[] buy_limit = {-5,115};
+    public float[] buy_limit = {-15,15};
     public int[] buy_order_wait = {15,33};    
-    public int[] wait_after_buy = {20,33};
+    public int[] wait_after_buy = {10,30};
 
     
     @Override
