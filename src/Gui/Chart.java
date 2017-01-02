@@ -25,6 +25,8 @@
  */
 package Gui;
 
+import SeSim.Exchange.*;
+import SeSim.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.BufferedReader;
@@ -51,7 +53,6 @@ import org.jfree.data.xy.DefaultOHLCDataset;
 import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.XYDataset;
 
-import SeSim.Exchange.*;
 import SeSim.Quote;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -68,8 +69,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     public Chart() {
         initComponents();
 
-    //    String stockSymbol = "Schliemanz Koch AG";
-        String stockSymbol = "MSFT";
+        String stockSymbol = "Schliemanz Koch AG";
+        //String stockSymbol = "MSFT";
 
         DateAxis domainAxis = new DateAxis("Date");
         NumberAxis rangeAxis = new NumberAxis("Price");
@@ -87,6 +88,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         //Now create the chart and chart panel
         JFreeChart chart = new JFreeChart(stockSymbol, null, mainPlot, false);
         ChartPanel chartPanel = new ChartPanel(chart);
+         
         chartPanel.setPreferredSize(new Dimension(500, 270));
 
         add(chartPanel);
@@ -115,112 +117,75 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         return result;
     }
 
-    
-    
-    
-    protected OHLCDataItem getOhlcData(long first, long last, SortedSet <Quote> quotes ){
-        Quote e=new Quote(); 
-        e.time=first;
-        e.id=0;
-        
-        Quote qq = quotes.first();
-        System.out.print(String.format
-        ("Quote First %f %d %d \n", qq.price,qq.time,qq.id)
-        );
-        
-        
-        System.out.print("Qzitesn"+quotes.size() +"\n");
+    protected OHLCDataItem getOhlcData(long first, long last, SortedSet<Quote> quotes) {
 
-        
-        
-        
-        Quote z = new Quote();
-        z.id=-1;
-        z.time=0;
-     
-          
-       SortedSet<Quote> l = quotes.tailSet(z);
-  
-             System.exit(0);        
-       
-        double open=0;
-        double high=0;
-        double low=0;
-        double close=0;
-        double volume;
-              
-        Iterator <Quote>it = l.iterator();
-        
-        
+        Quote s = new Quote();
+
+        s.time = first;
+
+        SortedSet<Quote> l = quotes.tailSet(s);
+
+        double open = 0;
+        double high = 0;
+        double low = 0;
+        double close = 0;
+        double volume=0;
+
+        Iterator<Quote> it = l.iterator();
+
         Quote q;
-        q = it.next();
-        open=q.price;
+        
 
-        high=q.price;
-        low=q.price;
-        volume = q.volume;
+        if (it.hasNext()) {
+            q = it.next();
+            open = q.price;
+            high = q.price;
+            low = q.price;
+            volume = q.volume;
+        }
+        else {
+            q = new Quote();
+        }
         
-        
-        while (it.hasNext() && q.time<last){
+
+        while (it.hasNext() && q.time < last) {
             q = it.next();
 
-            
-            if (q.price>high)
+            if (q.price > high) {
                 high = q.price;
-            if (q.price<low)
-                low=q.price;
-            
+            }
+            if (q.price < low) {
+                low = q.price;
+            }
+
             volume += q.volume;
- 
+
         }
-        close=q.price;       
-        
+        close = q.price;
+
         Date date = new Date(first);
         return new OHLCDataItem(
                 date, open, high, low, close, volume
         );
     }
-    
-    
-    
+
     protected OHLCDataItem[] getData() {
+
         List<OHLCDataItem> data = new ArrayList<>();
-        
-        SortedSet <Quote>s = MainWin.se.getQuoteHistory(60);
-        this.getOhlcData(0, System.currentTimeMillis(), s);
-    
-        
-        
-        Iterator <Quote>i = s.iterator();
-        
-        
-        
-        
-        
-//               OHLCDataItem item = new OHLCDataItem();
-               
-        
-                long t=0;
-  //              if ()
-                
-                
-    //            Quote q  = i.next();
-      //          OHLCDataItem item = new OHLCDataItem(
-        //                date, open, high, low, close, volume);
 
-/*                double open = 
-                double high = 
-                double low = 
-                double close = 
-                double volume = Double.parseDouble(st.nextToken());
-                double adjClose = Double.parseDouble(st.nextToken());
-           */
-                
-//                data.add(item);            
+        long ct;
+        ct = Exchange.getCurrentTimeSeconds(10);
 
-        
-        
-        //return data.toArray(new <OHLCDataItem> rdata[]);
+        SortedSet<Quote> h = MainWin.se.getQuoteHistory(ct - 60);
+
+        for (long i = (ct - 60)*1000; i < (ct + 10)*1000; i += 10*1000) {
+            OHLCDataItem d = getOhlcData(i, i + 10*1000, h);
+            data.add(d);
+        }
+
+        System.out.print(data.size() + "\n");
+      //  System.exit(0);
+
         return data.toArray(new OHLCDataItem[data.size()]);
 
     }
@@ -260,7 +225,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
         //Convert the list into an array
         OHLCDataItem[] data = dataItems.toArray(new OHLCDataItem[dataItems.size()]);
-        
+
         System.out.print("Return oghls old data items\n");
 
         return data;
@@ -292,12 +257,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     public void UpdateQuote(Quote q) {
         return;
         //q.print();
-  /*      SortedSet s = MainWin.se.getQuoteHistory(60);
+        /*      SortedSet h = MainWin.se.getQuoteHistory(60);
         System.out.print(
                 "SortedSet size:"
-                + s.size()
+                + h.size()
                 + "\n"
         );
-*/
+         */
     }
 }

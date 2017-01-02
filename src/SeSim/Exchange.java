@@ -24,39 +24,39 @@ public class Exchange extends Thread {
         this.ask = new TreeSet<>();
         this.bid = new TreeSet<>();
         this.qrlist = new ArrayList<>();
-        
+
+    }
+
+    public static long getCurrentTimeSeconds(long div) {
+        long ct = System.currentTimeMillis() / 1000*div;
+        return ct * div;
     }
     
-    public SortedSet <Quote> getQuoteHistory(int seconds){
+    public static long getCurrentTimeSeconds(){
+        return getCurrentTimeSeconds(1);
+    }
+
+    public SortedSet<Quote> getQuoteHistory(long start) {
+
+        Quote s = new Quote();
+        s.time = start;
+        s.time = 2;
+        s.id = 2;
+
+        TreeSet<Quote> result = new TreeSet<>();
+        result.addAll(this.quoteHistory.tailSet(s));
+
+        return result;
+
+    }
+
+   /* public SortedSet<Quote> getQuoteHistory(int seconds) {
         Quote last = quoteHistory.last();
-        long ct = last.time - seconds * 1000;
-        Quote e = new Quote();
-        e.time=ct;
-        e.time=-1;
-        e.id=3;
-        SortedSet <Quote> qqq  =this.quoteHistory;
- 
-        
-        SortedSet<Quote> l = quoteHistory.tailSet(e);
-        e.id=-1;
-        SortedSet<Quote> ll = l.tailSet(e);
-        
-        int size = qqq.size();
-        long fid = qqq.first().id;
-        
-        System.out.print("SS0: "+qqq.first().id+"\n");
-        
-        
-        return ll;
-       
+        return this.getQuoteHistory(seconds, last.time);
     }
- 
-    
-    
+    */
 
     // Class to describe an executed order
- 
-
     // QuoteReceiver has to be implemented by objects that wants 
     // to receive quote updates  	
     public interface QuoteReceiver {
@@ -100,12 +100,11 @@ public class Exchange extends Thread {
             i.next().UpdateOrderBook();
         }
         try {
-                sleep(10);
-            } catch (InterruptedException e) {
-                System.out.println("I was Interrupted");
-      }
+            sleep(10);
+        } catch (InterruptedException e) {
+            System.out.println("I was Interrupted");
+        }
 
-        
     }
 
     // Here we store the list of quote receivers
@@ -137,12 +136,15 @@ public class Exchange extends Thread {
     public TreeSet<Order> bid;
     public TreeSet<Order> ask;
 
+    private Locker tradelock = new Locker();
+
+    /*
     private final Semaphore available = new Semaphore(1, true);
 
     private void Lock() {
         try {
             available.acquire();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException s) {
             System.out.println("Interrupted\n");
         }
 
@@ -151,7 +153,7 @@ public class Exchange extends Thread {
     private void Unlock() {
         available.release();
     }
-
+     */
     private TreeSet<Order> selectOrderBook(OrderType t) {
 
         switch (t) {
@@ -222,13 +224,13 @@ public class Exchange extends Thread {
     }
 
     public void cancelOrder(Order o) {
-        Lock();
+        tradelock.lock();
         TreeSet<Order> book = this.selectOrderBook(o.type);
         book.remove(o);
         this.updateBookReceivers(o.type);
         o.account.pending.remove(o);
         o.status = OrderStatus.canceled;
-        Unlock();
+        tradelock.unlock();
 
     }
 
@@ -247,8 +249,8 @@ public class Exchange extends Thread {
         src.money += price * volume;
     }
 
-    long nextQuoteId=0;
-    
+    long nextQuoteId = 0;
+
     public void OrderMatching() {
 
         while (true) {
@@ -319,27 +321,23 @@ public class Exchange extends Thread {
                 q.volume = volume;
                 q.price = price;
                 q.time = System.currentTimeMillis();
-                
-                
-                
-                q.ask=a.limit;
-                q.bid=b.limit;
+
+                q.ask = a.limit;
+                q.bid = b.limit;
                 q.id = nextQuoteId++;
-                
 
                 this.updateQuoteReceivers(q);
                 this.updateBookReceivers(OrderType.bid);
                 this.updateBookReceivers(OrderType.ask);
 
-/*                System.out.print(
+                /*                System.out.print(
                         "Executed: "
                         + q.price
                         + " / "
                         + q.volume
                         + "\n"
                 );
-                */
-
+                 */
                 quoteHistory.add(q);
                 continue;
 
@@ -378,7 +376,6 @@ public class Exchange extends Thread {
         if (ret) {
             this.updateBookReceivers(o.type);
         }
-
         return ret;
     }
 
@@ -389,14 +386,13 @@ public class Exchange extends Thread {
             return null;
         }
 
-        Lock();
+        tradelock.lock();
         o.timestamp = System.currentTimeMillis();
-        //System.out.print(o.timestamp + " TS:\n");
         o.id = orderid++;
         addOrder(o);
         o.account.pending.add(o);
         OrderMatching();
-        Unlock();
+        tradelock.unlock();
 
         return o;
     }
@@ -438,10 +434,10 @@ public class Exchange extends Thread {
         return lastprice;
     }
 
-    public double sendOrder(Account o) {
+    /*  public double sendOrder(Account o) {
         return 0.7;
     }
-
+     */
     /**
      *
      */

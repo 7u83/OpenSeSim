@@ -27,23 +27,89 @@ package Gui;
 
 import java.util.*;
 
-
 /**
  *
  * @author tobias
  */
 public class test {
-    public static void main(String args[]){
-        SortedSet <String>s = new TreeSet<>();
-        s.add("b");
-        s.add("e");
-        s.add("z");
+
+    static class Problem {
+
+        class Elem implements Comparable {
+
+            public int id;
+
+            public Elem(int id) {
+                this.id = id;
+
+            }
+
+            @Override
+            public int compareTo(Object o) {
+                Elem e = (Elem) o;
+                return id - e.id;
+
+            }
+
+        }
+
+        public void run() {
+            SortedSet<Elem> s = new TreeSet<>();
+            s.add(new Elem(1));
+            s.add(new Elem(7));
+            s.add(new Elem(12));
+            Elem e = new Elem(5);
+
+            SortedSet<Elem> ts = exclusiveTailSet(s, e);
+
+            Elem e2 = new Elem(0);
+
+//        SortedSet<Elem> ts2 = exclusiveTailSet(ts,e);
+            SortedSet<Elem> ts2 = ts.tailSet(e2);
+
+            e.id = 99;
+
+            System.out.print(String.format("First: %s\n", ts.first().id));
+        }
+
+    }
+    
+    
+    static class NoProblem {
+        public void run(){
+            SortedSet<Integer> s=new TreeSet<>();
+            
+            s.add(10);
+            s.add(20);
+            s.add(30);
+            s.add(40);
+            s.add(50);
+            s.add(60);
+
+            int e1 = 15;
+            SortedSet l1 = s.tailSet(e1);
+            
+            int e2 = -1;
+            
+            SortedSet l2 = l1.tailSet(e2);
+            
+            System.out.print("First:"+l2.first()+"\n");
+            
+            
+            
+        }
+    }
+
+    public static <Ta> SortedSet<Ta> exclusiveTailSet(SortedSet<Ta> ts, Ta elem) {
+        Iterator<Ta> iter = ts.tailSet(elem).iterator();
+
+        return ts.tailSet(iter.next());
+    }
+
+    public static void main(String args[]) {
+        NoProblem p = new NoProblem();
+        p.run();
         
-        SortedSet <String> ts = s.tailSet("d");
-        
-        SortedSet <String> ts2 = ts.tailSet("n");
-        
-        
-        System.out.print(String.format("First: %s\n", ts2.first()));
+
     }
 }

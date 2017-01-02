@@ -61,10 +61,10 @@ public class Quote implements Comparable {
         int ret; 
         Quote q = (Quote)o;
         
-     /*   ret = (int)(this.time-q.time);
+        ret = (int)(this.time-q.time);
         if (ret !=0)
             return ret;
-        */
+     
         return (int)(this.id-q.id);
     }
     
