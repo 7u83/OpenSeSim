@@ -27,15 +27,16 @@ public class Exchange extends Thread {
 
     }
 
-    public static long getCurrentTimeSeconds(long div) {
-        long ct = System.currentTimeMillis() / (1000 * div) * div;
-        return ct * div;
-    }
-
+    /**
+     *
+     * @return
+     */
     public static long getCurrentTimeSeconds() {
-        return getCurrentTimeSeconds(1);
+        long ct = System.currentTimeMillis();
+        return ct/1000 ;
     }
 
+    
     public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();

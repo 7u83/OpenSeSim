@@ -105,9 +105,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     }
 
+    
     protected AbstractXYDataset getDataSet(String stockSymbol) {
+
         //This is the dataset we are going to create
-        DefaultOHLCDataset result = null;
+       DefaultOHLCDataset result;
+       
         //This is the data needed for the dataset
         OHLCDataItem[] data;
 
@@ -174,12 +177,18 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         List<OHLCDataItem> data = new ArrayList<>();
 
         long ct;
-        ct = Exchange.getCurrentTimeSeconds(10);
+        ct = Exchange.getCurrentTimeSeconds();
+        
+        int step=5;
+        long start = (ct - 60)/step*step;
 
-        SortedSet<Quote> h = MainWin.se.getQuoteHistory(ct - 60);
 
-        for (long i = (ct - 60) * 1000; i < (ct + 10) * 1000; i += 10 * 1000) {
-            OHLCDataItem d = getOhlcData(i, i + 10 * 1000, h);
+        SortedSet<Quote> h = MainWin.se.getQuoteHistory(start);
+
+        for (long i = start * 1000; i < ct * 1000; i += step * 1000) {
+            OHLCDataItem d = getOhlcData(i, i + step * 1000, h);
+            
+            
             data.add(d);
         }
 
@@ -258,12 +267,33 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
         //   q.print();
         long ct;
-        ct = Exchange.getCurrentTimeSeconds(5);
-        SortedSet<Quote> h = MainWin.se.getQuoteHistory(ct - 15);
+        ct = Exchange.getCurrentTimeSeconds();
+        
+        
+        OHLCDataItem[] data = this.getData();
+        OHLCDataItem di=data[data.length-1];
+        
+        System.out.print(
+                String.format(
+                       "O:%.2f H:%.2f L:%.2f C:%.2f (%d)\n", 
+                        
+                           
+                di.getOpen(),
+                di.getHigh(),
+                di.getLow(),
+                di.getClose(),
+                data.length
+                )
+        
+        );
+        
+        long start = (ct - 60)/5*5;
+        SortedSet<Quote> h = MainWin.se.getQuoteHistory(start);
 
-        System.out.print("Number of quotes" + ct + "\n");
-    
+        System.out.print("Number of quotes" + start + ":" + ct + "\n");
         System.out.print("Number of quotes:" + h.size() + "\n");
+        
+        
 
         /*      SortedSet h = MainWin.se.getQuoteHistory(60);
         System.out.print(
