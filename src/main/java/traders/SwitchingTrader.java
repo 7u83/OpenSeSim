@@ -40,7 +40,7 @@ public class SwitchingTrader extends RandomTrader{
     public SwitchingTrader(Account account, TraderConfig config) {
                
         super(account, config);
-        System.out.print("SWTrader Created\n");
+      //  System.out.print("SWTrader Created\n");
         
         if (account.shares>0)
             mode=Action.sell;
@@ -53,26 +53,29 @@ public class SwitchingTrader extends RandomTrader{
     
     private void printstartus(){
         
-        System.out.print("SWTrader:");        
+ //       System.out.print("SWTrader:");        
         switch (mode){
             case buy:
-                System.out.print("buy"
+/*                System.out.print("buy"
                         +account.shares
                         +" "
                         +account.money
                 );
+*/
                 break;
             case sell:
+/*                
                 System.out.print("sell"
                         +account.shares
                         +" "
                         +account.money
                 );
+*/
                 break;
                 
                 
         }
-        System.out.print("\n");
+//        System.out.print("\n");
                 
     }
     

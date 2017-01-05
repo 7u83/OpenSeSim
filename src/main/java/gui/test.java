@@ -105,11 +105,48 @@ public class test {
 
         return ts.tailSet(iter.next());
     }
+    
+    
+    static abstract interface Rc {
+        public abstract int inc(int x);
+  //      public abstract int dec(int x);
+     
+        
+        
+    }
+    
+    
 
     public static void main(String args[]) {
-        NoProblem p = new NoProblem();
-        p.run();
+//        NoProblem p = new NoProblem();
+//        p.run();
+
+        Rc a = new Rc(){
+            @Override
+            public int inc(int x) {
+                return x+1;
+            }
+            
+        /*    @Override
+            public int dec(int x) {
+                return x+1;
+            }
+*/
+            
+        };
         
+        
+        Rc l = (x) -> x+1;
+
+        
+        System.out.print("A:"
+                +a.inc(17)
+                +"  "
+                +l.inc(4)
+        
+        );
+        
+       
 
     }
 }

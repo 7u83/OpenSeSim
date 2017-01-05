@@ -34,10 +34,10 @@ public class CandlestickDemo extends JFrame {
 
         //Now create the chart and chart panel
         JFreeChart chart = new JFreeChart(stockSymbol, null, mainPlot, false);
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(600, 300));
+    //    ChartPanel chartPanel = new ChartPanel(chart);
+    //    chartPanel.setPreferredSize(new Dimension(600, 300));
 
-        this.add(chartPanel);
+    //    this.add(chartPanel);
         this.pack();
     }
     protected AbstractXYDataset getDataSet(String stockSymbol) {

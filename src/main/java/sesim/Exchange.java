@@ -28,20 +28,19 @@ public class Exchange extends Thread {
     }
 
     public static long getCurrentTimeSeconds(long div) {
-        long ct = System.currentTimeMillis() / 1000*div;
+        long ct = System.currentTimeMillis() / (1000 * div) * div;
         return ct * div;
     }
-    
-    public static long getCurrentTimeSeconds(){
+
+    public static long getCurrentTimeSeconds() {
         return getCurrentTimeSeconds(1);
     }
 
     public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
-        s.time = start;
-        s.time = 2;
-        s.id = 2;
+        s.time = start*1000;
+        s.id = 0;
 
         TreeSet<Quote> result = new TreeSet<>();
         result.addAll(this.quoteHistory.tailSet(s));
@@ -50,12 +49,11 @@ public class Exchange extends Thread {
 
     }
 
-   /* public SortedSet<Quote> getQuoteHistory(int seconds) {
+    /* public SortedSet<Quote> getQuoteHistory(int seconds) {
         Quote last = quoteHistory.last();
         return this.getQuoteHistory(seconds, last.time);
     }
-    */
-
+     */
     // Class to describe an executed order
     // QuoteReceiver has to be implemented by objects that wants 
     // to receive quote updates  	

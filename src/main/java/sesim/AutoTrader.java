@@ -39,25 +39,26 @@ public abstract class AutoTrader extends Trader implements Runnable {
 
     protected void doSleep(int seconds) {
         try {
-            sleep(seconds*1000);
+            sleep(seconds * 1000);
         } catch (InterruptedException e) {
         }
     }
-    
-    public void start(){
+
+    public void start() {
         System.out.print("Starting AutoTrader\n");
-        class Runner extends Thread{
+        class Runner extends Thread {
+
             AutoTrader trader;
+
             @Override
-            public void run(){
+            public void run() {
                 trader.run();
             }
         }
         Runner r = new Runner();
-        r.trader=this;
+        r.trader = this;
         r.start();
-        
+
     }
-    
-    
+
 }

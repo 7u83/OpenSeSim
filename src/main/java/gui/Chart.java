@@ -74,7 +74,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
         DateAxis domainAxis = new DateAxis("Date");
         NumberAxis rangeAxis = new NumberAxis("Price");
+
         CandlestickRenderer renderer = new CandlestickRenderer();
+
         XYDataset dataset = getDataSet(stockSymbol);
 
         XYPlot mainPlot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
@@ -87,8 +89,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
         //Now create the chart and chart panel
         JFreeChart chart = new JFreeChart(stockSymbol, null, mainPlot, false);
+
         ChartPanel chartPanel = new ChartPanel(chart);
-         
+
         chartPanel.setPreferredSize(new Dimension(500, 270));
 
         add(chartPanel);
@@ -129,12 +132,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         double high = 0;
         double low = 0;
         double close = 0;
-        double volume=0;
+        double volume = 0;
 
         Iterator<Quote> it = l.iterator();
 
         Quote q;
-        
 
         if (it.hasNext()) {
             q = it.next();
@@ -142,11 +144,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
             high = q.price;
             low = q.price;
             volume = q.volume;
-        }
-        else {
+        } else {
             q = new Quote();
         }
-        
 
         while (it.hasNext() && q.time < last) {
             q = it.next();
@@ -178,13 +178,13 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
         SortedSet<Quote> h = MainWin.se.getQuoteHistory(ct - 60);
 
-        for (long i = (ct - 60)*1000; i < (ct + 10)*1000; i += 10*1000) {
-            OHLCDataItem d = getOhlcData(i, i + 10*1000, h);
+        for (long i = (ct - 60) * 1000; i < (ct + 10) * 1000; i += 10 * 1000) {
+            OHLCDataItem d = getOhlcData(i, i + 10 * 1000, h);
             data.add(d);
         }
 
         System.out.print(data.size() + "\n");
-      //  System.exit(0);
+        //  System.exit(0);
 
         return data.toArray(new OHLCDataItem[data.size()]);
 
@@ -255,8 +255,16 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     @Override
     public void UpdateQuote(Quote q) {
-        return;
-        //q.print();
+
+        //   q.print();
+        long ct;
+        ct = Exchange.getCurrentTimeSeconds(5);
+        SortedSet<Quote> h = MainWin.se.getQuoteHistory(ct - 15);
+
+        System.out.print("Number of quotes" + ct + "\n");
+    
+        System.out.print("Number of quotes:" + h.size() + "\n");
+
         /*      SortedSet h = MainWin.se.getQuoteHistory(60);
         System.out.print(
                 "SortedSet size:"

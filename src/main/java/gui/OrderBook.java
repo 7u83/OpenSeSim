@@ -97,7 +97,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
     protected class OrderBookListModel extends AbstractTableModel {
 
         private ArrayList list;
-        private boolean desc = false;
+        //private final boolean desc = false;
 
         public OrderBookListModel() {
   //          System.out.print("CREATING A NEW MODEL\n");
