@@ -4,37 +4,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/tube/NetBeansProjects/SeSim/additional/README.txt</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Trader.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Locker.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Order.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/ControlPanel.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Quote.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/MainWin.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/OrderBook.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/manifest.mf</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/TraderConfig.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Account.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/QuotePanel.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Exchange.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/NewPanel.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/Chart.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Traders/RandomTraderConfig.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/AskBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/AutoTrader.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/BidBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Traders/SwitchingTrader.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/build.xml</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/OrderBookPanel.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Traders/RandomTrader.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/test.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/AutoTraderLIst.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/BuyOrder.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Traders/ManTrader.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/README.md</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Gui/CandlestickDemo.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/Logger.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/Traders/SwitchingTraderConfig.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/SeSim/SellOrder.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/LICENSE</file>
         </group>
     </open-files>
