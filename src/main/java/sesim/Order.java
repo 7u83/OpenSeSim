@@ -25,12 +25,13 @@ public abstract class Order implements Comparable<Order> {
     /**
      * Type of order
      */
-    public OrderType type;
+    public final OrderType type;
     
     public Account account = null;
 
     
     protected int compareLimit(Order o){
+        
         int r=0;
         if (o.limit < limit) {
             r=-1;
@@ -58,13 +59,7 @@ public abstract class Order implements Comparable<Order> {
         if (r!=0)
             return r;
        
-    /*    if (o.timestamp> timestamp)
-            return -1;
-        
-        if (o.timestamp<timestamp)
-            return 1;
-*/
-        
+                
         if (o.id>id)
             return -1;
         
@@ -104,7 +99,7 @@ public abstract class Order implements Comparable<Order> {
         return String.format("%d", volume);
     }
 
-    Order() {
-
+    Order(OrderType type) {
+        this.type=type;
     }
 }

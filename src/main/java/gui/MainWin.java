@@ -41,7 +41,7 @@ import javax.swing.*;
  */
 public class MainWin extends javax.swing.JFrame {
 
-    static sesim.Exchange se;
+    static public sesim.Exchange se;
     static sesim.Account myAccount;
     static traders.ManTrader myTrader;
     
@@ -52,7 +52,15 @@ public class MainWin extends javax.swing.JFrame {
      
         initComponents();
      
-     
+             AutoTraderLIst at = new AutoTraderLIst();
+//        RandomTraderConfig rcfg = new RandomTraderConfig();
+        SwitchingTraderConfig rcfg = new SwitchingTraderConfig();
+        at.add(1000, rcfg, se, 100, 0);
+        at.add(1000, rcfg, se, 0, 10000);
+
+        
+        SwitchingTraderConfig scfg = new SwitchingTraderConfig();
+        at.add(1, scfg, se, 1000000, 0);
         
     }
 
@@ -69,13 +77,14 @@ public class MainWin extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         controlPanel2 = new gui.ControlPanel();
         orderBookPanel1 = new gui.OrderBookPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        chart2 = new chart.Chart();
+        fullChart2 = new chart.FullChart();
         MainMenu = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         FileNew = new javax.swing.JMenuItem();
         FileRun = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         jButton1.setText("jButton1");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -90,21 +99,7 @@ public class MainWin extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(640, 480));
         getContentPane().add(controlPanel2, java.awt.BorderLayout.LINE_END);
         getContentPane().add(orderBookPanel1, java.awt.BorderLayout.LINE_START);
-
-        javax.swing.GroupLayout chart2Layout = new javax.swing.GroupLayout(chart2);
-        chart2.setLayout(chart2Layout);
-        chart2Layout.setHorizontalGroup(
-            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 231, Short.MAX_VALUE)
-        );
-        chart2Layout.setVerticalGroup(
-            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 572, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setViewportView(chart2);
-
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(fullChart2, java.awt.BorderLayout.CENTER);
 
         FileMenu.setBackground(new java.awt.Color(254, 203, 1));
         FileMenu.setText("File");
@@ -130,6 +125,14 @@ public class MainWin extends javax.swing.JFrame {
 
         jMenu2.setText("Edit");
         MainMenu.add(jMenu2);
+
+        jMenu1.setText("Help");
+
+        jMenuItem2.setText("About");
+        jMenuItem2.setToolTipText("About this Software");
+        jMenu1.add(jMenuItem2);
+
+        MainMenu.add(jMenu1);
 
         setJMenuBar(MainMenu);
 
@@ -171,27 +174,19 @@ public class MainWin extends javax.swing.JFrame {
         tr.start();
 */
 
-        AutoTraderLIst at = new AutoTraderLIst();
-//        RandomTraderConfig rcfg = new RandomTraderConfig();
-        SwitchingTraderConfig rcfg = new SwitchingTraderConfig();
-        at.add(1000, rcfg, se, 100, 0);
-        at.add(1000, rcfg, se, 0, 10000);
 
-        
-        SwitchingTraderConfig scfg = new SwitchingTraderConfig();
-        at.add(1, scfg, se, 1000000, 0);
 
         
      //   at.add(10, rcfg, se, 1000000, 0);
 
         
-        try {
+     /*   try {
             // Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException |
                 InstantiationException | IllegalAccessException e) {
         }
-
+*/
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -229,12 +224,13 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenuItem FileNew;
     private javax.swing.JMenuItem FileRun;
     private javax.swing.JMenuBar MainMenu;
-    private chart.Chart chart2;
     private gui.ControlPanel controlPanel2;
+    private chart.FullChart fullChart2;
     private javax.swing.JButton jButton1;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenuItem jMenuItem2;
     private gui.OrderBookPanel orderBookPanel1;
     // End of variables declaration//GEN-END:variables
 }

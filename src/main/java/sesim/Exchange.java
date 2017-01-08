@@ -221,6 +221,10 @@ public class Exchange extends Thread {
 
     }
 
+    /**
+     *
+     * @param o
+     */
     public void cancelOrder(Order o) {
         tradelock.lock();
         TreeSet<Order> book = this.selectOrderBook(o.type);
@@ -249,7 +253,100 @@ public class Exchange extends Thread {
 
     long nextQuoteId = 0;
 
-    private void executeOrders() {
+    /**
+     *
+     */
+    protected void executeOrders() {
+
+        while (!bid.isEmpty() && !ask.isEmpty()) {
+
+            Order b = bid.first();
+            Order a = ask.first();
+
+            if (b.limit < a.limit) {
+                // no match, nothing to do
+                return;
+            }
+
+            double price = b.id < a.id ? b.limit : a.limit;
+            long volume = b.volume>=a.volume ? a.volume : b.volume;
+               
+
+
+            if (a.volume == 0) {
+                // This order is fully executed, remove 
+                a.account.orderpending = false;
+                a.status = OrderStatus.executed;
+
+                a.account.pending.remove(a);
+
+                ask.pollFirst();
+                this.updateBookReceivers(OrderType.ask);
+                continue;
+            }
+
+            if (b.volume == 0) {
+                // This order is fully executed, remove 
+                b.account.orderpending = false;
+                b.status = OrderStatus.executed;
+                b.account.pending.remove(b);
+                bid.pollFirst();
+                this.updateBookReceivers(OrderType.bid);
+                continue;
+            }
+
+            if (b.limit >= a.limit) {
+
+                price = b.id < a.id ? b.limit : a.limit;
+
+                /*         if (b.id < a.id) {
+                    price = b.limit;
+                } else {
+                    price = a.limit;
+                }
+                 */
+               
+
+                if (b.volume >= a.volume) {
+                    volume = a.volume;
+                } else {
+                    volume = b.volume;
+                }
+
+                transferShares(a.account, b.account, volume, price);
+
+                //       b.account.Buy(a.account, volume, price);
+                b.volume -= volume;
+                a.volume -= volume;
+
+                lastprice = price;
+                lastsvolume = volume;
+
+                Quote q = new Quote();
+
+                q.volume = volume;
+                q.price = price;
+                q.time = System.currentTimeMillis();
+
+                q.ask = a.limit;
+                q.bid = b.limit;
+                q.id = nextQuoteId++;
+
+                this.updateQuoteReceivers(q);
+                this.updateBookReceivers(OrderType.bid);
+                this.updateBookReceivers(OrderType.ask);
+
+  
+                quoteHistory.add(q);
+                continue;
+
+            }
+
+            return;
+        }
+    }
+
+    private void executeOrdersX() {
 
         while (!bid.isEmpty() && !ask.isEmpty()) {
 
@@ -285,15 +382,15 @@ public class Exchange extends Thread {
 
             if (b.limit >= a.limit) {
                 double price;
-                
-                price = b.id<a.id ? b.limit : a.limit;
 
-                if (b.id < a.id) {
+                price = b.id < a.id ? b.limit : a.limit;
+
+                /*         if (b.id < a.id) {
                     price = b.limit;
                 } else {
                     price = a.limit;
                 }
-
+                 */
                 long volume;
 
                 if (b.volume >= a.volume) {
