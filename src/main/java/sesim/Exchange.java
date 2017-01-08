@@ -33,14 +33,13 @@ public class Exchange extends Thread {
      */
     public static long getCurrentTimeSeconds() {
         long ct = System.currentTimeMillis();
-        return ct/1000 ;
+        return ct / 1000;
     }
 
-    
     public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
-        s.time = start*1000;
+        s.time = start * 1000;
         s.id = 0;
 
         TreeSet<Quote> result = new TreeSet<>();
@@ -71,8 +70,8 @@ public class Exchange extends Thread {
         void UpdateOrderBook();
     }
 
-    private ArrayList<BookReceiver> ask_bookreceivers = new ArrayList<>();
-    private ArrayList<BookReceiver> bid_bookreceivers = new ArrayList<>();
+    final private ArrayList<BookReceiver> ask_bookreceivers = new ArrayList<>();
+    final private ArrayList<BookReceiver> bid_bookreceivers = new ArrayList<>();
 
     private ArrayList<BookReceiver> selectBookReceiver(OrderType t) {
         switch (t) {
