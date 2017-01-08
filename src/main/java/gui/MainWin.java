@@ -69,7 +69,7 @@ public class MainWin extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         controlPanel2 = new gui.ControlPanel();
         orderBookPanel1 = new gui.OrderBookPanel();
-        zZChart1 = new gui.Chart();
+        chart1 = new chart.Chart();
         MainMenu = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         FileNew = new javax.swing.JMenuItem();
@@ -89,7 +89,19 @@ public class MainWin extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(640, 480));
         getContentPane().add(controlPanel2, java.awt.BorderLayout.LINE_END);
         getContentPane().add(orderBookPanel1, java.awt.BorderLayout.LINE_START);
-        getContentPane().add(zZChart1, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout chart1Layout = new javax.swing.GroupLayout(chart1);
+        chart1.setLayout(chart1Layout);
+        chart1Layout.setHorizontalGroup(
+            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 241, Short.MAX_VALUE)
+        );
+        chart1Layout.setVerticalGroup(
+            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 582, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(chart1, java.awt.BorderLayout.CENTER);
 
         FileMenu.setBackground(new java.awt.Color(254, 203, 1));
         FileMenu.setText("File");
@@ -214,11 +226,11 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenuItem FileNew;
     private javax.swing.JMenuItem FileRun;
     private javax.swing.JMenuBar MainMenu;
+    private chart.Chart chart1;
     private gui.ControlPanel controlPanel2;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
     private gui.OrderBookPanel orderBookPanel1;
-    private gui.Chart zZChart1;
     // End of variables declaration//GEN-END:variables
 }

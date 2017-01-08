@@ -68,7 +68,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
      */
     public Chart() {
         initComponents();
-
+/*
         String stockSymbol = "Schliemanz Koch AG";
         //String stockSymbol = "MSFT";
 
@@ -102,7 +102,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         }
 
         MainWin.se.addQuoteReceiver(this);
-
+*/
     }
 
     

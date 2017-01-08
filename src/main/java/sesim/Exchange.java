@@ -249,17 +249,17 @@ public class Exchange extends Thread {
 
     long nextQuoteId = 0;
 
-    public void OrderMatching() {
+    private void executeOrders() {
 
-        while (true) {
-
-            if (bid.isEmpty() || ask.isEmpty()) {
-                // nothing to do
-                return;
-            }
+        while (!bid.isEmpty() && !ask.isEmpty()) {
 
             Order b = bid.first();
             Order a = ask.first();
+
+            if (b.limit < a.limit) {
+                // no match, nothing to do
+                return;
+            }
 
             if (a.volume == 0) {
                 // This order is fully executed, remove 
@@ -283,13 +283,10 @@ public class Exchange extends Thread {
                 continue;
             }
 
-            if (b.limit < a.limit) {
-                // no match, nothing to do
-                return;
-            }
-
             if (b.limit >= a.limit) {
                 double price;
+                
+                price = b.id<a.id ? b.limit : a.limit;
 
                 if (b.id < a.id) {
                     price = b.limit;
@@ -389,7 +386,7 @@ public class Exchange extends Thread {
         o.id = orderid++;
         addOrder(o);
         o.account.pending.add(o);
-        OrderMatching();
+        executeOrders();
         tradelock.unlock();
 
         return o;
@@ -405,7 +402,7 @@ public class Exchange extends Thread {
                
         Unlock();
         Lock();
-//        OrderMatching();
+//        executeOrders();
         Unlock();
 
     }
