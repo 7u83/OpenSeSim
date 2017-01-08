@@ -27,19 +27,24 @@ public class Chart extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics go) {
         super.paintComponent(go);
-        Graphics2D g=(Graphics2D)go;
-        
+        Graphics2D g = (Graphics2D) go;
+
         g.setColor(Color.BLUE);
-        
+
         g.setBackground(Color.BLACK);
-     //   g.get
-       
+        //   g.get
+
         Rectangle bounds = g.getDeviceConfiguration().getBounds();
-        System.out.print(bounds.width+"\n");
-        
+        System.out.print(bounds.width + "\n");
+
         //g.fillRect(0, 0, 100, 100);
+        Dimension d = this.getSize();
+
         g.drawString("Hello world", 810, 10);
-        g.drawLine(0,0, 800, 100);
+        g.drawLine(0, 0, d.width, d.height);
+        
+        
+
     }
 
     /**
@@ -51,15 +56,19 @@ public class Chart extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        setPreferredSize(new java.awt.Dimension(900, 300));
+        setRequestFocusEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 396, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 296, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

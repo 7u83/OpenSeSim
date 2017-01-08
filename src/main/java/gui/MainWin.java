@@ -69,7 +69,8 @@ public class MainWin extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         controlPanel2 = new gui.ControlPanel();
         orderBookPanel1 = new gui.OrderBookPanel();
-        chart1 = new chart.Chart();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        chart2 = new chart.Chart();
         MainMenu = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         FileNew = new javax.swing.JMenuItem();
@@ -90,18 +91,20 @@ public class MainWin extends javax.swing.JFrame {
         getContentPane().add(controlPanel2, java.awt.BorderLayout.LINE_END);
         getContentPane().add(orderBookPanel1, java.awt.BorderLayout.LINE_START);
 
-        javax.swing.GroupLayout chart1Layout = new javax.swing.GroupLayout(chart1);
-        chart1.setLayout(chart1Layout);
-        chart1Layout.setHorizontalGroup(
-            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 241, Short.MAX_VALUE)
+        javax.swing.GroupLayout chart2Layout = new javax.swing.GroupLayout(chart2);
+        chart2.setLayout(chart2Layout);
+        chart2Layout.setHorizontalGroup(
+            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 231, Short.MAX_VALUE)
         );
-        chart1Layout.setVerticalGroup(
-            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 582, Short.MAX_VALUE)
+        chart2Layout.setVerticalGroup(
+            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 572, Short.MAX_VALUE)
         );
 
-        getContentPane().add(chart1, java.awt.BorderLayout.CENTER);
+        jScrollPane1.setViewportView(chart2);
+
+        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         FileMenu.setBackground(new java.awt.Color(254, 203, 1));
         FileMenu.setText("File");
@@ -226,11 +229,12 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenuItem FileNew;
     private javax.swing.JMenuItem FileRun;
     private javax.swing.JMenuBar MainMenu;
-    private chart.Chart chart1;
+    private chart.Chart chart2;
     private gui.ControlPanel controlPanel2;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
     private gui.OrderBookPanel orderBookPanel1;
     // End of variables declaration//GEN-END:variables
 }
