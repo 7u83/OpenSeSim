@@ -25,15 +25,15 @@ public class Exchange extends Thread {
         }
 
         iAccount(double money, double shares) {
-            next_account_id_locker.lock();
+            NEXT_ACCOUNT_ID_LOCKER.lock();
             id = (Math.random() + (next_account_id++));
-            next_account_id_locker.unlock();
+            NEXT_ACCOUNT_ID_LOCKER.unlock();
 
         }
     }
 
     private static int next_account_id;
-    Locker next_account_id_locker = new Locker();
+    private static final Locker NEXT_ACCOUNT_ID_LOCKER = new Locker();
     TreeSet<iAccount> accounts;
 
     double createAccount(double money, double shares) {
@@ -55,6 +55,15 @@ public class Exchange extends Thread {
         this.bid = new TreeSet<>();
         this.qrlist = new ArrayList<>();
 
+    }
+    
+    
+    class BidBook extends TreeSet{
+        TreeSet t = new TreeSet();
+        boolean hallo(){
+            t.comparator();
+            return true;
+        }
     }
 
     /**
@@ -305,7 +314,7 @@ public class Exchange extends Thread {
                 return;
             }
 
-            // There is a match, build price and volume
+            // There is a match, calculate price and volume
             double price = b.id < a.id ? b.limit : a.limit;
             long volume = b.volume >= a.volume ? a.volume : b.volume;
 
