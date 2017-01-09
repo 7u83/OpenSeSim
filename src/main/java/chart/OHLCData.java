@@ -31,23 +31,44 @@ import java.util.*;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OHLCData extends ArrayList <OHLCDataItem> {
-    
+public class OHLCData { //extends ArrayList <OHLCDataItem> {
+
     float max;
-    
-    long start_time;
+
+    long time_start;
     long time_step;
-    
-    public float getMax(){
+
+    public float getMax() {
         return max;
     }
     
-    @Override
-    public boolean add (OHLCDataItem o){
-        super.add(o);
-        
-        return true;
-    }
     
- 
+
+    long rasterTime(long time) {
+
+        long rt = time / 5000;
+        return rt * 5000;
+
+    }
+
+    ArrayList<OHLCDataItem> data = new ArrayList<>();
+    
+    
+    private void updateMinMax(float price){
+       // if (price>max)     
+    }
+
+    private long ntime = 0;
+
+    boolean realTimeAdd(long time, float price, float volume) {
+        if (time > ntime) {
+            ntime = rasterTime(time) + 5000;
+            data.add(new OHLCDataItem(price, price, price, price, volume));
+            return true;
+        }
+
+        OHLCDataItem d = data.get(data.size() - 1);
+        boolean rc = d.update(price, volume);
+        return rc;
+    }
 }

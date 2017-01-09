@@ -14,79 +14,115 @@ import gui.MainWin;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Chart extends javax.swing.JPanel implements QuoteReceiver{
+public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     /**
      * Creates new form Chart
      */
     public Chart() {
         initComponents();
-        
+        if (MainWin.se == null) {
+            return;
+        }
+
         MainWin.se.addQuoteReceiver(this);
 
         //Graphics g = this.getGraphics();
         //g.drawString("Hello world", 0, 0);
     }
-    
-    int item_width=10;
-    int items=350;
-    
-    
+
+    int item_width = 10;
+    int items = 350;
+    long ntime = -1;
+
     OHLCData data;
 
-    
-    OHLCDataItem current=null;
-    
-    private void realTimeAdd(long time,float price,float volume){
-        if (current==null){
-            current=new OHLCDataItem(price,price,price,price,volume);
+    OHLCDataItem current = null;
+
+    long rasterTime(long time) {
+
+        long rt = time / 5000;
+        return rt * 5000;
+
+    }
+
+    private void realTimeAdd(long time, float price, float volume) {
+
+        /*     System.out.print("Diff:"
+                +(ntime-time)
+                +"\n"
+        );
+         */
+        if (time > ntime) {
+
+            System.out.print("new raster ----------------------------------\n");
+            current = null;
+            ntime = rasterTime(time) + 5000;
+            //       System.out.print(ntime+"\n");
+            //      System.out.print((time)+"\n");
+            //       System.exit(0);
+        }
+
+        if (current == null) {
+            current = new OHLCDataItem(price, price, price, price, volume);
+            return;
+        }
+
+        boolean rc = current.update(price, volume);
+
+        if (rc) {
+            System.out.print("Updated -"
+                    + " High:"
+                    + current.high
+                    + " Low:"
+                    + current.low
+                    + " Volume"
+                    + current.volume
+                    + "("
+                    + time
+                    + ")"
+                    + "\n"
+            );
+        }
+
+    }
+
+    private void getData() {
+
+    }
+
+    private void draw(Graphics2D g) {
+        this.getSize();
+
+        int pwidth = item_width * items;
+
+        this.setPreferredSize(new Dimension(pwidth, 400));
+
+                g.setColor(Color.RED);
+               g.drawLine(0,0,100,100);
+               
+        for (int i = 0; i < items; i++) {
+            int x = i * this.item_width;
+            g.drawLine(x, 0, x, 50);
+
+        }
+        
+ 
+        
+        if (this.current == null) {
             return;
         }
         
-        boolean rc = current.update(price,volume);
-        if (rc){
-            System.out.print("Updated -"
-                    +" High:"
-                    +current.high
-                    +" Low:"
-                    +current.low
-                    +" Volume"
-                    +current.volume
-                    +"\n"
-                    
-            );
-        }
-               
         
+        g.setColor(Color.BLUE);
+        g.drawLine(0, 0, 100, (int) ((this.current.close-80.0)*80.0));
+
     }
-    
-    
-    private void getData(){
-        
-    }
-    
-    private void draw(Graphics2D g){
-        this.getSize();
-        
-        int pwidth = item_width*items;
-        
-        this.setPreferredSize(new Dimension(pwidth,400));
-        
-        for (int i=0; i<items; i++){
-            int x=i*this.item_width;
-            g.drawLine(x, 0, x, 50);
-            
-            
-            
-        }
-        
-    }
-    
 
     @Override
     public void paintComponent(Graphics go) {
         super.paintComponent(go);
-        
+
         Graphics2D g = (Graphics2D) go;
 
         g.setColor(Color.GRAY);
@@ -102,9 +138,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver{
 
         //g.drawString("Hello world", 810, 10);
         //g.drawLine(0, 0, d.width, d.height);
-        
         //this.setPreferredSize(new Dimension(2000,4000));
-               
         draw(g);
     }
 
@@ -136,8 +170,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver{
 
     @Override
     public void UpdateQuote(Quote q) {
-       // System.out.print("Quote Received\n");
-        this.realTimeAdd(q.time, (float)q.price , q.volume);
+        // System.out.print("Quote Received\n");
+        this.realTimeAdd(q.time, (float) q.price, q.volume);
+    //    this.invalidate();
+        this.repaint();
     }
 
 
