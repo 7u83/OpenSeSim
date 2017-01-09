@@ -12,6 +12,36 @@ import sesim.Order.OrderType;
  */
 public class Exchange extends Thread {
 
+    private class iAccount implements Comparable {
+
+        protected double id;
+        protected double shares;
+        protected double money;
+
+        @Override
+        public int compareTo(Object a) {
+            iAccount account = (iAccount) a;
+            return this.id - account.id < 0 ? -1 : 1;
+        }
+
+        iAccount(double money, double shares) {
+            next_account_id_locker.lock();
+            id = (Math.random() + (next_account_id++));
+            next_account_id_locker.unlock();
+
+        }
+    }
+
+    private static int next_account_id;
+    Locker next_account_id_locker = new Locker();
+    TreeSet<iAccount> accounts;
+
+    double createAccount(double money, double shares) {
+        iAccount a = new iAccount(money, shares);
+        accounts.add(a);
+        return a.id;
+    }
+
     /**
      * Histrory of quotes
      */
@@ -221,6 +251,13 @@ public class Exchange extends Thread {
 
     }
 
+    protected void transferMoneyAndShares(Account src, Account dst, double money, long shares) {
+        src.money -= money;
+        dst.money += money;
+        src.shares -= shares;
+        dst.shares += shares;
+    }
+
     /**
      *
      * @param o
@@ -268,10 +305,11 @@ public class Exchange extends Thread {
                 return;
             }
 
+            // There is a match, build price and volume
             double price = b.id < a.id ? b.limit : a.limit;
-            long volume = b.volume>=a.volume ? a.volume : b.volume;
-               
+            long volume = b.volume >= a.volume ? a.volume : b.volume;
 
+            transferMoneyAndShares(b.account, a.account, volume * price, -volume);
 
             if (a.volume == 0) {
                 // This order is fully executed, remove 
@@ -305,8 +343,6 @@ public class Exchange extends Thread {
                     price = a.limit;
                 }
                  */
-               
-
                 if (b.volume >= a.volume) {
                     volume = a.volume;
                 } else {
@@ -336,7 +372,6 @@ public class Exchange extends Thread {
                 this.updateBookReceivers(OrderType.bid);
                 this.updateBookReceivers(OrderType.ask);
 
-  
                 quoteHistory.add(q);
                 continue;
 
