@@ -33,6 +33,7 @@ import sesim.Exchange;
 import sesim.BuyOrder;
 import javax.swing.UIManager;
 import javax.swing.*;
+import sesim.AccountData;
 
 
 /**
@@ -51,7 +52,31 @@ public class MainWin extends javax.swing.JFrame {
     public MainWin() {
      
         initComponents();
+        
+        
+            double aid1 = se.createAccount(100, 100);
+        double aid2 = se.createAccount(100, 100);
+
+        AccountData a1 = se.getAccountData(aid1);
+        AccountData a2 = se.getAccountData(aid2);
+        
+        se.createOrder(aid2, Exchange.OrderType.ASK, 20, 11);
+        se.createOrder(aid2, Exchange.OrderType.ASK, 10, 10);
+        se.createOrder(aid2, Exchange.OrderType.ASK, 10, 9);
+        se.createOrder(aid1, Exchange.OrderType.BID, 50, 7);
+
+        /*
+        System.out.print("Exec Orders\n");
+        se.executeOrders();
+        System.out.print("Executed Orders\n");
+
+        a1 = se.getAccountData(aid1);
+        a2 = se.getAccountData(aid2);
+        */
+        
+        
      
+/*        
              AutoTraderLIst at = new AutoTraderLIst();
 //        RandomTraderConfig rcfg = new RandomTraderConfig();
         SwitchingTraderConfig rcfg = new SwitchingTraderConfig();
@@ -61,6 +86,7 @@ public class MainWin extends javax.swing.JFrame {
         
         SwitchingTraderConfig scfg = new SwitchingTraderConfig();
         at.add(1, scfg, se, 1000000, 0);
+        */
         
     }
 

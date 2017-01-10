@@ -30,26 +30,52 @@ package sesim;
  * @author tobias
  */
 public class Test {
+
+    static void print_account(AccountData ad) {
+        System.out.print(
+                "Account ID:"
+                + ad.id
+                + " Ballance:"
+                + ad.money
+                + " Shares:"
+                + ad.shares
+                + "\n"
+        );
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         Exchange se = new Exchange();
-        
-        double aid1 = se.createAccount(100, 110);
-        
-        
-        double aid2 = se.createAccount(100, 110);
-        se.createOrder(aid2, Exchange.OrderType.ASK, 50, 9);
+
+        double aid1 = se.createAccount(100, 100);
+        double aid2 = se.createAccount(100, 100);
+
+        AccountData a1 = se.getAccountData(aid1);
+        AccountData a2 = se.getAccountData(aid2);
+        Test.print_account(a1);
+        Test.print_account(a2);
+
+        se.createOrder(aid2, Exchange.OrderType.ASK, 20, 11);
+        se.createOrder(aid2, Exchange.OrderType.ASK, 10, 10);
+        se.createOrder(aid2, Exchange.OrderType.ASK, 10, 9);
         se.createOrder(aid1, Exchange.OrderType.BID, 50, 11);
-        
-        
+
+        System.out.print("Exec Orders\n");
         se.executeOrders();
+        System.out.print("Executed Orders\n");
+
+        a1 = se.getAccountData(aid1);
+        a2 = se.getAccountData(aid2);
+        Test.print_account(a1);
+        Test.print_account(a2);
         
+        
+        
+
         //S/ystem.out.print(aid);
         //System.out.print("\n");
-        
-        
     }
-    
+
 }

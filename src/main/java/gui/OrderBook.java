@@ -26,6 +26,7 @@
 package gui;
 
 import sesim.Exchange;
+import sesim.Exchange.*;
 import java.util.ArrayList;
 import java.util.Formatter;
 import javax.swing.table.AbstractTableModel;
@@ -96,7 +97,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
 
     protected class OrderBookListModel extends AbstractTableModel {
 
-        private ArrayList list;
+        private ArrayList <OrderBookItem> list;
         //private final boolean desc = false;
 
         public OrderBookListModel() {
@@ -113,7 +114,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             this.fireTableDataChanged();
             
             this.update_calls++;
-            int hc = this.hashCode();
+        //    int hc = this.hashCode();
             //System.out.print("Update/ColCalls = " + update_calls + "/" + colcount_calls + " HC: " + hc + "\n");
         }
  
@@ -145,15 +146,15 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
 
         @Override
         public Object getValueAt(int r, int c) {
-            sesim.Order_old o;
+            OrderBookItem o;
 
             int s = list.size();
             //System.out.print("Looking for Value at" + r + ":" + c + " w size:" + s + "\n");
 
             if (!getDesc()) {
-                o = (sesim.Order_old) list.get(r);
+                o = list.get(r);
             } else {
-                o = (sesim.Order_old) list.get(list.size() - r - 1);
+                o = list.get(list.size() - r - 1);
             }
             Formatter f = new Formatter();
             switch (c) {

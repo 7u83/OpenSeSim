@@ -171,7 +171,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     @Override
     public void UpdateQuote(Quote q) {
         // System.out.print("Quote Received\n");
-        this.realTimeAdd(q.time, (float) q.price, q.volume);
+        this.realTimeAdd(q.time, (float) q.price, (float)q.volume);
     //    this.invalidate();
         this.repaint();
     }

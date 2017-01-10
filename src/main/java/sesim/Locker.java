@@ -33,11 +33,15 @@ import java.util.concurrent.Semaphore;
  */
 public class Locker {
 
-    private final Semaphore avail = new Semaphore(1, true);
+    private final Semaphore AVAIL = new Semaphore(1, true);
 
+    /**
+     * 
+     * @return
+     */
     public boolean lock() {
         try {
-            avail.acquire();
+            AVAIL.acquire();
         } catch (InterruptedException e) {
             return false;
         }
@@ -45,7 +49,7 @@ public class Locker {
     }
 
     public void unlock() {
-        avail.release();
+        AVAIL.release();
     }
 
 }

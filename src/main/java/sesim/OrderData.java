@@ -30,5 +30,9 @@ package sesim;
  * @author 7u83 <7u83@mail.ru>
  */
 public class OrderData {
+    long id;
+    double limit;
+    double volume;
+    double executed;
     
 }

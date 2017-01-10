@@ -37,7 +37,7 @@ public class Quote implements Comparable {
     public double ask_volume;
 
     public double price;
-    public long volume;
+    public double volume;
     public long time;
     
     Locker lock = new Locker();

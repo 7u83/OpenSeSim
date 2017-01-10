@@ -27,6 +27,7 @@ package gui;
 
 import sesim.Order_old.*;
 import java.util.ArrayList;
+import sesim.Exchange.*;
 
 /**
  *
@@ -36,7 +37,7 @@ public class AskBook extends OrderBook {
 
     @Override
     ArrayList getOrderBook() {
-        return MainWin.se.getOrderBook(OrderType_old.ask,40);
+        return MainWin.se.getOrderBook(OrderType.ASK,40);
     }
     
     @Override
@@ -48,7 +49,7 @@ public class AskBook extends OrderBook {
         if (MainWin.se == null) {
             return;
         }
-        MainWin.se.addBookReceiver(OrderType_old.ask, this);
+        MainWin.se.addBookReceiver(OrderType.ASK, this);
         
     }
 
