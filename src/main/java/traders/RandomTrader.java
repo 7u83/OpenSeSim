@@ -25,8 +25,8 @@
  */
 package traders;
 
-import sesim.Account;
-import sesim.Order;
+import sesim.Account_old;
+import sesim.Order_old;
 import java.util.Random;
 import sesim.AutoTrader;
 import sesim.TraderConfig;
@@ -43,7 +43,7 @@ public class RandomTrader extends AutoTrader {
     // object to generate random numbers
     final private Random rand = new Random();
 
-    public RandomTrader(Account account, TraderConfig config) {
+    public RandomTrader(Account_old account, TraderConfig config) {
         super(account, config);
         if (config == null) {
             config = new RandomTraderConfig();
@@ -86,7 +86,7 @@ public class RandomTrader extends AutoTrader {
         }
 
         if (account.pending.size() != 0) {
-            Order o = account.pending.get(0);
+            Order_old o = account.pending.get(0);
             account.se.cancelOrder(o);
             return false;
         }
@@ -133,7 +133,7 @@ public class RandomTrader extends AutoTrader {
             return false;
         }
 
-        Order o = account.pending.get(0);
+        Order_old o = account.pending.get(0);
         long age = o.getAge();
 
         // System.out.print("RT: age is: "+age+"\n");

@@ -26,6 +26,7 @@
 package sesim;
 
 import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
 
 /**
  *
@@ -33,7 +34,7 @@ import static java.lang.Thread.sleep;
  */
 public abstract class AutoTrader extends Trader implements Runnable {
 
-    public AutoTrader(Account account, TraderConfig config) {
+    public AutoTrader(Account_old account, TraderConfig config) {
         super(account, config);
     }
 

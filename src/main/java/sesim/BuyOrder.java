@@ -1,9 +1,9 @@
 package sesim;
 
-public class BuyOrder extends Order implements Comparable<Order> {
+public class BuyOrder extends Order_old implements Comparable<Order_old> {
 
     public BuyOrder(){
-        super(OrderType.bid);
+        super(OrderType_old.bid);
     }
 
 }

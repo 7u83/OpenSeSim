@@ -1,6 +1,6 @@
 package sesim;
 
-public abstract class Order implements Comparable<Order> {
+public abstract class Order_old implements Comparable<Order_old> {
 
     /**
      * When the order was created
@@ -18,19 +18,19 @@ public abstract class Order implements Comparable<Order> {
     public double limit;
 
     /**
-     * Order ID
+     * Order_old ID
      */
     public long id = 0;
     
     /**
      * Type of order
      */
-    public final OrderType type;
+    public final OrderType_old type;
     
-    public Account account = null;
+    public Account_old account = null;
 
     
-    protected int compareLimit(Order o){
+    protected int compareLimit(Order_old o){
         
         int r=0;
         if (o.limit < limit) {
@@ -40,7 +40,7 @@ public abstract class Order implements Comparable<Order> {
             r=1;
         }
         
-        if (type==OrderType.ask)
+        if (type==OrderType_old.ask)
             return -r;
         
         return r;
@@ -48,7 +48,7 @@ public abstract class Order implements Comparable<Order> {
     };
     
     @Override
-    public int compareTo(Order o) {
+    public int compareTo(Order_old o) {
         
         if (o.type!=type){
             System.out.print("OrderType Missmatch\n");
@@ -75,7 +75,7 @@ public abstract class Order implements Comparable<Order> {
         open, executed, canceled
     }
     
-    public enum OrderType {
+    public enum OrderType_old {
         bid,ask
     }
 
@@ -99,7 +99,7 @@ public abstract class Order implements Comparable<Order> {
         return String.format("%d", volume);
     }
 
-    Order(OrderType type) {
+    Order_old(OrderType_old type) {
         this.type=type;
     }
 }

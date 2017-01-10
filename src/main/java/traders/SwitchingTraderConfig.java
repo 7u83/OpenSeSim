@@ -25,7 +25,7 @@
  */
 package traders;
 
-import sesim.Account;
+import sesim.Account_old;
 import sesim.AutoTrader;
 import sesim.Exchange;
 
@@ -37,7 +37,7 @@ public class SwitchingTraderConfig extends RandomTraderConfig {
 
     @Override
     public AutoTrader createTrader(Exchange se, long shares, double money) {
-        Account a = new Account(se, shares, money);
+        Account_old a = new Account_old(se, shares, money);
         System.out.print("Returning a new sw trader\n");
         return new SwitchingTrader(a, this);
     }

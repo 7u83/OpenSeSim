@@ -25,7 +25,7 @@
  */
 package traders;
 
-import sesim.Account;
+import sesim.Account_old;
 import sesim.TraderConfig;
 import sesim.Exchange;
 import sesim.AutoTrader;
@@ -64,7 +64,7 @@ public class RandomTraderConfig extends TraderConfig {
     
     @Override
     public AutoTrader createTrader(Exchange se, long shares, double money) {
-        Account a = new Account(se, shares, money);
+        Account_old a = new Account_old(se, shares, money);
         return new RandomTrader(a, this);
     }
   

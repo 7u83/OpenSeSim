@@ -27,7 +27,7 @@ package gui;
 
 import traders.RandomTraderConfig;
 import traders.SwitchingTraderConfig;
-import sesim.Account;
+import sesim.Account_old;
 import sesim.AutoTraderLIst;
 import sesim.Exchange;
 import sesim.BuyOrder;
@@ -42,7 +42,7 @@ import javax.swing.*;
 public class MainWin extends javax.swing.JFrame {
 
     static public sesim.Exchange se;
-    static sesim.Account myAccount;
+    static sesim.Account_old myAccount;
     static traders.ManTrader myTrader;
     
     /**
@@ -158,17 +158,17 @@ public class MainWin extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         se = new Exchange();
-        myAccount = new Account(se,1000,100000000.0);
+        myAccount = new Account_old(se,1000,100000000.0);
         myTrader = new traders.ManTrader(myAccount,null);
         
-/*        Account otherAccount = new Account(se,1000,1000);
+/*        Account_old otherAccount = new Account_old(se,1000,1000);
         Traders.ManTrader otherTrader = new Traders.ManTrader(otherAccount);
         otherTrader.sell(80, 22.70);
         
 */
 
 /*
-        Account traccount = new Account(se,5500,1000000.0);
+        Account_old traccount = new Account_old(se,5500,1000000.0);
         RandomTrader rt = new RandomTrader(traccount,null);
         TraderRunner tr = new TraderRunner(rt);
         tr.start();

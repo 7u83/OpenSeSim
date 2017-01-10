@@ -3,7 +3,7 @@ package sesim;
 import java.util.*;
 
 
-final public class Account {
+final public class Account_old {
     
     /**
      * Exchange this account belongs to
@@ -26,19 +26,19 @@ final public class Account {
     public String name = "";
 
     
-    public ArrayList <Order> pending;
+    public ArrayList <Order_old> pending;
     
     public boolean orderpending = false;
     
        
-    public Account(Exchange se, long shares, double money ) {
+    public Account_old(Exchange se, long shares, double money ) {
         this.shares=shares;
         this.money=money;
         this.se=se;
         pending = new ArrayList<>();
     }
     
-    public Account(){
+    public Account_old(){
        //this(,0.0);
     }
 
@@ -57,7 +57,7 @@ final public class Account {
         
         
 /*        System.out.print(
-                "Account: "
+                "Account_old: "
                 +money
                 +" / "
                 +shares
@@ -67,7 +67,7 @@ final public class Account {
         return this.money<=se.lastprice && this.shares<=0;
     }
 
-    public Order sell(long volume, double limit) {
+    public Order_old sell(long volume, double limit) {
         SellOrder o = new SellOrder();
         o.account = this;
         o.limit = limit;
@@ -76,7 +76,7 @@ final public class Account {
         return se.SendOrder(o);
     }
 
-    public Order buy(long volume, double limit) {
+    public Order_old buy(long volume, double limit) {
         if (volume * limit > money) {
             return null;
         }
@@ -89,7 +89,7 @@ final public class Account {
     }
 
     /*
-    public void Buy(Account a, long size, double price) {
+    public void Buy(Account_old a, long size, double price) {
         shares += size;
         money -= price * size;
         a.shares -= size;

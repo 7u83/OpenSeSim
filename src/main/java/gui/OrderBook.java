@@ -145,15 +145,15 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
 
         @Override
         public Object getValueAt(int r, int c) {
-            sesim.Order o;
+            sesim.Order_old o;
 
             int s = list.size();
             //System.out.print("Looking for Value at" + r + ":" + c + " w size:" + s + "\n");
 
             if (!getDesc()) {
-                o = (sesim.Order) list.get(r);
+                o = (sesim.Order_old) list.get(r);
             } else {
-                o = (sesim.Order) list.get(list.size() - r - 1);
+                o = (sesim.Order_old) list.get(list.size() - r - 1);
             }
             Formatter f = new Formatter();
             switch (c) {

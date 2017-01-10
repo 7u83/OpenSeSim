@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,48 +25,28 @@
  */
 package sesim;
 
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-
-public abstract class Trader {
-
-    public String name = null;
-
-    
-    public Account_old account; 
-    public TraderConfig config;
-    
-    public void sell(long shares, double limit){
-        account.sell(shares, limit);
-    }
-
-    public void buy(long shares, double limit){
-        account.buy(shares, limit);
-    }
-    
-    /**
-     * Construct a Trader object
-     * @param account Account_old for this trader
-     * @param config Configration for this trader
-     */
-    public Trader(Account_old account, TraderConfig config){
-        this.account=account;
-        this.config=config;
+/**
+ *
+ * @author 7u83 <7u83@mail.ru>
+ */
+    class IDGenerator{
+        private final Locker ID_LOCKER = new Locker();
+        private long next_id;
+        
+        
+        public IDGenerator(long start){
+            next_id=start;
+        }
+        
+        public IDGenerator(){
+            this(0);
+        }
+        
+        public long getNext(){
+            ID_LOCKER.lock();
+            long id = next_id++;
+            ID_LOCKER.unlock();
+            return id;
+        }
     }
     
-    /**
-     * Construct a Trader object w/o config
-     * The Trader object shoul initialize a default config
-     * @param account
-     */
-    public Trader(Account_old account){
-        this(account,null);
-    }
-    
-    
-
-       
-
-};

@@ -1,8 +1,8 @@
 package sesim;
 
-public class SellOrder extends Order {
+public class SellOrder extends Order_old {
    
      public SellOrder(){
-        super(OrderType.ask);
+        super(OrderType_old.ask);
     }
 }

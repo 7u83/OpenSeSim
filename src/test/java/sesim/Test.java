@@ -36,14 +36,18 @@ public class Test {
     public static void main(String[] args) {
         Exchange se = new Exchange();
         
-        double aid; 
-        aid = se.createAccount(100, 110);
-        System.out.print(aid);
-        System.out.print("\n");
-
-        aid = se.createAccount(100, 110);
-        System.out.print(aid);
-        System.out.print("\n");
+        double aid1 = se.createAccount(100, 110);
+        
+        
+        double aid2 = se.createAccount(100, 110);
+        se.createOrder(aid2, Exchange.OrderType.ASK, 50, 9);
+        se.createOrder(aid1, Exchange.OrderType.BID, 50, 11);
+        
+        
+        se.executeOrders();
+        
+        //S/ystem.out.print(aid);
+        //System.out.print("\n");
         
         
     }

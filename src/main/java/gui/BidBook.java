@@ -25,7 +25,7 @@
  */
 package gui;
 
-import sesim.Order.*;
+import sesim.Order_old.*;
 import java.util.ArrayList;
 
 /**
@@ -36,13 +36,13 @@ public class BidBook extends OrderBook {
 
     @Override
     ArrayList getOrderBook() {
-        return MainWin.se.getOrderBook(OrderType.bid, 40);
+        return MainWin.se.getOrderBook(OrderType_old.bid, 40);
     }
 
     public BidBook() {
         if (MainWin.se == null) {
             return;
         }
-        MainWin.se.addBookReceiver(OrderType.bid, this);
+        MainWin.se.addBookReceiver(OrderType_old.bid, this);
     }
 }

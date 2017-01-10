@@ -25,7 +25,7 @@
  */
 package traders;
 
-import sesim.Account;
+import sesim.Account_old;
 import sesim.Trader;
 import sesim.TraderConfig;
 import sesim.BuyOrder;
@@ -39,7 +39,7 @@ import sesim.BuyOrder;
  */
 public class ManTrader extends Trader{
 
-    public ManTrader(Account account,TraderConfig config) {
+    public ManTrader(Account_old account,TraderConfig config) {
         super(account,config);
     }
 
