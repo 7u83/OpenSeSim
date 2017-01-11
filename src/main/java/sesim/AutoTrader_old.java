@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2016, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,29 +23,42 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders;
+package sesim;
 
-import sesim.AutoTraderConfig;
-import sesim.Exchange;
+import static java.lang.Thread.sleep;
 
 /**
  *
- * @author tobias
+ * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderConfig extends AutoTraderConfig {
+public abstract class AutoTrader_old extends Trader_old implements Runnable {
 
-    public float[] sell_volume = {100, 100};
-    public float[] sell_limit = {-15, 15};
-    public int[] sell_order_wait = {15, 33};
-    public int[] wait_after_sell = {10, 30};
-
-    public float[] buy_volume = {100, 100};
-    public float[] buy_limit = {-15, 15};
-    public int[] buy_order_wait = {15, 33};
-    public int[] wait_after_buy = {10, 30};
-
-    @Override
-    public RandomTrader createTrader(Exchange se, double money, double shares) {
-        return new traders.RandomTrader(se, money, shares, this);
+    public AutoTrader_old(Account_old account, TraderConfig_old config) {
+        super(account, config);
     }
+
+    protected void doSleep(int seconds) {
+        try {
+            sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+        }
+    }
+
+    public void start() {
+        System.out.print("Starting AutoTrader\n");
+        class Runner extends Thread {
+
+            AutoTrader_old trader;
+
+            @Override
+            public void run() {
+                trader.run();
+            }
+        }
+        Runner r = new Runner();
+        r.trader = this;
+        r.start();
+
+    }
+
 }

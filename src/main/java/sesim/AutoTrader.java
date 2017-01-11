@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, tobias
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,41 +25,31 @@
  */
 package sesim;
 
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tobias
  */
-public abstract class AutoTrader extends Trader implements Runnable {
-
-    public AutoTrader(Account_old account, TraderConfig config) {
-        super(account, config);
+public abstract class AutoTrader {
+    
+    protected double account_id;
+    protected Exchange se;
+    protected AutoTraderConfig config;
+    
+    
+           
+    
+    public AutoTrader(Exchange se, double money, double shares, AutoTraderConfig config){
+        account_id = se.createAccount(money, shares);
+        this.se=se;
+        this.config=config;
     }
-
-    protected void doSleep(int seconds) {
-        try {
-            sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-        }
+    
+    /*public AutoTrader(Exchange se, double money, double shares){
+        this(se,money,shares,null);
     }
-
-    public void start() {
-        System.out.print("Starting AutoTrader\n");
-        class Runner extends Thread {
-
-            AutoTrader trader;
-
-            @Override
-            public void run() {
-                trader.run();
-            }
-        }
-        Runner r = new Runner();
-        r.trader = this;
-        r.start();
-
-    }
-
+    */
+    
+    public abstract void start();
+        
+    
 }

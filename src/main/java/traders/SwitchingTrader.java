@@ -26,18 +26,18 @@
 package traders;
 
 import sesim.Account_old;
-import sesim.TraderConfig;
+import sesim.TraderConfig_old;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SwitchingTrader extends RandomTrader{
+public class SwitchingTrader extends RandomTrader_old{
     
     
     private Action mode;
     
-    public SwitchingTrader(Account_old account, TraderConfig config) {
+    public SwitchingTrader(Account_old account, TraderConfig_old config) {
                
         super(account, config);
       //  System.out.print("SWTrader Created\n");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2016, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,49 @@
  */
 package traders;
 
-import sesim.AutoTraderConfig;
+import sesim.Account_old;
+import sesim.TraderConfig_old;
 import sesim.Exchange;
+import sesim.AutoTrader_old;
 
 /**
  *
- * @author tobias
+ * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderConfig extends AutoTraderConfig {
+public class RandomTraderConfig_old extends TraderConfig_old {
 
-    public float[] sell_volume = {100, 100};
-    public float[] sell_limit = {-15, 15};
-    public int[] sell_order_wait = {15, 33};
-    public int[] wait_after_sell = {10, 30};
+    //public long maxage = 1000 * 10 * 1;
+    
+    
+    /*public long hold_shares_min = 10;
+    
+    public long hold_shares_max = 30;
 
-    public float[] buy_volume = {100, 100};
-    public float[] buy_limit = {-15, 15};
-    public int[] buy_order_wait = {15, 33};
-    public int[] wait_after_buy = {10, 30};
+    public float buy_volume_min = 10;
+    */
+    
+    /**
+     * If shares are selled, this specifies
+     * the minimum and maximum volume to be selled
+     */
+    public float[] sell_volume= {100,100};
+    public float[] sell_limit = {-15,15};
+    public int[] sell_order_wait = {15,33};
+    public int[] wait_after_sell = {10,30};
 
+    
+    public float[] buy_volume={100,100};
+    public float[] buy_limit = {-15,15};
+    public int[] buy_order_wait = {15,33};    
+    public int[] wait_after_buy = {10,30};
+
+    
     @Override
-    public RandomTrader createTrader(Exchange se, double money, double shares) {
-        return new traders.RandomTrader(se, money, shares, this);
+    public AutoTrader_old createTrader(Exchange se, long shares, double money) {
+        Account_old a = new Account_old(se, shares, money);
+        return new RandomTrader_old(a, this);
     }
+  
+    
+
 }

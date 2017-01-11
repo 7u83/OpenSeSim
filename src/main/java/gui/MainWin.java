@@ -25,15 +25,16 @@
  */
 package gui;
 
-import traders.RandomTraderConfig;
+import traders.RandomTraderConfig_old;
 import traders.SwitchingTraderConfig;
-import sesim.Account_old;
 import sesim.AutoTraderLIst;
 import sesim.Exchange;
 import sesim.BuyOrder;
 import javax.swing.UIManager;
 import javax.swing.*;
 import sesim.AccountData;
+import traders.RandomTrader;
+import traders.RandomTraderConfig;
 
 
 /**
@@ -59,11 +60,11 @@ public class MainWin extends javax.swing.JFrame {
 
         AccountData a1 = se.getAccountData(aid1);
         AccountData a2 = se.getAccountData(aid2);
-        
+         se.createOrder(aid2, Exchange.OrderType.ASK, 20, 11.9);      
         se.createOrder(aid2, Exchange.OrderType.ASK, 20, 11);
         se.createOrder(aid2, Exchange.OrderType.ASK, 10, 10);
         se.createOrder(aid2, Exchange.OrderType.ASK, 10, 9);
-        se.createOrder(aid1, Exchange.OrderType.BID, 50, 7);
+        se.createOrder(aid1, Exchange.OrderType.BID, 50, 11);
 
         /*
         System.out.print("Exec Orders\n");
@@ -78,7 +79,7 @@ public class MainWin extends javax.swing.JFrame {
      
 /*        
              AutoTraderLIst at = new AutoTraderLIst();
-//        RandomTraderConfig rcfg = new RandomTraderConfig();
+//        RandomTraderConfig_old rcfg = new RandomTraderConfig_old();
         SwitchingTraderConfig rcfg = new SwitchingTraderConfig();
         at.add(1000, rcfg, se, 100, 0);
         at.add(1000, rcfg, se, 0, 10000);
@@ -184,8 +185,17 @@ public class MainWin extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         se = new Exchange();
-        myAccount = new Account_old(se,1000,100000000.0);
-        myTrader = new traders.ManTrader(myAccount,null);
+        
+        
+        RandomTraderConfig rcfg = new RandomTraderConfig();
+        RandomTrader rt = rcfg.createTrader(se, 100, 100);
+        
+        
+        //RandomTrader rt = new RandomTrader();
+        //rt.start();
+        
+   //     myAccount = new Account_old(se,1000,100000000.0);
+   //     myTrader = new traders.ManTrader(myAccount,null);
         
 /*        Account_old otherAccount = new Account_old(se,1000,1000);
         Traders.ManTrader otherTrader = new Traders.ManTrader(otherAccount);

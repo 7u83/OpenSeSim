@@ -25,12 +25,43 @@
  */
 package sesim;
 
-/**
- *
- * @author 7u83 <7u83@mail.ru>
- */
-public abstract class TraderConfig{
-    String name;
+public abstract class Trader_old {
+
+    public String name = null;
+
     
-    public abstract AutoTrader createTrader(Exchange se, long shares, double money);
-}
+    public Account_old account; 
+    public TraderConfig_old config;
+    
+    public void sell(long shares, double limit){
+        account.sell(shares, limit);
+    }
+
+    public void buy(long shares, double limit){
+        account.buy(shares, limit);
+    }
+    
+    /**
+     * Construct a Trader object
+     * @param account Account_old for this trader
+     * @param config Configration for this trader
+     */
+    public Trader_old(Account_old account, TraderConfig_old config){
+        this.account=account;
+        this.config=config;
+    }
+    
+    /**
+     * Construct a Trader object w/o config
+     * The Trader object shoul initialize a default config
+     * @param account
+     */
+    public Trader_old(Account_old account){
+        this(account,null);
+    }
+    
+    
+
+       
+
+};

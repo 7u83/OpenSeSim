@@ -15,6 +15,8 @@ public class Exchange extends Thread {
     public enum OrderType {
         BID, ASK
     }
+    
+    
 
     IDGenerator account_id = new IDGenerator();
 
@@ -612,11 +614,27 @@ public class Exchange extends Thread {
         a.orders.put(o.id, o);
         
         this.executeOrders();
-        this.updateBookReceivers(type);
-
+        this.updateBookReceivers(OrderType.ASK);
+        this.updateBookReceivers(OrderType.BID);
         return o.id;
     }
+    
+    
+    public double getBestLimit(OrderType type){
+        Order o = order_books.get(type).first();
+        if (o==null){
+            return -1;
+        }
+        return o.limit;
+    }
 
+    public int getNumberOfOpenOrders(double account_id){
+        Account a=accounts.get(account_id);
+        if (a==null)
+            return 0;
+        return a.orders.size();
+    }
+    
     public AccountData getAccountData(double account_id) {
         Account a = accounts.get(account_id);
         if (a == null) {
