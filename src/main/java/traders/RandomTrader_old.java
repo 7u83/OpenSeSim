@@ -87,7 +87,7 @@ public class RandomTrader_old extends AutoTrader_old {
 
         if (account.pending.size() != 0) {
             Order_old o = account.pending.get(0);
-            account.se.cancelOrder(o);
+            account.se.cancelOrder_old(o);
             return false;
         }
         return true;
@@ -139,7 +139,7 @@ public class RandomTrader_old extends AutoTrader_old {
         // System.out.print("RT: age is: "+age+"\n");
         if (age > myconfig.maxage) {
             //         System.out.print("MaxAge is"+myconfig.maxage+"\n");
-            account.se.cancelOrder(o);
+            account.se.cancelOrder_old(o);
 //            System.out.print("Age reached - canel return false\n");
             return false;
         }

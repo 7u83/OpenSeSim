@@ -25,6 +25,7 @@
  */
 package traders;
 
+import java.util.*;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,6 +34,8 @@ import sesim.AccountData;
 import sesim.AutoTrader;
 import sesim.Exchange;
 import sesim.Exchange.OrderType;
+
+import sesim.*;
 
 /**
  *
@@ -46,6 +49,16 @@ public class RandomTrader extends AutoTrader {
         CANCEL,
         CREATE
     }
+    
+    
+    long event(){
+               
+        System.out.print("Hello world Iam a trader\n");
+        this.cancelOrders();
+      //  doBuy();
+        return 10000;
+    }
+    
 
     class NextEvent {
 
@@ -69,7 +82,7 @@ public class RandomTrader extends AutoTrader {
     @Override
     public void start() {
 
-        timer.schedule(new TimerTaskImpl(this), 1000);
+        timer.schedule(new TimerTaskImpl(this), 0);
 
         //  timer.schedule(new TimerTaskImpl, date);
     }
@@ -113,6 +126,31 @@ public class RandomTrader extends AutoTrader {
         double max = val * minmax[1] / 100.0;
         return getRandom(min, max);
     }
+    
+    
+    public long cancelOrders(){
+        int n = se.getNumberOfOpenOrders(account_id);
+        System.out.print("Open Orders: "+n+"\n");
+        if (n>0){
+            System.out.print("Want to killń\n");
+            AccountData ad = se.getAccountData(account_id);
+            Iterator <OrderData> it = ad.orders.iterator();
+            while (it.hasNext()){
+                OrderData od=it.next();
+                boolean rc = se.cancelOrder(account_id, od.id);
+                System.out.print("killer rc "+rc+"\n");
+                System.out.print("Killing: "+od.id+"\n");
+            }
+        }
+        else{
+            doBuy();
+        }
+            
+            
+        
+        return 10000;
+        
+    }
 
     public boolean doBuy() {
         RandomTraderConfig myconfig = (RandomTraderConfig)this.config;
@@ -120,17 +158,24 @@ public class RandomTrader extends AutoTrader {
         
         OrderType type=OrderType.BID;
 
-        double money = getRandomAmmount(ad.money, myconfig.sell_volume);
-
-        double lp = se.getBestLimit(type);
+        // how much money we ant to envest?
+        double money = getRandomAmmount(ad.money, myconfig.buy_volume);
         
+
+        double lp = 100.0; //se.getBestLimit(type);
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.buy_limit);
 
-        long volume = (int) (money / (limit * 1));
+        long volume = (long) (money / (limit * 1));
         if (volume <= 0) {
-            return false;
+            //return false;
         }
+        
+        System.out.print("Volume is:"+volume+"\n");
+                System.out.print("My Ammount is: "+money+" My limit si:"+limit+ "\n");
+        //System.exit(0);
+
+        se.createOrder(account_id, OrderType.BID, volume, limit);
 
         return true;
 
@@ -154,12 +199,11 @@ public class RandomTrader extends AutoTrader {
 
         @Override
         public void run() {
-            switch (this.nextevent.event) {
-
-            }
-
+            
+            long time = trader.event();
+            
             this.cancel();
-            timer.schedule(new TimerTaskImpl(trader), 1000);
+            timer.schedule(new TimerTaskImpl(trader), time);
 
         }
     }

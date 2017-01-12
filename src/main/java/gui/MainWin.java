@@ -56,16 +56,17 @@ public class MainWin extends javax.swing.JFrame {
         
         
             double aid1 = se.createAccount(100, 100);
-        double aid2 = se.createAccount(100, 100);
+        double aid2 = se.createAccount(1000, 100);
 
-        AccountData a1 = se.getAccountData(aid1);
+  /*      AccountData a1 = se.getAccountData(aid1);
         AccountData a2 = se.getAccountData(aid2);
          se.createOrder(aid2, Exchange.OrderType.ASK, 20, 11.9);      
         se.createOrder(aid2, Exchange.OrderType.ASK, 20, 11);
         se.createOrder(aid2, Exchange.OrderType.ASK, 10, 10);
         se.createOrder(aid2, Exchange.OrderType.ASK, 10, 9);
         se.createOrder(aid1, Exchange.OrderType.BID, 50, 11);
-
+*/
+  
         /*
         System.out.print("Exec Orders\n");
         se.executeOrders();
@@ -188,7 +189,10 @@ public class MainWin extends javax.swing.JFrame {
         
         
         RandomTraderConfig rcfg = new RandomTraderConfig();
-        RandomTrader rt = rcfg.createTrader(se, 100, 100);
+        RandomTrader rt = rcfg.createTrader(se, 1000, 100);
+        rt.start();
+        
+        
         
         
         //RandomTrader rt = new RandomTrader();

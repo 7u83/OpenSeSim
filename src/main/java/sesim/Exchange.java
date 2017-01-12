@@ -352,12 +352,36 @@ public class Exchange extends Thread {
         src.shares -= shares;
         dst.shares += shares;
     }
+    
+    
+    public boolean cancelOrder(double account_id, long order_id){
+        Account a = accounts.get(account_id);
+        if (a==null){
+            return false;
+        }
+        
+        boolean ret=false;
+        
+        tradelock.lock();
+        Order o = a.orders.get(order_id);
+        if (o != null){
+            order_books.get(o.type).remove(o);
+            a.orders.remove(o.id);
+            ret=true;
+        }
+        
+        
+        tradelock.unlock();
+        this.updateBookReceivers(OrderType.BID);
+        
+        return ret;
+    }
 
     /**
      *
      * @param o
      */
-    public void cancelOrder(Order_old o) {
+    public void cancelOrder_old(Order_old o) {
         tradelock.lock();
         TreeSet<Order_old> book = this.selectOrderBook(o.type);
         book.remove(o);
@@ -613,7 +637,9 @@ public class Exchange extends Thread {
         addOrderToBook(o);
         a.orders.put(o.id, o);
         
+        tradelock.lock();
         this.executeOrders();
+        tradelock.unlock();
         this.updateBookReceivers(OrderType.ASK);
         this.updateBookReceivers(OrderType.BID);
         return o.id;
@@ -645,6 +671,32 @@ public class Exchange extends Thread {
         ad.id = account_id;
         ad.money = a.money;
         ad.shares = a.shares;
+     
+        
+        ad.orders=new ArrayList<OrderData>();
+        ad.orders.iterator();
+        
+       a.orders.values();
+       Set s =a.orders.keySet();
+       Iterator it = s.iterator();
+       System.out.print("Keys list"+s.size()+"\n");
+       while (it.hasNext()){
+           long x = (long)it.next();
+           System.out.print("X"+x+"\n");
+           Order o = a.orders.get(x);
+           System.out.print("oGot: "+o.limit+" "+o.volume+"\n");
+           OrderData od = new OrderData();
+           od.id=o.id;
+           od.limit=o.limit;
+           od.volume=o.volume;
+           ad.orders.add(od);
+       }
+              
+       //System.exit(0);
+        
+        //a.orders.keySet();
+        //KeySet ks = a.orders.keySet();
+        
         return ad;
     }
     
