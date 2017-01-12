@@ -52,7 +52,7 @@ public class RandomTrader extends AutoTrader {
     
     long event(){
                
-        System.out.print("Hello world Iam a trader\n");
+//        System.out.print("Hello world Iam a trader\n");
         return this.doTrade();
       //  doBuy();
         
@@ -129,16 +129,16 @@ public class RandomTrader extends AutoTrader {
     
     public long cancelOrders(){
         int n = se.getNumberOfOpenOrders(account_id);
-        System.out.print("Open Orders: "+n+"\n");
+//        System.out.print("Open Orders: "+n+"\n");
         if (n>0){
-            System.out.print("Want to killń\n");
+//            System.out.print("Want to killń\n");
             AccountData ad = se.getAccountData(account_id);
             Iterator <OrderData> it = ad.orders.iterator();
             while (it.hasNext()){
                 OrderData od=it.next();
                 boolean rc = se.cancelOrder(account_id, od.id);
-                System.out.print("killer rc "+rc+"\n");
-                System.out.print("Killing: "+od.id+"\n");
+//                System.out.print("killer rc "+rc+"\n");
+ //               System.out.print("Killing: "+od.id+"\n");
             }
         }
  
@@ -155,8 +155,10 @@ public class RandomTrader extends AutoTrader {
         // how much money we ant to envest?
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
         
+        Quote q = se.getCurrentPrice();
+        double lp = q == null ? 100.0 : q.price; 
 
-        double lp = 100.0; //se.getBestLimit(type);
+        
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.buy_limit);
 
@@ -165,8 +167,8 @@ public class RandomTrader extends AutoTrader {
             return 0;
         }
         
-        System.out.print("Volume is:"+volume+"\n");
-                System.out.print("My Ammount is: "+money+" My limit si:"+limit+ "\n");
+//        System.out.print("Volume is:"+volume+"\n");
+//                System.out.print("My Ammount is: "+money+" My limit si:"+limit+ "\n");
 
 
         se.createOrder(account_id, type, volume, limit);
@@ -187,7 +189,12 @@ public class RandomTrader extends AutoTrader {
         double volume = (long)getRandomAmmount(ad.shares, myconfig.sell_volume);
         
 
-        double lp = 100.0; //se.getBestLimit(type);
+    //    double lp = 100.0; //se.getBestLimit(type);
+        
+        Quote q = se.getCurrentPrice();
+        double lp = q == null ? 100.0 : q.price; 
+
+        
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.sell_limit);
 
@@ -196,8 +203,8 @@ public class RandomTrader extends AutoTrader {
   //          return false;
   //      }
         
-        System.out.print("Volume is:"+volume+"\n");
-                System.out.print("My Ammount is: "+volume+" My limit si:"+limit+ "\n");
+//        System.out.print("Volume is:"+volume+"\n");
+ //               System.out.print("My Ammount is: "+volume+" My limit si:"+limit+ "\n");
 
 
         se.createOrder(account_id, type, volume, limit);

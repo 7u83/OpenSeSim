@@ -25,6 +25,7 @@
  */
 package gui;
 
+import sesim.*;
 import sesim.Exchange;
 import sesim.Exchange.*;
 import java.awt.Color;
@@ -68,6 +69,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
      */
     public Chart() {
         initComponents();
+        
+        sesim.IDGenerator idgen = new IDGenerator();
+        
+        
 /*
         String stockSymbol = "Schliemanz Koch AG";
         //String stockSymbol = "MSFT";
@@ -192,7 +197,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
             data.add(d);
         }
 
-        System.out.print(data.size() + "\n");
+      //  System.out.print(data.size() + "\n");
         //  System.exit(0);
 
         return data.toArray(new OHLCDataItem[data.size()]);

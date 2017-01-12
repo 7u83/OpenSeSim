@@ -25,14 +25,7 @@
  */
 package gui;
 
-import traders.RandomTraderConfig_old;
-import traders.SwitchingTraderConfig;
-import sesim.AutoTraderLIst;
 import sesim.Exchange;
-import sesim.BuyOrder;
-import javax.swing.UIManager;
-import javax.swing.*;
-import sesim.AccountData;
 import traders.RandomTrader;
 import traders.RandomTraderConfig;
 
@@ -188,14 +181,20 @@ public class MainWin extends javax.swing.JFrame {
         se = new Exchange();
         
         
-        RandomTraderConfig rcfg = new RandomTraderConfig();
-        RandomTrader rt = rcfg.createTrader(se, 1000, 100);
-        rt.start();
+        //RandomTraderConfig rcfg = new RandomTraderConfig();
+        //RandomTrader rt = rcfg.createTrader(se, 1000, 100);
+        //rt.start();
         
                 RandomTraderConfig rcfg1 = new RandomTraderConfig();
-        RandomTrader rt1 = rcfg.createTrader(se, 1000, 100);
+        RandomTrader rt1 = rcfg1.createTrader(se, 1000000000, 0);
         rt1.start();
         
+        
+        RandomTraderConfig cfg = new RandomTraderConfig();
+        for (int i=0; i<5000; i++){
+            RandomTrader randt = cfg.createTrader(se, 100, 100);
+            randt.start();
+        }
         
         
         //RandomTrader rt = new RandomTrader();

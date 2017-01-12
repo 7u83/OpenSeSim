@@ -48,7 +48,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
     
     OrderBookListModel model;
     
-    abstract ArrayList getOrderBook();
+    abstract ArrayList <Order> getOrderBook();
 
     private Color hdr_color = Color.LIGHT_GRAY;
 
@@ -71,7 +71,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
         
         class Updater implements Runnable{
             OrderBookListModel model;
-            ArrayList newlist;
+            ArrayList <Order> newlist;
             
             @Override
             public void run() {
@@ -97,7 +97,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
 
     protected class OrderBookListModel extends AbstractTableModel {
 
-        private ArrayList <OrderBookItem> list;
+        private ArrayList <Order> list;
         //private final boolean desc = false;
 
         public OrderBookListModel() {
@@ -146,7 +146,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
 
         @Override
         public Object getValueAt(int r, int c) {
-            OrderBookItem o;
+            Order o;
 
             int s = list.size();
             //System.out.print("Looking for Value at" + r + ":" + c + " w size:" + s + "\n");
@@ -159,12 +159,12 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             Formatter f = new Formatter();
             switch (c) {
                 case 0:
-                    return String.format("#%06x", o.id);
+                    return String.format("#%06x", o.getID());
 
                 case 1:
-                    return String.format("%.4f",o.limit);
+                    return String.format("%.4f",o.getLimit());
                 case 2:
-                    return String.format("%.4f", o.volume);
+                    return String.format("%.4f", o.getVolume());
             }
             return "";
         }

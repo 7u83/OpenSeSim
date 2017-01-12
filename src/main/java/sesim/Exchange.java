@@ -1,7 +1,6 @@
 package sesim;
 
 import java.util.*;
-import java.util.concurrent.*;
 
 import sesim.Order_old.OrderStatus;
 import sesim.Order_old.OrderType_old;
@@ -17,15 +16,18 @@ public class Exchange extends Thread {
     }
 
     IDGenerator account_id = new IDGenerator();
-    public static Timer timer=new Timer();
+    public static Timer timer = new Timer();
 
-    private class Account implements Comparable {
+    /**
+     *
+     */
+    public class Account implements Comparable {
 
         protected double id;
         protected double shares;
         protected double money;
 
-        protected HashMap<Long, Order> orders;
+        private final HashMap<Long, Order> orders;
 
         @Override
         public int compareTo(Object a) {
@@ -39,6 +41,19 @@ public class Exchange extends Thread {
             this.money = money;
             this.shares = shares;
         }
+
+        public double getID() {
+            return id;
+        }
+
+        public double getShares() {
+            return shares;
+        }
+
+        public double getMoney() {
+            return money;
+        }
+
     }
 
     //private TreeSet<Account> accounts = new TreeSet<>();
@@ -75,14 +90,15 @@ public class Exchange extends Thread {
             if (d != 0) {
                 return d > 0 ? 1 : -1;
             }
-            
-            if(left.id<right.id)
+
+            if (left.id < right.id) {
                 return -1;
-            if(left.id>right.id)
+            }
+            if (left.id > right.id) {
                 return 1;
-            
+            }
+
             return 0;
-            
 
 //            return left.id < right.id ? -1 : 1;
         }
@@ -95,15 +111,15 @@ public class Exchange extends Thread {
 
     IDGenerator order_id = new IDGenerator();
 
-    private class Order {
+    public class Order {
 
         OrderType type;
-        double limit;
-        double volume;
-        double initial_volume;
-        long id;
+        private double limit;
+        private double volume;
+        private final double initial_volume;
+        private long id;
         long created;
-        Account account;
+        private Account account;
 
         Order(Account account, OrderType type, double volume, double limit) {
             id = order_id.getNext();
@@ -114,6 +130,31 @@ public class Exchange extends Thread {
             this.initial_volume = volume;
             this.created = System.currentTimeMillis();
         }
+
+        public long getID() {
+            return id;
+        }
+
+        public double getVolume() {
+            return volume;
+        }
+
+        public double getLimit() {
+            return limit;
+        }
+
+        public OrderType getType() {
+            return type;
+        }
+
+        public double getExecuted() {
+            return initial_volume - volume;
+        }
+
+        public double getInitialVolume() {
+            return initial_volume;
+        }
+
     }
 
     /**
@@ -165,6 +206,36 @@ public class Exchange extends Thread {
         result.addAll(this.quoteHistory.tailSet(s));
 
         return result;
+
+    }
+
+    public Quote getCurrentPrice() {
+
+        TreeSet<Order> bid = order_books.get(OrderType.BID);
+        TreeSet<Order> ask = order_books.get(OrderType.ASK);
+
+        Quote q = null;
+
+        tradelock.lock();
+        if (!bid.isEmpty() && !ask.isEmpty()) {
+            q = new Quote();
+            q.price = (bid.first().limit + ask.first().limit) / 2.0;
+
+        }
+        tradelock.unlock();
+
+        if (q != null) {
+            return q;
+        }
+
+        if (this.quoteHistory.isEmpty()) {
+
+            return null;
+        }
+
+        q = this.quoteHistory.last();
+
+        return q;
 
     }
 
@@ -283,38 +354,25 @@ public class Exchange extends Thread {
 
     }
 
-    public class OrderBookItem {
-
-        public long id;
-        public double limit;
-        public double volume;
-    }
-
-    public ArrayList<OrderBookItem> getOrderBook(OrderType type, int depth) {
+    public ArrayList<Order> getOrderBook(OrderType type, int depth) {
 
         TreeSet<Order> book = order_books.get(type);
         if (book == null) {
             return null;
         }
 
-        ArrayList<OrderBookItem> ret = new ArrayList<>();
+        ArrayList<Order> ret = new ArrayList<>();
 
         Iterator<Order> it = book.iterator();
 
         for (int i = 0; i < depth && it.hasNext(); i++) {
-
-            Order o = it.next();
-            OrderBookItem n = new OrderBookItem();
-            n.id = o.id;
-            n.limit = o.limit;
-            n.volume = o.volume;
-
-            ret.add(n);
-            //System.out.print("Order_old" + o.limit);
-            //System.out.println();
+            ret.add(it.next());
         }
         return ret;
+    }
 
+    public Quote getLastQuoete() {
+        return this.quoteHistory.first();
     }
 
     public void print_current() {
@@ -371,22 +429,13 @@ public class Exchange extends Thread {
 
         tradelock.lock();
         Order o = a.orders.get(order_id);
-        
-     //   System.out.print("The Order:"+o.limit+"\n");
-        
-        if (o != null) {
-          TreeSet ob =order_books.get(o.type);
-          
-          System.out.print("We have the orderbook"+ob.size()+"\n");
-          
-          System.out.print("Want to remove:"+o.limit+" "+o.volume+" "+o.id+"\n");
-          
-         
-          
-          boolean rc = ob.remove(o);
-          
 
-            System.out.print("My first rc = :" + rc);
+        //   System.out.print("The Order:"+o.limit+"\n");
+        if (o != null) {
+            TreeSet ob = order_books.get(o.type);
+
+            boolean rc = ob.remove(o);
+
             a.orders.remove(o.id);
             ret = true;
         }
@@ -456,9 +505,7 @@ public class Exchange extends Thread {
             Order a = ask.first();
 
             if (b.limit < a.limit) {
-                System.out.print("No match\n");
-                // no match, nothing to do
-                return;
+                break;
             }
 
             // There is a match, calculate price and volume
@@ -467,7 +514,7 @@ public class Exchange extends Thread {
 
             // Transfer money and shares
             transferMoneyAndShares(b.account, a.account, volume * price, -volume);
-
+//System.out.print("Transfer Shares was called with volume "+volume+"\n");
             // Update volume
             b.volume -= volume;
             a.volume -= volume;
@@ -479,14 +526,20 @@ public class Exchange extends Thread {
             removeOrderIfExecuted(b);
 
         }
-
+//System.out.print("Volume total is "+volume_total+"\n");
+        if (volume_total == 0) {
+            return;
+        }
         Quote q = new Quote();
         q.price = money_total / volume_total;
         q.volume = volume_total;
         q.time = System.currentTimeMillis();
 
-        System.out.print("Price" + q.price + "," + q.volume + "\n");
-//this.updateQuoteReceivers(q);
+//        System.out.print("There was a trade:"+q.price+"\n");
+        
+        this.quoteHistory.add(q);
+        this.updateQuoteReceivers(q);
+
     }
 
     private void executeOrders_old() {
@@ -661,7 +714,7 @@ public class Exchange extends Thread {
         tradelock.unlock();
         this.updateBookReceivers(OrderType.ASK);
         this.updateBookReceivers(OrderType.BID);
-        
+
         return o.id;
     }
 
@@ -681,6 +734,10 @@ public class Exchange extends Thread {
         return a.orders.size();
     }
 
+    public Account getAccount(double account_id) {
+        return accounts.get(account_id);
+    }
+
     public AccountData getAccountData(double account_id) {
         Account a = accounts.get(account_id);
         if (a == null) {
@@ -692,18 +749,18 @@ public class Exchange extends Thread {
         ad.money = a.money;
         ad.shares = a.shares;
 
-        ad.orders = new ArrayList<OrderData>();
+        ad.orders = new ArrayList<>();
         ad.orders.iterator();
 
         a.orders.values();
         Set s = a.orders.keySet();
         Iterator it = s.iterator();
-        System.out.print("Keys list" + s.size() + "\n");
+
         while (it.hasNext()) {
             long x = (long) it.next();
-            System.out.print("X" + x + "\n");
+
             Order o = a.orders.get(x);
-            System.out.print("oGot: " + o.limit + " " + o.volume + "\n");
+
             OrderData od = new OrderData();
             od.id = o.id;
             od.limit = o.limit;

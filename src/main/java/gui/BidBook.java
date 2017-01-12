@@ -25,7 +25,6 @@
  */
 package gui;
 
-import sesim.Order_old.*;
 import java.util.ArrayList;
 import sesim.Exchange.*;
 
@@ -36,7 +35,7 @@ import sesim.Exchange.*;
 public class BidBook extends OrderBook {
 
     @Override
-    ArrayList getOrderBook() {
+    ArrayList <Order> getOrderBook() {
         return MainWin.se.getOrderBook(OrderType.BID, 40);
     }
 

@@ -36,7 +36,7 @@ public class Locker {
     private final Semaphore AVAIL = new Semaphore(1, true);
 
     /**
-     * 
+     * Acquire a lock
      * @return
      */
     public boolean lock() {

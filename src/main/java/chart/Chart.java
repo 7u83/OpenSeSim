@@ -9,6 +9,8 @@ import java.awt.*;
 import sesim.Exchange.*;
 import sesim.Quote;
 import gui.MainWin;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -33,9 +35,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     int item_width = 10;
     int items = 350;
-    long ntime = -1;
+    long ntime = 0;
 
-    OHLCData data;
+    OHLCData data = new OHLCData();
 
     OHLCDataItem current = null;
 
@@ -48,14 +50,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     private void realTimeAdd(long time, float price, float volume) {
 
-        /*     System.out.print("Diff:"
+             /*System.out.print("Diff:"
                 +(ntime-time)
                 +"\n"
-        );
-         */
+        );*/
+        
         if (time > ntime) {
 
-            System.out.print("new raster ----------------------------------\n");
+//            System.out.print("new raster ----------------------------------\n");
             current = null;
             ntime = rasterTime(time) + 5000;
             //       System.out.print(ntime+"\n");
@@ -95,8 +97,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         this.getSize();
 
         int pwidth = item_width * items;
+        int phight = 40;
 
-        this.setPreferredSize(new Dimension(pwidth, 400));
+        this.setPreferredSize(new Dimension(pwidth, phight));
+        
+        Dimension  dim = this.getSize();
+    //    System.out.print("Diemension "+dim.width+" "+dim.height+"\n");
 
                 g.setColor(Color.RED);
                g.drawLine(0,0,100,100);
@@ -109,13 +115,58 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         
  
         
-        if (this.current == null) {
-            return;
+     //   if (this.current == null) {
+     //       return;
+     //   }
+        
+        ArrayList <OHLCDataItem> od = data.data;
+        
+        System.out.print("OD S: "+od.size()+"\n");
+        g.setColor(Color.BLUE);    
+        
+        
+        
+        Iterator <OHLCDataItem> it = od.iterator();
+        int myi=0;
+        while (it.hasNext()){
+            OHLCDataItem di = it.next();
+
+                        float val = di.close;
+             float max = data.max;
+             float min = data.min;
+             
+             if (min==max){
+                 min = val/2;
+                 max = val*2;
+                 
+                 
+             }
+
+            
+            
+            System.out.print("Fval: "+val+" "+min+"\n");
+            val -= min;
+            System.out.print("VAL New"+val+"\n");
+            
+             //val/ ((data.max-data.min)/dim.height);
+
+
+             System.out.print("MINMAX "+min+" "+max+"\n");
+             
+             val = dim.height*val/(data.max-data.min);
+             
+             
+             int x = myi * this.item_width;
+             myi++;
+            g.drawLine(x, 0, x, (int)val);
+            
+            System.out.print("Draw Line: "+x+" "+val+"\n");
+            
         }
         
         
-        g.setColor(Color.BLUE);
-        g.drawLine(0, 0, 100, (int) ((this.current.close-80.0)*80.0));
+
+    //    g.drawLine(0, 0, 100, (int) ((this.current.close-80.0)*80.0));
 
     }
 
@@ -131,7 +182,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         //   g.get
 
         Rectangle bounds = g.getDeviceConfiguration().getBounds();
-        System.out.print(bounds.width + "\n");
+       // System.out.print(bounds.width + "\n");
 
         //g.fillRect(0, 0, 100, 100);
         Dimension d = this.getSize();
@@ -170,8 +221,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     @Override
     public void UpdateQuote(Quote q) {
-        // System.out.print("Quote Received\n");
-        this.realTimeAdd(q.time, (float) q.price, (float)q.volume);
+    //    System.out.print("Quote Received\n");
+//        this.realTimeAdd(q.time, (float) q.price, (float)q.volume);
+        
+        data.realTimeAdd(q.time, (float)q.price, (float)q.volume);
     //    this.invalidate();
         this.repaint();
     }

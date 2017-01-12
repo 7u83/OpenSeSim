@@ -33,7 +33,8 @@ import java.util.*;
  */
 public class OHLCData { //extends ArrayList <OHLCDataItem> {
 
-    float max;
+    float max=0;
+    float min=0;
 
     long time_start;
     long time_step;
@@ -55,19 +56,36 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
     
     
     private void updateMinMax(float price){
-       // if (price>max)     
+        if (price > max){
+            
+            max = price;
+        }
+        if (price < min){
+            min = price;
+        }
+
     }
 
     private long ntime = 0;
 
     boolean realTimeAdd(long time, float price, float volume) {
+        
+        
         if (time > ntime) {
+            if (ntime==0){
+                System.out.print ("Setting ntimt was zero\n");
+                this.min=price;
+                this.max=price;
+            }
+            
             ntime = rasterTime(time) + 5000;
             data.add(new OHLCDataItem(price, price, price, price, volume));
+            this.updateMinMax(price);
             return true;
         }
 
         OHLCDataItem d = data.get(data.size() - 1);
+        this.updateMinMax(price);
         boolean rc = d.update(price, volume);
         return rc;
     }
