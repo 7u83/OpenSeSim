@@ -54,9 +54,9 @@ public class RandomTrader extends AutoTrader {
     long event(){
                
         System.out.print("Hello world Iam a trader\n");
-        this.cancelOrders();
+        return this.cancelOrders();
       //  doBuy();
-        return 10000;
+        
     }
     
 
@@ -142,13 +142,12 @@ public class RandomTrader extends AutoTrader {
                 System.out.print("Killing: "+od.id+"\n");
             }
         }
-        else{
-            doBuy();
-        }
+ 
+       doBuy();
             
             
         
-        return 10000;
+        return 15000;
         
     }
 
