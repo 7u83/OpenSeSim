@@ -33,15 +33,25 @@ package sesim;
         private final Locker ID_LOCKER = new Locker();
         private long next_id;
         
-        
+       /**
+        * Initialize the ID generator
+        * @param start ID value to start with
+        */ 
         public IDGenerator(long start){
             next_id=start;
         }
         
+        /**
+         * Initialize ID Generator with start ID = 0
+         */
         public IDGenerator(){
             this(0);
         }
         
+        /**
+         * Get the next ID
+         * @return the next generated ID
+         */
         public long getNext(){
             ID_LOCKER.lock();
             long id = next_id++;
