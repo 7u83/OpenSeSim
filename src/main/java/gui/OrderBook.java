@@ -159,12 +159,12 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             Formatter f = new Formatter();
             switch (c) {
                 case 0:
-                    return f.format("#%06x", o.id);
+                    return String.format("#%06x", o.id);
 
                 case 1:
-                    return o.limit;
+                    return String.format("%.4f",o.limit);
                 case 2:
-                    return o.volume;
+                    return String.format("%.4f", o.volume);
             }
             return "";
         }

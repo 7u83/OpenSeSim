@@ -17,6 +17,7 @@ public class Exchange extends Thread {
     }
 
     IDGenerator account_id = new IDGenerator();
+    public static Timer timer=new Timer();
 
     private class Account implements Comparable {
 
@@ -485,7 +486,7 @@ public class Exchange extends Thread {
         q.time = System.currentTimeMillis();
 
         System.out.print("Price" + q.price + "," + q.volume + "\n");
-
+//this.updateQuoteReceivers(q);
     }
 
     private void executeOrders_old() {
@@ -660,6 +661,7 @@ public class Exchange extends Thread {
         tradelock.unlock();
         this.updateBookReceivers(OrderType.ASK);
         this.updateBookReceivers(OrderType.BID);
+        
         return o.id;
     }
 

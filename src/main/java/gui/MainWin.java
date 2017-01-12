@@ -192,6 +192,9 @@ public class MainWin extends javax.swing.JFrame {
         RandomTrader rt = rcfg.createTrader(se, 1000, 100);
         rt.start();
         
+                RandomTraderConfig rcfg1 = new RandomTraderConfig();
+        RandomTrader rt1 = rcfg.createTrader(se, 1000, 100);
+        rt1.start();
         
         
         

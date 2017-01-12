@@ -27,7 +27,6 @@ package traders;
 
 import java.util.*;
 import java.util.Random;
-import java.util.Timer;
 import java.util.TimerTask;
 import sesim.AccountData;
 
@@ -43,7 +42,7 @@ import sesim.*;
  */
 public class RandomTrader extends AutoTrader {
 
-    static Timer timer = new Timer();
+    //static Timer timer = new Timer();
 
     enum Event {
         CANCEL,
@@ -54,7 +53,7 @@ public class RandomTrader extends AutoTrader {
     long event(){
                
         System.out.print("Hello world Iam a trader\n");
-        return this.cancelOrders();
+        return this.doTrade();
       //  doBuy();
         
     }
@@ -82,7 +81,7 @@ public class RandomTrader extends AutoTrader {
     @Override
     public void start() {
 
-        timer.schedule(new TimerTaskImpl(this), 0);
+        Exchange.timer.schedule(new TimerTaskImpl(this), 0);
 
         //  timer.schedule(new TimerTaskImpl, date);
     }
@@ -143,18 +142,14 @@ public class RandomTrader extends AutoTrader {
             }
         }
  
-       doBuy();
-            
-            
-        
-        return 15000;
+        return n;
         
     }
 
-    public boolean doBuy() {
+    public long doBuy() {
         RandomTraderConfig myconfig = (RandomTraderConfig)this.config;
         AccountData ad = this.se.getAccountData(account_id);
-        
+       
         OrderType type=OrderType.BID;
 
         // how much money we ant to envest?
@@ -167,18 +162,63 @@ public class RandomTrader extends AutoTrader {
 
         long volume = (long) (money / (limit * 1));
         if (volume <= 0) {
-            //return false;
+            return 0;
         }
         
         System.out.print("Volume is:"+volume+"\n");
                 System.out.print("My Ammount is: "+money+" My limit si:"+limit+ "\n");
-        //System.exit(0);
-
-        se.createOrder(account_id, OrderType.BID, volume, limit);
-
-        return true;
 
 
+        se.createOrder(account_id, type, volume, limit);
+
+                return getRandom(myconfig.buy_order_wait)*1000;
+        
+
+    }
+    
+
+    public long doSell() {
+        RandomTraderConfig myconfig = (RandomTraderConfig)this.config;
+        AccountData ad = this.se.getAccountData(account_id);
+       
+        OrderType type=OrderType.ASK;
+
+        // how much money we ant to envest?
+        double volume = (long)getRandomAmmount(ad.shares, myconfig.sell_volume);
+        
+
+        double lp = 100.0; //se.getBestLimit(type);
+        double limit;
+        limit = lp + getRandomAmmount(lp, myconfig.sell_limit);
+
+//        long volume = (long) (money / (limit * 1));
+ //       if (volume <= 0) {
+  //          return false;
+  //      }
+        
+        System.out.print("Volume is:"+volume+"\n");
+                System.out.print("My Ammount is: "+volume+" My limit si:"+limit+ "\n");
+
+
+        se.createOrder(account_id, type, volume, limit);
+
+        return getRandom(myconfig.sell_order_wait)*1000;
+
+    }
+
+
+    
+    
+    
+    long doTrade(){
+        cancelOrders();
+        int what = rand.nextInt(2);
+        if (what==0)
+            return doBuy();
+        else
+            return doSell();
+        
+        
     }
 
     protected NextEvent createOrder() {
@@ -202,7 +242,7 @@ public class RandomTrader extends AutoTrader {
             long time = trader.event();
             
             this.cancel();
-            timer.schedule(new TimerTaskImpl(trader), time);
+            Exchange.timer.schedule(new TimerTaskImpl(trader), time);
 
         }
     }
