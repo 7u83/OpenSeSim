@@ -47,32 +47,18 @@ public class FullChart extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        legend1 = new chart.Legend();
         jScrollPane1 = new javax.swing.JScrollPane();
         chart1 = new chart.Chart();
-
-        legend1.setBackground(new java.awt.Color(255, 204, 204));
-
-        javax.swing.GroupLayout legend1Layout = new javax.swing.GroupLayout(legend1);
-        legend1.setLayout(legend1Layout);
-        legend1Layout.setHorizontalGroup(
-            legend1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 75, Short.MAX_VALUE)
-        );
-        legend1Layout.setVerticalGroup(
-            legend1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
 
         javax.swing.GroupLayout chart1Layout = new javax.swing.GroupLayout(chart1);
         chart1.setLayout(chart1Layout);
         chart1Layout.setHorizontalGroup(
             chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 737, Short.MAX_VALUE)
+            .addGap(0, 3480, Short.MAX_VALUE)
         );
         chart1Layout.setVerticalGroup(
             chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 295, Short.MAX_VALUE)
+            .addGap(0, 280, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(chart1);
@@ -83,18 +69,14 @@ public class FullChart extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(legend1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(legend1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -103,6 +85,5 @@ public class FullChart extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private chart.Chart chart1;
     private javax.swing.JScrollPane jScrollPane1;
-    private chart.Legend legend1;
     // End of variables declaration//GEN-END:variables
 }

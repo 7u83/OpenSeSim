@@ -41,14 +41,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     OHLCData data = new OHLCData();
 
     OHLCDataItem current = null;
-
-    /*    long rasterTime(long time) {
-
-        long rt = time / 5000;
-        return rt * 5000;
-
+    
+    
+    int getY(float Y){
+        
+        return 0;
     }
-     */
+
+    
+    void drawCandle(Graphics2D g, OHLCData d, int x, int y){
+        
+    }
+    
+
     void drawXLegend(Graphics2D g) {
         int xl_height = 30;
         Dimension dim = this.getSize();

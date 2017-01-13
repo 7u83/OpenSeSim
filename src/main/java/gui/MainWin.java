@@ -207,13 +207,13 @@ public class MainWin extends javax.swing.JFrame {
         RandomTraderConfig rcfg1 = new RandomTraderConfig();
         AutoTrader rt1 = rcfg1.createTrader(se, 1000000, 0);
         rt1.start();
-        AutoTrader rt2 = rcfg1.createTrader(se, 1, 100);
-        rt2.start();
+        //AutoTrader rt2 = rcfg1.createTrader(se, 1, 100);
+        //rt2.start();
         
         
         RandomTraderConfig cfg = new RandomTraderConfig();
-        for (int i=0; i<10000; i++){
-            AutoTrader randt = cfg.createTrader(se, 1, 100);
+        for (int i=0; i<100; i++){
+            AutoTrader randt = cfg.createTrader(se, 100, 100);
             randt.start();
         }
         

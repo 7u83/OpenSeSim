@@ -64,10 +64,12 @@ public class RandomTrader extends AutoTrader {
         public Event event;
         public long time;
 
-        NextEvent(Event e, long time) {
+    /*    NextEvent(Event e, long time) {
             this.event = e;
             this.time = time;
         }
+        */
+        
     }
 
     public RandomTrader(Exchange se, double money, double shares, RandomTraderConfig config) {
@@ -171,7 +173,7 @@ public class RandomTrader extends AutoTrader {
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
         
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? 0.0001 : q.price; 
+        double lp = q == null ? 1.0 : q.price; 
      
 
         
@@ -208,7 +210,7 @@ public class RandomTrader extends AutoTrader {
     //    double lp = 100.0; //se.getBestLimit(type);
         
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? 0.1 : q.price; 
+        double lp = q == null ? 1.0 : q.price; 
 
         
         double limit;
@@ -263,6 +265,7 @@ public class RandomTrader extends AutoTrader {
         public void run() {
             
             long time = trader.event();
+            time/=50;
             
             this.cancel();
             Exchange.timer.schedule(new TimerTaskImpl(trader), time);
