@@ -94,6 +94,8 @@ public class RandomTrader extends AutoTrader {
              
             
     }
+       
+    double start = 0.1;
 
     @Override
     public void start() {
@@ -173,7 +175,7 @@ public class RandomTrader extends AutoTrader {
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
         
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? 1.0 : q.price; 
+        double lp = q == null ? start : q.price; 
      
 
         
@@ -210,7 +212,7 @@ public class RandomTrader extends AutoTrader {
     //    double lp = 100.0; //se.getBestLimit(type);
         
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? 1.0 : q.price; 
+        double lp = q == null ? start : q.price; 
 
         
         double limit;
