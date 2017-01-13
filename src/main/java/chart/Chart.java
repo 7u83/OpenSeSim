@@ -50,11 +50,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     private void realTimeAdd(long time, float price, float volume) {
 
-             /*System.out.print("Diff:"
+        /*System.out.print("Diff:"
                 +(ntime-time)
                 +"\n"
         );*/
-        
         if (time > ntime) {
 
 //            System.out.print("new raster ----------------------------------\n");
@@ -100,74 +99,78 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         int phight = 40;
 
         this.setPreferredSize(new Dimension(pwidth, phight));
-        
-        Dimension  dim = this.getSize();
-    //    System.out.print("Diemension "+dim.width+" "+dim.height+"\n");
 
-                g.setColor(Color.RED);
-               g.drawLine(0,0,100,100);
-               
+        Dimension dim = this.getSize();
+        //    System.out.print("Diemension "+dim.width+" "+dim.height+"\n");
+
+        g.setColor(Color.RED);
+
+        g.drawLine(0, 0, 100, 100);
+
         for (int i = 0; i < items; i++) {
             int x = i * this.item_width;
             g.drawLine(x, 0, x, 50);
 
         }
+
+        //   if (this.current == null) {
+        //       return;
+        //   }
+        ArrayList<OHLCDataItem> od = data.data;
+
+        System.out.print("OD S: " + od.size() + "\n");
+        g.setColor(Color.BLUE);
+        g.setStroke(new BasicStroke(3));
+
+
+        Iterator<OHLCDataItem> it = od.iterator();
+        int myi = 0;
         
- 
+        int lastx=0;
+        int lasty=0;
         
-     //   if (this.current == null) {
-     //       return;
-     //   }
-        
-        ArrayList <OHLCDataItem> od = data.data;
-        
-        System.out.print("OD S: "+od.size()+"\n");
-        g.setColor(Color.BLUE);    
-        
-        
-        
-        Iterator <OHLCDataItem> it = od.iterator();
-        int myi=0;
-        while (it.hasNext()){
+        while (it.hasNext()) {
             OHLCDataItem di = it.next();
 
-                        float val = di.close;
-             float max = data.max;
-             float min = data.min;
-             
-             if (min==max){
-                 min = val/2;
-                 max = val*2;
-                 
-                 
-             }
+            float y = di.close;
+            float max = data.max;
+            float min = data.min;
+            
+            max = max/10.0f+max;
+            min = min-min/10.0f;
 
-            
-            
-            System.out.print("Fval: "+val+" "+min+"\n");
-            val -= min;
-            System.out.print("VAL New"+val+"\n");
-            
-             //val/ ((data.max-data.min)/dim.height);
+            if (min == max) {
+                min = y / 2;
+                max = y * 2;
 
+            }
 
-             System.out.print("MINMAX "+min+" "+max+"\n");
-             
-             val = dim.height*val/(data.max-data.min);
-             
-             
-             int x = myi * this.item_width;
-             myi++;
-            g.drawLine(x, 0, x, (int)val);
+         //   max = 5;
+           // min = 0;
+
+            System.out.print("Fval: " + y + " " + min + "\n");
+            y -= min;
+            System.out.print("VAL New" + y + "\n");
+
+            //val/ ((data.max-data.min)/dim.height);
+            System.out.print("MINMAX " + min + " " + max + " " + dim.height + "\n");
+
+            y =  dim.height-(dim.height * y / (max - min));
+
+            int x = myi * this.item_width;
+            myi++;
             
-            System.out.print("Draw Line: "+x+" "+val+"\n");
+            g.drawLine(lastx, lasty, x, (int) y);
             
+            lastx=x;
+            lasty=(int)y;
+                    
+
+            System.out.print("Draw Line: " + x + " " + y + "\n");
+
         }
-        
-        
 
-    //    g.drawLine(0, 0, 100, (int) ((this.current.close-80.0)*80.0));
-
+        //    g.drawLine(0, 0, 100, (int) ((this.current.close-80.0)*80.0));
     }
 
     @Override
@@ -182,7 +185,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         //   g.get
 
         Rectangle bounds = g.getDeviceConfiguration().getBounds();
-       // System.out.print(bounds.width + "\n");
+        // System.out.print(bounds.width + "\n");
 
         //g.fillRect(0, 0, 100, 100);
         Dimension d = this.getSize();
@@ -221,11 +224,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     @Override
     public void UpdateQuote(Quote q) {
-    //    System.out.print("Quote Received\n");
+        //    System.out.print("Quote Received\n");
 //        this.realTimeAdd(q.time, (float) q.price, (float)q.volume);
-        
-        data.realTimeAdd(q.time, (float)q.price, (float)q.volume);
-    //    this.invalidate();
+
+        data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
+        //    this.invalidate();
         this.repaint();
     }
 

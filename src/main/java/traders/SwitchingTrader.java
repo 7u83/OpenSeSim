@@ -25,86 +25,69 @@
  */
 package traders;
 
+import sesim.AccountData;
 import sesim.Account_old;
+import sesim.Exchange;
 import sesim.TraderConfig_old;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SwitchingTrader extends RandomTrader_old{
-    
-    
-    private Action mode;
-    
-    public SwitchingTrader(Account_old account, TraderConfig_old config) {
-               
-        super(account, config);
-      //  System.out.print("SWTrader Created\n");
-        
-        if (account.shares>0)
-            mode=Action.sell;
-        else
-            mode=Action.buy;
-        printstartus();
-                
+public class SwitchingTrader extends RandomTrader {
+
+    private int mode;
+
+    public SwitchingTrader(Exchange se, double money, double shares, RandomTraderConfig config) {
+        super(se, money, shares, config);
     }
-    
-    
-    private void printstartus(){
-        
- //       System.out.print("SWTrader:");        
-        switch (mode){
-            case buy:
-/*                System.out.print("buy"
-                        +account.shares
-                        +" "
-                        +account.money
-                );
-*/
-                break;
-            case sell:
-/*                
-                System.out.print("sell"
-                        +account.shares
-                        +" "
-                        +account.money
-                );
-*/
-                break;
-                
-                
+
+    Action action = Action.RANDOM;
+
+    @Override
+    protected Action getAction() {
+        if (action == Action.RANDOM) {
+            action = super.getAction();
+            return action;
         }
-//        System.out.print("\n");
-                
+
+        AccountData ad = se.getAccountData(account_id);
+
+        if (action == Action.BUY && ad.money <= 0) {
+            action = Action.SELL;
+        }
+
+        if (action == Action.SELL && ad.shares <= 0) {
+            action = Action.BUY;
+        }
+
+        return action;
+
     }
+    
     
     @Override
-    protected Action getAction(){
-
-        
-        
-        
-        if ( (account.shares>0) && (mode==Action.sell)){
-            printstartus();
-            return mode;
+    long doTrade(){
+        cancelOrders();
+        Action a = getAction();
+        long r;
+        switch (a){
+            case BUY:
+                r = doBuy();
+                if (r==0)
+                    action=Action.SELL;
+                return r;
+            case SELL:
+                r= doSell();
+                if (r==0)
+                    action=Action.BUY;
+                return r;
+                
+                
         }
-        if ( (account.shares<=0 && mode==Action.sell)){
-            mode=Action.buy;
-            printstartus();
-            return mode;
-        }
-        if (account.money>100.0 && mode==Action.buy){
-            printstartus();
-            return mode;
-        }        
-        if (account.money<=100.0 && mode==Action.buy){
-            mode=Action.sell;
-            printstartus();
-            return mode;
-        }
-        printstartus();
-        return mode;
+        return 0;
+        
     }
-    
+
+
 }

@@ -77,6 +77,21 @@ public class RandomTrader extends AutoTrader {
         }
 
     }
+    
+    protected enum Action {
+        BUY,SELL,RANDOM
+    }
+    
+       protected Action getAction() {
+        if (rand.nextInt(2)==0){
+            return Action.BUY;
+        }
+        else{
+            return Action.SELL;
+        }
+             
+            
+    }
 
     @Override
     public void start() {
@@ -156,7 +171,8 @@ public class RandomTrader extends AutoTrader {
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
         
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? 100.0 : q.price; 
+        double lp = q == null ? 0.0 : q.price; 
+     
 
         
         double limit;
@@ -192,16 +208,16 @@ public class RandomTrader extends AutoTrader {
     //    double lp = 100.0; //se.getBestLimit(type);
         
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? 100.0 : q.price; 
+        double lp = q == null ? 0.1 : q.price; 
 
         
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.sell_limit);
 
 //        long volume = (long) (money / (limit * 1));
- //       if (volume <= 0) {
-  //          return false;
-  //      }
+        if (volume <= 0) {
+            return 0;
+        }
         
 //        System.out.print("Volume is:"+volume+"\n");
  //               System.out.print("My Ammount is: "+volume+" My limit si:"+limit+ "\n");
@@ -219,20 +235,20 @@ public class RandomTrader extends AutoTrader {
     
     long doTrade(){
         cancelOrders();
-        int what = rand.nextInt(2);
-        if (what==0)
-            return doBuy();
-        else
-            return doSell();
-        
+        Action a = getAction();
+        switch (a){
+            case BUY:
+                return doBuy();
+            case SELL:
+                return doSell();
+                
+                
+        }
+        return 0;
         
     }
 
-    protected NextEvent createOrder() {
-
-        return new NextEvent(Event.CANCEL, 3000);
-    }
-
+   
     private static class TimerTaskImpl extends TimerTask {
 
         RandomTrader trader;

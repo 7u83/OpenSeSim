@@ -35,6 +35,9 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
 
     float max=0;
     float min=0;
+    
+    int ras=20000;
+    
 
     long time_start;
     long time_step;
@@ -47,8 +50,8 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
 
     long rasterTime(long time) {
 
-        long rt = time / 5000;
-        return rt * 5000;
+        long rt = time / ras;
+        return rt * ras;
 
     }
 
@@ -78,7 +81,7 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
                 this.max=price;
             }
             
-            ntime = rasterTime(time) + 5000;
+            ntime = rasterTime(time) + ras;
             data.add(new OHLCDataItem(price, price, price, price, volume));
             this.updateMinMax(price);
             return true;
