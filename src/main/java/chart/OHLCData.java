@@ -36,7 +36,7 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
     float max=0;
     float min=0;
     
-    int ras=20000;
+    int ras=60000;
     
 
     long time_start;

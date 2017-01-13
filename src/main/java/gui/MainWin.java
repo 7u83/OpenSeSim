@@ -25,6 +25,8 @@
  */
 package gui;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import sesim.AutoTrader;
 import sesim.Exchange;
 import traders.RandomTrader;
@@ -106,8 +108,9 @@ public class MainWin extends javax.swing.JFrame {
         FileNew = new javax.swing.JMenuItem();
         FileRun = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        viewMenu = new javax.swing.JMenu();
+        helpMenu = new javax.swing.JMenu();
+        helpAbout = new javax.swing.JMenuItem();
 
         jButton1.setText("jButton1");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -149,13 +152,21 @@ public class MainWin extends javax.swing.JFrame {
         jMenu2.setText("Edit");
         MainMenu.add(jMenu2);
 
-        jMenu1.setText("Help");
+        viewMenu.setText("View");
+        MainMenu.add(viewMenu);
 
-        jMenuItem2.setText("About");
-        jMenuItem2.setToolTipText("About this Software");
-        jMenu1.add(jMenuItem2);
+        helpMenu.setText("Help");
 
-        MainMenu.add(jMenu1);
+        helpAbout.setText("About");
+        helpAbout.setToolTipText("About this Software");
+        helpAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                helpAboutActionPerformed(evt);
+            }
+        });
+        helpMenu.add(helpAbout);
+
+        MainMenu.add(helpMenu);
 
         setJMenuBar(MainMenu);
 
@@ -175,6 +186,11 @@ public class MainWin extends javax.swing.JFrame {
         se.start();
     }//GEN-LAST:event_FileRunActionPerformed
 
+    private void helpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpAboutActionPerformed
+        AboutDialog d=new AboutDialog(this,true);
+        d.show();
+    }//GEN-LAST:event_helpAboutActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -187,14 +203,17 @@ public class MainWin extends javax.swing.JFrame {
         //RandomTrader rt = rcfg.createTrader(se, 1000, 100);
         //rt.start();
         
-        SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
+ //       SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
+        RandomTraderConfig rcfg1 = new RandomTraderConfig();
         AutoTrader rt1 = rcfg1.createTrader(se, 1000000, 0);
         rt1.start();
+        AutoTrader rt2 = rcfg1.createTrader(se, 1, 100);
+        rt2.start();
         
         
         RandomTraderConfig cfg = new RandomTraderConfig();
-        for (int i=0; i<1000; i++){
-            AutoTrader randt = cfg.createTrader(se, 100, 100);
+        for (int i=0; i<10000; i++){
+            AutoTrader randt = cfg.createTrader(se, 1, 100);
             randt.start();
         }
         
@@ -224,7 +243,7 @@ public class MainWin extends javax.swing.JFrame {
      //   at.add(10, rcfg, se, 1000000, 0);
 
         
-     /*   try {
+  /*      try {
             // Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException |
@@ -270,11 +289,12 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenuBar MainMenu;
     private gui.ControlPanel controlPanel2;
     private chart.FullChart fullChart2;
+    private javax.swing.JMenuItem helpAbout;
+    private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private gui.OrderBookPanel orderBookPanel1;
+    private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 }

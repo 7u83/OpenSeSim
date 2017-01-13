@@ -9,6 +9,7 @@ import java.awt.*;
 import sesim.Exchange.*;
 import sesim.Quote;
 import gui.MainWin;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -41,11 +42,56 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     OHLCDataItem current = null;
 
-    long rasterTime(long time) {
+    /*    long rasterTime(long time) {
 
         long rt = time / 5000;
         return rt * 5000;
 
+    }
+     */
+    void drawXLegend(Graphics2D g) {
+        int xl_height = 30;
+        Dimension dim = this.getSize();
+
+        int sheight = g.getFontMetrics().getHeight();
+
+        int y = dim.height - sheight * 3;
+
+        g.drawLine(0, y, dim.width, y);
+        
+        
+
+        for (int i = 0; i < items; i ++) {
+            int x = i * this.item_width;
+            
+            if (i%5==0)
+                g.drawLine(x, y, x, y + 6);
+            else
+               g.drawLine(x, y, x, y + 3);
+
+            OHLCDataItem d;
+            try {
+                d = data.data.get(i);
+            } catch (Exception e) {
+                d = null;
+            }
+
+            String text;
+            if (d != null) {
+                text = " ";
+            } else {
+                text = " ";
+            }
+            
+
+
+            int swidth = g.getFontMetrics().stringWidth(text);
+
+            g.drawString(text, x - swidth / 2, y + sheight * 2);
+
+        }
+
+        //for(int x=0; x)
     }
 
     private void realTimeAdd(long time, float price, float volume) {
@@ -58,7 +104,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
 //            System.out.print("new raster ----------------------------------\n");
             current = null;
-            ntime = rasterTime(time) + 5000;
+//            ntime = rasterTime(time) + 5000;
             //       System.out.print(ntime+"\n");
             //      System.out.print((time)+"\n");
             //       System.exit(0);
@@ -93,6 +139,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     }
 
     private void draw(Graphics2D g) {
+
+        this.drawXLegend(g);
+
         this.getSize();
 
         int pwidth = item_width * items;
@@ -105,14 +154,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
         g.setColor(Color.RED);
 
-        g.drawLine(0, 0, 100, 100);
+//        g.drawLine(0, 0, 100, 100);
 
-        for (int i = 0; i < items; i++) {
+        /*        for (int i = 0; i < items; i++) {
             int x = i * this.item_width;
             g.drawLine(x, 0, x, 50);
 
         }
-
+         */
         //   if (this.current == null) {
         //       return;
         //   }
@@ -122,22 +171,21 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         g.setColor(Color.BLUE);
         g.setStroke(new BasicStroke(3));
 
-
         Iterator<OHLCDataItem> it = od.iterator();
         int myi = 0;
-        
-        int lastx=0;
-        int lasty=0;
-        
+
+        int lastx = 0;
+        int lasty = 0;
+
         while (it.hasNext()) {
             OHLCDataItem di = it.next();
 
             float y = di.close;
             float max = data.max;
             float min = data.min;
-            
-            max = max/10.0f+max;
-            min = min-min/10.0f;
+
+            max = max / 10.0f + max;
+            min = min - min / 10.0f;
 
             if (min == max) {
                 min = y / 2;
@@ -145,9 +193,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
             }
 
-         //   max = 5;
-           // min = 0;
-
+            //   max = 5;
+            // min = 0;
             System.out.print("Fval: " + y + " " + min + "\n");
             y -= min;
             System.out.print("VAL New" + y + "\n");
@@ -155,16 +202,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
             //val/ ((data.max-data.min)/dim.height);
             System.out.print("MINMAX " + min + " " + max + " " + dim.height + "\n");
 
-            y =  dim.height-(dim.height * y / (max - min));
+            y = dim.height - (dim.height * y / (max - min));
 
             int x = myi * this.item_width;
             myi++;
-            
+
             g.drawLine(lastx, lasty, x, (int) y);
-            
-            lastx=x;
-            lasty=(int)y;
-                    
+
+            lastx = x;
+            lasty = (int) y;
 
             System.out.print("Draw Line: " + x + " " + y + "\n");
 

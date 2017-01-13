@@ -171,7 +171,7 @@ public class RandomTrader extends AutoTrader {
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
         
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? 0.0 : q.price; 
+        double lp = q == null ? 0.0001 : q.price; 
      
 
         

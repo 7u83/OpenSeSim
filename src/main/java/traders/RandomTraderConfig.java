@@ -37,12 +37,12 @@ public class RandomTraderConfig extends AutoTraderConfig {
 
     public float[] sell_volume = {100, 100};
     public float[] sell_limit = {-1, 0};
-    public int[] sell_order_wait = {15, 33};
+    public int[] sell_order_wait = {1, 5};
     public int[] wait_after_sell = {10, 30};
 
     public float[] buy_volume = {100, 100};
     public float[] buy_limit = {0, 1};
-    public int[] buy_order_wait = {15, 33};
+    public int[] buy_order_wait = {1, 5};
     public int[] wait_after_buy = {10, 30};
 
     @Override
