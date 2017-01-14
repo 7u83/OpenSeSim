@@ -9,7 +9,7 @@ import sesim.Order_old.OrderType_old;
  *
  * @author tube
  */
-public class Exchange extends Thread {
+public class Exchange {  //extends Thread {
 
     public enum OrderType {
         BID, ASK
@@ -23,9 +23,9 @@ public class Exchange extends Thread {
      */
     public class Account implements Comparable {
 
-        protected double id;
-        protected double shares;
-        protected double money;
+        private double id;
+        private double shares;
+        private double money;
 
         private final HashMap<Long, Order> orders;
 
@@ -287,12 +287,13 @@ public class Exchange extends Thread {
         while (i.hasNext()) {
             i.next().UpdateOrderBook();
         }
-        try {
+ /*       try {
             sleep(10);
         } catch (InterruptedException e) {
             System.out.println("I was Interrupted");
         }
-
+*/
+ 
     }
 
     // Here we store the list of quote receivers
@@ -324,7 +325,7 @@ public class Exchange extends Thread {
     public TreeSet<Order_old> bid;
     public TreeSet<Order_old> ask;
 
-    private Locker tradelock = new Locker();
+    private final Locker tradelock = new Locker();
 
     /*
     private final Semaphore available = new Semaphore(1, true);
@@ -704,12 +705,12 @@ public class Exchange extends Thread {
         if (a == null) {
             return -1;
         }
+        tradelock.lock();
 
         Order o = new Order(a, type, volume, limit);
         addOrderToBook(o);
         a.orders.put(o.id, o);
 
-        tradelock.lock();
         this.executeOrders();
         tradelock.unlock();
         this.updateBookReceivers(OrderType.ASK);
@@ -842,9 +843,9 @@ public class Exchange extends Thread {
     /**
      *
      */
-    @Override
+//    @Override
     public void run() {
-        while (true) {
+  /*      while (true) {
             try {
                 sleep(1500);
             } catch (InterruptedException e) {
@@ -853,6 +854,7 @@ public class Exchange extends Thread {
             print_current();
 
         }
+*/
     }
 
 }

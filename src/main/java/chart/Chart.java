@@ -42,7 +42,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     OHLCDataItem current = null;
     
-    
+    int min;
+    int max;
     int getY(float Y){
         
         return 0;
@@ -200,12 +201,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
             //   max = 5;
             // min = 0;
-            System.out.print("Fval: " + y + " " + min + "\n");
+         //   System.out.print("Fval: " + y + " " + min + "\n");
             y -= min;
-            System.out.print("VAL New" + y + "\n");
+          //  System.out.print("VAL New" + y + "\n");
 
             //val/ ((data.max-data.min)/dim.height);
-            System.out.print("MINMAX " + min + " " + max + " " + dim.height + "\n");
+          //  System.out.print("MINMAX " + min + " " + max + " " + dim.height + "\n");
 
             y = dim.height - (dim.height * y / (max - min));
 
@@ -217,7 +218,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
             lastx = x;
             lasty = (int) y;
 
-            System.out.print("Draw Line: " + x + " " + y + "\n");
+//            System.out.print("Draw Line: " + x + " " + y + "\n");
 
         }
 

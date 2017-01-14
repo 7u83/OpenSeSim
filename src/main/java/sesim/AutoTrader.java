@@ -35,6 +35,8 @@ public abstract class AutoTrader {
     protected Exchange se;
     protected AutoTraderConfig config;
     
+    protected String name;
+    
     
            
     
@@ -42,12 +44,17 @@ public abstract class AutoTrader {
         account_id = se.createAccount(money, shares);
         this.se=se;
         this.config=config;
+        this.name="";
+        
     }
     
-    /*public AutoTrader(Exchange se, double money, double shares){
-        this(se,money,shares,null);
+    public void setName(String name){
+        this.name=name;
     }
-    */
+    
+    public String getName(){
+        return name;
+    }
     
     public abstract void start();
         

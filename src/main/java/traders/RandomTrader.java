@@ -44,33 +44,31 @@ public class RandomTrader extends AutoTrader {
 
     //static Timer timer = new Timer();
 
-    enum Event {
+/*    enum Event {
         CANCEL,
         CREATE
     }
-    
+  */  
+    public long megaLoop(){
+        long rc=0;
+        for (int i=0; i<1; i++){
+            rc+=i;
+          //  System.out.print(rc+"\n");
+        }
+        return rc;
+    }
     
     long event(){
-               
-//        System.out.print("Hello world Iam a trader\n");
-        return this.doTrade();
-      //  doBuy();
+        if ("Alice".equals(this.name)){
+            megaLoop();
+        }
+        sesim.Exchange.Account a = se.getAccount(account_id);
+       long rc = this.doTrade();
+   //     System.out.print(String.format("%s: %.0f/%.2f\n", this.getName(),a.getShares(),a.getMoney()));
+        return rc;
         
     }
     
-
-    class NextEvent {
-
-        public Event event;
-        public long time;
-
-    /*    NextEvent(Event e, long time) {
-            this.event = e;
-            this.time = time;
-        }
-        */
-        
-    }
 
     public RandomTrader(Exchange se, double money, double shares, RandomTraderConfig config) {
         super(se, money, shares, config);
@@ -96,11 +94,12 @@ public class RandomTrader extends AutoTrader {
     }
        
     double start = 0.1;
+    Timer timer=new Timer();
 
     @Override
     public void start() {
 
-        Exchange.timer.schedule(new TimerTaskImpl(this), 0);
+        timer.schedule(new TimerTaskImpl(this,timer), 0);
 
         //  timer.schedule(new TimerTaskImpl, date);
     }
@@ -256,10 +255,11 @@ public class RandomTrader extends AutoTrader {
     private static class TimerTaskImpl extends TimerTask {
 
         RandomTrader trader;
-        NextEvent nextevent;
+        Timer timer;
 
-        public TimerTaskImpl(RandomTrader trader) {
+        public TimerTaskImpl(RandomTrader trader, Timer timer) {
             this.trader = trader;
+            this.timer=timer;
 
         }
 
@@ -267,10 +267,10 @@ public class RandomTrader extends AutoTrader {
         public void run() {
             
             long time = trader.event();
-            time/=50;
+            time/=1;
             
             this.cancel();
-            Exchange.timer.schedule(new TimerTaskImpl(trader), time);
+            timer.schedule(new TimerTaskImpl(trader,timer), time);
 
         }
     }

@@ -183,7 +183,7 @@ public class MainWin extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void FileRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileRunActionPerformed
-        se.start();
+  //      se.start();
     }//GEN-LAST:event_FileRunActionPerformed
 
     private void helpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpAboutActionPerformed
@@ -206,14 +206,16 @@ public class MainWin extends javax.swing.JFrame {
  //       SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
         RandomTraderConfig rcfg1 = new RandomTraderConfig();
         AutoTrader rt1 = rcfg1.createTrader(se, 1000000, 0);
+        rt1.setName("Bob");
         rt1.start();
         //AutoTrader rt2 = rcfg1.createTrader(se, 1, 100);
         //rt2.start();
         
         
         RandomTraderConfig cfg = new RandomTraderConfig();
-        for (int i=0; i<100; i++){
+        for (int i=0; i<10000; i++){
             AutoTrader randt = cfg.createTrader(se, 100, 100);
+            randt.setName("Alice");
             randt.start();
         }
         

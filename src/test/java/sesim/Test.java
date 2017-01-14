@@ -51,6 +51,14 @@ public class Test {
 
         double aid1 = se.createAccount(100, 100);
         double aid2 = se.createAccount(100, 100);
+        
+        
+        sesim.Exchange.Account a = se.getAccount(aid1);
+        System.out.print(a.getMoney());
+       
+        System.exit(0);
+        
+        /*
 
         AccountData a1 = se.getAccountData(aid1);
         AccountData a2 = se.getAccountData(aid2);
@@ -76,6 +84,7 @@ public class Test {
 
         //S/ystem.out.print(aid);
         //System.out.print("\n");
+*/
     }
 
 }
