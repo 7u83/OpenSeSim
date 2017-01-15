@@ -41,8 +41,8 @@ import traders.*;
 public class MainWin extends javax.swing.JFrame {
 
     static public sesim.Exchange se;
-    static sesim.Account_old myAccount;
-    static traders.ManTrader myTrader;
+    //static sesim.Account_old myAccount;
+   
     
     /**
      * Creates new form MainWin
@@ -50,6 +50,7 @@ public class MainWin extends javax.swing.JFrame {
     public MainWin() {
      
         initComponents();
+        this.setLocationRelativeTo(this);
         
         
             double aid1 = se.createAccount(100, 100);
@@ -204,7 +205,7 @@ public class MainWin extends javax.swing.JFrame {
         //rt.start();
         
  //       SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
-        RandomTraderConfig rcfg1 = new RandomTraderConfig();
+       SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
         AutoTrader rt1 = rcfg1.createTrader(se, 0, 1000000);
                                                 
         rt1.setName("Bob");
@@ -213,49 +214,17 @@ public class MainWin extends javax.swing.JFrame {
         //rt2.start();
         
         
-        RandomTraderConfig cfg = new RandomTraderConfig();
-   /*    cfg.sell_limit[0]=0.5f;
-        cfg.sell_limit[1]=1.0f;
-
-        cfg.buy_limit[0]=-0.5f;
-        cfg.buy_limit[1]=-1.0f;
-     */
-   
-    //    cfg.buy_order_wait[0]=20;
-    //    cfg.buy_order_wait[1]=30;
-        
-    //    cfg.sell_order_wait[0]=20;
-    //    cfg.sell_order_wait[1]=30;
-
-        
+        SwitchingTraderConfig cfg = new SwitchingTraderConfig();
         
         for (int i=0; i<1000; i++){
-            AutoTrader randt = cfg.createTrader(se, 1000000, 0);
+            AutoTrader randt = cfg.createTrader(se, 100000, 0);
             
             randt.setName("Alice");
             randt.start();
         }
         
         
-        //RandomTrader rt = new RandomTrader();
-        //rt.start();
-        
-   //     myAccount = new Account_old(se,1000,100000000.0);
-   //     myTrader = new traders.ManTrader(myAccount,null);
-        
-/*        Account_old otherAccount = new Account_old(se,1000,1000);
-        Traders.ManTrader otherTrader = new Traders.ManTrader(otherAccount);
-        otherTrader.sell(80, 22.70);
-        
-*/
-
-/*
-        Account_old traccount = new Account_old(se,5500,1000000.0);
-        RandomTrader rt = new RandomTrader(traccount,null);
-        TraderRunner tr = new TraderRunner(rt);
-        tr.start();
-*/
-
+       
 
 
         

@@ -25,9 +25,7 @@
  */
 package traders;
 
-import sesim.Account_old;
 import sesim.AutoTrader;
-import sesim.AutoTrader_old;
 import sesim.Exchange;
 
 /**

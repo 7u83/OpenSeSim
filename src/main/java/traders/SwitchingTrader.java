@@ -26,9 +26,7 @@
 package traders;
 
 import sesim.AccountData;
-import sesim.Account_old;
 import sesim.Exchange;
-import sesim.TraderConfig_old;
 
 /**
  *
@@ -46,8 +44,15 @@ public class SwitchingTrader extends RandomTrader {
 
     @Override
     protected Action getAction() {
+        
+
+        
         if (action == Action.RANDOM) {
             action = super.getAction();
+                    if ("Bob".equals(name)){
+                        System.out.print("Bobs Action\n"+action);
+            
+        }
             return action;
         }
 

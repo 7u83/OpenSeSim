@@ -28,7 +28,7 @@ package traders;
 import java.util.*;
 import java.util.Random;
 import java.util.TimerTask;
-import sesim.AccountData;
+/*import sesim.AccountData;*/
 
 import sesim.AutoTrader;
 import sesim.Exchange;
@@ -166,6 +166,7 @@ public class RandomTrader extends AutoTrader {
 
 if (ad==null || myconfig==null)        {
     System.out.print(ad+"\n");
+    return 0;
     
 }
         // how much money we ant to envest?
@@ -219,6 +220,7 @@ if (ad==null || myconfig==null)        {
 
 //        long volume = (long) (money / (limit * 1));
         if (volume <= 0) {
+            System.out.print("SellVolume 0\n");
             return 0;
         }
         

@@ -31,14 +31,5 @@ package sesim;
  */
 public class AutoTraderLIst {
 
-    public void add(int n, TraderConfig_old config, Exchange se, long shares, double money) {
-
-        for (int i = 0; i < n; i++) {
-            AutoTrader_old trader = config.createTrader(se, shares, money);
-         //   TraderRunner tr = new TraderRunner(trader);
-                       
-            trader.start();
-        }
-    }
-
+ 
 }
