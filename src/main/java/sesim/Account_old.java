@@ -67,6 +67,7 @@ final public class Account_old {
         return this.money<=se.lastprice && this.shares<=0;
     }
 
+ /*
     public Order_old sell(long volume, double limit) {
         SellOrder o = new SellOrder();
         o.account = this;
@@ -75,8 +76,8 @@ final public class Account_old {
         orderpending = true;
         return se.SendOrder(o);
     }
-
-    public Order_old buy(long volume, double limit) {
+*/
+  /*  public Order_old buy(long volume, double limit) {
         if (volume * limit > money) {
             return null;
         }
@@ -87,7 +88,7 @@ final public class Account_old {
         orderpending = true;
         return se.SendOrder(o);
     }
-
+/*
     /*
     public void Buy(Account_old a, long size, double price) {
         shares += size;

@@ -1,8 +1,10 @@
 package sesim;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-import sesim.Order_old.OrderStatus;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import sesim.Order_old.OrderType_old;
 
 /**
@@ -56,10 +58,11 @@ public class Exchange {  //extends Thread {
 
     }
 
-    //private TreeSet<Account> accounts = new TreeSet<>();
-    HashMap<Double, Account> accounts = new HashMap<>();
+    // private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
 
     public double createAccount(double money, double shares) {
+
         Account a = new Account(money, shares);
         accounts.put(a.id, a);
         return a.id;
@@ -105,9 +108,8 @@ public class Exchange {  //extends Thread {
 
     }
 
-    //TreeSet <Order> bid_bbook = new TreeSet <> (new OrderComperator(OrderType.BID) );
-    //TreeSet <Order> ask_dbook = new TreeSet <> (new OrderComperator(OrderType.BID) );
-    HashMap<OrderType, TreeSet<Order>> order_books = new HashMap();
+
+    HashMap<OrderType, SortedSet<Order>> order_books = new HashMap();
 
     IDGenerator order_id = new IDGenerator();
 
@@ -168,10 +170,12 @@ public class Exchange {  //extends Thread {
     public Exchange() {
         this.ask = new TreeSet<>();
         this.bid = new TreeSet<>();
-        this.qrlist = new ArrayList<>();
+        //  this.qrlist = new ArrayList<>();
+        this.qrlist = (new CopyOnWriteArrayList<>());
 
         // Create order books
         for (OrderType type : OrderType.values()) {
+            //SortedSet b = new TreeSet(new OrderComparator(type));
             order_books.put(type, new TreeSet(new OrderComparator(type)));
         }
 
@@ -211,8 +215,8 @@ public class Exchange {  //extends Thread {
 
     public Quote getCurrentPrice() {
 
-        TreeSet<Order> bid = order_books.get(OrderType.BID);
-        TreeSet<Order> ask = order_books.get(OrderType.ASK);
+        SortedSet<Order> bid = order_books.get(OrderType.BID);
+        SortedSet<Order> ask = order_books.get(OrderType.ASK);
 
         Quote q = null;
 
@@ -239,11 +243,7 @@ public class Exchange {  //extends Thread {
 
     }
 
-    /* public SortedSet<Quote> getQuoteHistory(int seconds) {
-        Quote last = quoteHistory.last();
-        return this.getQuoteHistory(seconds, last.time);
-    }
-     */
+    
     // Class to describe an executed order
     // QuoteReceiver has to be implemented by objects that wants 
     // to receive quote updates  	
@@ -287,17 +287,11 @@ public class Exchange {  //extends Thread {
         while (i.hasNext()) {
             i.next().UpdateOrderBook();
         }
- /*       try {
-            sleep(10);
-        } catch (InterruptedException e) {
-            System.out.println("I was Interrupted");
-        }
-*/
- 
+    
     }
 
     // Here we store the list of quote receivers
-    private final ArrayList<QuoteReceiver> qrlist;
+    private final List<QuoteReceiver> qrlist;
 
     /**
      *
@@ -327,22 +321,7 @@ public class Exchange {  //extends Thread {
 
     private final Locker tradelock = new Locker();
 
-    /*
-    private final Semaphore available = new Semaphore(1, true);
 
-    private void Lock() {
-        try {
-            available.acquire();
-        } catch (InterruptedException s) {
-            System.out.println("Interrupted\n");
-        }
-
-    }
-
-    private void Unlock() {
-        available.release();
-    }
-     */
     private TreeSet<Order_old> selectOrderBook(OrderType_old t) {
 
         switch (t) {
@@ -357,11 +336,11 @@ public class Exchange {  //extends Thread {
 
     public ArrayList<Order> getOrderBook(OrderType type, int depth) {
 
-        TreeSet<Order> book = order_books.get(type);
+        SortedSet<Order> book = order_books.get(type);
         if (book == null) {
             return null;
         }
-
+        tradelock.lock();
         ArrayList<Order> ret = new ArrayList<>();
 
         Iterator<Order> it = book.iterator();
@@ -369,6 +348,7 @@ public class Exchange {  //extends Thread {
         for (int i = 0; i < depth && it.hasNext(); i++) {
             ret.add(it.next());
         }
+        tradelock.unlock();
         return ret;
     }
 
@@ -433,7 +413,7 @@ public class Exchange {  //extends Thread {
 
         //   System.out.print("The Order:"+o.limit+"\n");
         if (o != null) {
-            TreeSet ob = order_books.get(o.type);
+            SortedSet ob = order_books.get(o.type);
 
             boolean rc = ob.remove(o);
 
@@ -485,8 +465,11 @@ public class Exchange {  //extends Thread {
             return;
         }
         o.account.orders.remove(o.id);
-        order_books.get(o.type).pollFirst();
 
+        SortedSet book = order_books.get(o.type);
+        book.remove(book.first());
+
+        //pollFirst();
     }
 
     /**
@@ -494,8 +477,8 @@ public class Exchange {  //extends Thread {
      */
     public void executeOrders() {
 
-        TreeSet<Order> bid = order_books.get(OrderType.BID);
-        TreeSet<Order> ask = order_books.get(OrderType.ASK);
+        SortedSet<Order> bid = order_books.get(OrderType.BID);
+        SortedSet<Order> ask = order_books.get(OrderType.ASK);
 
         double volume_total = 0;
         double money_total = 0;
@@ -537,153 +520,10 @@ public class Exchange {  //extends Thread {
         q.time = System.currentTimeMillis();
 
 //        System.out.print("There was a trade:"+q.price+"\n");
-        
         this.quoteHistory.add(q);
+
         this.updateQuoteReceivers(q);
 
-    }
-
-    private void executeOrders_old() {
-
-        while (!bid.isEmpty() && !ask.isEmpty()) {
-
-            Order_old b = bid.first();
-            Order_old a = ask.first();
-
-            if (b.limit < a.limit) {
-                // no match, nothing to do
-                return;
-            }
-
-            if (a.volume == 0) {
-                // This order is fully executed, remove 
-                a.account.orderpending = false;
-                a.status = OrderStatus.executed;
-
-                a.account.pending.remove(a);
-
-                ask.pollFirst();
-//                this.updateBookReceivers(OrderType_old.ask);
-                continue;
-            }
-
-            if (b.volume == 0) {
-                // This order is fully executed, remove 
-                b.account.orderpending = false;
-                b.status = OrderStatus.executed;
-                b.account.pending.remove(b);
-                bid.pollFirst();
-//                this.updateBookReceivers(OrderType_old.bid);
-                continue;
-            }
-
-            if (b.limit >= a.limit) {
-                double price;
-
-                price = b.id < a.id ? b.limit : a.limit;
-
-                /*         if (b.id < a.id) {
-                    price = b.limit;
-                } else {
-                    price = a.limit;
-                }
-                 */
-                long volume;
-
-                if (b.volume >= a.volume) {
-                    volume = a.volume;
-                } else {
-                    volume = b.volume;
-                }
-
-                transferShares(a.account, b.account, volume, price);
-
-                //       b.account.Buy(a.account, volume, price);
-                b.volume -= volume;
-                a.volume -= volume;
-
-                lastprice = price;
-                lastsvolume = volume;
-
-                Quote q = new Quote();
-
-                q.volume = volume;
-                q.price = price;
-                q.time = System.currentTimeMillis();
-
-                q.ask = a.limit;
-                q.bid = b.limit;
-                q.id = nextQuoteId++;
-
-                this.updateQuoteReceivers(q);
-//                this.updateBookReceivers(OrderType_old.bid);
-//                this.updateBookReceivers(OrderType_old.ask);
-
-                /*                System.out.print(
-                        "Executed: "
-                        + q.price
-                        + " / "
-                        + q.volume
-                        + "\n"
-                );
-                 */
-                quoteHistory.add(q);
-                continue;
-
-            }
-
-            return;
-        }
-    }
-
-    public void ExecuteOrder(BuyOrder o) {
-        // SellOrder op = ASK.peek();
-
-    }
-
-    private boolean InitOrder(Order_old o) {
-        double moneyNeeded = o.volume * o.limit;
-        return true;
-    }
-
-    // Add an order to the orderbook
-    private boolean addOrder(Order_old o) {
-        boolean ret = false;
-        switch (o.type) {
-            case bid:
-
-//                System.out.print("Exchange adding BID order \n");
-                ret = bid.add(o);
-                break;
-
-            case ask:
-//                System.out.print("Exchange adding ASK order \n");                
-                ret = ask.add(o);
-                break;
-        }
-
-        if (ret) {
-//            this.updateBookReceivers(o.type);
-        }
-        return ret;
-    }
-
-    public Order_old SendOrder(Order_old o) {
-
-        boolean rc = InitOrder(o);
-        if (!rc) {
-            return null;
-        }
-
-        tradelock.lock();
-        o.timestamp = System.currentTimeMillis();
-        o.id = orderid++;
-        addOrder(o);
-        o.account.pending.add(o);
-        executeOrders_old();
-        tradelock.unlock();
-
-        return o;
     }
 
     private void addOrderToBook(Order o) {
@@ -740,7 +580,9 @@ public class Exchange {  //extends Thread {
     }
 
     public AccountData getAccountData(double account_id) {
+        tradelock.lock();
         Account a = accounts.get(account_id);
+        tradelock.unlock();
         if (a == null) {
             return null;
         }
@@ -796,65 +638,6 @@ public class Exchange {  //extends Thread {
         }
 
         return al;
-    }
-
-
-    /*
-    public void SendOrder(BuyOrder o) {
-        //System.out.println("EX Buyorder");
-        Lock();
-        o.timestamp = System.currentTimeMillis();
-        o.id = orderid++;
-        BID.add(o);
-               
-        Unlock();
-        Lock();
-//        executeOrders_old();
-        Unlock();
-
-    }
-     */
- /*
-	 * public void SendOrder(Order_old o){
-	 * 
-	 * 
-	 * if ( o.getClass() == BuyOrder.class){ BID.add((BuyOrder)o); }
-	 * 
-	 * if ( o.getClass() == SellOrder.class){ ASK.add((SellOrder)o); }
-	 * 
-	 * }
-     */
-    public double getlastprice() {
-        /*
-		 * SellOrder so = new SellOrder(); so.limit=1000.0; so.volume=500;
-		 * SendOrder(so);
-		 * 
-		 * BuyOrder bo = new BuyOrder(); bo.limit=1001.0; bo.volume=300;
-		 * SendOrder(bo);
-         */
-
-        return lastprice;
-    }
-
-    /*  public double sendOrder(Account_old o) {
-        return 0.7;
-    }
-     */
-    /**
-     *
-     */
-//    @Override
-    public void run() {
-  /*      while (true) {
-            try {
-                sleep(1500);
-            } catch (InterruptedException e) {
-                System.out.println("I was Interrupted");
-            }
-            print_current();
-
-        }
-*/
     }
 
 }

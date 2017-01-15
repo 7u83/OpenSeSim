@@ -33,14 +33,14 @@ public abstract class Trader_old {
     public Account_old account; 
     public TraderConfig_old config;
     
-    public void sell(long shares, double limit){
+/*    public void sell(long shares, double limit){
         account.sell(shares, limit);
     }
 
     public void buy(long shares, double limit){
         account.buy(shares, limit);
     }
-    
+  */  
     /**
      * Construct a Trader object
      * @param account Account_old for this trader

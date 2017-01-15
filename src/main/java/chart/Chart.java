@@ -56,6 +56,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     
 
     void drawXLegend(Graphics2D g) {
+        
+        g = (Graphics2D)g.create();
+        
         int xl_height = 30;
         Dimension dim = this.getSize();
 
@@ -173,7 +176,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         //   }
         ArrayList<OHLCDataItem> od = data.data;
 
-        System.out.print("OD S: " + od.size() + "\n");
+      //  System.out.print("OD S: " + od.size() + "\n");
         g.setColor(Color.BLUE);
         g.setStroke(new BasicStroke(3));
 

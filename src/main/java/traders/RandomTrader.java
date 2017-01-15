@@ -109,13 +109,7 @@ public class RandomTrader extends AutoTrader {
     // object to generate random numbers
     final private Random rand = new Random();
 
-    /*public RandomTrader(Exchange se, double money,shares,) {
-        //super(account, config);
-        if (config == null) {
-            config = new RandomTraderConfig_old();
-        }
-        myconfig = (RandomTraderConfig_old) config;
-    }*/
+
     /**
      * Get a (long) random number between min an max
      *
@@ -170,6 +164,10 @@ public class RandomTrader extends AutoTrader {
        
         OrderType type=OrderType.BID;
 
+if (ad==null || myconfig==null)        {
+    System.out.print(ad+"\n");
+    
+}
         // how much money we ant to envest?
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
         
@@ -192,7 +190,7 @@ public class RandomTrader extends AutoTrader {
 
         se.createOrder(account_id, type, volume, limit);
 
-                return getRandom(myconfig.buy_order_wait)*1000;
+                return getRandom(myconfig.buy_order_wait);
         
 
     }
@@ -203,6 +201,8 @@ public class RandomTrader extends AutoTrader {
         AccountData ad = this.se.getAccountData(account_id);
        
         OrderType type=OrderType.ASK;
+
+      
 
         // how much money we ant to envest?
         double volume = (long)getRandomAmmount(ad.shares, myconfig.sell_volume);
@@ -228,7 +228,7 @@ public class RandomTrader extends AutoTrader {
 
         se.createOrder(account_id, type, volume, limit);
 
-        return getRandom(myconfig.sell_order_wait)*1000;
+        return getRandom(myconfig.sell_order_wait);
 
     }
 

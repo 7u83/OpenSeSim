@@ -25,11 +25,27 @@
  */
 package sesim;
 
+
+
+
+
 /**
  *
  * @author tobias
  */
 public class Test {
+    
+   static void tube(){
+       try{
+           System.out.printf("Hello %s\n", "args");
+           if (0==0) 
+               return;
+       }
+       finally {
+           System.out.printf("Always %s\n", "the end");
+       }
+       System.out.print("haha\n");
+   }
 
     static void print_account(AccountData ad) {
         System.out.print(
@@ -55,6 +71,8 @@ public class Test {
         
         sesim.Exchange.Account a = se.getAccount(aid1);
         System.out.print(a.getMoney());
+        
+        tube();
        
         System.exit(0);
         
