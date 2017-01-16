@@ -65,28 +65,51 @@ public class Test {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         
-        Scheduler s = new Scheduler(10);
+        Scheduler s = new Scheduler();
         s.start();
       
         class Ev implements Scheduler.TimerEvent{
 
            @Override
            public long timerEvent() {
-               System.out.print("Timer Event Occured");
-               return 3000;
+               System.out.printf("Timer Event Occured %s\n",name);
+               if ("Ev1".equals(this.name))
+                    return 2000;
+               else
+                   return 4000;
+           }
+           
+           String name;
+           Ev(String name){
+               this.name=name;
            }
             
         }
         
-        Ev e1 = new Ev();
-        Ev e2 = new Ev();
+        Ev e1 = new Ev("Ev1");
+        Ev e2 = new Ev("Eb2");
         
         
         s.startEvent(e1, 0);
+            s.startEvent(e2, 0);
         
-        while(true){}
+    try
+    {
+        Thread.sleep(90000);
+    }
+    catch(Exception e) {
+        
+    }
+    
+    s.halt();
+        while (s.isAlive()){
+           
+        }
+        
+        System.out.print("All isstopped\n");            
+
        // s.startEvent(e2, 100);
         
         
