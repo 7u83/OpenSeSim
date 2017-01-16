@@ -25,11 +25,26 @@
  */
 package sesim;
 
+import java.util.SortedSet;
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AutoTraderLIst {
+public class AutoTraderList {
+    
+    SortedSet <AutoTrader> traders;
 
- 
+    AutoTraderList(){
+        
+    }
+    
+    List getTraders(){
+        
+        
+        return new ArrayList();
+    }
+    
 }

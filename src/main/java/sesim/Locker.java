@@ -27,7 +27,9 @@ package sesim;
 
 import java.util.concurrent.Semaphore;
 
+
 /**
+ * A locker object
  *
  * @author 7u83 <7u83@mail.ru>
  */
@@ -37,6 +39,7 @@ public class Locker {
 
     /**
      * Acquire a lock
+     *
      * @return
      */
     public boolean lock() {
@@ -48,6 +51,9 @@ public class Locker {
         return true;
     }
 
+    /**
+     * Release a lock
+     */
     public void unlock() {
         AVAIL.release();
     }

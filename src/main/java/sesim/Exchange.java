@@ -2,10 +2,8 @@ package sesim;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import sesim.Order_old.OrderType_old;
 
 /**
  *
@@ -168,9 +166,7 @@ public class Exchange {  //extends Thread {
      * Constructor
      */
     public Exchange() {
-        this.ask = new TreeSet<>();
-        this.bid = new TreeSet<>();
-        //  this.qrlist = new ArrayList<>();
+
         this.qrlist = (new CopyOnWriteArrayList<>());
 
         // Create order books
@@ -316,23 +312,12 @@ public class Exchange {  //extends Thread {
     double lastprice = 100.0;
     long lastsvolume;
 
-    public TreeSet<Order_old> bid;
-    public TreeSet<Order_old> ask;
+    
 
     private final Locker tradelock = new Locker();
 
 
-    private TreeSet<Order_old> selectOrderBook(OrderType_old t) {
-
-        switch (t) {
-            case bid:
-                return this.bid;
-            case ask:
-                return this.ask;
-        }
-        return null;
-
-    }
+    
 
     public ArrayList<Order> getOrderBook(OrderType type, int depth) {
 
@@ -356,43 +341,9 @@ public class Exchange {  //extends Thread {
         return this.quoteHistory.first();
     }
 
-    public void print_current() {
+    
 
-        Order_old b;
-        Order_old a;
-
-        //String BID;
-        if (bid.isEmpty()) {
-            b = new BuyOrder();
-            b.limit = -1;
-            b.volume = 0;
-        } else {
-            b = bid.first();
-        }
-
-        if (ask.isEmpty()) {
-            a = new SellOrder();
-            a.limit = -1;
-            a.volume = 0;
-
-        } else {
-            a = ask.first();
-        }
-
-        Logger.info(String.format("BID: %s(%s)  LAST: %.2f(%d)  ASK: %s(%s)\n",
-                b.format_limit(), b.format_volume(),
-                lastprice, lastsvolume,
-                a.format_limit(), a.format_volume())
-        );
-
-    }
-
-    public void transferMoney(Account_old src, Account_old dst, double money) {
-        src.money -= money;
-        dst.money += money;
-
-    }
-
+  
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
         src.money -= money;
         dst.money += money;
@@ -431,33 +382,9 @@ public class Exchange {  //extends Thread {
      *
      * @param o
      */
-    public void cancelOrder_old(Order_old o) {
-        tradelock.lock();
-        TreeSet<Order_old> book = this.selectOrderBook(o.type);
-        book.remove(o);
-        /*        this.updateBookReceivers(o.type);
-        o.account.pending.remove(o);
-        o.status = OrderStatus.canceled;
-        tradelock.unlock();
-         */
+ 
 
-    }
-
-    /**
-     * Transfer shares from one account to another account
-     *
-     * @param src source account
-     * @param dst destination account
-     * @param volumen number of shares
-     * @param price price
-     */
-    protected void transferShares(Account_old src, Account_old dst, long volume, double price) {
-        dst.shares += volume;
-        src.shares -= volume;
-        dst.money -= price * volume;
-        src.money += price * volume;
-    }
-
+  
     long nextQuoteId = 0;
 
     private void removeOrderIfExecuted(Order o) {

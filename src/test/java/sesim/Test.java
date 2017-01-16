@@ -25,6 +25,9 @@
  */
 package sesim;
 
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 
 
 
@@ -63,46 +66,48 @@ public class Test {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Exchange se = new Exchange();
+        
+        Scheduler s = new Scheduler(10);
+        s.start();
+      
+        class Ev implements Scheduler.TimerEvent{
 
-        double aid1 = se.createAccount(100, 100);
-        double aid2 = se.createAccount(100, 100);
+           @Override
+           public long timerEvent() {
+               System.out.print("Timer Event Occured");
+               return 3000;
+           }
+            
+        }
+        
+        Ev e1 = new Ev();
+        Ev e2 = new Ev();
         
         
-        sesim.Exchange.Account a = se.getAccount(aid1);
-        System.out.print(a.getMoney());
+        s.startEvent(e1, 0);
         
-        tube();
+        while(true){}
+       // s.startEvent(e2, 100);
+        
+        
+        
+    
+       /* long starttime=System.currentTimeMillis();
+        while (s.isAlive()){
+            if (System.currentTimeMillis()>starttime+6650){
+                    s.stop();
+                    break;
+            }
+        }
+        System.out.print("Waiting fpor Stop\n"); 
+        while (s.isAlive()){
+           
+        }
+        
+        System.out.print("All isstopped\n");
+    */
+      
        
-        System.exit(0);
-        
-        /*
-
-        AccountData a1 = se.getAccountData(aid1);
-        AccountData a2 = se.getAccountData(aid2);
-        Test.print_account(a1);
-        Test.print_account(a2);
-
-        se.createOrder(aid2, Exchange.OrderType.ASK, 20, 11);
-        se.createOrder(aid2, Exchange.OrderType.ASK, 10, 10);
-        se.createOrder(aid2, Exchange.OrderType.ASK, 10, 9);
-        se.createOrder(aid1, Exchange.OrderType.BID, 50, 11);
-
-        System.out.print("Exec Orders\n");
-        se.executeOrders();
-        System.out.print("Executed Orders\n");
-
-        a1 = se.getAccountData(aid1);
-        a2 = se.getAccountData(aid2);
-        Test.print_account(a1);
-        Test.print_account(a2);
-        
-        
-        
-
-        //S/ystem.out.print(aid);
-        //System.out.print("\n");
-*/
     }
 
 }

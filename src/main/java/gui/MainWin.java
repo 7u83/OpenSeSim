@@ -25,12 +25,8 @@
  */
 package gui;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import sesim.AutoTrader;
 import sesim.Exchange;
-import traders.RandomTrader;
-import traders.RandomTraderConfig;
 import traders.*;
 
 
@@ -205,7 +201,8 @@ public class MainWin extends javax.swing.JFrame {
         //rt.start();
         
  //       SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
-       SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
+   //    SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
+       RandomTraderConfig rcfg1 = new RandomTraderConfig();
         AutoTrader rt1 = rcfg1.createTrader(se, 0, 1000000);
                                                 
         rt1.setName("Bob");
@@ -214,9 +211,10 @@ public class MainWin extends javax.swing.JFrame {
         //rt2.start();
         
         
-        SwitchingTraderConfig cfg = new SwitchingTraderConfig();
+      //  SwitchingTraderConfig cfg = new SwitchingTraderConfig();
+       RandomTraderConfig cfg= new RandomTraderConfig();
         
-        for (int i=0; i<1000; i++){
+        for (int i=0; i<10; i++){
             AutoTrader randt = cfg.createTrader(se, 100000, 0);
             
             randt.setName("Alice");
@@ -263,10 +261,8 @@ public class MainWin extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainWin().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new MainWin().setVisible(true);
         });
     }
 
