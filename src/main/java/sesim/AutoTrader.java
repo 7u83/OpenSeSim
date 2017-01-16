@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2017, 7u83
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,36 +27,32 @@ package sesim;
 
 /**
  *
- * @author tobias
+ * @author 7u83
  */
-public abstract class AutoTrader {
-    
+public abstract class AutoTrader implements Scheduler.TimerTask {
+
     protected double account_id;
     protected Exchange se;
     protected AutoTraderConfig config;
-    
+
     protected String name;
-    
-    
-           
-    
-    public AutoTrader(Exchange se, double money, double shares, AutoTraderConfig config){
+
+    public AutoTrader(Exchange se, double money, double shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
-        this.se=se;
-        this.config=config;
-        this.name="";
-        
+        this.se = se;
+        this.config = config;
+        this.name = "";
+
     }
-    
-    public void setName(String name){
-        this.name=name;
+
+    public void setName(String name) {
+        this.name = name;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    
+
     public abstract void start();
-        
-    
+
 }

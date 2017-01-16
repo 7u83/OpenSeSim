@@ -40,21 +40,27 @@ public class Scheduler extends Thread {
 
     long multiply = 1;
 
-    private final SortedMap<Long, SortedSet<TimerEvent>> event_queue = new TreeMap<>();
-    private boolean stop = false;
+    private final SortedMap<Long, SortedSet<TimerTask>> event_queue = new TreeMap<>();
+    private boolean halt = false;
 
+    public interface TimerTask {
+
+        long timerTask();
+    }
+
+    /**\
+     * 
+     */
     public void halt() {
-        stop = true;
+        halt = true;
         synchronized (event_queue) {
             event_queue.notifyAll();
         }
     }
 
-    public interface TimerEvent {
-
-        long timerEvent();
-    }
-
+    /**
+     * 
+     */
     private class ObjectComparator implements Comparator<Object> {
 
         @Override
@@ -63,41 +69,40 @@ public class Scheduler extends Thread {
         }
     }
 
-    public long getCurrentTimeMillies() {
+    public long currentTimeMillis() {
         return System.currentTimeMillis();
 
     }
 
-    public void startEvent(TimerEvent e, long time) {
-        long evtime = time + this.getCurrentTimeMillies();
+    /**
+     * 
+     * @param e
+     * @param time 
+     */
+    public void startTimerEvent(TimerTask e, long time) {
+        long evtime = time + this.currentTimeMillis();
         synchronized (event_queue) {
-            SortedSet<TimerEvent> s = event_queue.get(evtime);
-            if (s == null) {
-                s = new TreeSet<>(new ObjectComparator());
-                event_queue.put(evtime, s);
-            }
-            s.add(e);
+            this.addEvent(e, time);
         }
         synchronized (this) {
             notify();
         }
     }
 
-    public long fireEvent(TimerEvent e) {
-        return e.timerEvent();
+    public long fireEvent(TimerTask e) {
+        return e.timerTask();
     }
 
-    private void addEvent(TimerEvent e, long time) {
+    private boolean addEvent(TimerTask e, long time) {
 
-        long evtime = time + this.getCurrentTimeMillies();
+        long evtime = time + this.currentTimeMillis();
 
-        SortedSet<TimerEvent> s = event_queue.get(evtime);
+        SortedSet<TimerTask> s = event_queue.get(evtime);
         if (s == null) {
             s = new TreeSet<>(new ObjectComparator());
             event_queue.put(evtime, s);
         }
-        s.add(e);
-
+        return s.add(e);
     }
 
     public long runEvents() {
@@ -106,23 +111,20 @@ public class Scheduler extends Thread {
                 return -1;
             }
 
-
             long t = event_queue.firstKey();
-            if (t <= this.getCurrentTimeMillies()) {
+            if (t <= this.currentTimeMillis()) {
                 SortedSet s = event_queue.get(t);
-
                 event_queue.remove(t);
-                Iterator<TimerEvent> it = s.iterator();
+                Iterator<TimerTask> it = s.iterator();
                 while (it.hasNext()) {
-
-                    TimerEvent e = it.next();
+                    TimerTask e = it.next();
                     long next_t = this.fireEvent(e);
                     this.addEvent(e, next_t);
                 }
                 return 0;
 
             } else {
-                return t - this.getCurrentTimeMillies();
+                return t - this.currentTimeMillis();
             }
         }
 
@@ -130,7 +132,7 @@ public class Scheduler extends Thread {
 
     @Override
     public void run() {
-        while (!stop) {
+        while (!halt) {
             long wtime = runEvents();
             if (wtime == 0) {
                 continue;
@@ -144,6 +146,7 @@ public class Scheduler extends Thread {
                         wait();
                     }
                 } catch (Exception e) {
+
                 }
             }
         }

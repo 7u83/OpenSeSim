@@ -194,6 +194,7 @@ public class MainWin extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         se = new Exchange();
+        se.timer.start();
         
         
         //RandomTraderConfig rcfg = new RandomTraderConfig();
@@ -214,7 +215,7 @@ public class MainWin extends javax.swing.JFrame {
       //  SwitchingTraderConfig cfg = new SwitchingTraderConfig();
        RandomTraderConfig cfg= new RandomTraderConfig();
         
-        for (int i=0; i<10; i++){
+        for (int i=0; i<1; i++){
             AutoTrader randt = cfg.createTrader(se, 100000, 0);
             
             randt.setName("Alice");

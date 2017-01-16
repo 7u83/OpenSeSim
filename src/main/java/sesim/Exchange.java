@@ -16,7 +16,9 @@ public class Exchange {  //extends Thread {
     }
 
     IDGenerator account_id = new IDGenerator();
-    public static Timer timer = new Timer();
+    //public static Timer timer = new Timer();
+    
+    public Scheduler timer = new Scheduler();
 
     /**
      *
@@ -174,8 +176,21 @@ public class Exchange {  //extends Thread {
             //SortedSet b = new TreeSet(new OrderComparator(type));
             order_books.put(type, new TreeSet(new OrderComparator(type)));
         }
+  
 
     }
+    
+    
+        /*public interface TimerEvent {
+
+        long timerEvent();
+    }
+    */
+    
+    void start(){
+        timer.start();
+    }
+            
 
     class BidBook extends TreeSet {
 

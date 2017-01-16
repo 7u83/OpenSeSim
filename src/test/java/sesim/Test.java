@@ -70,10 +70,10 @@ public class Test {
         Scheduler s = new Scheduler();
         s.start();
       
-        class Ev implements Scheduler.TimerEvent{
+        class Ev implements Scheduler.TimerTask{
 
            @Override
-           public long timerEvent() {
+           public long timerTask() {
                System.out.printf("Timer Event Occured %s\n",name);
                if ("Ev1".equals(this.name))
                     return 2000;
@@ -92,8 +92,8 @@ public class Test {
         Ev e2 = new Ev("Eb2");
         
         
-        s.startEvent(e1, 0);
-            s.startEvent(e2, 0);
+        s.startTimerEvent(e1, 0);
+            s.startTimerEvent(e2, 0);
         
     try
     {
@@ -110,7 +110,7 @@ public class Test {
         
         System.out.print("All isstopped\n");            
 
-       // s.startEvent(e2, 100);
+       // s.startTimerEvent(e2, 100);
         
         
         
