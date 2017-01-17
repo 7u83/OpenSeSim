@@ -52,6 +52,10 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
     public String getName() {
         return name;
     }
+    
+    public Exchange.Account getAccount(){
+        return se.getAccount(account_id);
+    }
 
     public abstract void start();
 

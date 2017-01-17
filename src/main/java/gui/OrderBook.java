@@ -106,14 +106,14 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             list = getOrderBook();
         }
 
-        int update_calls = 0;
+       // int update_calls = 0;
         int colcount_calls = 0;
 
         public void update(ArrayList newlist) {
             list = newlist; //getOrderBook();
             this.fireTableDataChanged();
             
-            this.update_calls++;
+        //   this.update_calls++;
         //    int hc = this.hashCode();
             //System.out.print("Update/ColCalls = " + update_calls + "/" + colcount_calls + " HC: " + hc + "\n");
         }
@@ -156,7 +156,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             } else {
                 o = list.get(list.size() - r - 1);
             }
-            Formatter f = new Formatter();
+         //   Formatter f = new Formatter();
             switch (c) {
                 case 0:
                     return String.format("#%06x", o.getID());

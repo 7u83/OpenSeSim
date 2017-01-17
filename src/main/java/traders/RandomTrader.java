@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2017, 7u83
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,16 +38,15 @@ import sesim.*;
 
 /**
  *
- * @author tobias
+ * @author 7u83
  */
 public class RandomTrader extends AutoTrader {
-
 
     long event() {
 
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
-        return rc/3;
+        return rc / 3;
 
     }
 
@@ -59,12 +58,16 @@ public class RandomTrader extends AutoTrader {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public long timerTask() {
-       sesim.Exchange.Account a = se.getAccount(account_id);
+        sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
-        return rc/33;
-        
+        return rc / 33;
+
 //        return this.event();
     }
 
@@ -81,13 +84,13 @@ public class RandomTrader extends AutoTrader {
 
     }
 
-    double start = 0.1;
+    double start = 1.1;
     //Timer timer = new Timer();
 
     @Override
     public void start() {
 
-    //    timer.schedule(new TimerTaskImpl(this, timer), 0);
+        //    timer.schedule(new TimerTaskImpl(this, timer), 0);
         se.timer.startTimerEvent(this, 0);
 
         //  timer.schedule(new TimerTaskImpl, date);
@@ -152,7 +155,7 @@ public class RandomTrader extends AutoTrader {
         OrderType type = OrderType.BID;
 
         if (ad == null || myconfig == null) {
-            System.out.print(ad + "\n");
+//            System.out.print(ad + "\n");
             return 0;
 
         }
@@ -194,7 +197,7 @@ public class RandomTrader extends AutoTrader {
 
 //        long volume = (long) (money / (limit * 1));
         if (volume <= 0) {
-            System.out.print("SellVolume 0\n");
+//            System.out.print("SellVolume 0\n");
             return 0;
         }
 
@@ -243,6 +246,5 @@ public class RandomTrader extends AutoTrader {
 
         }
     }
-*/
-    
+     */
 }

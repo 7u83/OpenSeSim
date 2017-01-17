@@ -19,6 +19,8 @@ public class Exchange {  //extends Thread {
     //public static Timer timer = new Timer();
     
     public Scheduler timer = new Scheduler();
+    //public AutoTraderList traders = new AutoTraderList();
+    public ArrayList <AutoTrader> traders = new ArrayList();
 
     /**
      *
@@ -353,7 +355,7 @@ public class Exchange {  //extends Thread {
     }
 
     public Quote getLastQuoete() {
-        return this.quoteHistory.first();
+        return this.quoteHistory.last();
     }
 
     

@@ -25,6 +25,8 @@
  */
 package gui;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import sesim.AutoTrader;
 import sesim.Exchange;
 import traders.*;
@@ -106,6 +108,7 @@ public class MainWin extends javax.swing.JFrame {
         FileRun = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         viewMenu = new javax.swing.JMenu();
+        traderList = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         helpAbout = new javax.swing.JMenuItem();
 
@@ -150,10 +153,22 @@ public class MainWin extends javax.swing.JFrame {
         MainMenu.add(jMenu2);
 
         viewMenu.setText("View");
+
+        traderList.setMnemonic('t');
+        traderList.setText("Traders");
+        traderList.setToolTipText("");
+        traderList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                traderListActionPerformed(evt);
+            }
+        });
+        viewMenu.add(traderList);
+
         MainMenu.add(viewMenu);
 
         helpMenu.setText("Help");
 
+        helpAbout.setMnemonic('a');
         helpAbout.setText("About");
         helpAbout.setToolTipText("About this Software");
         helpAbout.addActionListener(new java.awt.event.ActionListener() {
@@ -188,6 +203,11 @@ public class MainWin extends javax.swing.JFrame {
         d.show();
     }//GEN-LAST:event_helpAboutActionPerformed
 
+    private void traderListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_traderListActionPerformed
+        TraderListDialog tl = new TraderListDialog(this,false);
+        tl.setVisible(true);
+    }//GEN-LAST:event_traderListActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -204,10 +224,12 @@ public class MainWin extends javax.swing.JFrame {
  //       SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
    //    SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
        RandomTraderConfig rcfg1 = new RandomTraderConfig();
-        AutoTrader rt1 = rcfg1.createTrader(se, 0, 1000000);
-                                                
+        AutoTrader rt1 = rcfg1.createTrader(se, 1000, 1000);
+        se.traders.add(rt1);
         rt1.setName("Bob");
         rt1.start();
+   
+   
         //AutoTrader rt2 = rcfg1.createTrader(se, 1, 100);
         //rt2.start();
         
@@ -215,9 +237,10 @@ public class MainWin extends javax.swing.JFrame {
       //  SwitchingTraderConfig cfg = new SwitchingTraderConfig();
        RandomTraderConfig cfg= new RandomTraderConfig();
         
-        for (int i=0; i<1; i++){
-            AutoTrader randt = cfg.createTrader(se, 100000, 0);
+        for (int i=0; i<530; i++){
+            AutoTrader randt = cfg.createTrader(se, 100, 100);
             
+            se.traders.add(randt);
             randt.setName("Alice");
             randt.start();
         }
@@ -230,13 +253,13 @@ public class MainWin extends javax.swing.JFrame {
      //   at.add(10, rcfg, se, 1000000, 0);
 
         
-  /*      try {
+/*        try {
             // Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException |
                 InstantiationException | IllegalAccessException e) {
         }
-*/
+     */
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -280,6 +303,7 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
     private gui.OrderBookPanel orderBookPanel1;
+    private javax.swing.JMenuItem traderList;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 }
