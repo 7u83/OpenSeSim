@@ -10,7 +10,10 @@ import sesim.Exchange.*;
 import sesim.Quote;
 import gui.MainWin;
 import java.awt.geom.Rectangle2D;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -41,35 +44,87 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     OHLCData data = new OHLCData();
 
     OHLCDataItem current = null;
-    
+
     int min;
     int max;
-    int getY(float Y){
-        
+
+    int getY(float Y) {
+
         return 0;
     }
 
-    
-    void drawCandle(Graphics2D g, OHLCData d, int x, int y){
-        
-    }
-    
+    void drawCandle(Graphics2D g, OHLCData d, int x, int y) {
 
-    void drawXLegend(Graphics2D g) {
+    }
+
+    class XLegendDef {
+
+        double unit_width = 1;
+        int big_tick = 10;
+        long start;
         
-        g = (Graphics2D)g.create();
         
+        XLegendDef(){
+            
+        }
+        
+        String getAt(int unit){
+            Date date = new Date(start);
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+            String dateFormatted = formatter.format(date);
+            return dateFormatted;
+        }
+
+    }
+
+    void drawXLegend(Graphics2D g,XLegendDef xld) {
+
+        //XLegendDef xld = new XLegendDef();
+
+        g = (Graphics2D) g.create();
+
         int xl_height = 30;
         Dimension dim = this.getSize();
 
-        int sheight = g.getFontMetrics().getHeight();
+        int em_height = g.getFontMetrics().getHeight();
+        int em_width = g.getFontMetrics().stringWidth("M");
 
-        int y = dim.height - sheight * 3;
+        int y = dim.height - em_height * 3;
 
         g.drawLine(0, y, dim.width, y);
-        
-        
 
+        int n = 0;
+        for (double x = 0; x < dim.width; x += em_width * xld.unit_width) {
+
+            if (n % xld.big_tick == 0) {
+                g.drawLine((int) x, y, (int) x, y + em_height);
+            } else {
+                g.drawLine((int) x, y, (int) x, y + em_height / 2);
+            }
+            
+            if (n % xld.big_tick == 0){
+                String text = "Hello";
+                
+                text = xld.getAt(n);                
+                int swidth = g.getFontMetrics().stringWidth(text);
+                
+
+            
+                g.drawString(text, (int)x - swidth / 2, y + em_height * 2);
+            }
+            
+            OHLCDataItem d;
+            try {
+                d = data.data.get(n);
+            } catch (Exception e) {
+                d = null;
+            }
+            
+            n++;
+
+        }
+
+        /*
         for (int i = 0; i < items; i ++) {
             int x = i * this.item_width;
             
@@ -87,19 +142,20 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
             String text;
             if (d != null) {
-                text = " ";
+                text = "A";
             } else {
-                text = " ";
+                text = "x";
             }
             
 
 
             int swidth = g.getFontMetrics().stringWidth(text);
 
-            g.drawString(text, x - swidth / 2, y + sheight * 2);
+            g.drawString(text, x - swidth / 2, y + em_height * 2);
+  
 
         }
-
+         */
         //for(int x=0; x)
     }
 
@@ -149,7 +205,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     private void draw(Graphics2D g) {
 
-        this.drawXLegend(g);
+        OHLCDataItem di0 = data.data.get(0);
+        XLegendDef xld= new XLegendDef();
+        //xld.start=di.
+        this.drawXLegend(g,xld);
 
         this.getSize();
 
@@ -175,8 +234,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         //       return;
         //   }
         ArrayList<OHLCDataItem> od = data.data;
+        
 
-      //  System.out.print("OD S: " + od.size() + "\n");
+        //  System.out.print("OD S: " + od.size() + "\n");
         g.setColor(Color.BLUE);
         g.setStroke(new BasicStroke(3));
 
@@ -204,13 +264,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
             //   max = 5;
             // min = 0;
-         //   System.out.print("Fval: " + y + " " + min + "\n");
+            //   System.out.print("Fval: " + y + " " + min + "\n");
             y -= min;
-          //  System.out.print("VAL New" + y + "\n");
+            //  System.out.print("VAL New" + y + "\n");
 
             //val/ ((data.max-data.min)/dim.height);
-          //  System.out.print("MINMAX " + min + " " + max + " " + dim.height + "\n");
-
+            //  System.out.print("MINMAX " + min + " " + max + " " + dim.height + "\n");
             y = dim.height - (dim.height * y / (max - min));
 
             int x = myi * this.item_width;
@@ -222,7 +281,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
             lasty = (int) y;
 
 //            System.out.print("Draw Line: " + x + " " + y + "\n");
-
         }
 
         //    g.drawLine(0, 0, 100, (int) ((this.current.close-80.0)*80.0));

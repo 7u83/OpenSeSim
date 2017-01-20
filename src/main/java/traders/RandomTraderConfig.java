@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2017, 7u83
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,18 +31,18 @@ import sesim.Exchange;
 
 /**
  *
- * @author tobias
+ * @author 7u83
  */
 public class RandomTraderConfig extends AutoTraderConfig {
 
     public float[] sell_volume = {100, 100};
-    public float[] sell_limit = {-1f, 1f};
-    public int[] sell_order_wait = {1000, 5000};
+    public float[] sell_limit = {-3, 3};
+    public int[] sell_order_wait = {500, 1500};
     public int[] wait_after_sell = {10, 30};
 
     public float[] buy_volume = {100, 100};
-    public float[] buy_limit = {-1, 1f};
-    public int[] buy_order_wait = {1000, 5000};
+    public float[] buy_limit = {-1, 3};
+    public int[] buy_order_wait = {500, 1500};
     public int[] wait_after_buy = {10, 30};
 
     @Override

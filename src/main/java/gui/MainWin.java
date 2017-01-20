@@ -224,9 +224,12 @@ public class MainWin extends javax.swing.JFrame {
  //       SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
    //    SwitchingTraderConfig rcfg1 = new SwitchingTraderConfig();
        RandomTraderConfig rcfg1 = new RandomTraderConfig();
-        AutoTrader rt1 = rcfg1.createTrader(se, 1000, 1000);
+     //  rcfg1.sell_limit[0]=-1;
+     //  rcfg1.sell_limit[1]=1;
+       
+        AutoTrader rt1 = rcfg1.createTrader(se, 1000000, 1000000);
         se.traders.add(rt1);
-        rt1.setName("Bob");
+        rt1.setName("Alice");
         rt1.start();
    
    
@@ -237,11 +240,11 @@ public class MainWin extends javax.swing.JFrame {
       //  SwitchingTraderConfig cfg = new SwitchingTraderConfig();
        RandomTraderConfig cfg= new RandomTraderConfig();
         
-        for (int i=0; i<530; i++){
-            AutoTrader randt = cfg.createTrader(se, 100, 100);
+        for (int i=0; i<100; i++){
+            AutoTrader randt = cfg.createTrader(se, 100000, 100000);
             
             se.traders.add(randt);
-            randt.setName("Alice");
+            randt.setName("Bob");
             randt.start();
         }
         
