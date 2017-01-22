@@ -267,65 +267,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
     }
 
-    private void draw_old(Graphics2D g) {
-
-        OHLCDataItem di0 = data.data.get(0);
-        XLegendDef xld = new XLegendDef();
-        this.drawXLegend(g, xld);
-
-        this.getSize();
-
-        int pwidth = item_width * items;
-        int phight = 40;
-
-        this.setPreferredSize(new Dimension(pwidth, phight));
-
-        Dimension dim = this.getSize();
-        //    System.out.print("Diemension "+dim.width+" "+dim.height+"\n");
-
-        g.setColor(Color.RED);
-
-        ArrayList<OHLCDataItem> od = data.data;
-
-        g.setColor(Color.BLUE);
-        g.setStroke(new BasicStroke(3));
-
-        Iterator<OHLCDataItem> it = od.iterator();
-        int myi = 0;
-
-        int lastx = 0;
-        int lasty = 0;
-
-        while (it.hasNext()) {
-            OHLCDataItem di = it.next();
-
-            float y = di.close;
-            float max = data.getMax();
-            float min = data.getMin();
-
-            max = max / 10.0f + max;
-            min = min - min / 10.0f;
-
-            if (min == max) {
-                min = y / 2;
-                max = y * 2;
-
-            }
-
-            y -= min;
-            y = dim.height - (dim.height * y / (max - min));
-
-            int x = myi * this.item_width;
-            myi++;
-
-            g.drawLine(lastx, lasty, x, (int) y);
-
-            lastx = x;
-            lasty = (int) y;
-
-        }
-
-    }
+    
 
     @Override
     public void paintComponent(Graphics go) {
