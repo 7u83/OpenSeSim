@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package sesim;
 
 import java.util.*;
 
@@ -33,29 +33,56 @@ import java.util.*;
  */
 public class OHLCData { //extends ArrayList <OHLCDataItem> {
 
-    float max=0;
-    float min=0;
+    private float max=0;
+    private float min=0;
     
-    int ras=20000/10;
+    private int frame_size=60000;
+    int max_size=100;
     
+    
+    public OHLCData(){
 
-    long time_start;
-    long time_step;
+    }
+    
+    public OHLCData(int frame_size){
+        
+        this.frame_size=frame_size;
+    }
+
+   // long time_start;
+   // long time_step;
 
     public float getMax() {
         return max;
     }
     
+    public float getMin(){
+        return min;
+    }
+    
+    public int size(){
+        return data.size();
+    }
+    
+    
+    public int getFrameSize(){
+        return this.frame_size;
+    }
+    
     
 
-    long rasterTime(long time) {
+    long getFrameStart(long time) {
 
-        long rt = time / ras;
-        return rt * ras;
+        long rt = time / frame_size;
+        return rt * frame_size;
 
     }
 
-    ArrayList<OHLCDataItem> data = new ArrayList<>();
+    public ArrayList<OHLCDataItem> data = new ArrayList<>();
+    
+    public OHLCDataItem get(int n){
+        return data.get(n);
+    }
     
     
     private void updateMinMax(float price){
@@ -68,27 +95,42 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
         }
 
     }
+    
+    public Iterator <OHLCDataItem> iterator(){
+        return data.iterator();
+    } 
 
-    private long ntime = 0;
+    // Start and end of current frame
+    private long current_frame_end = 0;
+    private long current_frame_start =0;
 
-    boolean realTimeAdd(long time, float price, float volume) {
+    public boolean realTimeAdd(long time, float price, float volume) {
         
         
-        if (time > ntime) {
-            if (ntime==0){
-                System.out.print ("Setting ntimt was zero\n");
+        if (time >= current_frame_end) {
+            if (current_frame_end==0){
+   
                 this.min=price;
                 this.max=price;
             }
             
-            ntime = rasterTime(time) + ras;
-            data.add(new OHLCDataItem(price, price, price, price, volume));
+            long last_frame_start=current_frame_start;
+            current_frame_start = getFrameStart(time);
+            
+                      
+            
+            current_frame_end = current_frame_start + frame_size;
+            
+            System.out.printf("TA %d TE %d\n",this.current_frame_start,this.current_frame_end);
+            
+            data.add(new OHLCDataItem(this.current_frame_start, price, volume));
             this.updateMinMax(price);
             return true;
         }
 
-        OHLCDataItem d = data.get(data.size() - 1);
         this.updateMinMax(price);
+        
+        OHLCDataItem d = data.get(data.size() - 1);
         boolean rc = d.update(price, volume);
         return rc;
     }

@@ -28,27 +28,23 @@ package sesim;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-
-
-
-
 /**
  *
  * @author tobias
  */
 public class Test {
-    
-   static void tube(){
-       try{
-           System.out.printf("Hello %s\n", "args");
-           if (0==0) 
-               return;
-       }
-       finally {
-           System.out.printf("Always %s\n", "the end");
-       }
-       System.out.print("haha\n");
-   }
+
+    static void tube() {
+        try {
+            System.out.printf("Hello %s\n", "args");
+            if (0 == 0) {
+                return;
+            }
+        } finally {
+            System.out.printf("Always %s\n", "the end");
+        }
+        System.out.print("haha\n");
+    }
 
     static void print_account(AccountData ad) {
         System.out.print(
@@ -66,56 +62,66 @@ public class Test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
+
+        OHLCData od = new OHLCData(1000);
+
+        od.realTimeAdd(12, 100, 10);
+
+        od.realTimeAdd(5000, 100, 10);
+        //od.realTimeAdd(12, 100, 10);
+
+        System.out.printf("Size: %d\n", od.size());
+
+        OHLCDataItem di;
         
+        di = od.get(2);
+
+        System.exit(0);
+
         Scheduler s = new Scheduler();
         s.start();
-      
-        class Ev implements Scheduler.TimerTask{
 
-           @Override
-           public long timerTask() {
-               System.out.printf("Timer Event Occured %s\n",name);
-               if ("Ev1".equals(this.name))
+        class Ev implements Scheduler.TimerTask {
+
+            @Override
+            public long timerTask() {
+                System.out.printf("Timer Event Occured %s\n", name);
+                if ("Ev1".equals(this.name)) {
                     return 2000;
-               else
-                   return 4000;
-           }
-           
-           String name;
-           Ev(String name){
-               this.name=name;
-           }
-            
+                } else {
+                    return 4000;
+                }
+            }
+
+            String name;
+
+            Ev(String name) {
+                this.name = name;
+            }
+
         }
-        
+
         Ev e1 = new Ev("Ev1");
         Ev e2 = new Ev("Eb2");
-        
-        
-        s.startTimerEvent(e1, 0);
-            s.startTimerEvent(e2, 0);
-        
-    try
-    {
-        Thread.sleep(90000);
-    }
-    catch(Exception e) {
-        
-    }
-    
-    s.halt();
-        while (s.isAlive()){
-           
-        }
-        
-        System.out.print("All isstopped\n");            
 
-       // s.startTimerEvent(e2, 100);
-        
-        
-        
-    
-       /* long starttime=System.currentTimeMillis();
+        s.startTimerEvent(e1, 0);
+        s.startTimerEvent(e2, 0);
+
+        try {
+            Thread.sleep(90000);
+        } catch (Exception e) {
+
+        }
+
+        s.halt();
+        while (s.isAlive()) {
+
+        }
+
+        System.out.print("All isstopped\n");
+
+        // s.startTimerEvent(e2, 100);
+        /* long starttime=System.currentTimeMillis();
         while (s.isAlive()){
             if (System.currentTimeMillis()>starttime+6650){
                     s.stop();
@@ -128,9 +134,7 @@ public class Test {
         }
         
         System.out.print("All isstopped\n");
-    */
-      
-       
+         */
     }
 
 }

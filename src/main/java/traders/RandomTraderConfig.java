@@ -36,13 +36,13 @@ import sesim.Exchange;
 public class RandomTraderConfig extends AutoTraderConfig {
 
     public float[] sell_volume = {100, 100};
-    public float[] sell_limit = {-3, 3};
-    public int[] sell_order_wait = {500, 1500};
+    public float[] sell_limit = {-1.5f, 1.5f};
+    public int[] sell_order_wait = {1000, 5000};
     public int[] wait_after_sell = {10, 30};
 
     public float[] buy_volume = {100, 100};
-    public float[] buy_limit = {-1, 3};
-    public int[] buy_order_wait = {500, 1500};
+    public float[] buy_limit = {-1.0f, 1.5f};
+    public int[] buy_order_wait = {1000, 5000};
     public int[] wait_after_buy = {10, 30};
 
     @Override

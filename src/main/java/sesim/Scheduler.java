@@ -69,10 +69,18 @@ public class Scheduler extends Thread {
         }
     }
 
-    public long currentTimeMillis() {
+    /**
+     *
+     * @return
+     */
+    public static long currentTimeMillis() {
         return System.currentTimeMillis();
 
     }
+    
+    public static long timeStart=Scheduler.currentTimeMillis();
+        
+    
 
     /**
      * 
@@ -80,7 +88,7 @@ public class Scheduler extends Thread {
      * @param time 
      */
     public void startTimerEvent(TimerTask e, long time) {
-        long evtime = time + this.currentTimeMillis();
+        long evtime = time + currentTimeMillis();
         synchronized (event_queue) {
             this.addEvent(e, time);
         }
@@ -95,7 +103,7 @@ public class Scheduler extends Thread {
 
     private boolean addEvent(TimerTask e, long time) {
 
-        long evtime = time + this.currentTimeMillis();
+        long evtime = time + currentTimeMillis();
 
         SortedSet<TimerTask> s = event_queue.get(evtime);
         if (s == null) {
@@ -112,7 +120,7 @@ public class Scheduler extends Thread {
             }
 
             long t = event_queue.firstKey();
-            if (t <= this.currentTimeMillis()) {
+            if (t <= currentTimeMillis()) {
                 SortedSet s = event_queue.get(t);
                 event_queue.remove(t);
                 Iterator<TimerTask> it = s.iterator();
@@ -124,7 +132,7 @@ public class Scheduler extends Thread {
                 return 0;
 
             } else {
-                return t - this.currentTimeMillis();
+                return t - currentTimeMillis();
             }
         }
 

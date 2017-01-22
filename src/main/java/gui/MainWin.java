@@ -240,7 +240,7 @@ public class MainWin extends javax.swing.JFrame {
       //  SwitchingTraderConfig cfg = new SwitchingTraderConfig();
        RandomTraderConfig cfg= new RandomTraderConfig();
         
-        for (int i=0; i<100; i++){
+        for (int i=0; i<30; i++){
             AutoTrader randt = cfg.createTrader(se, 100000, 100000);
             
             se.traders.add(randt);

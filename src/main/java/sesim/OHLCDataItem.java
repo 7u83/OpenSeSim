@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package sesim;
 
 /**
  *
@@ -36,17 +36,13 @@ public class OHLCDataItem {
     public float low;
     public float close;
     public float volume;
-
-    public OHLCDataItem(float open, float high, float low, float close, float volume) {
-        this.open = open;
-        this.high = high;
-        this.low = low;
-        this.close = close;
-        this.volume = volume;
-    }
-
-    public OHLCDataItem() {
-        this(0, 0, 0, 0, 0);
+    public long time;
+    
+    
+    public OHLCDataItem(long time,float price, float volume){
+        this.time=time;
+        open=low=high=close=price;
+        this.volume=volume;
     }
 
     public boolean update(float price, float volume) {
