@@ -96,6 +96,16 @@ public class Scheduler extends Thread {
             notify();
         }
     }
+    
+    private boolean pause=false;
+    
+    public void pause(){
+        pause=!pause;
+        synchronized(this){
+            this.notify();            
+        }
+
+    }
 
     public long fireEvent(TimerTask e) {
         return e.timerTask();
@@ -141,6 +151,9 @@ public class Scheduler extends Thread {
     @Override
     public void run() {
         while (!halt) {
+
+            
+            
             long wtime = runEvents();
             if (wtime == 0) {
                 continue;
@@ -148,6 +161,10 @@ public class Scheduler extends Thread {
 
             synchronized (this) {
                 try {
+                    if (pause){
+                        wtime=-1;
+                    }
+                    
                     if (wtime != -1) {
                         wait(wtime);
                     } else {

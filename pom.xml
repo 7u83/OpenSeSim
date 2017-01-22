@@ -3,14 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cauwersin</groupId>
     <artifactId>SeSim</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.01</version>
     <packaging>jar</packaging>
     <dependencies>
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.19</version>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

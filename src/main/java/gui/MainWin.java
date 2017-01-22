@@ -52,7 +52,7 @@ public class MainWin extends javax.swing.JFrame {
         this.setLocationRelativeTo(this);
         
         
-            double aid1 = Globals.se.createAccount(100, 100);
+        double aid1 = Globals.se.createAccount(100, 100);
         double aid2 = Globals.se.createAccount(1000, 100);
 
   /*      AccountData a1 = se.getAccountData(aid1);

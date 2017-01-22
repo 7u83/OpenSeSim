@@ -360,7 +360,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     private void initComponents() {
 
         setBackground(java.awt.Color.white);
-        setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        setBorder(null);
+        setOpaque(false);
         setPreferredSize(new java.awt.Dimension(300, 300));
         setRequestFocusEnabled(false);
 
@@ -368,11 +369,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 316, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 280, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

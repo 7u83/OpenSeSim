@@ -25,6 +25,12 @@
  */
 package gui;
 
+import java.awt.Dialog;
+import sesim.AutoTrader;
+import sesim.AutoTraderConfig;
+import sesim.Exchange;
+import traders.RandomTraderConfig;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -36,6 +42,28 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public NewMDIApplication() {
         initComponents();
+        this.setLocationRelativeTo(this);
+        this.setTitle("SeSim - Stock Exchange Simmulator");
+    }
+
+    public void startTraders() {
+
+        AutoTraderConfig cfg1 = new RandomTraderConfig();
+        AutoTrader rt1 = cfg1.createTrader(Globals.se, 1000000, 1000000);
+        Globals.se.traders.add(rt1);
+        rt1.setName("Alice");
+        rt1.start();
+
+        AutoTraderConfig cfg2 = new RandomTraderConfig();
+
+        for (int i = 0; i < 30; i++) {
+            AutoTrader randt = cfg2.createTrader(Globals.se, 100000, 100000);
+
+            Globals.se.traders.add(randt);
+            randt.setName("Bob");
+            randt.start();
+        }
+
     }
 
     /**
@@ -47,22 +75,75 @@ public class NewMDIApplication extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        chart2 = new chart.Chart();
+        orderBookPanel1 = new gui.OrderBookPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         cutMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
         pasteMenuItem = new javax.swing.JMenuItem();
         deleteMenuItem = new javax.swing.JMenuItem();
+        editPreferences = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(640, 480));
+        setPreferredSize(new java.awt.Dimension(800, 561));
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run.gif"))); // NOI18N
+        jButton1.setText("Run sim!");
+        jButton1.setToolTipText("Run the simmulation");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
+        jButton2.setText("Pause");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
+
+        javax.swing.GroupLayout chart2Layout = new javax.swing.GroupLayout(chart2);
+        chart2.setLayout(chart2Layout);
+        chart2Layout.setHorizontalGroup(
+            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 669, Short.MAX_VALUE)
+        );
+        chart2Layout.setVerticalGroup(
+            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 460, Short.MAX_VALUE)
+        );
+
+        jScrollPane1.setViewportView(chart2);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -89,6 +170,15 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         fileMenu.add(exitMenuItem);
 
+        jMenuItem1.setText("Run");
+        jMenuItem1.setHideActionText(true);
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        fileMenu.add(jMenuItem1);
+
         menuBar.add(fileMenu);
 
         editMenu.setMnemonic('e');
@@ -110,7 +200,28 @@ public class NewMDIApplication extends javax.swing.JFrame {
         deleteMenuItem.setText("Delete");
         editMenu.add(deleteMenuItem);
 
+        editPreferences.setMnemonic('p');
+        editPreferences.setText("Preferences ...");
+        editPreferences.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editPreferencesActionPerformed(evt);
+            }
+        });
+        editMenu.add(editPreferences);
+
         menuBar.add(editMenu);
+
+        jMenu1.setText("View");
+
+        jMenuItem2.setText("Traders");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        menuBar.add(jMenu1);
 
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
@@ -121,6 +232,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText("About");
+        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuItemActionPerformed(evt);
+            }
+        });
         helpMenu.add(aboutMenuItem);
 
         menuBar.add(helpMenu);
@@ -131,11 +247,23 @@ public class NewMDIApplication extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 913, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 913, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(orderBookPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 554, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(orderBookPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -145,32 +273,40 @@ public class NewMDIApplication extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
+    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
+        Dialog d = new gui.AboutDialog(this, rootPaneCheckingEnabled);
+        d.setVisible(rootPaneCheckingEnabled);
+
+    }//GEN-LAST:event_aboutMenuItemActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.startTraders();
+        Globals.se.timer.start();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void editPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesActionPerformed
+        Dialog d = new gui.EditPreferencesDialog(this, rootPaneCheckingEnabled);
+        d.setVisible(rootPaneCheckingEnabled);
+    }//GEN-LAST:event_editPreferencesActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        TraderListDialog d = new TraderListDialog(this,false);
+        d.setVisible(rootPaneCheckingEnabled);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Globals.se.timer.pause();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+        Globals.se = new Exchange();
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -182,16 +318,26 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private chart.Chart chart2;
     private javax.swing.JMenuItem contentMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JMenuItem editPreferences;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
+    private gui.OrderBookPanel orderBookPanel1;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+    <action>
+        <actionName>run</actionName>
+        <packagings>
+            <packaging>jar</packaging>
+        </packagings>
+        <goals>
+            <goal>process-classes</goal>
+    
+        </goals>
+        <properties>
+            <jnlp.args>-classpath %classpath ${packageClassName}</jnlp.args>
+            <jnlp.jnlputable>java</jnlp.jnlputable>
+        </properties>
+    </action>
+</actions>
