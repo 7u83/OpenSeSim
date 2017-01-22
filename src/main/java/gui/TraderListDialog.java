@@ -25,7 +25,6 @@ package gui;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -34,12 +33,14 @@ public class TraderListDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form TraderList
+     *
      * @param parent
      * @param modal
      */
     public TraderListDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(MainWin.instance);
     }
 
     /**

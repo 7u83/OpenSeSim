@@ -25,6 +25,8 @@
  */
 package gui;
 
+import java.awt.Frame;
+import java.awt.Window;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -42,6 +44,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     public EditPreferencesDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(MainWin.instance);
 
         lafInfo = UIManager.getInstalledLookAndFeels();
         lafComboBox.removeAllItems();
@@ -63,6 +66,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         lafLabel = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         applyButton = new javax.swing.JButton();
+        okButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -91,6 +95,14 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             }
         });
 
+        okButton.setMnemonic('o');
+        okButton.setText("Ok");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -101,9 +113,11 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lafLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lafComboBox, 0, 276, Short.MAX_VALUE))
+                        .addComponent(lafComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 201, Short.MAX_VALUE)
+                        .addComponent(okButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(applyButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton)))
@@ -119,7 +133,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 236, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
-                    .addComponent(applyButton))
+                    .addComponent(applyButton)
+                    .addComponent(okButton))
                 .addContainerGap())
         );
 
@@ -141,20 +156,27 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
 
         for (UIManager.LookAndFeelInfo lafInfo1 : this.lafInfo) {
             if (lafInfo1.getName().equals(selected)) {
-                String x = lafInfo1.getClassName();
-                System.out.printf("Set Callsname: %s\n", x);
+                String lafClassName = lafInfo1.getClassName();
                 try {
-                    UIManager.setLookAndFeel(x);
-                    SwingUtilities.updateComponentTreeUI(MainWin.instance);
-                    MainWin.instance.pack();
+                    UIManager.setLookAndFeel(lafClassName);
+                    break;
                 } catch (Exception e) {
 
                 }
             }
         }
+        for (Window w : Window.getWindows()) {
+            System.out.print("Setting frame\n");
+            SwingUtilities.updateComponentTreeUI(w);
+            w.pack();
 
-
+        }
     }//GEN-LAST:event_applyButtonActionPerformed
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        this.applyButtonActionPerformed(evt);
+        this.dispose();
+    }//GEN-LAST:event_okButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,5 +225,6 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JButton cancelButton;
     private javax.swing.JComboBox<String> lafComboBox;
     private javax.swing.JLabel lafLabel;
+    private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
 }
