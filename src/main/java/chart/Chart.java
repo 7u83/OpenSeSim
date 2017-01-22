@@ -193,7 +193,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
             float w = ctx.iwidth;
             float h = (int) (ctx.getY(i.open) - ctx.getY(i.close));
 
-            System.out.printf("CLO: %f %f \n", w, h);
+         //   System.out.printf("CLO: %f %f \n", w, h);
             g.setColor(Color.GREEN);
             g.fillRect((int) (x - w / 2), (int) ctx.getY(i.close), (int) w, (int) h);
             g.setColor(Color.BLACK);
@@ -218,7 +218,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
     }
 
     private void draw(Graphics2D g) {
-
+        
+        if (data == null )
+            return;
+        if (data.size()==0)
+            return;
+            
         OHLCDataItem di0 = data.get(0);
         XLegendDef xld = new XLegendDef();
         this.drawXLegend(g, xld);

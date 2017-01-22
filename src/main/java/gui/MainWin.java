@@ -38,6 +38,7 @@ import traders.*;
  */
 public class MainWin extends javax.swing.JFrame {
 
+    static MainWin instance;
     static public sesim.Exchange se;
     //static sesim.Account_old myAccount;
    
@@ -106,7 +107,8 @@ public class MainWin extends javax.swing.JFrame {
         FileMenu = new javax.swing.JMenu();
         FileNew = new javax.swing.JMenuItem();
         FileRun = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        editjMenu = new javax.swing.JMenu();
+        editPrefernces = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         traderList = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
@@ -149,9 +151,21 @@ public class MainWin extends javax.swing.JFrame {
 
         MainMenu.add(FileMenu);
 
-        jMenu2.setText("Edit");
-        MainMenu.add(jMenu2);
+        editjMenu.setMnemonic('e');
+        editjMenu.setText("Edit");
 
+        editPrefernces.setMnemonic('p');
+        editPrefernces.setText("Preferences");
+        editPrefernces.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editPreferncesActionPerformed(evt);
+            }
+        });
+        editjMenu.add(editPrefernces);
+
+        MainMenu.add(editjMenu);
+
+        viewMenu.setMnemonic('v');
         viewMenu.setText("View");
 
         traderList.setMnemonic('t');
@@ -207,6 +221,11 @@ public class MainWin extends javax.swing.JFrame {
         TraderListDialog tl = new TraderListDialog(this,false);
         tl.setVisible(true);
     }//GEN-LAST:event_traderListActionPerformed
+
+    private void editPreferncesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferncesActionPerformed
+        EditPreferencesDialog d = new EditPreferencesDialog(this,true);
+        d.setVisible(true);
+    }//GEN-LAST:event_editPreferncesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -289,7 +308,9 @@ public class MainWin extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new MainWin().setVisible(true);
+            MainWin.instance=new MainWin();
+            MainWin.instance.setVisible(true);
+            
         });
     }
 
@@ -299,11 +320,12 @@ public class MainWin extends javax.swing.JFrame {
     private javax.swing.JMenuItem FileRun;
     private javax.swing.JMenuBar MainMenu;
     private gui.ControlPanel controlPanel2;
+    private javax.swing.JMenuItem editPrefernces;
+    private javax.swing.JMenu editjMenu;
     private chart.FullChart fullChart2;
     private javax.swing.JMenuItem helpAbout;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
     private gui.OrderBookPanel orderBookPanel1;
     private javax.swing.JMenuItem traderList;
