@@ -23,11 +23,11 @@ public class Exchange {  //extends Thread {
     public ArrayList <AutoTrader> traders = new ArrayList();
 
     /**
-     *
+     * Implements a trading account
      */
     public class Account implements Comparable {
 
-        private double id;
+        private final double id;
         private double shares;
         private double money;
 

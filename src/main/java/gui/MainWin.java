@@ -209,7 +209,7 @@ public class MainWin extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void FileRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileRunActionPerformed
-  //      se.start();
+        se.timer.start();
     }//GEN-LAST:event_FileRunActionPerformed
 
     private void helpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpAboutActionPerformed
@@ -233,7 +233,7 @@ public class MainWin extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         se = new Exchange();
-        se.timer.start();
+        //se.timer.start();
         
         
         //RandomTraderConfig rcfg = new RandomTraderConfig();
