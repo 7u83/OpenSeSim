@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,12 @@
  */
 package gui;
 
-import java.util.ArrayList;
-import sesim.Exchange.*;
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AskBook extends OrderBook {
-
-    @Override
-    ArrayList <Order> getOrderBook() {
-        return Globals.se.getOrderBook(OrderType.ASK,40);
-    }
+public class Globals {
     
-    @Override
-    boolean getDesc(){
-        return true;
-    }
-        
-    public AskBook(){
-        if (Globals.se == null) {
-            return;
-        }
-        Globals.se.addBookReceiver(OrderType.ASK, this);
-        
-    }
-
+    static public sesim.Exchange se;
+    
 }

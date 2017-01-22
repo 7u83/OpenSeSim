@@ -188,7 +188,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         long start = (ct - 60)/step*step;
 
 
-        SortedSet<Quote> h = MainWin.se.getQuoteHistory(start);
+        SortedSet<Quote> h = Globals.se.getQuoteHistory(start);
 
         for (long i = start * 1000; i < ct * 1000; i += step * 1000) {
             OHLCDataItem d = getOhlcData(i, i + step * 1000, h);
@@ -293,7 +293,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         );
         
         long start = (ct - 60)/5*5;
-        SortedSet<Quote> h = MainWin.se.getQuoteHistory(start);
+        SortedSet<Quote> h = Globals.se.getQuoteHistory(start);
 
         System.out.print("Number of quotes" + start + ":" + ct + "\n");
         System.out.print("Number of quotes:" + h.size() + "\n");

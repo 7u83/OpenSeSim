@@ -35,14 +35,14 @@ import sesim.Exchange.*;
 public class BidBook extends OrderBook {
 
     @Override
-    ArrayList <Order> getOrderBook() {
-        return MainWin.se.getOrderBook(OrderType.BID, 40);
+    ArrayList<Order> getOrderBook() {
+        return Globals.se.getOrderBook(OrderType.BID, 40);
     }
 
     public BidBook() {
-        if (MainWin.se == null) {
+        if (Globals.se == null) {
             return;
         }
-        MainWin.se.addBookReceiver(OrderType.BID, this);
+        Globals.se.addBookReceiver(OrderType.BID, this);
     }
 }

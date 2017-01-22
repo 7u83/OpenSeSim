@@ -39,7 +39,7 @@ import traders.*;
 public class MainWin extends javax.swing.JFrame {
 
     static MainWin instance;
-    static public sesim.Exchange se;
+    //static public sesim.Exchange se;
     //static sesim.Account_old myAccount;
    
     
@@ -52,8 +52,8 @@ public class MainWin extends javax.swing.JFrame {
         this.setLocationRelativeTo(this);
         
         
-            double aid1 = se.createAccount(100, 100);
-        double aid2 = se.createAccount(1000, 100);
+            double aid1 = Globals.se.createAccount(100, 100);
+        double aid2 = Globals.se.createAccount(1000, 100);
 
   /*      AccountData a1 = se.getAccountData(aid1);
         AccountData a2 = se.getAccountData(aid2);
@@ -209,7 +209,7 @@ public class MainWin extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void FileRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileRunActionPerformed
-        se.timer.start();
+        Globals.se.timer.start();
     }//GEN-LAST:event_FileRunActionPerformed
 
     private void helpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpAboutActionPerformed
@@ -232,7 +232,7 @@ public class MainWin extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
 
-        se = new Exchange();
+        Globals.se = new Exchange();
         //se.timer.start();
         
         
@@ -246,8 +246,8 @@ public class MainWin extends javax.swing.JFrame {
      //  rcfg1.sell_limit[0]=-1;
      //  rcfg1.sell_limit[1]=1;
        
-        AutoTrader rt1 = rcfg1.createTrader(se, 1000000, 1000000);
-        se.traders.add(rt1);
+        AutoTrader rt1 = rcfg1.createTrader(Globals.se, 1000000, 1000000);
+        Globals.se.traders.add(rt1);
         rt1.setName("Alice");
         rt1.start();
    
@@ -260,9 +260,9 @@ public class MainWin extends javax.swing.JFrame {
        RandomTraderConfig cfg= new RandomTraderConfig();
         
         for (int i=0; i<30; i++){
-            AutoTrader randt = cfg.createTrader(se, 100000, 100000);
+            AutoTrader randt = cfg.createTrader(Globals.se, 100000, 100000);
             
-            se.traders.add(randt);
+            Globals.se.traders.add(randt);
             randt.setName("Bob");
             randt.start();
         }

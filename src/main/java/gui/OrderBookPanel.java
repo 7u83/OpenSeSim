@@ -42,7 +42,7 @@ public class OrderBookPanel extends javax.swing.JPanel {
     sesim.Exchange se;
 
     public OrderBookPanel() {
-        this.se = MainWin.se;
+        this.se = Globals.se;
 
         initComponents();
 

@@ -57,7 +57,7 @@ public class TraderListPanel extends javax.swing.JPanel
         this.setBorder(BorderFactory.createEmptyBorder());
 //        this.orderBookScroller.setBorder(BorderFactory.createBevelBorder(0));
 
-        if (MainWin.se == null) {
+        if (Globals.se == null) {
             return;
         }
 
@@ -70,8 +70,8 @@ public class TraderListPanel extends javax.swing.JPanel
 //        h.setBackground(Color.BLUE);
 //        h.setForeground(Color.green);
 
-        if (MainWin.se != null) {
-            this.se = MainWin.se;
+        if (Globals.se != null) {
+            this.se = Globals.se;
             this.list = this.getTraderList();
             se.timer.startTimerEvent(this, 1000);
         }

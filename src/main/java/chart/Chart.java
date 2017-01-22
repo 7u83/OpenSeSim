@@ -10,7 +10,7 @@ import sesim.OHLCData;
 import java.awt.*;
 import sesim.Exchange.*;
 import sesim.Quote;
-import gui.MainWin;
+import gui.Globals;
 import java.awt.geom.Rectangle2D;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,11 +29,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
      */
     public Chart() {
         initComponents();
-        if (MainWin.se == null) {
+        if (Globals.se == null) {
             return;
         }
 
-        MainWin.se.addQuoteReceiver(this);
+        Globals.se.addQuoteReceiver(this);
 
         //Graphics g = this.getGraphics();
         //g.drawString("Hello world", 0, 0);
