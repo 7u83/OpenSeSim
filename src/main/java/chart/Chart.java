@@ -17,12 +17,27 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import javax.swing.Scrollable;
+import sesim.MinMax;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Chart extends javax.swing.JPanel implements QuoteReceiver {
+public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
+
+    protected int em_size = 1;
+
+    protected float bar_width = 0.8f;
+    protected float bar_width_em = 1;
+    protected float y_legend_width = 8;
+
+    protected int num_bars = 4000;
+
+    protected Rectangle clip_bounds = new Rectangle();
+    protected Dimension dim;
+
+    protected int first_bar, last_bar;
 
     /**
      * Creates new form Chart
@@ -35,27 +50,42 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
 
         Globals.se.addQuoteReceiver(this);
 
-        //Graphics g = this.getGraphics();
-        //g.drawString("Hello world", 0, 0);
     }
 
-    int item_width = 10;
-    int items = 350;
-    long ntime = 0;
-
-    OHLCData data = new OHLCData(2000);
+    // int item_width = 10;
+    //int items = 350;
+    //long ntime = 0;
+    OHLCData data = new OHLCData(6000);
 
     OHLCDataItem current = null;
 
-    //  int min;
-    // int max;
-    int getY(float Y) {
-
-        return 0;
-    }
-
     void drawCandle(Graphics2D g, OHLCData d, int x, int y) {
 
+    }
+
+    @Override
+    public Dimension getPreferredScrollableViewportSize() {
+        return this.getPreferredSize();
+    }
+
+    @Override
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 1;
+    }
+
+    @Override
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 100;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return false;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        return false;
     }
 
     class XLegendDef {
@@ -141,26 +171,53 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         Graphics2D g;
         float iwidth;
 
-        float getY(float y) {
-            return rect.height - ((y - min) * scaling);
+        float getYc(float y) {
+            return getY(y);
+            //return rect.height - ((y - min) * scaling);
         }
     }
 
-    float getY(float y, float min, float s, Rectangle r) {
+    boolean logs = true;
 
-        return r.height - ((y - min) * s);
+    float getY(float y) {
+
+        if (logs) {
+            
+            float m = c_mm.max/c_mm.min;
+            
+            System.out.printf("Min: %f  Max: %f M: %f\n",c_mm.min,c_mm.max,m);
+            
+            
+            //float fac = (float) c_rect.height /(float) Math.log(c_mm.max * c_yscaling);
+            float fac = (float) c_rect.height /(float)Math.log(m);
+            
+
+            float fmin = c_rect.height - ((float) Math.log((y / c_mm.min)) * fac);
+            
+            
+            System.out.printf("Fac: %f fmin: %f\n", fac, fmin);
+            return fmin;
+
+            //return c_rect.height - ((float) Math.log((y - c_mm.min) * c_yscaling) * fac);
+            
+            
+        }
+
+        return c_rect.height - ((y - c_mm.min) * c_yscaling);
+
+//        return c_rect.height - ((y - c_mm.min) * c_yscaling);
     }
 
-    private void old_drawItem(Graphics2D g, Rectangle r, int prevx, int x, OHLCDataItem prev, OHLCDataItem item, float s, float min) {
+    /*   private void old_drawItem(Graphics2D g, Rectangle r, int prevx, int x, OHLCDataItem prev, OHLCDataItem item, float s, float min) {
 
         if (prev == null) {
             prev = item;
         }
 
-        g.drawLine(prevx, (int) getY(prev.close, min, s, r), x, (int) getY(item.close, min, s, r));
+        g.drawLine(prevx, (int) getYc(prev.close, min, s, r), x, (int) getYc(item.close, min, s, r));
         g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
     }
-
+     */
     private void drawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
 
         if (prev == null) {
@@ -169,7 +226,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         Graphics2D g = ctx.g;
 
         Rectangle r = ctx.rect;
-        g.drawLine(prevx, (int) ctx.getY(prev.close), x, (int) ctx.getY(item.close));
+        g.drawLine(prevx, (int) ctx.getYc(prev.close), x, (int) ctx.getYc(item.close));
         g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
     }
 
@@ -181,49 +238,101 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         Graphics2D g = ctx.g;
 
         Rectangle r = ctx.rect;
-//        g.drawLine(prevx, (int) ctx.getY(prev.close), x, (int) ctx.getY(item.close));
+//        g.drawLine(prevx, (int) ctx.getYc(prev.close), x, (int) ctx.getYc(item.close));
 
-//        g.drawLine(x,(int)ctx.getY(i.high),x,(int)ctx.getY(i.low));
+//        g.drawLine(x,(int)ctx.getYc(i.high),x,(int)ctx.getYc(i.low));
         if (i.open < i.close) {
+            int xl = (int) (x + ctx.iwidth / 2);
 
             g.setColor(Color.BLACK);
-            g.drawLine(x, (int) ctx.getY(i.close), x, (int) ctx.getY(i.high));
-            g.drawLine(x, (int) ctx.getY(i.low), x, (int) ctx.getY(i.open));
+            g.drawLine(xl, (int) ctx.getYc(i.close), xl, (int) ctx.getYc(i.high));
+            g.drawLine(xl, (int) ctx.getYc(i.low), xl, (int) ctx.getYc(i.open));
 
             float w = ctx.iwidth;
-            float h = (int) (ctx.getY(i.open) - ctx.getY(i.close));
+            float h = (int) (ctx.getYc(i.open) - ctx.getYc(i.close));
 
-         //   System.out.printf("CLO: %f %f \n", w, h);
+            //   System.out.printf("CLO: %f %f \n", w, h);
             g.setColor(Color.GREEN);
-            g.fillRect((int) (x - w / 2), (int) ctx.getY(i.close), (int) w, (int) h);
+            g.fillRect((int) (x), (int) ctx.getYc(i.close), (int) w, (int) h);
             g.setColor(Color.BLACK);
-            g.drawRect((int) (x - w / 2), (int) ctx.getY(i.close), (int) w, (int) h);
+            g.drawRect((int) (x), (int) ctx.getYc(i.close), (int) w, (int) h);
 
         } else {
-
+            int xl = (int) (x + ctx.iwidth / 2);
             g.setColor(Color.RED);
-            g.drawLine(x, (int) ctx.getY(i.high), x, (int) ctx.getY(i.close));
-            g.drawLine(x, (int) ctx.getY(i.open), x, (int) ctx.getY(i.low));
+            g.drawLine(xl, (int) ctx.getYc(i.high), xl, (int) ctx.getYc(i.close));
+            g.drawLine(xl, (int) ctx.getYc(i.open), xl, (int) ctx.getYc(i.low));
 
             float w = ctx.iwidth;
-            float h = (int) (ctx.getY(i.close) - ctx.getY(i.open));
+            float h = (int) (ctx.getYc(i.close) - ctx.getYc(i.open));
 
-            g.fillRect((int) (x - w / 2), (int) ctx.getY(i.open), (int) w, (int) h);
+            g.fillRect((int) (x), (int) ctx.getYc(i.open), (int) w, (int) h);
             g.setColor(Color.BLACK);
-            g.drawRect((int) (x - w / 2), (int) ctx.getY(i.open), (int) w, (int) h);
+            g.drawRect((int) (x), (int) ctx.getYc(i.open), (int) w, (int) h);
 
         }
 
-        g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
+//        g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
     }
 
+//    float getYc(float y) {
+    //       return c_rect.height - ((y - c_mm.min) * scaling);
+    //   }
+    float c_yscaling;
+
+    private void drawYLegend(Graphics2D g) {
+
+        Dimension dim0 = this.getSize();
+        Rectangle dim = g.getClipBounds();
+
+        int yw = (int) (this.y_legend_width * this.em_size);
+
+//        System.out.printf("MinMax: %f %f\n", c_mm.min, c_mm.max);
+
+        g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
+
+//        float yscale = dim.height / c_mm.getDiff();
+        c_yscaling = c_rect.height / c_mm.getDiff();
+
+//        System.out.printf("yscale %f\n", c_yscaling);
+
+        for (float y = c_mm.min; y < c_mm.max; y += c_mm.getDiff() / 10.0) {
+
+            int my = (int) getY(y); //c_rect.height - (int) ((y - c_mm.min) * c_yscaling);
+
+            g.drawLine(dim.width + dim.x - yw, my, dim.width + dim.x - yw + em_size, my);
+
+            g.drawString(String.format("%.2f", y), dim.width + dim.x - yw + em_size * 1.5f, my + c_font_height / 3);
+        }
+
+//        g.setColor(Color.red);
+//        g.drawLine(0,(int)getYc(c_mm.min), 1000, (int)getYc(c_mm.min));
+        //g.setColor(Color.green);
+        //g.drawRect(c_rect.x, c_rect.y, c_rect.width, c_rect.height);
+        // System.out.printf("Size: %d %d\n",dim.width,dim.height);
+        //  System.exit(0);
+    }
+
+    private MinMax c_mm = null;
+    private Rectangle c_rect;
+
     private void draw(Graphics2D g) {
-        
-        if (data == null )
+
+        if (data == null) {
             return;
-        if (data.size()==0)
+        }
+        if (data.size() == 0) {
             return;
-            
+        }
+
+        c_mm = data.getMinMax(first_bar, last_bar);
+        if (c_mm == null) {
+            return;
+        }
+
+        c_mm.min /= 1.5; //-= c_mm.min/ 2.0f;
+        c_mm.max *= 1.2; //+= c_mm.max / 10.0f;
+
         OHLCDataItem di0 = data.get(0);
         XLegendDef xld = new XLegendDef();
         this.drawXLegend(g, xld);
@@ -231,30 +340,46 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
         int em_height = g.getFontMetrics().getHeight();
         int em_width = g.getFontMetrics().stringWidth("M");
 
-        this.getSize();
-
-        int pwidth = em_width * items;
+        //this.getSize();
+        int pwidth = em_width * num_bars;
         int phight = 400;
 
-        this.setPreferredSize(new Dimension(pwidth, phight));
+        this.setPreferredSize(new Dimension(pwidth, dim.height));
+        this.revalidate();
 
-        Dimension dim = this.getSize();
+        Rectangle r = new Rectangle(0, 0, pwidth, dim.height - 6 * em_width);
+        c_rect = r;
+        this.drawYLegend(g);
 
-        Iterator<OHLCDataItem> it = data.iterator();
+        //       Dimension dim = this.getSize();
+        //    Iterator<OHLCDataItem> it = data.iterator();
         OHLCDataItem prev = null;
-        int myi = 0;
+        //  int myi = 0;
 
         RenderCtx ctx = new RenderCtx();
 
-        Rectangle r = new Rectangle(0, 2 * em_width, pwidth, dim.height - 6 *em_width );
-        ctx.rect = r;
-        ctx.scaling = (float) r.height / (data.getMax() - data.getMin());
-        ctx.min = data.getMin();
+//        MinMax mm = data.getMinMax(first_bar, last_bar);
+//        if(mm==null)
+//            return ;
+        ctx.rect = c_rect;
+        ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
+        ctx.min = c_mm.getMin();
         ctx.g = g;
-        ctx.iwidth = em_width - em_width / 5f;
+        ctx.iwidth = (bar_width * em_size) * 0.9f; // em_width - em_width / 5f;
+
+        //g.setClip(clip_bounds.x, clip_bounds.y, (int)(clip_bounds.width-this.y_legend_width*this.em_size), clip_bounds.height);
+        for (int i = first_bar; i < last_bar && i < data.size(); i++) {
+            OHLCDataItem di = data.get(i);
+            int x = (int) (i * em_size * bar_width); //em_width;
+            this.drawItem(ctx, x - em_width, x, prev, di); //, ctx.scaling, data.getMin());
+
+            //    myi++;
+            prev = di;
+
+        }
 
         //System.out.printf("Scaling: %f  %f %f %f %f\n",diff,(float)r.height,data.getMin(),data.getMax(),yscaling);
-        while (it.hasNext()) {
+/*        while (it.hasNext()) {
             OHLCDataItem di = it.next();
 
             int x = myi * em_width;
@@ -264,32 +389,32 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver {
             prev = di;
 
         }
+         */
+    }
+
+    protected void initEmSize(Graphics g) {
+
+        em_size = g.getFontMetrics().stringWidth("M");
 
     }
 
-    
+    private float c_font_height;
 
     @Override
-    public void paintComponent(Graphics go) {
-        super.paintComponent(go);
+    public final void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-        Graphics2D g = (Graphics2D) go;
+        this.initEmSize(g);
+        this.dim = this.getSize(dim);
+        this.clip_bounds = g.getClipBounds(this.clip_bounds);
 
-        g.setColor(Color.GRAY);
+//        System.out.printf("X:%d %d\n",dim.width,dim.height);
+        first_bar = (int) (clip_bounds.x / (this.bar_width * this.em_size));
+        last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.bar_width * this.em_size));
 
-        g.setBackground(Color.BLACK);
-        //   g.get
+        c_font_height = g.getFontMetrics().getHeight();
 
-        Rectangle bounds = g.getDeviceConfiguration().getBounds();
-        // System.out.print(bounds.width + "\n");
-
-        //g.fillRect(0, 0, 100, 100);
-        Dimension d = this.getSize();
-
-        //g.drawString("Hello world", 810, 10);
-        //g.drawLine(0, 0, d.width, d.height);
-        //this.setPreferredSize(new Dimension(2000,4000));
-        draw(g);
+        draw((Graphics2D) g);
     }
 
     /**

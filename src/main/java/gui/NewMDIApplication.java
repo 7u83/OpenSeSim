@@ -49,7 +49,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     public void startTraders() {
 
         AutoTraderConfig cfg1 = new RandomTraderConfig();
-        AutoTrader rt1 = cfg1.createTrader(Globals.se, 1000000, 1000000);
+        AutoTrader rt1 = cfg1.createTrader(Globals.se, 100000, 100000);
         Globals.se.traders.add(rt1);
         rt1.setName("Alice");
         rt1.start();
@@ -57,7 +57,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         AutoTraderConfig cfg2 = new RandomTraderConfig();
 
         for (int i = 0; i < 30; i++) {
-            AutoTrader randt = cfg2.createTrader(Globals.se, 100000, 100000);
+            AutoTrader randt = cfg2.createTrader(Globals.se, 1000, 1000);
 
             Globals.se.traders.add(randt);
             randt.setName("Bob");
@@ -78,9 +78,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        chart2 = new chart.Chart();
         orderBookPanel1 = new gui.OrderBookPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        chart1 = new chart.Chart();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -132,18 +132,18 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton2);
 
-        javax.swing.GroupLayout chart2Layout = new javax.swing.GroupLayout(chart2);
-        chart2.setLayout(chart2Layout);
-        chart2Layout.setHorizontalGroup(
-            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 669, Short.MAX_VALUE)
+        javax.swing.GroupLayout chart1Layout = new javax.swing.GroupLayout(chart1);
+        chart1.setLayout(chart1Layout);
+        chart1Layout.setHorizontalGroup(
+            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 723, Short.MAX_VALUE)
         );
-        chart2Layout.setVerticalGroup(
-            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        chart1Layout.setVerticalGroup(
+            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 460, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(chart2);
+        jScrollPane1.setViewportView(chart1);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -247,12 +247,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 913, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(orderBookPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -294,7 +294,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        TraderListDialog d = new TraderListDialog(this,false);
+        TraderListDialog d = new TraderListDialog(this, false);
         d.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
@@ -318,7 +318,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private chart.Chart chart2;
+    private chart.Chart chart1;
     private javax.swing.JMenuItem contentMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;

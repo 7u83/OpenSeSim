@@ -167,12 +167,18 @@ public class RandomTrader extends AutoTrader {
 
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.buy_limit);
+        
 
         long volume = (long) (money / (limit * 1));
         if (volume <= 0) {
             return 0;
         }
 
+//       double volume = (money / (limit * 1));
+               if (volume <= 0) {
+            return 0;
+        }
+       
         se.createOrder(account_id, type, volume, limit);
 
         return getRandom(myconfig.buy_order_wait);
@@ -186,7 +192,7 @@ public class RandomTrader extends AutoTrader {
         OrderType type = OrderType.ASK;
 
         // how much money we ant to envest?
-        double volume = (long) getRandomAmmount(ad.shares, myconfig.sell_volume);
+        double volume =  (long)getRandomAmmount(ad.shares, myconfig.sell_volume);
 
         //    double lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getCurrentPrice();

@@ -69,7 +69,25 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
         return this.frame_size;
     }
     
-    
+    public MinMax getMinMax(int first, int last){
+        
+        if (first>=data.size())
+            return null;
+        
+        OHLCDataItem di = data.get(first);
+        MinMax minmax=new MinMax(di.low,di.high);        
+        
+        for (int i=first+1; i<last && i<data.size(); i++){
+            di = data.get(i);
+            if (di.low<minmax.min){
+                minmax.min=di.low;
+            }
+            if (di.high>minmax.max){
+                minmax.max=di.high;
+            }            
+        }
+        return minmax;
+    }
 
     long getFrameStart(long time) {
 

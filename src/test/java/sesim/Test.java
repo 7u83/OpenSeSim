@@ -62,6 +62,11 @@ public class Test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
+        
+        
+        System.out.printf("FFF %f\n",Math.log(1));
+        System.exit(0);
+        
 
         OHLCData od = new OHLCData(1000);
 

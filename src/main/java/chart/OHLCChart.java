@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,30 +23,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders;
-
-import sesim.AutoTrader;
-import sesim.AutoTraderConfig;
-import sesim.Exchange;
+package chart;
 
 /**
  *
- * @author 7u83
+ * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderConfig extends AutoTraderConfig {
-
-    public float[] sell_volume = {100, 100};
-    public float[] sell_limit = {-1f, 1.0101f};
-    public int[] sell_order_wait = {1000, 50000};
-    public int[] wait_after_sell = {10, 30};
-
-    public float[] buy_volume = {100, 100};
-    public float[] buy_limit = {-1f, 1.0101f};
-    public int[] buy_order_wait = {1000, 50000};
-    public int[] wait_after_buy = {10, 30};
-
-    @Override
-    public AutoTrader createTrader(Exchange se, double money, double shares) {
-        return new traders.RandomTrader(se, money, shares, this);
-    }
+public class OHLCChart extends Chart{
+    
+    
 }

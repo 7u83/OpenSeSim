@@ -161,11 +161,8 @@ public class Scheduler extends Thread {
 
             synchronized (this) {
                 try {
-                    if (pause){
-                        wtime=-1;
-                    }
                     
-                    if (wtime != -1) {
+                    if (wtime != -1 && !pause) {
                         wait(wtime);
                     } else {
                         wait();
