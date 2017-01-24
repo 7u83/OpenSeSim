@@ -25,8 +25,19 @@
  */
 package sesim;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.security.ProtectionDomain;
+import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.lang.ClassLoader.*;
 
 /**
  *
@@ -57,89 +68,82 @@ public class Test {
                 + "\n"
         );
     }
+    
+    
+    
+
+
+static public String getFullClassName(String classFileName) throws IOException {           
+        File file = new File(classFileName);
+
+        FileChannel roChannel = new RandomAccessFile(file, "r").getChannel(); 
+        ByteBuffer bb = roChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int)roChannel.size());    
+        
+        String x = new String();
+
+        //x.getClass().getClassLoader().loadClass(x);
+        //Class<?> clazz = defineClass((String)null, bb, (ProtectionDomain)null);
+        //return clazz.getName();
+        return "";
+    }
+
+
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
+        TraderLoader tl = new TraderLoader();
         
         
-        System.out.printf("FFF %f\n",Math.log(1));
+        tl.get();
         System.exit(0);
         
-
-        OHLCData od = new OHLCData(1000);
-
-        od.realTimeAdd(12, 100, 10);
-
-        od.realTimeAdd(5000, 100, 10);
-        //od.realTimeAdd(12, 100, 10);
-
-        System.out.printf("Size: %d\n", od.size());
-
-        OHLCDataItem di;
         
-        di = od.get(2);
+        
 
-        System.exit(0);
+        ArrayList<File> sl = tl.getTraders("./target/classes/traders");
 
-        Scheduler s = new Scheduler();
-        s.start();
+        File file = sl.get(0);
 
-        class Ev implements Scheduler.TimerTask {
-
-            @Override
-            public long timerTask() {
-                System.out.printf("Timer Event Occured %s\n", name);
-                if ("Ev1".equals(this.name)) {
-                    return 2000;
-                } else {
-                    return 4000;
-                }
-            }
-
-            String name;
-
-            Ev(String name) {
-                this.name = name;
-            }
-
-        }
-
-        Ev e1 = new Ev("Ev1");
-        Ev e2 = new Ev("Eb2");
-
-        s.startTimerEvent(e1, 0);
-        s.startTimerEvent(e2, 0);
+        System.out.printf("Filename %s\n", file.getName());
 
         try {
-            Thread.sleep(90000);
-        } catch (Exception e) {
+            // Convert File to a URL
+            URL url = file.toURL();          // file:/c:/myclasses/
+          
+            URL[] urls = new URL[]{url};
 
-        }
-
-        s.halt();
-        while (s.isAlive()) {
-
-        }
-
-        System.out.print("All isstopped\n");
-
-        // s.startTimerEvent(e2, 100);
-        /* long starttime=System.currentTimeMillis();
-        while (s.isAlive()){
-            if (System.currentTimeMillis()>starttime+6650){
-                    s.stop();
-                    break;
-            }
-        }
-        System.out.print("Waiting fpor Stop\n"); 
-        while (s.isAlive()){
+            // Create a new class loader with the directory
+            ClassLoader cl = new URLClassLoader(urls);
            
+            
+            Class cls = cl.loadClass("traders.RandomTraderConfig");
+            
+            System.out.printf("Loaded Class: %s\n",cls.getClass().getName());
+            
+            sesim.AutoTraderConfig at = (AutoTraderConfig )cls.newInstance();
+           
+
+            String cp = System.getProperty("java.class.path");
+            System.out.printf("CP: %s\n", cp);
+
+            
+            
+            
+            
+            // Load in the class; MyClass.class should be located in
+            // the directory file:/c:/myclasses/com/mycompany
+            //Class cls = cl.loadClass("com.mycompany.MyClass");
+            
+            
+        } catch (ClassNotFoundException e) {
+            System.out.printf("hahahah %s\n", e.getClass().getName());
+System.out.print("\nException was thrown\n");
+System.out.print(e.getMessage());
+System.out.print("\n;;;;a\n");
         }
-        
-        System.out.print("All isstopped\n");
-         */
+
     }
 
 }

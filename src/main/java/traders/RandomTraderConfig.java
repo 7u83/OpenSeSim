@@ -33,7 +33,7 @@ import sesim.Exchange;
  *
  * @author 7u83
  */
-public class RandomTraderConfig extends AutoTraderConfig {
+public class RandomTraderConfig implements AutoTraderConfig {
 
     public float[] sell_volume = {100, 100};
     public float[] sell_limit = {-1f, 1.0101f};

@@ -26,13 +26,14 @@
 package traders;
 
 import sesim.AutoTrader;
+import sesim.AutoTraderConfig;
 import sesim.Exchange;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SwitchingTraderConfig extends RandomTraderConfig {
+public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTraderConfig{
 
     @Override
     public AutoTrader createTrader(Exchange se, double money, double shares) {

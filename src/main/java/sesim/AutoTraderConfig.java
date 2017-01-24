@@ -29,6 +29,6 @@ package sesim;
  *
  * @author 7u83
  */
-public abstract class AutoTraderConfig {
+public interface AutoTraderConfig {
     public abstract AutoTrader createTrader(Exchange se, double money, double shares);
 }

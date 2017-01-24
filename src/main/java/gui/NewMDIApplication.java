@@ -26,6 +26,8 @@
 package gui;
 
 import java.awt.Dialog;
+import java.io.File;
+import javax.swing.JFileChooser;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
 import sesim.Exchange;
@@ -197,7 +199,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
         editMenu.add(pasteMenuItem);
 
         deleteMenuItem.setMnemonic('d');
-        deleteMenuItem.setText("Delete");
+        deleteMenuItem.setText("Traders ...");
+        deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteMenuItemActionPerformed(evt);
+            }
+        });
         editMenu.add(deleteMenuItem);
 
         editPreferences.setMnemonic('p');
@@ -302,12 +309,33 @@ public class NewMDIApplication extends javax.swing.JFrame {
         Globals.se.timer.pause();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteMenuItemActionPerformed
+        JFileChooser fc = new JFileChooser();
+        int f = fc.showOpenDialog(chart1);
+        File file = fc.getSelectedFile();
+        String s = file.getName();
+        System.out.printf("Select filename: %s\n",s);
+        
+        
+        
+        
+    }//GEN-LAST:event_deleteMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         Globals.se = new Exchange();
-
+        
+        sesim.TraderLoader tl = new sesim.TraderLoader();
+        try{
+         tl.get();
+        }catch(Exception e){
+        System.out.print("Execptiojn\n");
+        }
+         //System.exit(0);
+        
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
