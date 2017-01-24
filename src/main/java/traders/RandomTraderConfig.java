@@ -49,4 +49,9 @@ public class RandomTraderConfig implements AutoTraderConfig {
     public AutoTrader createTrader(Exchange se, double money, double shares) {
         return new traders.RandomTrader(se, money, shares, this);
     }
+
+    @Override
+    public String getName() {
+        return "RandomA";
+    }
 }

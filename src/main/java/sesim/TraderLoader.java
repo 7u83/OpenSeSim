@@ -52,10 +52,10 @@ public class TraderLoader {
         System.out.printf("File\n", file);
     }
 
-    void loadClass(String filename, String classname) throws MalformedURLException {
+    Class <AutoTraderConfig> loadClass(String filename, String classname) throws MalformedURLException {
 
         String clnam = classname.substring(1, classname.length() - 6).replace('/', '.');
-        System.out.printf("Load class name: %s\n", clnam);
+      //  System.out.printf("Load class name: %s\n", clnam);
 
         //     Class<?> cls = ClassLoader.loadClass(className);
         File f = new File(filename);
@@ -70,12 +70,45 @@ public class TraderLoader {
         try {
             Class<?> cls = cl.loadClass(clnam);
             
+            String kanone = cls.getCanonicalName();
+//            System.out.printf("%s --------------------------------------\n",kanone);
+            
+            
+/*            for (Class<?> i : cls.getClasses()){
+                
+                
+                String iname = i.getCanonicalName();
+                System.out.printf("Checking iname %s\n", iname);
+                
+                if (i.equals(AutoTraderConfig.class)){
+                System.out.printf("Yea an autotrader found\n");
+                
+                }
+            }
+  */          
+            
             for(Class<?> i : cls.getInterfaces()) {
                     
+  
+    
                 
                   if(i.equals(AutoTraderConfig.class)) {
-                     System.out.printf("Have found an Auto Trader %s\n", clnam);
-                     break;
+                      System.out.printf("Loading class %s\n", clnam);
+                               
+                      try {
+                          String cname = i.getCanonicalName();
+                          System.out.printf("CAnonical name: %s\n", cname);
+                          
+                         
+                          
+                          
+                      } catch (Exception ex) {
+                          System.out.printf("Ex: %s\n", ex.getClass().getName());
+                          ex.printStackTrace();
+                     }
+                      return (Class <AutoTraderConfig>)cls;
+                     //System.out.printf("Have found an Auto Trader %s\n", clnam);
+                     //break;
                   }
                }
             
@@ -83,12 +116,14 @@ public class TraderLoader {
         } catch (ClassNotFoundException ex) {
             System.out.printf("Cant load class %s\n", clnam);
             
+            
             //Logger.getLogger(TraderLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
 
     }
 
-    public void get() throws IOException {
+    public ArrayList <Class <AutoTraderConfig>> get() throws IOException {
 
         int curlen = 0;
 
@@ -100,8 +135,14 @@ public class TraderLoader {
             System.out.printf("Have it %s %d %s\n", fn,curlen,fn.substring(curlen));
         };
          */
+        
+        ArrayList <Class <AutoTraderConfig>> traders;
+        traders = new ArrayList <> ();
+        
         for (String classpathEntry : System.getProperty("java.class.path").split(System.getProperty("path.separator"))) {
 
+            
+            
             Consumer<? super Path> pf = new Consumer() {
                 @Override
                 public void accept(Object t) {
@@ -109,7 +150,11 @@ public class TraderLoader {
                     if (fn.toLowerCase().endsWith(".class")) {
                         try {
                             //System.out.printf("Halloe: %s %s\n", fn, fn.substring(classpathEntry.length()));
-                            loadClass(fn, fn.substring(classpathEntry.length()));
+                            Class <AutoTraderConfig> cls = loadClass(fn, fn.substring(classpathEntry.length()));
+                            if (cls==null)
+                                return;
+                            traders.add(cls);
+                            
                         } catch (MalformedURLException ex) {
                             Logger.getLogger(TraderLoader.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -145,35 +190,11 @@ public class TraderLoader {
             Files.walk(Paths.get(classpathEntry))
                     .filter(Files::isRegularFile)
                     .forEach(pf);
-
-            //   Files.walk(Paths.get(classpathEntry));
-            /*
-            System.out.printf("CP ENtry %s\n", classpathEntry);
-            
-            
-            
-            if (classpathEntry.endsWith(".jar")) {
-                File jar = new File(classpathEntry);
-
-                JarInputStream is = new JarInputStream(new FileInputStream(jar));
-
-                JarEntry entry;
-                while ((entry = is.getNextJarEntry()) != null) {
-                    if (entry.getName().endsWith(".class")) {
-                        
-                        
-                        System.out.printf("Entry: %s\n", entry.getName());
-                        
-                        // Class.forName(entry.getName()) and check
-                        //   for implementation of the interface
-                    }
-                }
-            }
-             */
+ 
         }
 
-        //  File[] jarFiles = new File("./plugins").listFiles((File f) 
-        //          -> f.getName().toLowerCase().endsWith(".jar"));
+        return traders;
+
     }
 
     public ArrayList getTraders(String dir) {

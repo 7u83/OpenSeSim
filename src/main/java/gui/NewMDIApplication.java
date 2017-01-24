@@ -27,6 +27,7 @@ package gui;
 
 import java.awt.Dialog;
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
@@ -58,8 +59,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         AutoTraderConfig cfg2 = new RandomTraderConfig();
 
-        for (int i = 0; i < 30; i++) {
-            AutoTrader randt = cfg2.createTrader(Globals.se, 1000, 1000);
+        for (int i = 0; i < 700; i++) {
+            AutoTrader randt = cfg2.createTrader(Globals.se, 10000, 10000);
 
             Globals.se.traders.add(randt);
             randt.setName("Bob");
@@ -310,32 +311,35 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteMenuItemActionPerformed
-        JFileChooser fc = new JFileChooser();
-        int f = fc.showOpenDialog(chart1);
-        File file = fc.getSelectedFile();
-        String s = file.getName();
-        System.out.printf("Select filename: %s\n",s);
-        
-        
-        
-        
+        EditAutoTraderListDialog ed = new EditAutoTraderListDialog(this,true);
+        ed.setVisible(rootPaneCheckingEnabled);
+
+
     }//GEN-LAST:event_deleteMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
+     * @throws java.lang.IllegalAccessException
+     * @throws java.lang.InstantiationException
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IllegalAccessException, InstantiationException {
         Globals.se = new Exchange();
-        
+        ArrayList<Class<AutoTraderConfig>> traders;
+        traders = null;
+
         sesim.TraderLoader tl = new sesim.TraderLoader();
-        try{
-         tl.get();
-        }catch(Exception e){
-        System.out.print("Execptiojn\n");
+        try {
+            traders = tl.get();
+        } catch (Exception e) {
+            System.out.print("Execption\n");
         }
-         //System.exit(0);
-        
-        
+
+        for (Class<AutoTraderConfig> at_class : traders) {
+            AutoTraderConfig cfg = at_class.newInstance();
+            System.out.printf("Have a Trader with name: %s\n", cfg.getName());
+        }
+
+        //System.exit(0);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

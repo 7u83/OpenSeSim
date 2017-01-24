@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,40 +23,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders;
-
-import sesim.AutoTrader;
-import sesim.AutoTraderConfig;
-import sesim.Exchange;
+package sesim;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTraderConfig{
-
-    @Override
-    public AutoTrader createTrader(Exchange se, double money, double shares) {
-    
-        return new traders.SwitchingTrader(se, money, shares, this);
-        
-    }
-
-    public SwitchingTraderConfig() {
-
-        sell_volume = new float[]{100, 100};
-        sell_limit = new float[]{-30, 1};
-        sell_order_wait = new int[]{1, 5};
-        wait_after_sell = new int[]{1, 5};
-
-        buy_volume = new float[]{100, 100};
-        buy_limit = new float[]{-1, 30};
-        buy_order_wait = new int[]{1, 5};
-        wait_after_buy = new int[]{1, 5};
-    }
-    
-    @Override
-    public String getName(){
-        return "SwitchingTrader";
-    }
+public class AutoTraderRunConfig {
+    AutoTraderConfig config;
+    int num_traders;
+    String trader_name;
+    double initial_money;
+    double initial_shares;
+            
 }
