@@ -25,9 +25,13 @@
  */
 package gui;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -40,27 +44,32 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         JTableHeader th = list.getTableHeader();
 
         for (int i = 0; i < model.getColumnCount(); i++) {
-            String hw = (String) th.getColumnModel().getColumn(0).getHeaderValue();
+            String hw = (String) th.getColumnModel().getColumn(i).getHeaderValue();
             System.out.printf("%s\t", hw);
         }
 
         System.out.println();
 
+        //  JSONObject ja = new JSONObject();
+        JSONArray ja = new JSONArray();
+
         for (int i = 0; i < model.getRowCount(); i++) {
+            JSONObject jo = new JSONObject();
             for (int x = 0; x < model.getColumnCount(); x++) {
                 Object cw = model.getValueAt(i, x);
-                if (cw != null) {
-                    System.out.printf("%s\t", cw.toString());
-                    //model.getValueAt(i, 0)
-                }
 
-                System.out.println();
+                if (cw != null) {
+                    jo.put((String) th.getColumnModel().getColumn(x).getHeaderValue(), cw.toString());
+               }
+                //ja.put(Integer.toString(i),jo);
 
             }
-
-            System.out.println();
-
+            ja.put(jo);
         }
+
+        Globals.prefs.put("Traders", ja.toString());
+        
+  //      System.out.printf("Arlist: %s\n", ja.toString());
     }
 
     /**

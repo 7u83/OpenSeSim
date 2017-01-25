@@ -28,7 +28,9 @@ package gui;
 import java.awt.Dialog;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import javax.swing.UIManager;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
 import sesim.Exchange;
@@ -54,6 +56,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         AutoTraderConfig cfg1 = new RandomTraderConfig();
         AutoTrader rt1 = cfg1.createTrader(Globals.se, 100000, 100000);
         Globals.se.traders.add(rt1);
+
         rt1.setName("Alice");
         rt1.start();
 
@@ -324,6 +327,25 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
         Globals.se = new Exchange();
+        
+        class Tube {
+            
+        }
+        
+        Class<?> c = sesim.Exchange.class;
+        Globals.prefs=Preferences.userNodeForPackage(c);
+        
+        Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
+        
+/*        try {
+            // Set cross-platform Java L&F (also called "Metal")
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException |
+                InstantiationException | IllegalAccessException e) {
+        }
+     */
+        
+        
         ArrayList<Class<AutoTraderConfig>> traders;
         traders = null;
 
@@ -343,6 +365,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+//                Globals.prefs = Preferences.userNodeForPackage(this)        
                 new NewMDIApplication().setVisible(true);
             }
         });

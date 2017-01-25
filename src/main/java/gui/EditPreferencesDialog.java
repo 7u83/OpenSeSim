@@ -51,6 +51,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         for (UIManager.LookAndFeelInfo lafInfo1 : lafInfo) {
             lafComboBox.addItem(lafInfo1.getName());
         }
+        
+        lafComboBox.setSelectedItem(Globals.prefs.get("laf", "Nimbus"));
     }
 
     /**
@@ -153,7 +155,11 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         String selected = (String) this.lafComboBox.getSelectedItem();
 
         System.out.printf("Selected %s\n", selected);
+        
+        Globals.setLookAndFeel(selected);
+        
 
+        /*
         for (UIManager.LookAndFeelInfo lafInfo1 : this.lafInfo) {
             if (lafInfo1.getName().equals(selected)) {
                 String lafClassName = lafInfo1.getClassName();
@@ -165,6 +171,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                 }
             }
         }
+        */
+        
         for (Window w : Window.getWindows()) {
             System.out.print("Setting frame\n");
             SwingUtilities.updateComponentTreeUI(w);
@@ -175,6 +183,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         this.applyButtonActionPerformed(evt);
+        String selected = (String) this.lafComboBox.getSelectedItem();
+        Globals.prefs.put("laf", selected);
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
