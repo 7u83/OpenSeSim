@@ -25,6 +25,7 @@
  */
 package traders;
 
+import javax.swing.JPanel;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
 import sesim.Exchange;
@@ -48,6 +49,11 @@ public class SuperTraderConfig implements AutoTraderConfig{
     
     public SuperTraderConfig(){
         
+    }
+
+    @Override
+    public JPanel getConfigEditor() {
+        return null;
     }
     
 }

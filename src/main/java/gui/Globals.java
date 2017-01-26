@@ -28,35 +28,34 @@ package gui;
 import chart.NewMDIApplication;
 import java.util.prefs.Preferences;
 import javax.swing.UIManager;
+import sesim.AutoTraderLoader;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class Globals {
-    
+
     static public sesim.Exchange se;
-    
+
     static public Preferences prefs;
-    
-    static void setLookAndFeel(String selected){
-        
+
+    static void setLookAndFeel(String selected) {
+
         try {
-     String look = "com.seaglasslookandfeel.SeaGlassLookAndFeel";
-     Class.forName(look);
-     UIManager.installLookAndFeel("Sea Glass", look);
-  }catch (ClassNotFoundException e) {
-  }
-        
-        
-        
+            String look = "com.seaglasslookandfeel.SeaGlassLookAndFeel";
+            Class.forName(look);
+            UIManager.installLookAndFeel("Sea Glass", look);
+        } catch (ClassNotFoundException e) {
+        }
+
         UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
-               for (UIManager.LookAndFeelInfo lafInfo1 : lafInfo) {
+        for (UIManager.LookAndFeelInfo lafInfo1 : lafInfo) {
             if (lafInfo1.getName().equals(selected)) {
                 String lafClassName = lafInfo1.getClassName();
                 try {
                     UIManager.setLookAndFeel(lafClassName);
-                                      //  UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
+                    //  UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
                     break;
                 } catch (Exception e) {
 
@@ -65,7 +64,8 @@ public class Globals {
         }
     }
     
+    static AutoTraderLoader tloader=new AutoTraderLoader();
     
-            
     
+
 }

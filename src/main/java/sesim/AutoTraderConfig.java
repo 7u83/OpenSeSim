@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import javax.swing.JPanel;
+
 /**
  *
  * @author 7u83
@@ -32,5 +34,6 @@ package sesim;
 public abstract interface AutoTraderConfig {
     public abstract AutoTrader createTrader(Exchange se, double money, double shares);
     public abstract String getName();
+    public abstract JPanel getConfigEditor();
  
 }

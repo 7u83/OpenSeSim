@@ -198,8 +198,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
         copyMenuItem.setText("Copy");
         editMenu.add(copyMenuItem);
 
-        pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText("Paste");
+        pasteMenuItem.setMnemonic('s');
+        pasteMenuItem.setText("Strategies ...");
+        pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pasteMenuItemActionPerformed(evt);
+            }
+        });
         editMenu.add(pasteMenuItem);
 
         deleteMenuItem.setMnemonic('d');
@@ -320,6 +325,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_deleteMenuItemActionPerformed
 
+    private void pasteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteMenuItemActionPerformed
+        EditTradingStrategies s = new EditTradingStrategies(this,true);
+        s.setVisible(rootPaneCheckingEnabled);
+        
+    }//GEN-LAST:event_pasteMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
@@ -349,9 +360,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
         ArrayList<Class<AutoTraderConfig>> traders;
         traders = null;
 
-        sesim.TraderLoader tl = new sesim.TraderLoader();
+        sesim.AutoTraderLoader tl = new sesim.AutoTraderLoader();
         try {
-            traders = tl.get();
+            traders = tl.getTraders();
         } catch (Exception e) {
             System.out.print("Execption\n");
         }

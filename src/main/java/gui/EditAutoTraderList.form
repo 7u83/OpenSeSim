@@ -53,9 +53,9 @@
                   <Data value="1"/>
                   <Data value="1"/>
                 </Column>
-                <Column editable="true" title="Strategy" type="java.lang.String">
-                  <Data value="Random"/>
-                  <Data value="Random"/>
+                <Column editable="true" title="Strategy" type="java.lang.Object">
+                  <Data value=""/>
+                  <Data value="null"/>
                 </Column>
                 <Column editable="true" title="Money" type="java.lang.Double">
                   <Data value="10000.0"/>

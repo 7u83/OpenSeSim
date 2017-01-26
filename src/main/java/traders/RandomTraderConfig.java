@@ -25,6 +25,7 @@
  */
 package traders;
 
+import javax.swing.JPanel;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
 import sesim.Exchange;
@@ -37,12 +38,12 @@ public class RandomTraderConfig implements AutoTraderConfig {
 
     public float[] sell_volume = {100, 100};
     public float[] sell_limit = {-5f, 5f};
-    public int[] sell_order_wait = {40000, 150000};
+    public int[] sell_order_wait = {10000, 50000};
     public int[] wait_after_sell = {10, 30};
 
     public float[] buy_volume = {100, 100};
     public float[] buy_limit = {-5f, 5f};
-    public int[] buy_order_wait = {40000, 150000};
+    public int[] buy_order_wait = {10000, 50000};
     public int[] wait_after_buy = {10, 30};
 
     @Override
@@ -53,5 +54,10 @@ public class RandomTraderConfig implements AutoTraderConfig {
     @Override
     public String getName() {
         return "RandomA";
+    }
+
+    @Override
+    public JPanel getConfigEditor() {
+        return new RandomTraderConfigForm();
     }
 }

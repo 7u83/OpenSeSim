@@ -25,13 +25,19 @@
  */
 package gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sesim.AutoTraderConfig;
 
 /**
  *
@@ -78,8 +84,36 @@ public class EditAutoTraderList extends javax.swing.JPanel {
     public EditAutoTraderList() {
         initComponents();
 
+        JComboBox comboBox = new JComboBox();
+        
+        ArrayList <Class <AutoTraderConfig>> trconfigs=null;
+        trconfigs = Globals.tloader.getTraders();
+        
+        for (int i=0; i<trconfigs.size(); i++){
+            try {
+                AutoTraderConfig ac = trconfigs.get(i).newInstance();
+                System.out.printf("TrConfig: %s\n", ac.getName());
+                comboBox.addItem(ac.getName());
+            } catch (InstantiationException ex) {
+                Logger.getLogger(EditAutoTraderList.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(EditAutoTraderList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+
+//        comboBox.addItem("AAA");
+//        comboBox.addItem("BBB");
+
+        
+        
+               
+
         DefaultTableModel model = (DefaultTableModel) list.getModel();
+        list.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
         model.setRowCount(3);
+        
+        
     }
 
     /**
@@ -96,15 +130,15 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
         list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Alice",  new Integer(1), "Random",  new Double(10000.0),  new Double(100.0),  new Boolean(true)},
-                {"Bob",  new Integer(1), "Random",  new Double(1000.0),  new Double(100.0),  new Boolean(true)}
+                {"Alice",  new Integer(1), "",  new Double(10000.0),  new Double(100.0),  new Boolean(true)},
+                {"Bob",  new Integer(1), null,  new Double(1000.0),  new Double(100.0),  new Boolean(true)}
             },
             new String [] {
                 "Name", "Count", "Strategy", "Money", "Shares", "Enabled"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Boolean.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Double.class, java.lang.Double.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {

@@ -3,6 +3,8 @@ package sesim;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 /**
@@ -58,6 +60,20 @@ public class Exchange {  //extends Thread {
             return money;
         }
 
+    }
+    
+    
+    public void createTraders(JSONArray traderdefs){
+        for (int i=0; i<traderdefs.length(); i++){
+            JSONObject o = traderdefs.getJSONObject(i);
+            
+            
+        }
+        
+        
+        //    this.traders.add(randt);
+        //    randt.setName("Bob");
+        //    randt.start();
     }
 
     // private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();

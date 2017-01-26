@@ -93,10 +93,10 @@ static public String getFullClassName(String classFileName) throws IOException {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
-        TraderLoader tl = new TraderLoader();
+        AutoTraderLoader tl = new AutoTraderLoader();
         
         
-        tl.get();
+        tl.getTraders();
         System.exit(0);
         
         
