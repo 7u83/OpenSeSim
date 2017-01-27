@@ -26,6 +26,7 @@
 package gui;
 
 import java.util.ArrayList;
+import javax.swing.JPanel;
 import sesim.AutoTraderConfig;
 
 /**
@@ -40,22 +41,20 @@ public class EditTradingStrategies extends javax.swing.JDialog {
     public EditTradingStrategies(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+
         this.jComboBox1.removeAllItems();
-        ArrayList <String> sn = Globals.tloader.getDefaultStrategyNames();
-        for(int i=0; i<sn.size(); i++){
+        ArrayList<String> sn = Globals.tloader.getDefaultStrategyNames();
+        for (int i = 0; i < sn.size(); i++) {
             this.jComboBox1.addItem(sn.get(i));
-            
+
         }
-        
+
     }
-    
-    void setStrategy(String strategy){
-        ArrayList <Class<AutoTraderConfig>> s = Globals.tloader.getTraders();
-        
-    
+
+    void setStrategy(String strategy) {
+        ArrayList<Class<AutoTraderConfig>> s = Globals.tloader.getTraders();
+
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -67,8 +66,10 @@ public class EditTradingStrategies extends javax.swing.JDialog {
     private void initComponents() {
 
         jComboBox1 = new javax.swing.JComboBox<>();
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        guiPanel = new javax.swing.JPanel();
+        defaultGuiPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -79,36 +80,45 @@ public class EditTradingStrategies extends javax.swing.JDialog {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jToggleButton1.setText("jToggleButton1");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        guiPanel.setLayout(new java.awt.BorderLayout());
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("No config available");
+
+        javax.swing.GroupLayout defaultGuiPanelLayout = new javax.swing.GroupLayout(defaultGuiPanel);
+        defaultGuiPanel.setLayout(defaultGuiPanelLayout);
+        defaultGuiPanelLayout.setHorizontalGroup(
+            defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 270, Short.MAX_VALUE)
+        defaultGuiPanelLayout.setVerticalGroup(
+            defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        jButton1.setText("jButton1");
+        guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(jComboBox1, 0, 411, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(guiPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jToggleButton1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -117,9 +127,9 @@ public class EditTradingStrategies extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(guiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(jToggleButton1)
                 .addContainerGap())
         );
 
@@ -128,6 +138,26 @@ public class EditTradingStrategies extends javax.swing.JDialog {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         System.out.printf("Now Strategie Dialog to open\n");
+        AutoTraderConfig ac = Globals.tloader.getStrategy((String) this.jComboBox1.getSelectedItem());
+        if (ac == null) {
+            return;
+        }
+        JPanel gui = ac.getGui();
+        guiPanel.removeAll();
+        if (gui != null) {
+            //        javax.swing.GroupLayout guil = (javax.swing.GroupLayout) this.guiPanel.getLayout();
+
+            guiPanel.add(gui, java.awt.BorderLayout.CENTER);
+
+            // this.guiPanel;
+            gui.setVisible(true);
+
+        } else {
+            guiPanel.add(this.defaultGuiPanel, java.awt.BorderLayout.CENTER);
+        }
+        this.revalidate();
+        System.out.printf("Setted the dings\n", "");
+        this.repaint();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
@@ -173,8 +203,10 @@ public class EditTradingStrategies extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel defaultGuiPanel;
+    private javax.swing.JPanel guiPanel;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 }

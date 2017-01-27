@@ -52,7 +52,7 @@ public class SuperTraderConfig implements AutoTraderConfig{
     }
 
     @Override
-    public JPanel getConfigEditor() {
+    public JPanel getGui() {
         return null;
     }
     

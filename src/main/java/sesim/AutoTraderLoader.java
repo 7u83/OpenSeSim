@@ -193,19 +193,32 @@ public class AutoTraderLoader {
         trclasses = this.getTraders();
         ArrayList<String> ret = new ArrayList<>();
         trclasses = getTraders();
-        
+
         for (int i = 0; i < trclasses.size(); i++) {
             try {
                 AutoTraderConfig ac = trclasses.get(i).newInstance();
                 ret.add(ac.getName());
             } catch (Exception ex) {
-                
-            } 
-                   
+
+            }
 
         }
 
         return ret;
+    }
+
+    public AutoTraderConfig getStrategy(String name) {
+        ArrayList<Class<AutoTraderConfig>> traders = this.getTraders();
+        for (int i = 0; i < traders.size(); i++) {
+            try {
+                AutoTraderConfig ac = traders.get(i).newInstance();
+                if (ac.getName().endsWith(name)) {
+                    return ac;
+                }
+            } catch (Exception ex) {
+            }
+        }
+        return null;
     }
 
     public ArrayList getTraders(String dir) {

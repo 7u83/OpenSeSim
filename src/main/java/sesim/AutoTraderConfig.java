@@ -34,6 +34,6 @@ import javax.swing.JPanel;
 public abstract interface AutoTraderConfig {
     public abstract AutoTrader createTrader(Exchange se, double money, double shares);
     public abstract String getName();
-    public abstract JPanel getConfigEditor();
+    public abstract JPanel getGui();
  
 }

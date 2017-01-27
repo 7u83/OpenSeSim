@@ -57,7 +57,7 @@ public class RandomTraderConfig implements AutoTraderConfig {
     }
 
     @Override
-    public JPanel getConfigEditor() {
+    public JPanel getGui() {
         return new RandomTraderConfigForm();
     }
 }
