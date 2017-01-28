@@ -26,26 +26,32 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
+import sesim.AutoTraderGui;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class EditTradingStrategies extends javax.swing.JDialog {
+public class EditStrategies extends javax.swing.JDialog {
 
     /**
      * Creates new form EditTradingStrategies
      */
-    public EditTradingStrategies(java.awt.Frame parent, boolean modal) {
+    public EditStrategies(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(this.getParent());
 
-        this.jComboBox1.removeAllItems();
+        this.jComboBoxStrategySelector.removeAllItems();
         ArrayList<String> sn = Globals.tloader.getDefaultStrategyNames();
         for (int i = 0; i < sn.size(); i++) {
-            this.jComboBox1.addItem(sn.get(i));
+            this.jComboBoxStrategySelector.addItem(sn.get(i));
 
         }
 
@@ -54,6 +60,23 @@ public class EditTradingStrategies extends javax.swing.JDialog {
     void setStrategy(String strategy) {
         ArrayList<Class<AutoTraderConfig>> s = Globals.tloader.getTraders();
 
+    }
+    
+    
+    JSONArray loadStrategyConfigs(){
+        
+        ArrayList<String> sn = Globals.tloader.getDefaultStrategyNames();
+
+
+        String cfglist = Globals.prefs.get("StrategyCFG", "[]");
+        JSONArray cfgs = new JSONArray(cfglist);
+        
+        Logger.getGlobal().info(cfglist);
+        
+        
+        
+        
+        return cfgs;
     }
 
     /**
@@ -65,22 +88,21 @@ public class EditTradingStrategies extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        jComboBoxStrategySelector = new javax.swing.JComboBox<>();
         guiPanel = new javax.swing.JPanel();
         defaultGuiPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        jComboBoxStrategySelector.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxStrategySelector.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                jComboBoxStrategySelectorActionPerformed(evt);
             }
         });
-
-        jToggleButton1.setText("jToggleButton1");
 
         guiPanel.setLayout(new java.awt.BorderLayout());
 
@@ -100,11 +122,20 @@ public class EditTradingStrategies extends javax.swing.JDialog {
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(defaultGuiPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+                .addGap(39, 39, 39))
         );
 
         guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
+
+        jButton1.setText("Save");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Cancel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -117,48 +148,71 @@ public class EditTradingStrategies extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jToggleButton1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2))
+                            .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(guiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        System.out.printf("Now Strategie Dialog to open\n");
-        AutoTraderConfig ac = Globals.tloader.getStrategy((String) this.jComboBox1.getSelectedItem());
+    
+   AutoTraderGui acgui;
+   AutoTraderConfig ac;
+    
+    private void jComboBoxStrategySelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxStrategySelectorActionPerformed
+//        System.out.printf("Now Strategie Dialog to open\n");
+        ac = Globals.tloader.getStrategy((String) this.jComboBoxStrategySelector.getSelectedItem());
         if (ac == null) {
             return;
         }
-        JPanel gui = ac.getGui();
+        acgui = ac.getGui();
         guiPanel.removeAll();
-        if (gui != null) {
+        if (acgui != null) {
             //        javax.swing.GroupLayout guil = (javax.swing.GroupLayout) this.guiPanel.getLayout();
 
-            guiPanel.add(gui, java.awt.BorderLayout.CENTER);
+            guiPanel.add(acgui, java.awt.BorderLayout.CENTER);
 
             // this.guiPanel;
-            gui.setVisible(true);
+            acgui.setVisible(true);
 
         } else {
             guiPanel.add(this.defaultGuiPanel, java.awt.BorderLayout.CENTER);
         }
         this.revalidate();
         System.out.printf("Setted the dings\n", "");
+        JSONObject jo = ac.getConfig();
+        if (jo != null) {
+            System.out.printf("%s\n", jo.toString(2));
+        }
+
+        
+        AutoTrader at = ac.createTrader(Globals.se, jo, 100, 100);
+
         this.repaint();
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_jComboBoxStrategySelectorActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       acgui.save();
+       
+       
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -177,20 +231,21 @@ public class EditTradingStrategies extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditTradingStrategies.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditStrategies.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditTradingStrategies.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditStrategies.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditTradingStrategies.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditStrategies.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditTradingStrategies.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditStrategies.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                EditTradingStrategies dialog = new EditTradingStrategies(new javax.swing.JFrame(), true);
+                EditStrategies dialog = new EditStrategies(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -205,8 +260,9 @@ public class EditTradingStrategies extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel defaultGuiPanel;
     private javax.swing.JPanel guiPanel;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBoxStrategySelector;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 }

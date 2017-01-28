@@ -246,7 +246,7 @@ public class MainWin extends javax.swing.JFrame {
      //  rcfg1.sell_limit[0]=-1;
      //  rcfg1.sell_limit[1]=1;
        
-        AutoTrader rt1 = rcfg1.createTrader(Globals.se, 1000000, 1000000);
+        AutoTrader rt1 = rcfg1.createTrader(Globals.se, null, 1000000, 1000000);
         Globals.se.traders.add(rt1);
         rt1.setName("Alice");
         rt1.start();
@@ -260,7 +260,7 @@ public class MainWin extends javax.swing.JFrame {
        RandomTraderConfig cfg= new RandomTraderConfig();
         
         for (int i=0; i<30; i++){
-            AutoTrader randt = cfg.createTrader(Globals.se, 100000, 100000);
+            AutoTrader randt = cfg.createTrader(Globals.se,null, 100000, 100000);
             
             Globals.se.traders.add(randt);
             randt.setName("Bob");

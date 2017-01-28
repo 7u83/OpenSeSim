@@ -26,6 +26,7 @@
 package gui;
 
 import chart.NewMDIApplication;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.UIManager;
 import sesim.AutoTraderLoader;
@@ -66,6 +67,7 @@ public class Globals {
     
     static AutoTraderLoader tloader=new AutoTraderLoader();
     
+    static final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
     
 
 }

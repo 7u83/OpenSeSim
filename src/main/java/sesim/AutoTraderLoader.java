@@ -212,12 +212,16 @@ public class AutoTraderLoader {
         for (int i = 0; i < traders.size(); i++) {
             try {
                 AutoTraderConfig ac = traders.get(i).newInstance();
-                if (ac.getName().endsWith(name)) {
+        
+                if (ac.getName().equals(name)) {
                     return ac;
                 }
             } catch (Exception ex) {
             }
         }
+        
+        
+        
         return null;
     }
 

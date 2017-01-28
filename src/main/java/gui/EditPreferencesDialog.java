@@ -27,8 +27,12 @@ package gui;
 
 import java.awt.Frame;
 import java.awt.Window;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -38,20 +42,25 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
 
     UIManager.LookAndFeelInfo[] lafInfo;
 
+   LookAndFeel old_laf;
+   LookAndFeel new_laf;
+    
     /**
      * Creates new form EditPreferencesDialog
      */
     public EditPreferencesDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.setLocationRelativeTo(MainWin.instance);
-
+        this.setLocationRelativeTo(this.getParent());
+        
+        old_laf = UIManager.getLookAndFeel();
+        
+        
         lafInfo = UIManager.getInstalledLookAndFeels();
         lafComboBox.removeAllItems();
         for (UIManager.LookAndFeelInfo lafInfo1 : lafInfo) {
             lafComboBox.addItem(lafInfo1.getName());
         }
-        
         lafComboBox.setSelectedItem(Globals.prefs.get("laf", "Nimbus"));
     }
 
@@ -69,6 +78,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
         applyButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -105,6 +115,13 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             }
         });
 
+        jCheckBox1.setText("Development Traders");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -122,7 +139,10 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(applyButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton)))
+                        .addComponent(cancelButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jCheckBox1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -132,7 +152,9 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lafLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 236, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 200, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(applyButton)
@@ -148,37 +170,34 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_lafComboBoxActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        if (old_laf!=new_laf){
+            try {
+                UIManager.setLookAndFeel(old_laf);
+            } catch (UnsupportedLookAndFeelException ex) {
+                Logger.getLogger(EditPreferencesDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            resetUI();
+        }
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
-        String selected = (String) this.lafComboBox.getSelectedItem();
-
-        System.out.printf("Selected %s\n", selected);
-        
-        Globals.setLookAndFeel(selected);
-        
-
-        /*
-        for (UIManager.LookAndFeelInfo lafInfo1 : this.lafInfo) {
-            if (lafInfo1.getName().equals(selected)) {
-                String lafClassName = lafInfo1.getClassName();
-                try {
-                    UIManager.setLookAndFeel(lafClassName);
-                    break;
-                } catch (Exception e) {
-
-                }
-            }
-        }
-        */
-        
-        for (Window w : Window.getWindows()) {
+    void resetUI(){
+                for (Window w : Window.getWindows()) {
             System.out.print("Setting frame\n");
             SwingUtilities.updateComponentTreeUI(w);
             w.pack();
+                }
+    }
 
-        }
+    private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
+     
+        String selected = (String) this.lafComboBox.getSelectedItem();
+
+   
+        Globals.setLookAndFeel(selected);
+        new_laf=UIManager.getLookAndFeel();
+        resetUI();
+
     }//GEN-LAST:event_applyButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
@@ -187,6 +206,10 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         Globals.prefs.put("laf", selected);
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -233,6 +256,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> lafComboBox;
     private javax.swing.JLabel lafLabel;
     private javax.swing.JButton okButton;

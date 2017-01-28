@@ -113,7 +113,7 @@ public class RandomTrader extends AutoTrader {
         return (max - min) * r + min;
     }
 
-    protected int getRandom(int[] minmax) {
+    protected int getRandom(Integer[] minmax) {
         return (int) Math.round(getRandom(minmax[0], minmax[1]));
     }
 
@@ -123,7 +123,7 @@ public class RandomTrader extends AutoTrader {
      * @param minmax
      * @return
      */
-    protected double getRandomAmmount(double val, float[] minmax) {
+    protected double getRandomAmmount(double val, Float[] minmax) {
         double min = val * minmax[0] / 100.0;
         double max = val * minmax[1] / 100.0;
         return getRandom(min, max);
@@ -181,7 +181,7 @@ public class RandomTrader extends AutoTrader {
        
         se.createOrder(account_id, type, volume, limit);
 
-        return getRandom(myconfig.buy_order_wait);
+        return getRandom(myconfig.buy_wait);
 
     }
 
@@ -211,7 +211,7 @@ public class RandomTrader extends AutoTrader {
         //               System.out.print("My Ammount is: "+volume+" My limit si:"+limit+ "\n");
         se.createOrder(account_id, type, volume, limit);
 
-        return getRandom(myconfig.sell_order_wait);
+        return getRandom(myconfig.sell_wait);
 
     }
 

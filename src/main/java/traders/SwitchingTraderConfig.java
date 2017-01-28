@@ -25,6 +25,7 @@
  */
 package traders;
 
+import org.json.JSONObject;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
 import sesim.Exchange;
@@ -36,7 +37,7 @@ import sesim.Exchange;
 public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTraderConfig{
 
     @Override
-    public AutoTrader createTrader(Exchange se, double money, double shares) {
+    public AutoTrader createTrader(Exchange se, JSONObject cfg, double money, double shares) {
     
         return new traders.SwitchingTrader(se, money, shares, this);
         
@@ -44,15 +45,15 @@ public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTra
 
     public SwitchingTraderConfig() {
 
-        sell_volume = new float[]{100, 100};
-        sell_limit = new float[]{-30, 1};
-        sell_order_wait = new int[]{1, 5};
-        wait_after_sell = new int[]{1, 5};
+        sell_volume = new Float[]{17f, 100f};
+        sell_limit = new Float[]{-30f, 1f};
+        sell_wait = new Integer[]{1, 5};
+        wait_after_sell = new Integer[]{1, 5};
 
-        buy_volume = new float[]{100, 100};
-        buy_limit = new float[]{-1, 30};
-        buy_order_wait = new int[]{1, 5};
-        wait_after_buy = new int[]{1, 5};
+        buy_volume = new Float[]{18f, 100f};
+        buy_limit = new Float[]{-1f, 30f};
+        buy_wait = new Integer[]{1, 5};
+        wait_after_buy = new Integer[]{1, 5};
     }
     
     @Override

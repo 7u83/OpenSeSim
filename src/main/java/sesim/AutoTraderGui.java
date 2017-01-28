@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,16 +26,14 @@
 package sesim;
 
 import javax.swing.JPanel;
-import org.json.JSONObject;
 
 /**
  *
- * @author 7u83
+ * @author 7u83 <7u83@mail.ru>
  */
-public abstract interface AutoTraderConfig {
-    public abstract AutoTrader createTrader(Exchange se, JSONObject cfg,double money, double shares);
-    public abstract String getName();
-    public abstract AutoTraderGui getGui();
-    public abstract JSONObject getConfig();
- 
+public class AutoTraderGui extends JPanel{
+    public void save()
+    {
+        
+    }
 }

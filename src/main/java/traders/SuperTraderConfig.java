@@ -26,8 +26,10 @@
 package traders;
 
 import javax.swing.JPanel;
+import org.json.JSONObject;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
+import sesim.AutoTraderGui;
 import sesim.Exchange;
 
 /**
@@ -37,7 +39,7 @@ import sesim.Exchange;
 public class SuperTraderConfig implements AutoTraderConfig{
 
     @Override
-    public AutoTrader createTrader(Exchange se, double money, double shares) {
+    public AutoTrader createTrader(Exchange se, JSONObject cfg, double money, double shares) {
         return null;
     }
 
@@ -52,7 +54,12 @@ public class SuperTraderConfig implements AutoTraderConfig{
     }
 
     @Override
-    public JPanel getGui() {
+    public AutoTraderGui getGui() {
+        return null;
+    }
+
+    @Override
+    public JSONObject getConfig() {
         return null;
     }
     

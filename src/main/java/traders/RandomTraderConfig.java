@@ -26,8 +26,11 @@
 package traders;
 
 import javax.swing.JPanel;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
+import sesim.AutoTraderGui;
 import sesim.Exchange;
 
 /**
@@ -36,18 +39,21 @@ import sesim.Exchange;
  */
 public class RandomTraderConfig implements AutoTraderConfig {
 
-    public float[] sell_volume = {100, 100};
-    public float[] sell_limit = {-5f, 5f};
-    public int[] sell_order_wait = {10000, 50000};
-    public int[] wait_after_sell = {10, 30};
+    public Float[] sell_volume = {77f, 100f};
+    public Float[] sell_limit = {-5.3f, 5f};
+    public Integer[] sell_wait = {10000, 50000};
+    public Integer[] wait_after_sell = {10, 30};
 
-    public float[] buy_volume = {100, 100};
-    public float[] buy_limit = {-5f, 5f};
-    public int[] buy_order_wait = {10000, 50000};
-    public int[] wait_after_buy = {10, 30};
+    public Float[] buy_volume = {100f, 100f};
+    public Float[] buy_limit = {-5f, 5f};
+    public Integer[] buy_wait = {10000, 50000};
+    public Integer[] wait_after_buy = {10, 30};
 
     @Override
-    public AutoTrader createTrader(Exchange se, double money, double shares) {
+    public AutoTrader createTrader(Exchange se, JSONObject cfg, double money, double shares) {
+        if (cfg != null) {
+            this.putConfig(cfg);
+        }
         return new traders.RandomTrader(se, money, shares, this);
     }
 
@@ -57,7 +63,36 @@ public class RandomTraderConfig implements AutoTraderConfig {
     }
 
     @Override
-    public JPanel getGui() {
-        return new RandomTraderConfigForm();
+    public AutoTraderGui getGui() {
+        return new RandomTraderGui(this);
+    }
+    
+    final String SELL_VOLUME = "sell_volume";
+    final String BUY_VOLUME = "buy_volume";
+    final String SELL_LIMIT = "sell_limit";
+    final String BUY_LIMIT = "buy_limit";
+    final String SELL_WAIT = "sell_wait";
+    final String BUY_WAIT = "wait_wait";
+    
+    @Override
+    public JSONObject getConfig() {
+        JSONObject jo = new JSONObject();
+        jo.put(SELL_VOLUME, sell_volume);
+        jo.put(BUY_VOLUME, buy_volume);
+        jo.put(SELL_LIMIT, sell_limit);
+        jo.put(BUY_LIMIT, buy_limit);
+        jo.put(SELL_WAIT, sell_wait);
+        jo.put(BUY_WAIT, buy_wait);
+        return jo;
+    }
+
+    public void putConfig(JSONObject cfg) {
+        sell_volume = (Float[]) cfg.get(SELL_VOLUME);
+        buy_volume = (Float[]) cfg.get(BUY_VOLUME);
+        sell_limit = (Float[]) cfg.get(SELL_LIMIT);
+        buy_limit = (Float[]) cfg.get(BUY_LIMIT);
+        sell_wait = (Integer[]) cfg.get(SELL_WAIT);
+        buy_wait = (Integer[]) cfg.get(SELL_WAIT);
+       
     }
 }
