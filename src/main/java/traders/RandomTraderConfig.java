@@ -25,6 +25,8 @@
  */
 package traders;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,13 +41,13 @@ import sesim.Exchange;
  */
 public class RandomTraderConfig implements AutoTraderConfig {
 
-    public Float[] sell_volume = {77f, 100f};
-    public Float[] sell_limit = {-5.3f, 5f};
+    public Float[] sell_volume = {100f, 100f};
+    public Float[] sell_limit = {-0.1f, 0.10101f};
     public Integer[] sell_wait = {10000, 50000};
-    public Integer[] wait_after_sell = {10, 30};
+    public Integer[] wait_after_sell = {1000, 30000};
 
     public Float[] buy_volume = {100f, 100f};
-    public Float[] buy_limit = {-5f, 5f};
+    public Float[] buy_limit = {-0.1f, 0.10101f};
     public Integer[] buy_wait = {10000, 50000};
     public Integer[] wait_after_buy = {10, 30};
 
@@ -59,21 +61,23 @@ public class RandomTraderConfig implements AutoTraderConfig {
 
     @Override
     public String getName() {
-        return "RandomA";
+        return "Random A";
     }
 
     @Override
     public AutoTraderGui getGui() {
         return new RandomTraderGui(this);
     }
-    
+
     final String SELL_VOLUME = "sell_volume";
     final String BUY_VOLUME = "buy_volume";
     final String SELL_LIMIT = "sell_limit";
     final String BUY_LIMIT = "buy_limit";
     final String SELL_WAIT = "sell_wait";
-    final String BUY_WAIT = "wait_wait";
-    
+    final String BUY_WAIT = "buy_wait";
+    final String WAIT_AFTER_SELL = "sell_wait_after";
+    final String WAIT_AFTER_BUY = "buy_wait_after";
+
     @Override
     public JSONObject getConfig() {
         JSONObject jo = new JSONObject();
@@ -83,16 +87,70 @@ public class RandomTraderConfig implements AutoTraderConfig {
         jo.put(BUY_LIMIT, buy_limit);
         jo.put(SELL_WAIT, sell_wait);
         jo.put(BUY_WAIT, buy_wait);
+        jo.put(WAIT_AFTER_SELL, wait_after_sell);
+        jo.put(WAIT_AFTER_BUY, wait_after_buy);
+
         return jo;
     }
 
+    /*  private <T extends Number> T to(Double o){
+       if (Float==T){
+           System.out.printf("Double ret %", o.floatValue());
+           return new T(3); 
+       }
+       return null;
+   }
+     */
+    private Float[] to_float(JSONArray a) {
+        Float[] ret = new Float[a.length()];
+        for (int i = 0; i < a.length(); i++) {
+            ret[i] = new Float(a.getDouble(i));
+
+        }
+        return ret;
+    }
+
+    private Integer[] to_integer(JSONArray a) {
+        Integer[] ret = new Integer[a.length()];
+        for (int i = 0; i < a.length(); i++) {
+            ret[i] = a.getInt(i);
+
+        }
+        return ret;
+
+    }
+
+    private Number[] to_arn(JSONArray a) {
+        Number[] ret = new Number[a.length()];
+        //  Float x[] = new Float[2]; 
+
+        for (int i = 0; i < a.length(); i++) {
+            ret[i] = (Number) a.get(i);
+        }
+        return ret;
+    }
+
     public void putConfig(JSONObject cfg) {
-        sell_volume = (Float[]) cfg.get(SELL_VOLUME);
-        buy_volume = (Float[]) cfg.get(BUY_VOLUME);
-        sell_limit = (Float[]) cfg.get(SELL_LIMIT);
-        buy_limit = (Float[]) cfg.get(BUY_LIMIT);
-        sell_wait = (Integer[]) cfg.get(SELL_WAIT);
-        buy_wait = (Integer[]) cfg.get(SELL_WAIT);
-       
+        if (cfg == null) {
+            return;
+        }
+
+        System.out.printf("Putconfig %s\n", cfg.toString(4));
+
+        String cname = cfg.get(SELL_VOLUME).getClass().getName();
+
+        //     JSONArray a = cfg.getJSONArray(SELL_VOLUME);
+        System.out.printf("Array = %s \n", cname);
+
+        sell_volume = to_float(cfg.getJSONArray(SELL_VOLUME));
+        buy_volume = to_float(cfg.getJSONArray(BUY_VOLUME));
+        sell_limit = to_float(cfg.getJSONArray(SELL_LIMIT));
+        buy_limit = to_float(cfg.getJSONArray(BUY_LIMIT));
+        sell_wait = to_integer(cfg.getJSONArray(SELL_WAIT));
+        buy_wait = to_integer(cfg.getJSONArray(BUY_WAIT));
+
+        wait_after_sell = to_integer(cfg.getJSONArray(WAIT_AFTER_SELL));
+        wait_after_buy = to_integer(cfg.getJSONArray(WAIT_AFTER_BUY));
+
     }
 }

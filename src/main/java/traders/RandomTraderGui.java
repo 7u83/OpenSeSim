@@ -46,16 +46,54 @@ public class RandomTraderGui extends AutoTraderGui {
 
         JDialog d;
 
-        this.buy_volume_min.setText(cfg.buy_volume[0].toString());
-        this.buy_volume_max.setText(cfg.buy_volume[1].toString());
+        this.buyVolMin.setValue(cfg.buy_volume[0]);
+        this.buyVolMax.setValue(cfg.buy_volume[1]);
+        this.sellVolMin.setValue(cfg.sell_volume[0]);
+        this.sellVolMax.setValue(cfg.sell_volume[1]);
+        this.buyLimitMin.setValue(cfg.buy_limit[0]);
+        this.buyLimitMax.setValue(cfg.buy_limit[1]);
+        this.sellLimitMin.setValue(cfg.sell_limit[0]);
+        this.sellLimitMax.setValue(cfg.sell_limit[1]);
 
-        //          .secfg.buy_volume[0];
+        this.buyWaitMin.setValue(cfg.buy_wait[0]);
+        this.buyWaitMax.setValue(cfg.buy_wait[1]);
+        this.sellWaitMin.setValue(cfg.sell_wait[0]);
+        this.sellWaitMax.setValue(cfg.sell_wait[1]);
+
+        this.waitAfterBuyMin.setValue(cfg.wait_after_buy[0]);
+        this.waitAfterBuyMax.setValue(cfg.wait_after_buy[1]);
+
+        this.waitAfterSellMin.setValue(cfg.wait_after_sell[0]);
+        this.waitAfterSellMax.setValue(cfg.wait_after_sell[1]);
+
     }
 
     @Override
     public void save() {
-        cfg.buy_volume[0] = Float.parseFloat(this.buy_volume_min.getText());
-        cfg.buy_volume[1] = Float.parseFloat(this.buy_volume_max.getText());
+
+        cfg.buy_volume[0] = (Float) this.buyVolMin.getValue();
+        cfg.buy_volume[1] = (Float) this.buyVolMax.getValue();
+        cfg.sell_volume[0] = (Float) this.sellVolMin.getValue();
+        cfg.sell_volume[1] = (Float) this.sellVolMax.getValue();
+        cfg.buy_limit[0] = (Float) this.buyLimitMin.getValue();
+        cfg.buy_limit[1] = (Float) this.buyLimitMax.getValue();
+        cfg.sell_limit[0] = (Float) this.sellLimitMin.getValue();
+        cfg.sell_limit[1] = (Float) this.sellLimitMax.getValue();
+        cfg.buy_wait[0] = (Integer) this.buyWaitMin.getValue();
+        cfg.buy_wait[1] = (Integer) this.buyWaitMax.getValue();
+        cfg.sell_wait[0] = (Integer) this.sellWaitMin.getValue();
+        cfg.sell_wait[1] = (Integer) this.sellWaitMax.getValue();
+        
+        cfg.wait_after_buy[0] = (Integer) this.waitAfterBuyMin.getValue();
+        cfg.wait_after_buy[1] = (Integer) this.waitAfterBuyMax.getValue();
+        cfg.wait_after_sell[0] = (Integer) this.waitAfterSellMin.getValue();
+        cfg.wait_after_sell[1] = (Integer) this.waitAfterSellMax.getValue();
+        
+
+        //  cfg.buy_volume[0] = Float.parseFloat(this.buyVolMin.getText());
+        //  cfg.buy_volume[1] = Float.parseFloat(this.buyVolMax.getText());
+        //         cfg.sell_volume[0] = Float.parseFloat(this.sellVolMin.getText());
+        //  cfg.sell_volume[1] = Float.parseFloat(this.sellVolMax.getText());
         JSONObject j = cfg.getConfig();
         System.out.printf("JSON: %s\n", j.toString(3));
     }
@@ -69,109 +107,340 @@ public class RandomTraderGui extends AutoTraderGui {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField1 = new javax.swing.JTextField();
+        buyWaitMin = new javax.swing.JSpinner();
+        sellWaitMin = new javax.swing.JSpinner();
+        sellWaitMax = new javax.swing.JSpinner();
+        buyWaitMax = new javax.swing.JSpinner();
+        buyLimitMin = new javax.swing.JSpinner();
+        buyLimitMax = new javax.swing.JSpinner();
+        sellLimitMax = new javax.swing.JSpinner();
+        sellLimitMin = new javax.swing.JSpinner();
+        waitAfterBuyMin = new javax.swing.JSpinner();
+        waitAfterSellMin = new javax.swing.JSpinner();
+        waitAfterSellMax = new javax.swing.JSpinner();
+        waitAfterBuyMax = new javax.swing.JSpinner();
+        buyVolMin = new javax.swing.JSpinner();
+        buyVolMax = new javax.swing.JSpinner();
+        sellVolMax = new javax.swing.JSpinner();
+        sellVolMin = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        buy_volume_min = new javax.swing.JTextField();
-        buy_volume_max = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+
+        jTextField1.setText("jTextField1");
 
         setBorder(null);
 
-        jLabel1.setText("Volume to buy (in percent)");
+        buyWaitMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
 
-        jLabel2.setText("Volume to sell (in percent):");
+        sellWaitMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
 
-        jLabel3.setText("max.");
+        sellWaitMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
 
-        jLabel4.setText("max.");
+        buyWaitMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
 
-        jLabel5.setText("min.");
+        buyLimitMin.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
 
-        jLabel6.setText("min.");
+        buyLimitMax.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
 
-        buy_volume_min.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        buy_volume_min.setText("100.5");
-        buy_volume_min.setToolTipText("");
-        buy_volume_min.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buy_volume_minActionPerformed(evt);
-            }
-        });
+        sellLimitMax.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
 
-        buy_volume_max.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        buy_volume_max.setText("100.5");
-        buy_volume_max.setToolTipText("");
-        buy_volume_max.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buy_volume_maxActionPerformed(evt);
-            }
-        });
+        sellLimitMin.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
+
+        waitAfterBuyMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+
+        waitAfterSellMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+
+        waitAfterSellMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+
+        waitAfterBuyMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+
+        buyVolMin.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+
+        buyVolMax.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+
+        sellVolMax.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+
+        sellVolMin.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+
+        jLabel1.setText("min:");
+
+        jLabel2.setText("max:");
+        jLabel2.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+
+        jLabel3.setText("min:");
+
+        jLabel4.setText("max:");
+
+        jLabel5.setText("max:");
+        jLabel5.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+
+        jLabel6.setText("max:");
+
+        jLabel7.setText("min:");
+
+        jLabel8.setText("min:");
+
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel9.setText("Volume to buy (in %):");
+
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel10.setText("Volume to sell (in %):");
+
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel11.setText("Buy limit (in %):");
+
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel12.setText("Sel limit (in %):");
+
+        jLabel13.setText("max:");
+        jLabel13.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+
+        jLabel14.setText("max:");
+
+        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel15.setText("Buy order wait (in ms):");
+
+        jLabel16.setText("min:");
+
+        jLabel17.setText("min:");
+
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel18.setText("Sell order wait (in ms):");
+
+        jLabel19.setText("max:");
+        jLabel19.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+
+        jLabel20.setText("max:");
+
+        jLabel21.setText("min:");
+
+        jLabel22.setText("min:");
+
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel23.setText("Wait after buy (in ms):");
+
+        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel24.setText("Wait after sell (in ms):");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(108, 108, 108)
-                        .addComponent(jLabel4)
-                        .addGap(96, 96, 96))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel22))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel21)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(waitAfterSellMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(waitAfterBuyMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel19)
+                            .addComponent(jLabel20))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(waitAfterSellMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(waitAfterBuyMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel1))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel8))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel7))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel17))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel16)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buy_volume_min, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buy_volume_max, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 93, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(sellVolMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buyVolMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sellLimitMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buyLimitMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buyWaitMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sellWaitMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel13)
+                                    .addComponent(jLabel14))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sellWaitMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(buyWaitMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sellLimitMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(buyLimitMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sellVolMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(buyVolMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(43, 43, 43))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel5)
-                    .addComponent(buy_volume_min, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buy_volume_max, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(buyVolMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buyVolMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sellVolMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sellVolMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel10))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buyLimitMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buyLimitMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sellLimitMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sellLimitMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel4))
-                .addContainerGap(205, Short.MAX_VALUE))
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel12))
+                .addGap(35, 35, 35)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buyWaitMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel15)
+                    .addComponent(buyWaitMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sellWaitMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sellWaitMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel17)
+                    .addComponent(jLabel18))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(waitAfterBuyMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(waitAfterBuyMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19)
+                    .addComponent(jLabel21)
+                    .addComponent(jLabel23))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(waitAfterSellMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(waitAfterSellMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel20)
+                    .addComponent(jLabel22)
+                    .addComponent(jLabel24))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buy_volume_minActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buy_volume_minActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buy_volume_minActionPerformed
-
-    private void buy_volume_maxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buy_volume_maxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buy_volume_maxActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField buy_volume_max;
-    private javax.swing.JTextField buy_volume_min;
+    private javax.swing.JSpinner buyLimitMax;
+    private javax.swing.JSpinner buyLimitMin;
+    private javax.swing.JSpinner buyVolMax;
+    private javax.swing.JSpinner buyVolMin;
+    private javax.swing.JSpinner buyWaitMax;
+    private javax.swing.JSpinner buyWaitMin;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JSpinner sellLimitMax;
+    private javax.swing.JSpinner sellLimitMin;
+    private javax.swing.JSpinner sellVolMax;
+    private javax.swing.JSpinner sellVolMin;
+    private javax.swing.JSpinner sellWaitMax;
+    private javax.swing.JSpinner sellWaitMin;
+    private javax.swing.JSpinner waitAfterBuyMax;
+    private javax.swing.JSpinner waitAfterBuyMin;
+    private javax.swing.JSpinner waitAfterSellMax;
+    private javax.swing.JSpinner waitAfterSellMin;
     // End of variables declaration//GEN-END:variables
 }

@@ -68,17 +68,13 @@ public class Test {
                 + "\n"
         );
     }
-    
-    
-    
 
-
-static public String getFullClassName(String classFileName) throws IOException {           
+    static public String getFullClassName(String classFileName) throws IOException {
         File file = new File(classFileName);
 
-        FileChannel roChannel = new RandomAccessFile(file, "r").getChannel(); 
-        ByteBuffer bb = roChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int)roChannel.size());    
-        
+        FileChannel roChannel = new RandomAccessFile(file, "r").getChannel();
+        ByteBuffer bb = roChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int) roChannel.size());
+
         String x = new String();
 
         //x.getClass().getClassLoader().loadClass(x);
@@ -87,62 +83,36 @@ static public String getFullClassName(String classFileName) throws IOException {
         return "";
     }
 
+  /*  static private <T extends Number> void to(T n, Double o) {
+        if (Float == T) {
+            System.out.printf("Double ret %", o.floatValue());
 
+            n = (T) (Number) o.floatValue();
+        }
 
+    }
+*/
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
-        AutoTraderLoader tl = new AutoTraderLoader();
-        
-        
-        tl.getTraders();
+
+        Float x0;
+        x0 = 3.1f;
+
+        int x1; // = new Integer(0);
+
+        x1 = 4;
+
+        //x1 = (Integer)(Number)x0;
+        Double z = 0.99;
+        // to(x0,z);
+
+        System.out.printf("Erg: %f\n", x0);
+
+        System.out.printf("Hello world\n", "");
         System.exit(0);
-        
-        
-        
-
-        ArrayList<File> sl = tl.getTraders("./target/classes/traders");
-
-        File file = sl.get(0);
-
-        System.out.printf("Filename %s\n", file.getName());
-
-        try {
-            // Convert File to a URL
-            URL url = file.toURL();          // file:/c:/myclasses/
-          
-            URL[] urls = new URL[]{url};
-
-            // Create a new class loader with the directory
-            ClassLoader cl = new URLClassLoader(urls);
-           
-            
-            Class cls = cl.loadClass("traders.RandomTraderConfig");
-            
-            System.out.printf("Loaded Class: %s\n",cls.getClass().getName());
-            
-            sesim.AutoTraderConfig at = (AutoTraderConfig )cls.newInstance();
-           
-
-            String cp = System.getProperty("java.class.path");
-            System.out.printf("CP: %s\n", cp);
-
-            
-            
-            
-            
-            // Load in the class; MyClass.class should be located in
-            // the directory file:/c:/myclasses/com/mycompany
-            //Class cls = cl.loadClass("com.mycompany.MyClass");
-            
-            
-        } catch (ClassNotFoundException e) {
-            System.out.printf("hahahah %s\n", e.getClass().getName());
-System.out.print("\nException was thrown\n");
-System.out.print(e.getMessage());
-System.out.print("\n;;;;a\n");
-        }
 
     }
 

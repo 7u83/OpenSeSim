@@ -37,5 +37,6 @@ public abstract interface AutoTraderConfig {
     public abstract String getName();
     public abstract AutoTraderGui getGui();
     public abstract JSONObject getConfig();
+    public abstract void putConfig(JSONObject cfg);
  
 }

@@ -62,5 +62,10 @@ public class SuperTraderConfig implements AutoTraderConfig{
     public JSONObject getConfig() {
         return null;
     }
+
+    @Override
+    public void putConfig(JSONObject cfg) {
+        
+    }
     
 }
