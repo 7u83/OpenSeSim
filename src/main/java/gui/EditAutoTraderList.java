@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import org.json.JSONArray;
@@ -45,18 +46,20 @@ import sesim.AutoTraderConfig;
  */
 public class EditAutoTraderList extends javax.swing.JPanel {
 
+    private String getColumnHeader(int i) {
+        JTableHeader th = list.getTableHeader();
+        return (String) th.getColumnModel().getColumn(i).getHeaderValue();
+
+    }
+
     void save() {
         DefaultTableModel model = (DefaultTableModel) list.getModel();
         JTableHeader th = list.getTableHeader();
-
+        /*
         for (int i = 0; i < model.getColumnCount(); i++) {
             String hw = (String) th.getColumnModel().getColumn(i).getHeaderValue();
-            System.out.printf("%s\t", hw);
         }
-
-        System.out.println();
-
-        //  JSONObject ja = new JSONObject();
+         */
         JSONArray ja = new JSONArray();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -66,7 +69,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
                 if (cw != null) {
                     jo.put((String) th.getColumnModel().getColumn(x).getHeaderValue(), cw.toString());
-               }
+                }
                 //ja.put(Integer.toString(i),jo);
 
             }
@@ -74,8 +77,47 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         }
 
         Globals.prefs.put("Traders", ja.toString());
-        
-  //      System.out.printf("Arlist: %s\n", ja.toString());
+
+        //      System.out.printf("Arlist: %s\n", ja.toString());
+    }
+
+    final void load() {
+        String traders_json = Globals.prefs.get("Traders", "[]");
+        JSONArray traders = new JSONArray(traders_json);
+
+        int size = traders.toList().size();
+        System.out.printf("Size = %d\n", size);
+
+        for (int row = 0; row < size; row++) {
+            JSONObject rowobj = traders.getJSONObject(row);
+            for (int col = 0; col < list.getColumnCount(); col++) {
+                String h = this.getColumnHeader(col);
+                System.out.printf("Doing stuff for %s\n", h);
+                String val = rowobj.getString(h);
+                System.out.printf("Want to set (%d,%d): %s\n", row, col, val);
+
+                //list.getModel().setValueAt(val, row, col);
+                Class cl = list.getModel().getColumnClass(col);
+                System.out.printf("The Class is: %s\n", cl.getName());
+                Object cv = new Object();
+                if (cl == Double.class) {
+                    cv = rowobj.getDouble(h);
+                }
+                if (cl == String.class) {
+                    cv = rowobj.getString(h);
+                }
+                if (cl == Integer.class) {
+                    cv = rowobj.getInt(h);
+                }
+                if (cl == Boolean.class) {
+                    cv = rowobj.getBoolean(h);
+                }
+                list.getModel().setValueAt(cv, row, col);
+
+            }
+
+        }
+
     }
 
     /**
@@ -84,15 +126,17 @@ public class EditAutoTraderList extends javax.swing.JPanel {
     public EditAutoTraderList() {
         initComponents();
 
+        this.load();
+
         JComboBox comboBox = new JComboBox();
-        
-        ArrayList <Class <AutoTraderConfig>> trconfigs=null;
+
+        ArrayList<Class<AutoTraderConfig>> trconfigs = null;
         trconfigs = Globals.tloader.getTraders();
-        
-        for (int i=0; i<trconfigs.size(); i++){
+
+        for (int i = 0; i < trconfigs.size(); i++) {
             try {
                 AutoTraderConfig ac = trconfigs.get(i).newInstance();
-                System.out.printf("TrConfig: %s\n", ac.getName());
+
                 comboBox.addItem(ac.getName());
             } catch (InstantiationException ex) {
                 Logger.getLogger(EditAutoTraderList.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,20 +144,15 @@ public class EditAutoTraderList extends javax.swing.JPanel {
                 Logger.getLogger(EditAutoTraderList.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
 
 //        comboBox.addItem("AAA");
 //        comboBox.addItem("BBB");
-
-        
-        
-               
-
         DefaultTableModel model = (DefaultTableModel) list.getModel();
         list.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
-        model.setRowCount(3);
-        
-        
+        // list.getColumnModel().getColumn(2).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer());
+        //  model.setRowCount(3);
+
+        list.setRowHeight(30);
     }
 
     /**
@@ -128,6 +167,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         list = new javax.swing.JTable();
 
+        list.setAutoCreateRowSorter(true);
         list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"Alice",  new Integer(1), "",  new Double(10000.0),  new Double(100.0),  new Boolean(true)},

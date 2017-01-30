@@ -87,7 +87,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
+        jRunButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         orderBookPanel1 = new gui.OrderBookPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -126,18 +126,18 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run.gif"))); // NOI18N
-        jButton1.setText("Run sim!");
-        jButton1.setToolTipText("Run the simmulation");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jRunButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run.gif"))); // NOI18N
+        jRunButton.setText("Run sim!");
+        jRunButton.setToolTipText("Run the simmulation");
+        jRunButton.setFocusable(false);
+        jRunButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jRunButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jRunButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jRunButtonActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
+        jToolBar1.add(jRunButton);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
         jButton2.setText("Pause");
@@ -318,10 +318,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jRunButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRunButtonActionPerformed
         this.startTraders();
         Globals.se.timer.start();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jRunButtonActionPerformed
 
     private void editPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesActionPerformed
         Globals.LOGGER.info("Edit prefs...");
@@ -429,12 +429,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JButton jRunButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;

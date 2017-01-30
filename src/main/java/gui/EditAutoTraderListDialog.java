@@ -38,6 +38,7 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setTitle("Edit Auto Traders");
+        this.setLocationRelativeTo(this.getParent());
         //this.setLocationRelativeTo(MainWin.instance);
     }
 
@@ -52,19 +53,24 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
 
         editAutoTraderList1 = new gui.EditAutoTraderList();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jOkButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jButton1.setMnemonic('c');
         jButton1.setText("Cancel");
         jButton1.setToolTipText("");
-
-        jButton2.setMnemonic('o');
-        jButton2.setText("Ok");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jOkButton.setMnemonic('o');
+        jOkButton.setText("Ok");
+        jOkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jOkButtonActionPerformed(evt);
             }
         });
 
@@ -74,7 +80,7 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(jOkButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -87,17 +93,22 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jOkButton))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jOkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jOkButtonActionPerformed
         // TODO add your handling code here:
         this.editAutoTraderList1.save();
-    }//GEN-LAST:event_jButton2ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jOkButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -144,6 +155,6 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private gui.EditAutoTraderList editAutoTraderList1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jOkButton;
     // End of variables declaration//GEN-END:variables
 }

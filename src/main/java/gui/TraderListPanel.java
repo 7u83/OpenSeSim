@@ -222,6 +222,7 @@ public class TraderListPanel extends javax.swing.JPanel
         traderListScroller = new javax.swing.JScrollPane();
         traderList = new javax.swing.JTable();
 
+        traderList.setAutoCreateRowSorter(true);
         traderList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
