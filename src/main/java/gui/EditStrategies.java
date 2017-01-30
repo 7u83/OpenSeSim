@@ -45,6 +45,7 @@ import sesim.AutoTraderGui;
  */
 public final class EditStrategies extends javax.swing.JDialog {
 
+
     TreeMap<String, JSONObject> strategies = new TreeMap();
 
     void initComboBox() {
@@ -52,13 +53,15 @@ public final class EditStrategies extends javax.swing.JDialog {
         this.reloadStrategyConfigs();
         
         this.jComboBoxStrategySelector.removeAllItems();
-        ArrayList<String> sn = Globals.tloader.getDefaultStrategyNames();
 
+/*        
+        ArrayList<String> sn = Globals.tloader.getDefaultStrategyNames();
+*/
         Iterator<String> i = strategies.keySet().iterator();
         while (i.hasNext()) {
 
             this.jComboBoxStrategySelector.addItem(i.next());
-        }
+        }        
 
     }
 
@@ -83,30 +86,14 @@ public final class EditStrategies extends javax.swing.JDialog {
 
     void reloadStrategyConfigs() {
 
-        ArrayList<String> sn = Globals.tloader.getDefaultStrategyNames();
         strategies = new TreeMap();
-        
-        for (String s : sn) {
-            JSONObject e = new JSONObject();
-           // System.out.printf("String put %s\n", s);
-
-            this.strategies.put(s, null);
-
-        }
-
-        String cfglist = Globals.prefs.get(STRATEGYPREFS, "{}");
-        JSONObject cfgs = new JSONObject(cfglist);
-        
-        
-       
+        JSONObject cfgs = Globals.getStrategies();
 
         Iterator<String> i = cfgs.keys();
         while (i.hasNext()) {
-
             String k = i.next();
             JSONObject o = cfgs.getJSONObject(k);
             strategies.put(k, o);
-
         }
 
     }
@@ -125,10 +112,13 @@ public final class EditStrategies extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         guiPanel = new javax.swing.JPanel();
         defaultGuiPanel = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
         jSaveButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jRemoveButton = new javax.swing.JButton();
+        jNewButton = new javax.swing.JButton();
+        jBaseLabel = new javax.swing.JLabel();
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("No config available");
@@ -144,15 +134,25 @@ public final class EditStrategies extends javax.swing.JDialog {
 
         guiPanel.setLayout(new java.awt.BorderLayout());
 
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("No config available");
+        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout defaultGuiPanelLayout = new javax.swing.GroupLayout(defaultGuiPanel);
         defaultGuiPanel.setLayout(defaultGuiPanelLayout);
         defaultGuiPanelLayout.setHorizontalGroup(
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 612, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, defaultGuiPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+                .addContainerGap())
         );
         defaultGuiPanelLayout.setVerticalGroup(
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 435, Short.MAX_VALUE)
+            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
@@ -186,14 +186,29 @@ public final class EditStrategies extends javax.swing.JDialog {
             }
         });
 
+        jNewButton.setMnemonic('n');
+        jNewButton.setText("New");
+        jNewButton.setToolTipText("");
+        jNewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jNewButtonActionPerformed(evt);
+            }
+        });
+
+        jBaseLabel.setText("base");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(275, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jNewButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jRemoveButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSaveButton)
@@ -202,31 +217,29 @@ public final class EditStrategies extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
                         .addGap(9, 9, 9))
-                    .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jBaseLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(12, 12, 12)
-                    .addComponent(jScrollPane1)
-                    .addGap(12, 12, 12)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 459, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBaseLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSaveButton)
                     .addComponent(jButton2)
                     .addComponent(jButton1)
-                    .addComponent(jRemoveButton))
+                    .addComponent(jRemoveButton)
+                    .addComponent(jNewButton))
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(41, 41, 41)
-                    .addComponent(jScrollPane1)
-                    .addGap(41, 41, 41)))
         );
 
         pack();
@@ -262,15 +275,17 @@ public final class EditStrategies extends javax.swing.JDialog {
 
         System.out.printf("Base %s\n", base);
 
-        ac = Globals.tloader.getStrategy(base);
+        ac = Globals.tloader.getStrategyBase(base);
         if (ac == null) {
             System.out.print("BASE IST NULL\n");
-            System.exit(0);
+            Globals.LOGGER.info(String.format("Can't load: %s\n", base));
+            //System.exit(0);
 
             return;
         }
 
         ac.putConfig(o);
+        this.jBaseLabel.setText(base);
 
         acgui = ac.getGui();
         guiPanel.removeAll();
@@ -303,7 +318,16 @@ public final class EditStrategies extends javax.swing.JDialog {
         JSONObject o = ac.getConfig();
 
         String item = (String) this.jComboBoxStrategySelector.getSelectedItem();
-        o.put("base", ac.getName());
+
+//        o.put("base", ac.getDisplayName());
+        o.put("base", ac.getClass().getCanonicalName());
+        
+System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
+
+        
+        
+        
+        
         JSONObject o0 = strategies.get(item);
 
         if (o0 == null) {
@@ -358,6 +382,19 @@ public final class EditStrategies extends javax.swing.JDialog {
 
     }//GEN-LAST:event_jRemoveButtonActionPerformed
 
+    private void jNewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNewButtonActionPerformed
+        NewStrategyDialog sd = new NewStrategyDialog((Frame) this.getParent(),true);
+        sd.setVisible(true);
+        
+        if (sd.result==null)
+            return;
+        
+        AutoTraderConfig ac = Globals.tloader.getStrategyBase(sd.result.base);
+        JSONObject cfg = ac.getConfig();
+        Globals.saveStrategy(sd.result.name, cfg);
+        this.initComboBox();
+    }//GEN-LAST:event_jNewButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -404,10 +441,13 @@ public final class EditStrategies extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel defaultGuiPanel;
     private javax.swing.JPanel guiPanel;
+    private javax.swing.JLabel jBaseLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBoxStrategySelector;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton jNewButton;
     private javax.swing.JButton jRemoveButton;
     private javax.swing.JButton jSaveButton;
     private javax.swing.JScrollPane jScrollPane1;

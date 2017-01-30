@@ -57,7 +57,7 @@ public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTra
     }
     
     @Override
-    public String getName(){
+    public String getDisplayName(){
         return "SwitchingTrader";
     }
 }

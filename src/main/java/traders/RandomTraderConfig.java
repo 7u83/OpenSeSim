@@ -60,7 +60,7 @@ public class RandomTraderConfig implements AutoTraderConfig {
     }
 
     @Override
-    public String getName() {
+    public String getDisplayName() {
         return "Random A";
     }
 
@@ -89,6 +89,7 @@ public class RandomTraderConfig implements AutoTraderConfig {
         jo.put(BUY_WAIT, buy_wait);
         jo.put(WAIT_AFTER_SELL, wait_after_sell);
         jo.put(WAIT_AFTER_BUY, wait_after_buy);
+        jo.put("base",this.getClass().getCanonicalName());
 
         return jo;
     }
@@ -135,12 +136,12 @@ public class RandomTraderConfig implements AutoTraderConfig {
             return;
         }
 
-        System.out.printf("Putconfig %s\n", cfg.toString(4));
+   //     System.out.printf("Putconfig %s\n", cfg.toString(4));
 
         String cname = cfg.get(SELL_VOLUME).getClass().getName();
 
         //     JSONArray a = cfg.getJSONArray(SELL_VOLUME);
-        System.out.printf("Array = %s \n", cname);
+     //   System.out.printf("Array = %s \n", cname);
 
         sell_volume = to_float(cfg.getJSONArray(SELL_VOLUME));
         buy_volume = to_float(cfg.getJSONArray(BUY_VOLUME));

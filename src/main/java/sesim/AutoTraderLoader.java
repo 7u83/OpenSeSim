@@ -113,7 +113,7 @@ public class AutoTraderLoader {
                             while ((entry = is.getNextJarEntry()) != null) {
                                 if (entry.getName().endsWith(".class")) {
 
-                              //      System.out.printf("Entry: %s\n", entry.getName());
+                              //      System.out.printf("Entry: %s\n", entry.getDisplayName());
 
                                 }
                             }
@@ -155,7 +155,7 @@ public class AutoTraderLoader {
         for (int i = 0; i < trclasses.size(); i++) {
             try {
                 AutoTraderConfig ac = trclasses.get(i).newInstance();
-                ret.add(ac.getName());
+                ret.add(ac.getClass().getCanonicalName());
             } catch (Exception ex) {
 
             }
@@ -165,14 +165,19 @@ public class AutoTraderLoader {
         return ret;
     }
 
-    public AutoTraderConfig getStrategy(String name) {
+    public AutoTraderConfig getStrategyBase(String name) {
         ArrayList<Class<AutoTraderConfig>> traders = this.getTraders();
         for (int i = 0; i < traders.size(); i++) {
             try {
                 AutoTraderConfig ac = traders.get(i).newInstance();
 
-                if (ac.getName().equals(name)) {
+                System.out.printf("Looking for in %s == %s\n", ac.getClass().getCanonicalName(),name);
+                
+                if (ac.getClass().getCanonicalName().equals(name)){
                     return ac;
+                
+               // if (ac.getDisplayName().equals(name)) {
+               //     return ac;}
                 }
             } catch (Exception ex) {
             }

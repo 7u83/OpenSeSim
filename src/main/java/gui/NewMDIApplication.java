@@ -34,6 +34,8 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
 import sesim.Exchange;
@@ -56,6 +58,42 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     public void startTraders() {
 
+        JSONArray tlist = Globals.getTraders();
+        for (int i=0; i<tlist.length();i++){
+            JSONObject t=tlist.getJSONObject(i);
+            String strategy_name = t.getString("Strategy");
+            JSONObject strategy = Globals.getStrategy(strategy_name);
+            String base = strategy.getString("base");
+            AutoTraderConfig ac = Globals.tloader.getStrategyBase(base);
+            
+            System.out.printf("Load Strat: %s\n",strategy_name);
+            System.out.printf("Base %s\n", base);
+            Integer count =  t.getInt("Count");
+            Double shares = t.getDouble("Shares");
+            Double money = t.getDouble("Money");
+            
+            System.out.printf("Count: %d Shares: %f Money %f\n", count,shares,money);
+            
+            
+            
+            for (int i1=0;i1<count;i1++){
+                AutoTrader trader = ac.createTrader(Globals.se, strategy, money, shares);                
+                Globals.se.traders.add(trader);
+                trader.setName(t.getString("Name"));
+                trader.start();
+            }
+            
+           
+            
+            //AutoTraderConfig ac = Globals.tloader.getStrategyBase(t.getString("base"));
+            //ac.putConfig(t);
+            
+        }
+        
+      //   System.exit(0);
+        
+        
+        /*
         AutoTraderConfig cfg1 = new RandomTraderConfig();
         AutoTrader rt1 = cfg1.createTrader(Globals.se, null, 100000, 100000);
         Globals.se.traders.add(rt1);
@@ -72,6 +110,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             randt.setName("Bob");
             randt.start();
         }
+        */
 
     }
 
@@ -404,7 +443,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         for (Class<AutoTraderConfig> at_class : traders) {
             AutoTraderConfig cfg = at_class.newInstance();
-            System.out.printf("Have a Trader with name: %s\n", cfg.getName());
+            System.out.printf("Have a Trader with name: %s\n", cfg.getDisplayName());
         }
 
         //System.exit(0);

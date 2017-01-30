@@ -66,7 +66,7 @@ public class RandomTrader extends AutoTrader {
     public long timerTask() {
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
-        return rc / 100;
+        return rc /1;
 
 //        return this.event();
     }

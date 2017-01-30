@@ -34,7 +34,7 @@ import org.json.JSONObject;
  */
 public abstract interface AutoTraderConfig {
     public abstract AutoTrader createTrader(Exchange se, JSONObject cfg,double money, double shares);
-    public abstract String getName();
+    public abstract String getDisplayName();
     public abstract AutoTraderGui getGui();
     public abstract JSONObject getConfig();
     public abstract void putConfig(JSONObject cfg);

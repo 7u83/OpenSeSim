@@ -25,10 +25,15 @@
  */
 package gui;
 
-import chart.NewMDIApplication;
+
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.swing.JComboBox;
 import javax.swing.UIManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import sesim.AutoTraderLoader;
 
 /**
@@ -36,6 +41,9 @@ import sesim.AutoTraderLoader;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Globals {
+
+    static final String STRATEGYPREFS = "Strategies";
+    static final String TRADERPREFS = "Traders";
 
     static public sesim.Exchange se;
 
@@ -64,10 +72,55 @@ public class Globals {
             }
         }
     }
-    
-    static AutoTraderLoader tloader=new AutoTraderLoader();
-    
+
+    static AutoTraderLoader tloader = new AutoTraderLoader();
+
     static final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
+
+    static public final JSONArray getTraders() {
+        String traders_json = Globals.prefs.get(TRADERPREFS, "[]");
+        JSONArray traders = new JSONArray(traders_json);
+        return traders;
+    }
+
+    static public final JSONObject getStrategies() {
+        String cfglist = Globals.prefs.get(STRATEGYPREFS, "{}");
+        JSONObject cfgs = new JSONObject(cfglist);
+        return cfgs;
+    }
     
+    static public JSONObject getStrategy(String name){
+        return getStrategies().getJSONObject(name);
+    }
+
+    static public void getStrategiesIntoComboBox(JComboBox comboBox) {
+        TreeMap stm = getStrategiesAsTreeMap();
+        comboBox.removeAllItems();
+
+        Iterator<String> i = stm.keySet().iterator();
+        while (i.hasNext()) {
+            comboBox.addItem(i.next());
+        }
+
+    }
+
+    static public TreeMap getStrategiesAsTreeMap() {
+        TreeMap strategies = new TreeMap();
+        JSONObject cfgs = Globals.getStrategies();
+
+        Iterator<String> i = cfgs.keys();
+        while (i.hasNext()) {
+            String k = i.next();
+            JSONObject o = cfgs.getJSONObject(k);
+            strategies.put(k, o);
+        }
+        return strategies;
+    }
+
+    static public final void saveStrategy(String name, JSONObject cfg) {
+        JSONObject cfgs = getStrategies();
+        cfgs.put(name, cfg);
+        prefs.put(STRATEGYPREFS, cfgs.toString());
+    }
 
 }

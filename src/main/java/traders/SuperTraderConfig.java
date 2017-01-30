@@ -44,7 +44,7 @@ public class SuperTraderConfig implements AutoTraderConfig{
     }
 
     @Override
-    public String getName() {
+    public String getDisplayName() {
         return "SuperTrader";
     }
     
