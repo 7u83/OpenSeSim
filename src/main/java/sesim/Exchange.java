@@ -376,10 +376,17 @@ public class Exchange {  //extends Thread {
         ArrayList<Order> ret = new ArrayList<>();
 
         Iterator<Order> it = book.iterator();
+        
+        
 
         for (int i = 0; i < depth && it.hasNext(); i++) {
-            ret.add(it.next());
+            Order o=it.next();
+         //   System.out.print(o.volume);
+            if (o.volume<=0)
+                System.exit(0);
+            ret.add(o);
         }
+       // System.out.println();
         tradelock.unlock();
         return ret;
     }
@@ -521,13 +528,19 @@ public class Exchange {  //extends Thread {
         if (a == null) {
             return -1;
         }
-        tradelock.lock();
 
         Order o = new Order(a, type, volume, limit);
+        if (o.volume<=0 || o.limit<=0){
+            System.out.print("binweg\n");
+           return -1;
+        }
+        tradelock.lock();
+
         addOrderToBook(o);
         a.orders.put(o.id, o);
 
         this.executeOrders();
+
         tradelock.unlock();
         this.updateBookReceivers(OrderType.ASK);
         this.updateBookReceivers(OrderType.BID);

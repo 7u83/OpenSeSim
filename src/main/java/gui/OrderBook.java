@@ -176,6 +176,12 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
                     return dfm.format((double)o.getLimit());
                     
                 case 2:
+                    double v = o.getVolume();
+                    if(v<=0){
+                        System.out.printf("Order: %s %f %f\n",o.getType().toString(),o.getVolume(),o.getLimit());
+                       // System.exit(0);
+                    }
+                        
                     return dfv.format((double)o.getVolume());
                     //return String.format("%f", o.getVolume());
             }
