@@ -33,6 +33,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.SwingUtilities;
 import java.awt.*;
+import java.text.DecimalFormat;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -85,7 +86,11 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
              
         }
         ArrayList newlist = getOrderBook();
+   //this.orderBookScroller.scrollRectToVisible(this.orderBookList.getCellRect(this.orderBookList.getRowCount()-1, 0, true));        
         SwingUtilities.invokeLater(new Updater(this.model,newlist));
+        
+        //this.scrollRectToVisible(this.getCellRect(rowIndex, vColIndex, false));
+
 
     }
 
@@ -144,8 +149,13 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
             return 3;
         }
 
+        DecimalFormat dfm = new DecimalFormat("0.00#");
+        DecimalFormat dfv = new DecimalFormat("0.#");
+                
         @Override
         public Object getValueAt(int r, int c) {
+            
+            
             Order o;
 
             int s = list.size();
@@ -162,9 +172,12 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
                     return String.format("#%06x", o.getID());
 
                 case 1:
-                    return String.format("%.4f",o.getLimit());
+                    //return String.format("%.f",o.getLimit());
+                    return dfm.format((double)o.getLimit());
+                    
                 case 2:
-                    return String.format("%.4f", o.getVolume());
+                    return dfv.format((double)o.getVolume());
+                    //return String.format("%f", o.getVolume());
             }
             return "";
         }

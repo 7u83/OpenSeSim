@@ -41,7 +41,7 @@ public class AskBook extends OrderBook {
     
     @Override
     boolean getDesc(){
-        return true;
+        return false;
     }
         
     public AskBook(){

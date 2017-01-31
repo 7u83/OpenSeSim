@@ -25,9 +25,12 @@
  */
 package gui;
 
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JComboBox;
@@ -88,8 +91,8 @@ public class Globals {
         JSONObject cfgs = new JSONObject(cfglist);
         return cfgs;
     }
-    
-    static public JSONObject getStrategy(String name){
+
+    static public JSONObject getStrategy(String name) {
         return getStrategies().getJSONObject(name);
     }
 
@@ -121,6 +124,23 @@ public class Globals {
         JSONObject cfgs = getStrategies();
         cfgs.put(name, cfg);
         prefs.put(STRATEGYPREFS, cfgs.toString());
+    }
+
+    static void saveFile(File f) {
+
+        JSONObject sobj = new JSONObject();
+        JSONArray traders = getTraders();
+        JSONObject strategies = getStrategies();
+        sobj.put("strategies", strategies);
+        sobj.put("traders", traders);
+        try {
+            PrintWriter out = new PrintWriter(f.getAbsolutePath());
+            out.print(sobj.toString(4));
+            out.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Globals.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
 }

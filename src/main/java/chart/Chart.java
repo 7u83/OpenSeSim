@@ -35,7 +35,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     protected int num_bars = 4000;
 
     protected Rectangle clip_bounds = new Rectangle();
-    protected Dimension dim;
+    protected Dimension gdim;
 
     protected int first_bar, last_bar;
 
@@ -185,7 +185,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             
             float m = c_mm.max/c_mm.min;
             
-            System.out.printf("Min: %f  Max: %f M: %f\n",c_mm.min,c_mm.max,m);
+            //System.out.printf("Min: %f  Max: %f M: %f\n",c_mm.min,c_mm.max,m);
             
             
             //float fac = (float) c_rect.height /(float) Math.log(c_mm.max * c_yscaling);
@@ -195,7 +195,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             float fmin = c_rect.height - ((float) Math.log((y / c_mm.min)) * fac);
             
             
-            System.out.printf("Fac: %f fmin: %f\n", fac, fmin);
+            //System.out.printf("Fac: %f fmin: %f\n", fac, fmin);
             return fmin;
 
             //return c_rect.height - ((float) Math.log((y - c_mm.min) * c_yscaling) * fac);
@@ -291,7 +291,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
 
-//        float yscale = dim.height / c_mm.getDiff();
+//        float yscale = gdim.height / c_mm.getDiff();
         c_yscaling = c_rect.height / c_mm.getDiff();
 
 //        System.out.printf("yscale %f\n", c_yscaling);
@@ -309,7 +309,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 //        g.drawLine(0,(int)getYc(c_mm.min), 1000, (int)getYc(c_mm.min));
         //g.setColor(Color.green);
         //g.drawRect(c_rect.x, c_rect.y, c_rect.width, c_rect.height);
-        // System.out.printf("Size: %d %d\n",dim.width,dim.height);
+        // System.out.printf("Size: %d %d\n",gdim.width,gdim.height);
         //  System.exit(0);
     }
 
@@ -343,15 +343,16 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //this.getSize();
         int pwidth = em_width * num_bars;
         int phight = 400;
+     //   phight=this.getVisibleRect().height;
 
-        this.setPreferredSize(new Dimension(pwidth, dim.height));
+        this.setPreferredSize(new Dimension(pwidth, gdim.height));
         this.revalidate();
 
-        Rectangle r = new Rectangle(0, 0, pwidth, dim.height - 6 * em_width);
+        Rectangle r = new Rectangle(0, 0, pwidth, gdim.height - 6 * em_width);
         c_rect = r;
         this.drawYLegend(g);
 
-        //       Dimension dim = this.getSize();
+        //       Dimension gdim = this.getSize();
         //    Iterator<OHLCDataItem> it = data.iterator();
         OHLCDataItem prev = null;
         //  int myi = 0;
@@ -405,10 +406,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         super.paintComponent(g);
 
         this.initEmSize(g);
-        this.dim = this.getSize(dim);
+        this.gdim = this.getParent().getSize(gdim);
+        this.getParent().setPreferredSize(gdim);
+        
+        
+        
         this.clip_bounds = g.getClipBounds(this.clip_bounds);
 
-//        System.out.printf("X:%d %d\n",dim.width,dim.height);
+//        System.out.printf("X:%d %d\n",gdim.width,gdim.height);
         first_bar = (int) (clip_bounds.x / (this.bar_width * this.em_size));
         last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.bar_width * this.em_size));
 

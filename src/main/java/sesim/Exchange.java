@@ -6,12 +6,35 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 /**
  *
  * @author tube
  */
 public class Exchange {  //extends Thread {
+
+    private double money_df = 10000;
+    private double shares_df = 1;
+
+    public void setMoneyDecimals(int n) {
+        money_df = Math.pow(10, n);
+    }
+
+    public void setSharesDecimals(int n) {
+        shares_df = Math.pow(10, n);
+    }
+    
+    public double roundToDecimals(double val,double f){
+        return Math.floor(val*f)/f;
+    }
+    
+    public double roundShares(double shares){
+        return roundToDecimals(shares,shares_df);
+    }
+    public double roundMoney(double money){
+        return roundToDecimals(money,money_df);
+    }
+
+    
 
     public enum OrderType {
         BID, ASK
@@ -19,10 +42,10 @@ public class Exchange {  //extends Thread {
 
     IDGenerator account_id = new IDGenerator();
     //public static Timer timer = new Timer();
-    
+
     public Scheduler timer = new Scheduler();
     //public AutoTraderList traders = new AutoTraderList();
-    public ArrayList <AutoTrader> traders = new ArrayList();
+    public ArrayList<AutoTrader> traders = new ArrayList();
 
     /**
      * Implements a trading account
@@ -61,16 +84,13 @@ public class Exchange {  //extends Thread {
         }
 
     }
-    
-    
-    public void createTraders(JSONArray traderdefs){
-        for (int i=0; i<traderdefs.length(); i++){
+
+    public void createTraders(JSONArray traderdefs) {
+        for (int i = 0; i < traderdefs.length(); i++) {
             JSONObject o = traderdefs.getJSONObject(i);
-            
-            
+
         }
-        
-        
+
         //    this.traders.add(randt);
         //    randt.setName("Bob");
         //    randt.start();
@@ -111,6 +131,11 @@ public class Exchange {  //extends Thread {
             if (d != 0) {
                 return d > 0 ? 1 : -1;
             }
+            
+            d=right.initial_volume-left.initial_volume;
+            if (d!=0){
+                return d > 0 ? 1 : -1;
+            }
 
             if (left.id < right.id) {
                 return -1;
@@ -125,7 +150,6 @@ public class Exchange {  //extends Thread {
         }
 
     }
-
 
     HashMap<OrderType, SortedSet<Order>> order_books = new HashMap();
 
@@ -145,9 +169,9 @@ public class Exchange {  //extends Thread {
             id = order_id.getNext();
             this.account = account;
             this.type = type;
-            this.limit = limit;
-            this.volume = volume;
-            this.initial_volume = volume;
+            this.limit = roundMoney(limit);
+            this.volume = roundShares(volume);
+            this.initial_volume = this.volume;
             this.created = System.currentTimeMillis();
         }
 
@@ -194,23 +218,17 @@ public class Exchange {  //extends Thread {
             //SortedSet b = new TreeSet(new OrderComparator(type));
             order_books.put(type, new TreeSet(new OrderComparator(type)));
         }
-  
 
     }
-    
-    
-    
-    
-        /*public interface TimerEvent {
+
+    /*public interface TimerEvent {
 
         long timerEvent();
     }
-    */
-    
-    void start(){
+     */
+    void start() {
         timer.start();
     }
-            
 
     class BidBook extends TreeSet {
 
@@ -274,7 +292,6 @@ public class Exchange {  //extends Thread {
 
     }
 
-    
     // Class to describe an executed order
     // QuoteReceiver has to be implemented by objects that wants 
     // to receive quote updates  	
@@ -318,7 +335,7 @@ public class Exchange {  //extends Thread {
         while (i.hasNext()) {
             i.next().UpdateOrderBook();
         }
-    
+
     }
 
     // Here we store the list of quote receivers
@@ -347,12 +364,7 @@ public class Exchange {  //extends Thread {
     double lastprice = 100.0;
     long lastsvolume;
 
-    
-
     private final Locker tradelock = new Locker();
-
-
-    
 
     public ArrayList<Order> getOrderBook(OrderType type, int depth) {
 
@@ -376,9 +388,6 @@ public class Exchange {  //extends Thread {
         return this.quoteHistory.last();
     }
 
-    
-
-  
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
         src.money -= money;
         dst.money += money;
@@ -417,21 +426,19 @@ public class Exchange {  //extends Thread {
      *
      * @param o
      */
- 
-
-  
     long nextQuoteId = 0;
 
     private void removeOrderIfExecuted(Order o) {
         if (o.volume != 0) {
             return;
         }
+
         o.account.orders.remove(o.id);
 
         SortedSet book = order_books.get(o.type);
+        
         book.remove(book.first());
 
-        //pollFirst();
     }
 
     /**
@@ -450,6 +457,9 @@ public class Exchange {  //extends Thread {
             Order b = bid.first();
             Order a = ask.first();
 
+            //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
+            
+            
             if (b.limit < a.limit) {
                 break;
             }
@@ -457,6 +467,8 @@ public class Exchange {  //extends Thread {
             // There is a match, calculate price and volume
             double price = b.id < a.id ? b.limit : a.limit;
             double volume = b.volume >= a.volume ? a.volume : b.volume;
+            
+            //System.out.printf("Price %f Vol %f\n", price,volume);
 
             // Transfer money and shares
             transferMoneyAndShares(b.account, a.account, volume * price, -volume);
@@ -465,6 +477,8 @@ public class Exchange {  //extends Thread {
             b.volume -= volume;
             a.volume -= volume;
 
+            //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
+            
             volume_total += volume;
             money_total += price * volume;
 

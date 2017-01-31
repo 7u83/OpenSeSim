@@ -98,21 +98,20 @@ public class Test {
      */
     public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
 
-        Float x0;
-        x0 = 3.1f;
-
-        int x1; // = new Integer(0);
-
-        x1 = 4;
-
-        //x1 = (Integer)(Number)x0;
-        Double z = 0.99;
-        // to(x0,z);
-
-        System.out.printf("Erg: %f\n", x0);
-
-        System.out.printf("Hello world\n", "");
-        System.exit(0);
+        Double x = 3.1415926;
+        
+        Double r = Math.floor(x*100.0)/100.0;
+        
+        
+        
+        System.out.print(r);
+        System.out.println();
+        
+        Double p = Math.pow(10, 5);
+        System.out.print(p);
+        
+        
+        
 
     }
 

@@ -26,6 +26,7 @@
 package gui;
 
 import java.awt.Dialog;
+import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Handler;
@@ -34,6 +35,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.AutoTrader;
@@ -137,10 +139,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
+        editExchangeMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         pasteMenuItem = new javax.swing.JMenuItem();
         deleteMenuItem = new javax.swing.JMenuItem();
@@ -208,6 +208,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         openMenuItem.setMnemonic('o');
         openMenuItem.setText("Open");
+        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(openMenuItem);
 
         saveMenuItem.setMnemonic('s');
@@ -217,6 +222,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
         saveAsMenuItem.setMnemonic('a');
         saveAsMenuItem.setText("Save As ...");
         saveAsMenuItem.setDisplayedMnemonicIndex(5);
+        saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveAsMenuItem);
 
         exitMenuItem.setMnemonic('x');
@@ -228,27 +238,19 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         fileMenu.add(exitMenuItem);
 
-        jMenuItem1.setText("Run");
-        jMenuItem1.setHideActionText(true);
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        fileMenu.add(jMenuItem1);
-
         menuBar.add(fileMenu);
 
         editMenu.setMnemonic('e');
         editMenu.setText("Edit");
 
-        cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
-
-        copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
+        editExchangeMenuItem.setMnemonic('y');
+        editExchangeMenuItem.setText("Exchange ...");
+        editExchangeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editExchangeMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(editExchangeMenuItem);
         editMenu.add(jSeparator1);
 
         pasteMenuItem.setMnemonic('s');
@@ -325,10 +327,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(orderBookPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(orderBookPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1)
                 .addContainerGap())
@@ -369,10 +371,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         d.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_editPreferencesActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         TraderListDialog d = new TraderListDialog(this, false);
         d.setVisible(rootPaneCheckingEnabled);
@@ -406,6 +404,50 @@ public class NewMDIApplication extends javax.swing.JFrame {
         
 
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+       
+    }//GEN-LAST:event_openMenuItemActionPerformed
+
+    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+        JFileChooser fc = new JFileChooser();
+       
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("SeSim Files","sesim");
+        fc.setFileFilter(filter);
+        
+        if (fc.showSaveDialog(this.getParent()) != JFileChooser.APPROVE_OPTION){
+            return;
+        }
+        
+        
+        File f = fc.getSelectedFile();
+        
+        String [] e = ((FileNameExtensionFilter)fc.getFileFilter()).getExtensions();
+        
+        System.out.printf("Abs: %s\n", f.getAbsoluteFile());
+        
+        String fn=f.getAbsolutePath();
+        
+        
+        if (!f.getAbsolutePath().endsWith(e[0])){
+            f = new File(f.getAbsolutePath()+"."+e[0]);
+        }
+        
+
+        Globals.saveFile(f);
+        
+        
+        System.out.printf("Sel File: %s \n",f.getAbsolutePath());
+        
+        
+    }//GEN-LAST:event_saveAsMenuItemActionPerformed
+
+    private void editExchangeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExchangeMenuItemActionPerformed
+        EditExchangeDialog ed=new EditExchangeDialog((Frame) this.getParent(),true);
+        int rc = ed.showdialog();
+      //  System.out.printf("EDRET: %d\n",rc);
+        
+    }//GEN-LAST:event_editExchangeMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -460,9 +502,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem aboutMenuItem;
     private chart.Chart chart1;
     private javax.swing.JMenuItem contentMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
+    private javax.swing.JMenuItem editExchangeMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem editPreferences;
     private javax.swing.JMenuItem exitMenuItem;
@@ -470,7 +511,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JButton jRunButton;

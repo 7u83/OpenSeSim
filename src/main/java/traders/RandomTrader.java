@@ -66,7 +66,7 @@ public class RandomTrader extends AutoTrader {
     public long timerTask() {
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
-        return rc /1;
+        return rc /100;
 
 //        return this.event();
     }
@@ -84,7 +84,7 @@ public class RandomTrader extends AutoTrader {
 
     }
 
-    double start = 1.1;
+    double start = 0.1;
     //Timer timer = new Timer();
 
     @Override
