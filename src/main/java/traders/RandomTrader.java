@@ -25,6 +25,7 @@
  */
 package traders;
 
+import gui.Globals;
 import java.util.*;
 import java.util.Random;
 //import java.util.TimerTask;
@@ -46,7 +47,7 @@ public class RandomTrader extends AutoTrader {
 
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
-        return rc/80 ;
+        return rc ;
 
     }
 
@@ -66,7 +67,7 @@ public class RandomTrader extends AutoTrader {
     public long timerTask() {
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
-        return rc /100;
+        return rc / 1;
 
 //        return this.event();
     }
@@ -76,7 +77,7 @@ public class RandomTrader extends AutoTrader {
     }
 
     protected Action getAction() {
-        if (rand.nextInt(2) == 0) {
+        if (se.randNextInt(2) == 0) {
             return Action.BUY;
         } else {
             return Action.SELL;
@@ -84,7 +85,10 @@ public class RandomTrader extends AutoTrader {
 
     }
 
-    double start = 0.1;
+    double getStart (){
+        return Globals.se.fairValue;
+        
+    }
     //Timer timer = new Timer();
 
     @Override
@@ -99,7 +103,7 @@ public class RandomTrader extends AutoTrader {
     // config for this trader
     //final private RandomTraderConfig_old myconfig;
     // object to generate random numbers
-    final private Random rand = new Random();
+    //final private Random rand = new Random();
 
     /**
      * Get a (long) random number between min an max
@@ -109,7 +113,8 @@ public class RandomTrader extends AutoTrader {
      * @return the number
      */
     protected double getRandom(double min, double max) {
-        double r = rand.nextDouble();
+        double r = se.randNextDouble();
+        
         return (max - min) * r + min;
     }
 
@@ -117,6 +122,7 @@ public class RandomTrader extends AutoTrader {
         return (int) Math.round(getRandom(minmax[0], minmax[1]));
     }
 
+    
     /**
      *
      * @param val
@@ -124,6 +130,8 @@ public class RandomTrader extends AutoTrader {
      * @return
      */
     protected double getRandomAmmount(double val, Float[] minmax) {
+        
+        //System.out.printf("RandomAmmount: %f (%f,%f)\n",val, minmax[0], minmax[1]);
         double min = val * minmax[0] / 100.0;
         double max = val * minmax[1] / 100.0;
         return getRandom(min, max);
@@ -163,10 +171,12 @@ public class RandomTrader extends AutoTrader {
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
 
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? start : q.price;
+        double lp = q == null ? getStart() : q.price;
 
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.buy_limit);
+        
+//        System.out.printf("MyLimit: %f\n",limit);
         
 
         long volume = (long) (money / (limit * 1));
@@ -196,7 +206,7 @@ public class RandomTrader extends AutoTrader {
 
         //    double lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getCurrentPrice();
-        double lp = q == null ? start : q.price;
+        double lp = q == null ? getStart() : q.price;
 
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.sell_limit);

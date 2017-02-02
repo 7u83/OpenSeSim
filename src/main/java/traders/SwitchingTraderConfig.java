@@ -34,13 +34,13 @@ import sesim.Exchange;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTraderConfig{
+public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTraderConfig {
 
     @Override
     public AutoTrader createTrader(Exchange se, JSONObject cfg, double money, double shares) {
-    
+
         return new traders.SwitchingTrader(se, money, shares, this);
-        
+
     }
 
     public SwitchingTraderConfig() {
@@ -55,9 +55,15 @@ public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTra
         buy_wait = new Integer[]{1, 5};
         wait_after_buy = new Integer[]{1, 5};
     }
-    
+
     @Override
-    public String getDisplayName(){
+    public String getDisplayName() {
         return "SwitchingTrader";
     }
+
+    @Override
+    public boolean getDevelStatus() {
+        return true;
+    }
+
 }

@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.AutoTrader;
+import sesim.AutoTraderBase;
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
@@ -39,7 +40,7 @@ import sesim.Exchange;
  *
  * @author 7u83
  */
-public class RandomTraderConfig implements AutoTraderConfig {
+public class RandomTraderConfig extends AutoTraderBase implements AutoTraderConfig {
 
     public Float[] sell_volume = {100f, 100f};
     public Float[] sell_limit = {-0.1f, 0.10101f};
@@ -153,5 +154,11 @@ public class RandomTraderConfig implements AutoTraderConfig {
         wait_after_sell = to_integer(cfg.getJSONArray(WAIT_AFTER_SELL));
         wait_after_buy = to_integer(cfg.getJSONArray(WAIT_AFTER_BUY));
 
+    }
+
+    @Override
+    public boolean getDevelStatus() {
+        return false;
+        
     }
 }

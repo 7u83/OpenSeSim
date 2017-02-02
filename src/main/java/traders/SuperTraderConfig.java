@@ -67,5 +67,10 @@ public class SuperTraderConfig implements AutoTraderConfig{
     public void putConfig(JSONObject cfg) {
         
     }
+
+    @Override
+    public boolean getDevelStatus() {
+        return true;
+    }
     
 }

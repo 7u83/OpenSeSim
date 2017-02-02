@@ -28,6 +28,7 @@ package gui;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -61,6 +62,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
     public void startTraders() {
 
         JSONArray tlist = Globals.getTraders();
+        
+        Double moneyTotal=0.0;
+        Double sharesTotal=0.0;
+        
         for (int i=0; i<tlist.length();i++){
             JSONObject t=tlist.getJSONObject(i);
             String strategy_name = t.getString("Strategy");
@@ -81,15 +86,20 @@ public class NewMDIApplication extends javax.swing.JFrame {
             for (int i1=0;i1<count;i1++){
                 AutoTrader trader = ac.createTrader(Globals.se, strategy, money, shares);                
                 Globals.se.traders.add(trader);
-                trader.setName(t.getString("Name"));
-                trader.start();
+                trader.setName(t.getString("Name")+i1);
+                
+                moneyTotal+=money;
+                sharesTotal+=shares;
+                
+    //            trader.start();
             }
             
-           
-            
-            //AutoTraderConfig ac = Globals.tloader.getStrategyBase(t.getString("base"));
-            //ac.putConfig(t);
-            
+        }
+        
+        Globals.se.fairValue=moneyTotal/sharesTotal;
+        
+        for (int i=0; i<Globals.se.traders.size(); i++){
+            Globals.se.traders.get(i).start();
         }
         
       //   System.exit(0);
@@ -146,9 +156,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
         deleteMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         editPreferences = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        viewMenu = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        viewClock = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -283,7 +294,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         menuBar.add(editMenu);
 
-        jMenu1.setText("View");
+        viewMenu.setText("View");
 
         jMenuItem2.setText("Traders");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -291,7 +302,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 jMenuItem2ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem2);
+        viewMenu.add(jMenuItem2);
 
         jMenuItem3.setText("LogWindow");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -299,9 +310,17 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 jMenuItem3ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem3);
+        viewMenu.add(jMenuItem3);
 
-        menuBar.add(jMenu1);
+        viewClock.setText("Clock");
+        viewClock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewClockActionPerformed(evt);
+            }
+        });
+        viewMenu.add(viewClock);
+
+        menuBar.add(viewMenu);
 
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
@@ -327,12 +346,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(orderBookPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(orderBookPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1))
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -341,7 +362,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(orderBookPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+                    .addComponent(orderBookPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -415,7 +436,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("SeSim Files","sesim");
         fc.setFileFilter(filter);
         
-        if (fc.showSaveDialog(this.getParent()) != JFileChooser.APPROVE_OPTION){
+       
+        
+        if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION){
             return;
         }
         
@@ -448,6 +471,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
       //  System.out.printf("EDRET: %d\n",rc);
         
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
+
+    private void viewClockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewClockActionPerformed
+        ClockDialog cd = new ClockDialog(this,true);
+        cd.setVisible(rootPaneCheckingEnabled);
+        
+    }//GEN-LAST:event_viewClockActionPerformed
 
     /**
      * @param args the command line arguments
@@ -484,6 +513,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
         }
 
         for (Class<AutoTraderConfig> at_class : traders) {
+            System.out.printf("Class = %s\n",at_class.getName());
+            if (Modifier.isAbstract(at_class.getModifiers())) {
+                continue;
+            }
+            
             AutoTraderConfig cfg = at_class.newInstance();
             System.out.printf("Have a Trader with name: %s\n", cfg.getDisplayName());
         }
@@ -510,7 +544,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton2;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JButton jRunButton;
@@ -526,6 +559,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JMenuItem viewClock;
+    private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 
 }

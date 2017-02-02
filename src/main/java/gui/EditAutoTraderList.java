@@ -32,6 +32,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -146,6 +149,24 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         //  model.setRowCount(3);
 
         list.setRowHeight(30);
+        
+        list.getModel().addTableModelListener((TableModelEvent e) -> {
+            System.out.printf("Table has changed\n", "");
+//            if (summary==null)
+          //      return;
+            
+            Double money=0.0;
+            Double shares=0.0;
+            
+            for (int r = 0; r < model.getRowCount(); r++) {            
+                money+=(Double)list.getValueAt( r, list.getColumn("Money").getModelIndex());
+                shares+=(Double)list.getValueAt( r, list.getColumn("Shares").getModelIndex());                
+                System.out.printf("Row: %d %f %f\n",r,money,shares);
+            }
+            
+            this.summary.setText(String.format("Fair Value: %.5f", money/shares));
+        });
+        
       
     }
     
@@ -154,6 +175,8 @@ public class EditAutoTraderList extends javax.swing.JPanel {
          DefaultTableModel model = (DefaultTableModel) list.getModel();
          model.setRowCount(model.getRowCount()+1);
     }
+    
+    JLabel summary=null;
 
     /**
      * This method is called from within the constructor to initialize the form.

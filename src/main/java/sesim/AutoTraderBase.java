@@ -25,19 +25,21 @@
  */
 package sesim;
 
-import javax.swing.JPanel;
 import org.json.JSONObject;
 
 /**
  *
- * @author 7u83
+ * @author tobias
  */
-public abstract interface AutoTraderConfig {
-    public abstract AutoTrader createTrader(Exchange se, JSONObject cfg,double money, double shares);
-    public abstract String getDisplayName();
-    public abstract AutoTraderGui getGui();
-    public abstract JSONObject getConfig();
-    public abstract void putConfig(JSONObject cfg);
-    public abstract boolean getDevelStatus();
+public abstract class AutoTraderBase implements AutoTraderConfig{
+
  
+
+    @Override
+    public boolean getDevelStatus() {
+        return true;
+    }
+
+    
 }
+    

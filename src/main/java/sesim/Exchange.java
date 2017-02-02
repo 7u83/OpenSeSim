@@ -22,19 +22,18 @@ public class Exchange {  //extends Thread {
     public void setSharesDecimals(int n) {
         shares_df = Math.pow(10, n);
     }
-    
-    public double roundToDecimals(double val,double f){
-        return Math.floor(val*f)/f;
-    }
-    
-    public double roundShares(double shares){
-        return roundToDecimals(shares,shares_df);
-    }
-    public double roundMoney(double money){
-        return roundToDecimals(money,money_df);
+
+    public double roundToDecimals(double val, double f) {
+        return Math.floor(val * f) / f;
     }
 
-    
+    public double roundShares(double shares) {
+        return roundToDecimals(shares, shares_df);
+    }
+
+    public double roundMoney(double money) {
+        return roundToDecimals(money, money_df);
+    }
 
     public enum OrderType {
         BID, ASK
@@ -131,9 +130,9 @@ public class Exchange {  //extends Thread {
             if (d != 0) {
                 return d > 0 ? 1 : -1;
             }
-            
-            d=right.initial_volume-left.initial_volume;
-            if (d!=0){
+
+            d = right.initial_volume - left.initial_volume;
+            if (d != 0) {
                 return d > 0 ? 1 : -1;
             }
 
@@ -376,17 +375,16 @@ public class Exchange {  //extends Thread {
         ArrayList<Order> ret = new ArrayList<>();
 
         Iterator<Order> it = book.iterator();
-        
-        
 
         for (int i = 0; i < depth && it.hasNext(); i++) {
-            Order o=it.next();
-         //   System.out.print(o.volume);
-            if (o.volume<=0)
+            Order o = it.next();
+            //   System.out.print(o.volume);
+            if (o.volume <= 0) {
                 System.exit(0);
+            }
             ret.add(o);
         }
-       // System.out.println();
+        // System.out.println();
         tradelock.unlock();
         return ret;
     }
@@ -429,11 +427,28 @@ public class Exchange {  //extends Thread {
         return ret;
     }
 
+    Random random = new Random();
+
+    public int randNextInt() {
+        return random.nextInt();
+    }
+
+    public int randNextInt(int bounds) {
+        return random.nextInt(bounds);
+    }
+
+    public double randNextDouble() {
+        return random.nextDouble();
+
+    }
+
     /**
      *
      * @param o
      */
     long nextQuoteId = 0;
+
+    public double fairValue = 0;
 
     private void removeOrderIfExecuted(Order o) {
         if (o.volume != 0) {
@@ -443,7 +458,7 @@ public class Exchange {  //extends Thread {
         o.account.orders.remove(o.id);
 
         SortedSet book = order_books.get(o.type);
-        
+
         book.remove(book.first());
 
     }
@@ -465,8 +480,6 @@ public class Exchange {  //extends Thread {
             Order a = ask.first();
 
             //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
-            
-            
             if (b.limit < a.limit) {
                 break;
             }
@@ -474,9 +487,8 @@ public class Exchange {  //extends Thread {
             // There is a match, calculate price and volume
             double price = b.id < a.id ? b.limit : a.limit;
             double volume = b.volume >= a.volume ? a.volume : b.volume;
-            
-            //System.out.printf("Price %f Vol %f\n", price,volume);
 
+            //System.out.printf("Price %f Vol %f\n", price,volume);
             // Transfer money and shares
             transferMoneyAndShares(b.account, a.account, volume * price, -volume);
 //System.out.print("Transfer Shares was called with volume "+volume+"\n");
@@ -485,7 +497,6 @@ public class Exchange {  //extends Thread {
             a.volume -= volume;
 
             //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
-            
             volume_total += volume;
             money_total += price * volume;
 
@@ -530,9 +541,9 @@ public class Exchange {  //extends Thread {
         }
 
         Order o = new Order(a, type, volume, limit);
-        if (o.volume<=0 || o.limit<=0){
+        if (o.volume <= 0 || o.limit <= 0) {
             System.out.print("binweg\n");
-           return -1;
+            return -1;
         }
         tradelock.lock();
 

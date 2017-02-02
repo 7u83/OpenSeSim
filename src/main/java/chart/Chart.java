@@ -99,7 +99,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         String getAt(int unit) {
-            Date date = new Date(sesim.Scheduler.timeStart + unit * 5000);
+            Date date = new Date(/*sesim.Scheduler.timeStart*/ 0 + unit * 5000);
 //            DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             String dateFormatted = formatter.format(date);

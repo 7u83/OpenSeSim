@@ -47,6 +47,8 @@ public class Globals {
 
     static final String STRATEGYPREFS = "Strategies";
     static final String TRADERPREFS = "Traders";
+    
+    static final String DEVELSTATUS = "devel_status";
 
     static public sesim.Exchange se;
 

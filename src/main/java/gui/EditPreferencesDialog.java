@@ -62,6 +62,10 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             lafComboBox.addItem(lafInfo1.getName());
         }
         lafComboBox.setSelectedItem(Globals.prefs.get("laf", "Nimbus"));
+        
+        String selstr = Globals.prefs.get(Globals.DEVELSTATUS,"false");
+        
+        this.jDevleopmentFeaturesCheckBox.setSelected(selstr.equals("true"));
     }
 
     /**
@@ -78,8 +82,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         applyButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jLabel2 = new javax.swing.JLabel();
+        jDevleopmentFeaturesCheckBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -114,12 +117,9 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("jLabel1");
+        jLabel1.setText("Look and Feel:");
 
-        jCheckBox2.setText("jCheckBox2");
-        jCheckBox2.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-
-        jLabel2.setText("jLabel2");
+        jDevleopmentFeaturesCheckBox.setText("Develeopment");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -140,9 +140,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jDevleopmentFeaturesCheckBox)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -153,11 +151,9 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 178, Short.MAX_VALUE)
+                .addComponent(jDevleopmentFeaturesCheckBox)
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(applyButton)
@@ -207,6 +203,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         this.applyButtonActionPerformed(evt);
         String selected = (String) this.lafComboBox.getSelectedItem();
         Globals.prefs.put("laf", selected);
+        String sel = this.jDevleopmentFeaturesCheckBox.isSelected() == true ? "true" : "false";
+        Globals.prefs.put(Globals.DEVELSTATUS,sel);
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -255,9 +253,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
     private javax.swing.JButton cancelButton;
-    private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JCheckBox jDevleopmentFeaturesCheckBox;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JComboBox<String> lafComboBox;
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables

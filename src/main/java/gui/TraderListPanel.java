@@ -164,7 +164,7 @@ public class TraderListPanel extends javax.swing.JPanel
                 case 3:
                     return "Shares";
                 case 4:
-                    return "Welth";
+                    return "Wealth";
             }
             return "";
         }
@@ -202,7 +202,7 @@ public class TraderListPanel extends javax.swing.JPanel
                 case 3:
                     return String.format("%.2f", ti.shares);
                 case 4:
-                    return String.format("%.2f", ti.welth);
+                    return ti.welth; //String.format("%.2f", ti.welth);
             }
 
             return "x";

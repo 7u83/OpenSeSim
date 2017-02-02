@@ -25,7 +25,11 @@
  */
 package sesim;
 
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -48,8 +52,9 @@ public class Scheduler extends Thread {
         long timerTask();
     }
 
-    /**\
-     * 
+    /**
+     * \
+     *
      */
     public void halt() {
         halt = true;
@@ -59,7 +64,7 @@ public class Scheduler extends Thread {
     }
 
     /**
-     * 
+     *
      */
     private class ObjectComparator implements Comparator<Object> {
 
@@ -69,23 +74,35 @@ public class Scheduler extends Thread {
         }
     }
 
+    long last_time_millis = System.currentTimeMillis();
+    double current_time_millis = 0.0;
+
     /**
      *
      * @return
      */
-    public static long currentTimeMillis() {
-        return System.currentTimeMillis();
+    public long currentTimeMillis() {
+        long diff = System.currentTimeMillis() - last_time_millis;
+        last_time_millis += diff;
+        this.current_time_millis += diff * 1;
+
+        return (long) this.current_time_millis;
 
     }
-    
-    public static long timeStart=Scheduler.currentTimeMillis();
-        
-    
+
+    static public String formatTimeMillis(long t) {
+        Date date = new Date(t);
+        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        String dateFormatted = formatter.format(date);
+
+        return dateFormatted;
+
+    }
 
     /**
-     * 
+     *
      * @param e
-     * @param time 
+     * @param time
      */
     public void startTimerEvent(TimerTask e, long time) {
         long evtime = time + currentTimeMillis();
@@ -96,13 +113,13 @@ public class Scheduler extends Thread {
             notify();
         }
     }
-    
-    private boolean pause=false;
-    
-    public void pause(){
-        pause=!pause;
-        synchronized(this){
-            this.notify();            
+
+    private boolean pause = false;
+
+    public void pause() {
+        pause = !pause;
+        synchronized (this) {
+            this.notify();
         }
 
     }
@@ -150,18 +167,18 @@ public class Scheduler extends Thread {
 
     @Override
     public void run() {
+
         while (!halt) {
 
-            
-            
             long wtime = runEvents();
+
             if (wtime == 0) {
                 continue;
             }
 
             synchronized (this) {
                 try {
-                    
+
                     if (wtime != -1 && !pause) {
                         wait(wtime);
                     } else {

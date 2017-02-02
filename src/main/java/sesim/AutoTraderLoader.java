@@ -146,7 +146,7 @@ public class AutoTraderLoader {
 
     }
 
-    public ArrayList<String> getDefaultStrategyNames() {
+    public ArrayList<String> getDefaultStrategyNames(boolean devel) {
         ArrayList<Class<AutoTraderConfig>> trclasses;
         trclasses = this.getTraders();
         ArrayList<String> ret = new ArrayList<>();
@@ -154,15 +154,23 @@ public class AutoTraderLoader {
 
         for (int i = 0; i < trclasses.size(); i++) {
             try {
+                
                 AutoTraderConfig ac = trclasses.get(i).newInstance();
+                if (ac.getDevelStatus() && devel==false){
+                    continue;
+                }
                 ret.add(ac.getClass().getCanonicalName());
-            } catch (Exception ex) {
+            } catch (InstantiationException | IllegalAccessException ex) {
 
             }
 
         }
 
         return ret;
+    }
+    
+    public ArrayList<String> getDefaultStrategyNames() {
+        return this.getDefaultStrategyNames(true);
     }
 
     public AutoTraderConfig getStrategyBase(String name) {

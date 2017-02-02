@@ -39,6 +39,7 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
         initComponents();
         this.setTitle("Edit Auto Traders");
         this.setLocationRelativeTo(this.getParent());
+        this.editAutoTraderList1.summary=this.jLabelSummary;
         //this.setLocationRelativeTo(MainWin.instance);
     }
 
@@ -55,6 +56,7 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jOkButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabelSummary = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -87,7 +89,9 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabelSummary, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jOkButton)
@@ -104,7 +108,8 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jOkButton)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(jLabelSummary))
                 .addContainerGap())
         );
 
@@ -171,6 +176,7 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
     private gui.EditAutoTraderList editAutoTraderList1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabelSummary;
     private javax.swing.JButton jOkButton;
     // End of variables declaration//GEN-END:variables
 }
