@@ -7,18 +7,29 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- *
- * @author tube
+ * @desc Echchange class
+ * @author 7u83
  */
-public class Exchange {  //extends Thread {
+public class Exchange {
 
     private double money_df = 10000;
-    private double shares_df = 1;
 
+    /**
+     * Set the number of decimals used with money
+     *
+     * @param n number of decimals
+     */
     public void setMoneyDecimals(int n) {
         money_df = Math.pow(10, n);
     }
 
+    private double shares_df = 1;
+
+    /**
+     * Set the number of decimals for shares
+     *
+     * @param n number of decimals
+     */
     public void setSharesDecimals(int n) {
         shares_df = Math.pow(10, n);
     }
@@ -35,6 +46,9 @@ public class Exchange {  //extends Thread {
         return roundToDecimals(money, money_df);
     }
 
+    /**
+     * Definition of order types
+     */
     public enum OrderType {
         BID, ASK
     }
@@ -43,7 +57,10 @@ public class Exchange {  //extends Thread {
     //public static Timer timer = new Timer();
 
     public Scheduler timer = new Scheduler();
-    //public AutoTraderList traders = new AutoTraderList();
+
+
+
+
     public ArrayList<AutoTrader> traders = new ArrayList();
 
     /**
@@ -197,6 +214,10 @@ public class Exchange {  //extends Thread {
         public double getInitialVolume() {
             return initial_volume;
         }
+        
+        public Account getAccount(){
+            return account;
+        }
 
     }
 
@@ -210,7 +231,7 @@ public class Exchange {  //extends Thread {
      */
     public Exchange() {
         this.random = new java.util.Random(12);
-        
+
         this.qrlist = (new CopyOnWriteArrayList<>());
 
         // Create order books
@@ -220,26 +241,27 @@ public class Exchange {  //extends Thread {
         }
 
     }
-    
-    
-    public class Statistics{
+
+    public class Statistics {
+
         public long trades;
         public long orders;
-    }
+    };
     
-    long num_trades = 0;
-    long num_orders=0;
     
-    public Statistics getStatistics(){
-        Statistics s = new Statistics();
-        s.trades=num_trades;
-        s.orders=num_orders;
-        return s;
-        
-    }
-    
+    Statistics statistics;
 
- 
+    long num_trades = 0;
+    long num_orders = 0;
+
+    public Statistics getStatistics() {
+        Statistics s = new Statistics();
+        s.trades = num_trades;
+        s.orders = num_orders;
+        return s;
+
+    }
+
     void start() {
         timer.start();
     }
@@ -254,7 +276,6 @@ public class Exchange {  //extends Thread {
         }
     }
 
- 
     public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
@@ -435,14 +456,14 @@ public class Exchange {  //extends Thread {
     }
 
     final Random random;
-    
+
     public int randNextInt() {
         System.out.printf("Next int: %d\n", random.nextInt());
         return random.nextInt();
     }
 
     public int randNextInt(int bounds) {
-        System.out.printf("Next doub: %f\n",random.nextDouble());
+        System.out.printf("Next doub: %f\n", random.nextDouble());
         return random.nextInt(bounds);
     }
 
@@ -510,7 +531,7 @@ public class Exchange {  //extends Thread {
             money_total += price * volume;
 
             num_trades++;
-            
+
             removeOrderIfExecuted(a);
             removeOrderIfExecuted(b);
 
@@ -558,7 +579,7 @@ public class Exchange {  //extends Thread {
         }
         tradelock.lock();
         num_orders++;
-        
+
         addOrderToBook(o);
         a.orders.put(o.id, o);
 
