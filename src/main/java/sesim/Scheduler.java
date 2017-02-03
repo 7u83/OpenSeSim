@@ -42,7 +42,15 @@ import java.util.TreeSet;
  */
 public class Scheduler extends Thread {
 
-    long multiply = 1;
+    private double  multiplier = 0.0;
+    
+    public void setMultiply(double val){
+        this.multiplier=val;
+    }
+    
+    public double getMultiply(){
+        return this.multiplier;
+    }
 
     private final SortedMap<Long, SortedSet<TimerTask>> event_queue = new TreeMap<>();
     private boolean halt = false;
@@ -82,9 +90,10 @@ public class Scheduler extends Thread {
      * @return
      */
     public long currentTimeMillis() {
+        
         long diff = System.currentTimeMillis() - last_time_millis;
         last_time_millis += diff;
-        this.current_time_millis += diff * 1;
+        this.current_time_millis += diff * this.multiplier;
 
         return (long) this.current_time_millis;
 
@@ -95,7 +104,10 @@ public class Scheduler extends Thread {
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         String dateFormatted = formatter.format(date);
 
-        return dateFormatted;
+        long seconds = (t/1000) % 60;
+        long minutes = (t/1000/60) % 60;
+        long hours = (t/1000)/(60*60);
+        return String.format("%02d:%02d:%02d",hours,minutes, seconds);
 
     }
 
@@ -107,7 +119,7 @@ public class Scheduler extends Thread {
     public void startTimerEvent(TimerTask e, long time) {
         long evtime = time + currentTimeMillis();
         synchronized (event_queue) {
-            this.addEvent(e, time);
+            this.addEvent(e, evtime);
         }
         synchronized (this) {
             notify();
@@ -128,9 +140,9 @@ public class Scheduler extends Thread {
         return e.timerTask();
     }
 
-    private boolean addEvent(TimerTask e, long time) {
+    private boolean addEvent(TimerTask e, long evtime) {
 
-        long evtime = time + currentTimeMillis();
+     //   long evtime = time + currentTimeMillis();
 
         SortedSet<TimerTask> s = event_queue.get(evtime);
         if (s == null) {
@@ -147,19 +159,25 @@ public class Scheduler extends Thread {
             }
 
             long t = event_queue.firstKey();
-            if (t <= currentTimeMillis()) {
+            long ct = currentTimeMillis();
+            
+            //System.out.printf("Current CMP %d %d\n", ct, t);
+            
+            if (t <= ct) {
+                this.current_time_millis=t;
                 SortedSet s = event_queue.get(t);
                 event_queue.remove(t);
                 Iterator<TimerTask> it = s.iterator();
                 while (it.hasNext()) {
                     TimerTask e = it.next();
                     long next_t = this.fireEvent(e);
-                    this.addEvent(e, next_t);
+                    
+                    this.addEvent(e, next_t+ct);
                 }
                 return 0;
 
             } else {
-                return t - currentTimeMillis();
+                return (t - currentTimeMillis())/(long)this.multiplier;
             }
         }
 
@@ -178,7 +196,7 @@ public class Scheduler extends Thread {
 
             synchronized (this) {
                 try {
-
+                  
                     if (wtime != -1 && !pause) {
                         wait(wtime);
                     } else {

@@ -171,7 +171,7 @@ public class Exchange {  //extends Thread {
             this.limit = roundMoney(limit);
             this.volume = roundShares(volume);
             this.initial_volume = this.volume;
-            this.created = System.currentTimeMillis();
+            this.created = timer.currentTimeMillis();
         }
 
         public long getID() {
@@ -219,6 +219,24 @@ public class Exchange {  //extends Thread {
         }
 
     }
+    
+    
+    public class Statistics{
+        public long trades;
+        public long orders;
+    }
+    
+    long num_trades = 0;
+    long num_orders=0;
+    
+    public Statistics getStatistics(){
+        Statistics s = new Statistics();
+        s.trades=num_trades;
+        s.orders=num_orders;
+        return s;
+        
+    }
+    
 
     /*public interface TimerEvent {
 
@@ -239,15 +257,7 @@ public class Exchange {  //extends Thread {
         }
     }
 
-    /**
-     *
-     * @return
-     */
-    public static long getCurrentTimeSeconds() {
-        long ct = System.currentTimeMillis();
-        return ct / 1000;
-    }
-
+ 
     public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
@@ -500,6 +510,8 @@ public class Exchange {  //extends Thread {
             volume_total += volume;
             money_total += price * volume;
 
+            num_trades++;
+            
             removeOrderIfExecuted(a);
             removeOrderIfExecuted(b);
 
@@ -511,7 +523,7 @@ public class Exchange {  //extends Thread {
         Quote q = new Quote();
         q.price = money_total / volume_total;
         q.volume = volume_total;
-        q.time = System.currentTimeMillis();
+        q.time = timer.currentTimeMillis();
 
 //        System.out.print("There was a trade:"+q.price+"\n");
         this.quoteHistory.add(q);
@@ -546,7 +558,8 @@ public class Exchange {  //extends Thread {
             return -1;
         }
         tradelock.lock();
-
+        num_orders++;
+        
         addOrderToBook(o);
         a.orders.put(o.id, o);
 

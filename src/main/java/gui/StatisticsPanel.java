@@ -27,48 +27,36 @@ package gui;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import sesim.Exchange.Statistics;
 import sesim.Scheduler;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Clock extends javax.swing.JPanel {
+public class StatisticsPanel extends javax.swing.JPanel {
 
-    protected final Timer timer;
+    Timer timer;
     TimerTask clockUpdater;
     /**
-     * Creates new form Clock
+     * Creates new form StatisticsPanel
      */
-    public Clock() {
+    public StatisticsPanel() {
         initComponents();
-
         this.timer = new Timer();
         clockUpdater = new TimerTask() {
             @Override
             public void run() {
                 long t = Globals.se.timer.currentTimeMillis();
-                
-                System.out.printf("The Clock: %d\n",t);
-                Statistics s = Globals.se.getStatistics();
-                System.out.printf("Num trades: %d, %d\n",s.trades,s.orders);
+
+                System.out.printf("The Clock: %d\n", t);
                 jLabel1.setText(Scheduler.formatTimeMillis(t));
-            
+
             }
         };
 
         timer.schedule(clockUpdater, 0, 1000);
-        
-        
     }
-    
-    @Override
-    public void setVisible(boolean b){
-        System.out.printf("Visible: %s\n",Boolean.toString(b));
-    }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -80,24 +68,20 @@ public class Clock extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
 
-        jLabel1.setFont(jLabel1.getFont().deriveFont(jLabel1.getFont().getStyle() | java.awt.Font.BOLD, jLabel1.getFont().getSize()+6));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("00:00:00");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
