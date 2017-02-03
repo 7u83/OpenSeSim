@@ -64,7 +64,7 @@ public class Exchange {  //extends Thread {
         }
 
         Account(double money, double shares) {
-            id = (Math.random() + (account_id.getNext()));
+            id = (random.nextDouble() + (account_id.getNext()));
             orders = new HashMap();
             this.money = money;
             this.shares = shares;
@@ -209,7 +209,8 @@ public class Exchange {  //extends Thread {
      * Constructor
      */
     public Exchange() {
-
+        this.random = new java.util.Random(12);
+        
         this.qrlist = (new CopyOnWriteArrayList<>());
 
         // Create order books
@@ -238,11 +239,7 @@ public class Exchange {  //extends Thread {
     }
     
 
-    /*public interface TimerEvent {
-
-        long timerEvent();
-    }
-     */
+ 
     void start() {
         timer.start();
     }
@@ -437,13 +434,15 @@ public class Exchange {  //extends Thread {
         return ret;
     }
 
-    Random random = new Random();
-
+    final Random random;
+    
     public int randNextInt() {
+        System.out.printf("Next int: %d\n", random.nextInt());
         return random.nextInt();
     }
 
     public int randNextInt(int bounds) {
+        System.out.printf("Next doub: %f\n",random.nextDouble());
         return random.nextInt(bounds);
     }
 

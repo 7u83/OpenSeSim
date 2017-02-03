@@ -67,7 +67,7 @@ public class RandomTrader extends AutoTrader {
     public long timerTask() {
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
-        System.out.printf("TT RC: %d\n",rc);
+
         return rc;
 
 //        return this.event();
@@ -114,7 +114,10 @@ public class RandomTrader extends AutoTrader {
      */
     protected double getRandom(double min, double max) {
         double r = se.randNextDouble();
-
+        
+       // System.out.printf("RD: %f", r);
+       // System.exit(0);
+        
         return (max - min) * r + min;
     }
 

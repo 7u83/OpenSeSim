@@ -89,14 +89,19 @@ public class Scheduler extends Thread {
      *
      * @return
      */
-    public long currentTimeMillis() {
+    public long currentTimeMillis1() {
         
         long diff = System.currentTimeMillis() - last_time_millis;
+       // diff=121L;
         last_time_millis += diff;
         this.current_time_millis += diff * this.multiplier;
 
         return (long) this.current_time_millis;
 
+    }
+    
+    public long currentTimeMillis(){
+        return (long)this.current_time_millis;
     }
 
     static public String formatTimeMillis(long t) {
@@ -159,7 +164,7 @@ public class Scheduler extends Thread {
             }
 
             long t = event_queue.firstKey();
-            long ct = currentTimeMillis();
+            long ct = currentTimeMillis1();
             
             //System.out.printf("Current CMP %d %d\n", ct, t);
             
@@ -172,12 +177,13 @@ public class Scheduler extends Thread {
                     TimerTask e = it.next();
                     long next_t = this.fireEvent(e);
                     
-                    this.addEvent(e, next_t+ct);
+                    this.addEvent(e, next_t+t);
                 }
                 return 0;
 
             } else {
-                return (t - currentTimeMillis())/(long)this.multiplier;
+                return 0;
+                //return (t - currentTimeMillis1())/(long)this.multiplier;
             }
         }
 
@@ -185,7 +191,7 @@ public class Scheduler extends Thread {
 
     @Override
     public void run() {
-
+ //       this.current_time_millis=0;
         while (!halt) {
 
             long wtime = runEvents();

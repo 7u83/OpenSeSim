@@ -55,7 +55,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     // int item_width = 10;
     //int items = 350;
     //long ntime = 0;
-    OHLCData data = new OHLCData(60000*15);
+    OHLCData data = new OHLCData(60000*30);
 
     OHLCDataItem current = null;
 

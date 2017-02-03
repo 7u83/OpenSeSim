@@ -219,7 +219,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
         });
 
-        jSpinner2.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 1000.0d, 0.1d));
+        jSpinner2.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 10000.0d, 0.1d));
         jSpinner2.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinner2StateChanged(evt);
