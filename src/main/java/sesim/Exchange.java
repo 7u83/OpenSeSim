@@ -58,10 +58,7 @@ public class Exchange {
 
     public Scheduler timer; // = new Scheduler();
 
-
-
-
-    public ArrayList<AutoTrader> traders; 
+    public ArrayList<AutoTrader> traders;
 
     /**
      * Implements a trading account
@@ -114,7 +111,7 @@ public class Exchange {
 
     // private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Double, Account> accounts;
-    
+
     public double createAccount(double money, double shares) {
 
         Account a = new Account(money, shares);
@@ -168,7 +165,7 @@ public class Exchange {
     }
 
     HashMap<OrderType, SortedSet<Order>> order_books;
-    
+
     IDGenerator order_id = new IDGenerator();
 
     public class Order {
@@ -214,8 +211,8 @@ public class Exchange {
         public double getInitialVolume() {
             return initial_volume;
         }
-        
-        public Account getAccount(){
+
+        public Account getAccount() {
             return account;
         }
 
@@ -226,26 +223,24 @@ public class Exchange {
      */
     public TreeSet<Quote> quoteHistory; // = new TreeSet<>();
 
-    
-    final void initExchange(){
-         timer = new Scheduler();         //  timer = new Scheduler();
+    final void initExchange() {
+        timer = new Scheduler();         //  timer = new Scheduler();
         random = new Random(12);
         quoteHistory = new TreeSet();
         accounts = new ConcurrentHashMap<>();
 
         traders = new ArrayList();
-        
-        num_trades=0;
-        
-        
+
+        num_trades = 0;
+
         // Create order books
-        order_books=  new HashMap();
+        order_books = new HashMap();
         for (OrderType type : OrderType.values()) {
             order_books.put(type, new TreeSet(new OrderComparator(type)));
         }
 
     }
-    
+
     /**
      * Constructor
      */
@@ -253,9 +248,6 @@ public class Exchange {
         qrlist = (new CopyOnWriteArrayList<>());
 
         initExchange();
-        
-
-    
 
     }
 
@@ -264,8 +256,7 @@ public class Exchange {
         public long trades;
         public long orders;
     };
-    
-    
+
     Statistics statistics;
 
     long num_trades = 0;
@@ -279,26 +270,22 @@ public class Exchange {
 
     }
 
-    
-    
     /**
      * Start the exchange
      */
     public void start() {
         timer.start();
     }
-    
-    public void reset(){
+
+    public void reset() {
         initExchange();
     }
-    
+
     public void terminate() {
         timer.terminate();
     }
-    
-    
-    
-/*
+
+    /*
     class BidBook extends TreeSet {
 
         TreeSet t = new TreeSet();
@@ -308,8 +295,7 @@ public class Exchange {
             return true;
         }
     }
-*/
-    
+     */
     public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
@@ -497,7 +483,6 @@ public class Exchange {
     }
 
     public int randNextInt(int bounds) {
-
         return random.nextInt(bounds);
     }
 
@@ -526,9 +511,7 @@ public class Exchange {
         book.remove(book.first());
 
     }
-    
-    
-  
+
     /**
      *
      */

@@ -104,8 +104,8 @@ public class Scheduler extends Thread {
      */
     public long currentTimeMillis1() {
 
-        long diff = System.currentTimeMillis() - last_time_millis;
-        // diff=121L;
+        long diff = System.currentTimeMillis() - last_time_millis+1;
+        diff=12199999L;
         last_time_millis += diff;
         this.current_time_millis += diff * this.multiplier;
 
