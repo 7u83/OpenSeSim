@@ -44,13 +44,13 @@ public class RandomTraderConfig extends AutoTraderBase implements AutoTraderConf
 
     public Float[] sell_volume = {100f, 100f};
     public Float[] sell_limit = {-0.1f, 0.10101f};
-    public Integer[] sell_wait = {10000, 50000};
-    public Integer[] wait_after_sell = {1000, 30000};
+    public Long[] sell_wait = {10000L, 50000L};
+    public Long[] wait_after_sell = {1000L, 30000L};
 
     public Float[] buy_volume = {100f, 100f};
     public Float[] buy_limit = {-0.1f, 0.10101f};
-    public Integer[] buy_wait = {10000, 50000};
-    public Integer[] wait_after_buy = {10, 30};
+    public Long[] buy_wait = {10000L, 50000L};
+    public Long[] wait_after_buy = {10L, 30L};
 
     @Override
     public AutoTrader createTrader(Exchange se, JSONObject cfg, double money, double shares) {
@@ -121,6 +121,17 @@ public class RandomTraderConfig extends AutoTraderBase implements AutoTraderConf
         return ret;
 
     }
+    
+        private Long[] to_long(JSONArray a) {
+        Long[] ret = new Long[a.length()];
+        for (int i = 0; i < a.length(); i++) {
+            ret[i] = a.getLong(i);
+
+        }
+        return ret;
+
+    }
+
 
     private Number[] to_arn(JSONArray a) {
         Number[] ret = new Number[a.length()];
@@ -148,11 +159,11 @@ public class RandomTraderConfig extends AutoTraderBase implements AutoTraderConf
         buy_volume = to_float(cfg.getJSONArray(BUY_VOLUME));
         sell_limit = to_float(cfg.getJSONArray(SELL_LIMIT));
         buy_limit = to_float(cfg.getJSONArray(BUY_LIMIT));
-        sell_wait = to_integer(cfg.getJSONArray(SELL_WAIT));
-        buy_wait = to_integer(cfg.getJSONArray(BUY_WAIT));
+        sell_wait = to_long(cfg.getJSONArray(SELL_WAIT));
+        buy_wait = to_long(cfg.getJSONArray(BUY_WAIT));
 
-        wait_after_sell = to_integer(cfg.getJSONArray(WAIT_AFTER_SELL));
-        wait_after_buy = to_integer(cfg.getJSONArray(WAIT_AFTER_BUY));
+        wait_after_sell = to_long(cfg.getJSONArray(WAIT_AFTER_SELL));
+        wait_after_buy = to_long(cfg.getJSONArray(WAIT_AFTER_BUY));
 
     }
 

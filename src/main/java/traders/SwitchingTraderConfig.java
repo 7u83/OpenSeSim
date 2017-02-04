@@ -47,13 +47,13 @@ public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTra
 
         sell_volume = new Float[]{17f, 100f};
         sell_limit = new Float[]{-30f, 1f};
-        sell_wait = new Integer[]{1, 5};
-        wait_after_sell = new Integer[]{1, 5};
+        sell_wait = new Long[]{1L, 5L};
+        wait_after_sell = new Long[]{1L, 5L};
 
         buy_volume = new Float[]{18f, 100f};
         buy_limit = new Float[]{-1f, 30f};
-        buy_wait = new Integer[]{1, 5};
-        wait_after_buy = new Integer[]{1, 5};
+        buy_wait = new Long[]{1L, 5L};
+        wait_after_buy = new Long[]{1L, 5L};
     }
 
     @Override

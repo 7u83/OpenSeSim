@@ -25,7 +25,7 @@
  */
 package sesim;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+//import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -42,38 +42,51 @@ import java.util.TreeSet;
  */
 public class Scheduler extends Thread {
 
-    private double  multiplier = 0.0;
-    
-    public void setMultiply(double val){
-        this.multiplier=val;
+    private double multiplier = 0.0;
+
+    public void setMultiply(double val) {
+        
+        this.multiplier = val;
+        synchronized(this){
+            this.notify();
+        }
     }
-    
-    public double getMultiply(){
+
+    public double getMultiply() {
         return this.multiplier;
     }
 
     private final SortedMap<Long, SortedSet<TimerTask>> event_queue = new TreeMap<>();
-    private boolean halt = false;
 
     public interface TimerTask {
 
         long timerTask();
     }
 
+    private boolean terminate = false;
+
     /**
-     * \
-     *
+     * Terminate the scheduler
      */
-    public void halt() {
-        halt = true;
+    public void terminate() {
+        terminate = true;
         synchronized (event_queue) {
             event_queue.notifyAll();
         }
+
     }
 
-    /**
-     *
-     */
+    @Override
+    public void start() {
+        if (this.isAlive()) {
+            return;
+        }
+        this.initScheduler();
+        super.start();
+        
+        
+    }
+
     private class ObjectComparator implements Comparator<Object> {
 
         @Override
@@ -90,18 +103,18 @@ public class Scheduler extends Thread {
      * @return
      */
     public long currentTimeMillis1() {
-        
+
         long diff = System.currentTimeMillis() - last_time_millis;
-       // diff=121L;
+        // diff=121L;
         last_time_millis += diff;
         this.current_time_millis += diff * this.multiplier;
 
         return (long) this.current_time_millis;
 
     }
-    
-    public long currentTimeMillis(){
-        return (long)this.current_time_millis;
+
+    public long currentTimeMillis() {
+        return (long) this.current_time_millis;
     }
 
     static public String formatTimeMillis(long t) {
@@ -109,10 +122,10 @@ public class Scheduler extends Thread {
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         String dateFormatted = formatter.format(date);
 
-        long seconds = (t/1000) % 60;
-        long minutes = (t/1000/60) % 60;
-        long hours = (t/1000)/(60*60);
-        return String.format("%02d:%02d:%02d",hours,minutes, seconds);
+        long seconds = (t / 1000) % 60;
+        long minutes = (t / 1000 / 60) % 60;
+        long hours = (t / 1000) / (60 * 60);
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
     }
 
@@ -147,8 +160,7 @@ public class Scheduler extends Thread {
 
     private boolean addEvent(TimerTask e, long evtime) {
 
-     //   long evtime = time + currentTimeMillis();
-
+        //   long evtime = time + currentTimeMillis();
         SortedSet<TimerTask> s = event_queue.get(evtime);
         if (s == null) {
             s = new TreeSet<>(new ObjectComparator());
@@ -165,19 +177,18 @@ public class Scheduler extends Thread {
 
             long t = event_queue.firstKey();
             long ct = currentTimeMillis1();
-            
+
             //System.out.printf("Current CMP %d %d\n", ct, t);
-            
             if (t <= ct) {
-                this.current_time_millis=t;
+                this.current_time_millis = t;
                 SortedSet s = event_queue.get(t);
                 event_queue.remove(t);
                 Iterator<TimerTask> it = s.iterator();
                 while (it.hasNext()) {
                     TimerTask e = it.next();
                     long next_t = this.fireEvent(e);
-                    
-                    this.addEvent(e, next_t+t);
+
+                    this.addEvent(e, next_t + t);
                 }
                 return 0;
 
@@ -189,10 +200,16 @@ public class Scheduler extends Thread {
 
     }
 
+    void initScheduler() {
+        current_time_millis = 0.0;
+        terminate = false;
+
+    }
+
     @Override
     public void run() {
- //       this.current_time_millis=0;
-        while (!halt) {
+
+        while (!terminate) {
 
             long wtime = runEvents();
 
@@ -202,7 +219,7 @@ public class Scheduler extends Thread {
 
             synchronized (this) {
                 try {
-                  
+
                     if (wtime != -1 && !pause) {
                         wait(wtime);
                     } else {
@@ -213,6 +230,8 @@ public class Scheduler extends Thread {
                 }
             }
         }
+
+        this.event_queue.clear();
 
     }
 

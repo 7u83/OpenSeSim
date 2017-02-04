@@ -37,13 +37,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     protected Rectangle clip_bounds = new Rectangle();
     protected Dimension gdim;
 
-    protected int first_bar, last_bar;
+    private int first_bar, last_bar;
+    
+    
+    public final void initChart(){
+        data = new OHLCData(60000*30);        
+    }
 
     /**
      * Creates new form Chart
      */
     public Chart() {
         initComponents();
+        initChart();
         if (Globals.se == null) {
             return;
         }
@@ -52,16 +58,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
-    // int item_width = 10;
-    //int items = 350;
-    //long ntime = 0;
-    OHLCData data = new OHLCData(60000*30);
+
+    OHLCData data;
+
 
     OHLCDataItem current = null;
 
-    void drawCandle(Graphics2D g, OHLCData d, int x, int y) {
-
-    }
+    //void drawCandle(Graphics2D g, OHLCData d, int x, int y) {
+//
+ //   }
 
     @Override
     public Dimension getPreferredScrollableViewportSize() {

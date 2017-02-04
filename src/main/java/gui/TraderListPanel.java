@@ -79,7 +79,9 @@ public class TraderListPanel extends javax.swing.JPanel
     }
 
     final ArrayList<TraderListItem> getTraderList() {
-
+        if (se.traders==null)
+            return new ArrayList<>();
+        
         sesim.Quote q = se.getLastQuoete();
         double price = q == null ? 0 : q.price;
         Iterator<AutoTrader> it = se.traders.iterator();

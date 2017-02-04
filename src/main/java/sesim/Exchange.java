@@ -56,12 +56,12 @@ public class Exchange {
     IDGenerator account_id = new IDGenerator();
     //public static Timer timer = new Timer();
 
-    public Scheduler timer = new Scheduler();
+    public Scheduler timer; // = new Scheduler();
 
 
 
 
-    public ArrayList<AutoTrader> traders = new ArrayList();
+    public ArrayList<AutoTrader> traders; 
 
     /**
      * Implements a trading account
@@ -113,8 +113,8 @@ public class Exchange {
     }
 
     // private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
-
+    private ConcurrentHashMap<Double, Account> accounts;
+    
     public double createAccount(double money, double shares) {
 
         Account a = new Account(money, shares);
@@ -167,8 +167,8 @@ public class Exchange {
 
     }
 
-    HashMap<OrderType, SortedSet<Order>> order_books = new HashMap();
-
+    HashMap<OrderType, SortedSet<Order>> order_books;
+    
     IDGenerator order_id = new IDGenerator();
 
     public class Order {
@@ -224,21 +224,38 @@ public class Exchange {
     /**
      * Histrory of quotes
      */
-    public TreeSet<Quote> quoteHistory = new TreeSet<>();
+    public TreeSet<Quote> quoteHistory; // = new TreeSet<>();
 
+    
+    final void initExchange(){
+         timer = new Scheduler();         //  timer = new Scheduler();
+        random = new Random(12);
+        quoteHistory = new TreeSet();
+        accounts = new ConcurrentHashMap<>();
+
+        traders = new ArrayList();
+        
+        num_trades=0;
+        
+        
+        // Create order books
+        order_books=  new HashMap();
+        for (OrderType type : OrderType.values()) {
+            order_books.put(type, new TreeSet(new OrderComparator(type)));
+        }
+
+    }
+    
     /**
      * Constructor
      */
     public Exchange() {
-        this.random = new java.util.Random(12);
+        qrlist = (new CopyOnWriteArrayList<>());
 
-        this.qrlist = (new CopyOnWriteArrayList<>());
+        initExchange();
+        
 
-        // Create order books
-        for (OrderType type : OrderType.values()) {
-            //SortedSet b = new TreeSet(new OrderComparator(type));
-            order_books.put(type, new TreeSet(new OrderComparator(type)));
-        }
+    
 
     }
 
@@ -262,10 +279,26 @@ public class Exchange {
 
     }
 
-    void start() {
+    
+    
+    /**
+     * Start the exchange
+     */
+    public void start() {
         timer.start();
     }
-
+    
+    public void reset(){
+        initExchange();
+    }
+    
+    public void terminate() {
+        timer.terminate();
+    }
+    
+    
+    
+/*
     class BidBook extends TreeSet {
 
         TreeSet t = new TreeSet();
@@ -275,7 +308,8 @@ public class Exchange {
             return true;
         }
     }
-
+*/
+    
     public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
@@ -366,7 +400,7 @@ public class Exchange {
     }
 
     // Here we store the list of quote receivers
-    private final List<QuoteReceiver> qrlist;
+    private List<QuoteReceiver> qrlist;
 
     /**
      *
@@ -455,7 +489,7 @@ public class Exchange {
         return ret;
     }
 
-    final Random random;
+    Random random;
 
     public int randNextInt() {
         System.out.printf("Next int: %d\n", random.nextInt());
@@ -463,7 +497,7 @@ public class Exchange {
     }
 
     public int randNextInt(int bounds) {
-        System.out.printf("Next doub: %f\n", random.nextDouble());
+
         return random.nextInt(bounds);
     }
 
@@ -492,7 +526,9 @@ public class Exchange {
         book.remove(book.first());
 
     }
-
+    
+    
+  
     /**
      *
      */

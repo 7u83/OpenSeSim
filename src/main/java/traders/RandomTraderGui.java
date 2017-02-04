@@ -79,15 +79,15 @@ public class RandomTraderGui extends AutoTraderGui {
         cfg.buy_limit[1] = (Float) this.buyLimitMax.getValue();
         cfg.sell_limit[0] = (Float) this.sellLimitMin.getValue();
         cfg.sell_limit[1] = (Float) this.sellLimitMax.getValue();
-        cfg.buy_wait[0] = (Integer) this.buyWaitMin.getValue();
-        cfg.buy_wait[1] = (Integer) this.buyWaitMax.getValue();
-        cfg.sell_wait[0] = (Integer) this.sellWaitMin.getValue();
-        cfg.sell_wait[1] = (Integer) this.sellWaitMax.getValue();
+        cfg.buy_wait[0] = (Long) this.buyWaitMin.getValue();
+        cfg.buy_wait[1] = (Long) this.buyWaitMax.getValue();
+        cfg.sell_wait[0] = (Long) this.sellWaitMin.getValue();
+        cfg.sell_wait[1] = (Long) this.sellWaitMax.getValue();
         
-        cfg.wait_after_buy[0] = (Integer) this.waitAfterBuyMin.getValue();
-        cfg.wait_after_buy[1] = (Integer) this.waitAfterBuyMax.getValue();
-        cfg.wait_after_sell[0] = (Integer) this.waitAfterSellMin.getValue();
-        cfg.wait_after_sell[1] = (Integer) this.waitAfterSellMax.getValue();
+        cfg.wait_after_buy[0] = (Long) this.waitAfterBuyMin.getValue();
+        cfg.wait_after_buy[1] = (Long) this.waitAfterBuyMax.getValue();
+        cfg.wait_after_sell[0] = (Long) this.waitAfterSellMin.getValue();
+        cfg.wait_after_sell[1] = (Long) this.waitAfterSellMax.getValue();
         
 
         //  cfg.buy_volume[0] = Float.parseFloat(this.buyVolMin.getText());
@@ -153,13 +153,13 @@ public class RandomTraderGui extends AutoTraderGui {
 
         setBorder(null);
 
-        buyWaitMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+        buyWaitMin.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 
-        sellWaitMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+        sellWaitMin.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 
-        sellWaitMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+        sellWaitMax.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 
-        buyWaitMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+        buyWaitMax.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 
         buyLimitMin.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
 

@@ -121,7 +121,7 @@ public class RandomTrader extends AutoTrader {
         return (max - min) * r + min;
     }
 
-    protected int getRandom(Integer[] minmax) {
+    protected int getRandom(Long[] minmax) {
         return (int) Math.round(getRandom(minmax[0], minmax[1]));
     }
 
