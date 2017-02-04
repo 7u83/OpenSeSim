@@ -32,7 +32,6 @@ package sesim;
  */
 public class IDGenerator {
 
-    private final Locker ID_LOCKER = new Locker();
     private long next_id;
 
     /**
@@ -56,10 +55,7 @@ public class IDGenerator {
      *
      * @return the next generated ID
      */
-    public long getNext() {
-        ID_LOCKER.lock();
-        long id = next_id++;
-        ID_LOCKER.unlock();
-        return id;
+    public synchronized long getNext() {
+        return next_id++;
     }
 }
