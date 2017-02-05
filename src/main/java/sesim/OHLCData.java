@@ -139,7 +139,7 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
             
             current_frame_end = current_frame_start + frame_size;
             
-            System.out.printf("TA %d TE %d\n",this.current_frame_start,this.current_frame_end);
+            //System.out.printf("TA %d TE %d\n",this.current_frame_start,this.current_frame_end);
             
             data.add(new OHLCDataItem(this.current_frame_start, price, volume));
             this.updateMinMax(price);

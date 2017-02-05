@@ -59,8 +59,9 @@ public class Scheduler extends Thread {
     private final SortedMap<Long, SortedSet<TimerTask>> event_queue = new TreeMap<>();
 
     public interface TimerTask {
-
+        
         long timerTask();
+        long getID();
     }
 
     private boolean terminate = false;
@@ -91,7 +92,9 @@ public class Scheduler extends Thread {
 
         @Override
         public int compare(Object o1, Object o2) {
-            return System.identityHashCode(o1) - System.identityHashCode(o2);
+            
+            return (((TimerTask)o1).getID() - ((TimerTask)o2).getID())<0 ? -1:1;
+            //return System.identityHashCode(o1) - System.identityHashCode(o2);
         }
     }
 
@@ -104,11 +107,11 @@ public class Scheduler extends Thread {
      */
     public long currentTimeMillis1() {
 
-        long diff = System.currentTimeMillis() - last_time_millis+1;
-        diff=12199999L;
+        long diff = System.currentTimeMillis() - last_time_millis;
+       // diff=12199999L;
         last_time_millis += diff;
         this.current_time_millis += diff * this.multiplier;
-
+//System.out.printf("Current TM: %f\n", this.current_time_millis);
         return (long) this.current_time_millis;
 
     }

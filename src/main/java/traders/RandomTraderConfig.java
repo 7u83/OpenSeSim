@@ -53,11 +53,11 @@ public class RandomTraderConfig extends AutoTraderBase implements AutoTraderConf
     public Long[] wait_after_buy = {10L, 30L};
 
     @Override
-    public AutoTrader createTrader(Exchange se, JSONObject cfg, double money, double shares) {
+    public AutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name, double money, double shares) {
         if (cfg != null) {
             this.putConfig(cfg);
         }
-        return new traders.RandomTrader(se, money, shares, this);
+        return new traders.RandomTrader(se, id, name, money, shares, this);
     }
 
     @Override

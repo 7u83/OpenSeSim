@@ -39,7 +39,7 @@ import sesim.Exchange;
 public class SuperTraderConfig implements AutoTraderConfig{
 
     @Override
-    public AutoTrader createTrader(Exchange se, JSONObject cfg, double money, double shares) {
+    public AutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name,double money, double shares) {
         return null;
     }
 

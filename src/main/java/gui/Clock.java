@@ -50,9 +50,8 @@ public class Clock extends javax.swing.JPanel {
             public void run() {
                 long t = Globals.se.timer.currentTimeMillis();
                 
-                System.out.printf("The Clock: %d\n",t);
+                
                 Statistics s = Globals.se.getStatistics();
-                System.out.printf("Num trades: %d, %d\n",s.trades,s.orders);
                 jLabel1.setText(Scheduler.formatTimeMillis(t));
             
             }

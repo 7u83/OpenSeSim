@@ -37,9 +37,9 @@ import sesim.Exchange;
 public class SwitchingTraderConfig extends RandomTraderConfig implements AutoTraderConfig {
 
     @Override
-    public AutoTrader createTrader(Exchange se, JSONObject cfg, double money, double shares) {
+    public AutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name, double money, double shares) {
 
-        return new traders.SwitchingTrader(se, money, shares, this);
+        return new traders.SwitchingTrader(se, id, name, money, shares, this);
 
     }
 

@@ -37,11 +37,12 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
 
     protected String name;
 
-    public AutoTrader(Exchange se, double money, double shares, AutoTraderConfig config) {
+    public AutoTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
         this.se = se;
         this.config = config;
         this.name = "";
+        this.id=id;
 
     }
 
@@ -52,6 +53,12 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
     public String getName() {
         return name;
     }
+    
+    @Override
+    public long getID(){
+        return id;
+    }
+    private final long id;
     
     public Exchange.Account getAccount(){
         return se.getAccount(account_id);

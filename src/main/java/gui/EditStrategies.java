@@ -302,12 +302,12 @@ public final class EditStrategies extends javax.swing.JDialog {
         JSONObject jo = ac.getConfig();
         if (jo != null) {
             System.out.printf("%s\n", jo.toString(2));
-            jo = new JSONObject(jo.toString());
+//            jo = new JSONObject(jo.toString());
 
         }
 
-        System.out.print("Crete auto trader afeter select\n");
-        AutoTrader at = ac.createTrader(Globals.se, jo, 100, 100);
+//        System.out.print("Crete auto trader afeter select\n");
+//        AutoTrader at = ac.createTrader(Globals.se, jo, 100, 100);
 
         this.repaint();
     }//GEN-LAST:event_jComboBoxStrategySelectorActionPerformed

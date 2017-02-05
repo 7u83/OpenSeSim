@@ -36,8 +36,8 @@ public class SwitchingTrader extends RandomTrader {
 
     private int mode;
 
-    public SwitchingTrader(Exchange se, double money, double shares, RandomTraderConfig config) {
-        super(se, money, shares, config);
+    public SwitchingTrader(Exchange se, long id, String name, double money, double shares, RandomTraderConfig config) {
+        super(se, id,  name, money, shares, config);
     }
 
     Action action = Action.RANDOM;

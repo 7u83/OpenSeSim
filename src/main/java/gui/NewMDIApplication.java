@@ -65,7 +65,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         
         Double moneyTotal=0.0;
         Double sharesTotal=0.0;
-        
+        long id=0;
         for (int i=0; i<tlist.length();i++){
             JSONObject t=tlist.getJSONObject(i);
             String strategy_name = t.getString("Strategy");
@@ -84,9 +84,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
             
             
             for (int i1=0;i1<count;i1++){
-                AutoTrader trader = ac.createTrader(Globals.se, strategy, money, shares);                
+                AutoTrader trader = ac.createTrader(Globals.se, strategy, id++, t.getString("Name")+i1,money, shares);                
                 Globals.se.traders.add(trader);
-                trader.setName(t.getString("Name")+i1);
+//                trader.setName(t.getString("Name")+i1);
                 
                 moneyTotal+=money;
                 sharesTotal+=shares;
@@ -338,6 +338,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         menuBar.add(editMenu);
 
+        simMenu.setMnemonic('s');
         simMenu.setText("Sim");
 
         simMenuStart.setText("Start");
@@ -369,6 +370,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         menuBar.add(simMenu);
 
+        viewMenu.setMnemonic('v');
         viewMenu.setText("View");
 
         jMenuItem2.setText("Traders");

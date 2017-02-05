@@ -51,8 +51,8 @@ public class RandomTrader extends AutoTrader {
 
     }
 
-    public RandomTrader(Exchange se, double money, double shares, RandomTraderConfig config) {
-        super(se, money, shares, config);
+    public RandomTrader(Exchange se, long id, String name, double money, double shares, RandomTraderConfig config) {
+        super(se, id, name,money, shares, config);
         if (this.config == null) {
             this.config = new RandomTraderConfig();
         }
@@ -165,10 +165,13 @@ public class RandomTrader extends AutoTrader {
         OrderType type = OrderType.BID;
 
         if (ad == null || myconfig == null) {
-//            System.out.print(ad + "\n");
+            //System.out.printf("%s: myconf = 0 \n", this.getName());
             return 0;
 
         }
+        
+        
+            //System.out.printf("%s: calling rand for money\n", this.getName());        
         // how much money we ant to envest?
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
 
@@ -189,6 +192,8 @@ public class RandomTrader extends AutoTrader {
             return 0;
         }
 
+        
+        //System.out.printf("%s: create order %s %f\n", this.getName(),type.toString(),limit);
         se.createOrder(account_id, type, volume, limit);
 
         return getRandom(myconfig.buy_wait);
@@ -201,6 +206,7 @@ public class RandomTrader extends AutoTrader {
 
         OrderType type = OrderType.ASK;
 
+            //System.out.printf("%s: calling rand for volume\n", this.getName());                
         // how much money we ant to envest?
         double volume = (long) getRandomAmmount(ad.shares, myconfig.sell_volume);
 
@@ -219,6 +225,8 @@ public class RandomTrader extends AutoTrader {
 
 //        System.out.print("Volume is:"+volume+"\n");
         //               System.out.print("My Ammount is: "+volume+" My limit si:"+limit+ "\n");
+        
+        //System.out.printf("%s: create order %s %f\n", this.getName(),type.toString(),limit);
         se.createOrder(account_id, type, volume, limit);
 
         return getRandom(myconfig.sell_wait);
@@ -235,6 +243,7 @@ public class RandomTrader extends AutoTrader {
                 return doSell();
 
         }
+//        System.out.printf("%s: do nothing\n",this.getName());
         return 0;
 
     }

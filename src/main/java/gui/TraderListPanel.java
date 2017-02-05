@@ -29,6 +29,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
@@ -42,11 +44,12 @@ import sesim.Scheduler;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class TraderListPanel extends javax.swing.JPanel
-        implements Scheduler.TimerTask {
+public class TraderListPanel extends javax.swing.JPanel {
 
     Exchange se;
     TraderListModel model;
+
+    TimerTask updater;
 
     /**
      * Creates new form TraderListPanel
@@ -73,15 +76,28 @@ public class TraderListPanel extends javax.swing.JPanel
         if (Globals.se != null) {
             this.se = Globals.se;
             this.list = this.getTraderList();
-            se.timer.startTimerEvent(this, 1000);
+            //        se.timer.startTimerEvent(this, 1000);
+
+            Timer timer = new Timer();
+            updater = new TimerTask() {
+                @Override
+                public void run() {
+                    timerTask();
+
+                }
+            };
+
+            timer.schedule(updater, 0, 1000);
+
         }
 
     }
 
     final ArrayList<TraderListItem> getTraderList() {
-        if (se.traders==null)
+        if (se.traders == null) {
             return new ArrayList<>();
-        
+        }
+
         sesim.Quote q = se.getLastQuoete();
         double price = q == null ? 0 : q.price;
         Iterator<AutoTrader> it = se.traders.iterator();
@@ -94,14 +110,13 @@ public class TraderListPanel extends javax.swing.JPanel
             ti.name = at.getName();
             ti.shares = a.getShares();
             ti.money = a.getMoney();
-            ti.welth = price==0 ? 0 : ti.shares * price + ti.money;
+            ti.welth = price == 0 ? 0 : ti.shares * price + ti.money;
             tlist.add(ti);
 
         }
         return tlist;
     }
 
-    @Override
     public long timerTask() {
         class Updater implements Runnable {
 
@@ -120,10 +135,10 @@ public class TraderListPanel extends javax.swing.JPanel
             }
 
         }
-        
+
         System.out.print("TimerTaskUpdater\n");
-        
-        ArrayList <TraderListItem> newlist = getTraderList();
+
+        ArrayList<TraderListItem> newlist = getTraderList();
         SwingUtilities.invokeLater(new Updater(this.model, newlist));
 
         return 2000;
@@ -148,8 +163,7 @@ public class TraderListPanel extends javax.swing.JPanel
         }
 
         public void update(ArrayList newlist) {
-            
-         
+
             list = newlist; //getOrderBook();
             this.fireTableDataChanged();
         }
@@ -182,9 +196,6 @@ public class TraderListPanel extends javax.swing.JPanel
         public int getColumnCount() {
             return 5;
         }
-        
-        
-        
 
         @Override
         public Object getValueAt(int r, int c) {

@@ -226,6 +226,7 @@ public class Exchange {
     final void initExchange() {
         timer = new Scheduler();         //  timer = new Scheduler();
         random = new Random(12);
+
         quoteHistory = new TreeSet();
         accounts = new ConcurrentHashMap<>();
 
@@ -478,12 +479,14 @@ public class Exchange {
     Random random;
 
     public int randNextInt() {
-        System.out.printf("Next int: %d\n", random.nextInt());
         return random.nextInt();
+
     }
 
     public int randNextInt(int bounds) {
+
         return random.nextInt(bounds);
+
     }
 
     public double randNextDouble() {

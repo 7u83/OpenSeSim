@@ -121,6 +121,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="simMenu">
           <Properties>
+            <Property name="mnemonic" type="int" value="115"/>
             <Property name="text" type="java.lang.String" value="Sim"/>
           </Properties>
           <SubComponents>
@@ -157,6 +158,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="viewMenu">
           <Properties>
+            <Property name="mnemonic" type="int" value="118"/>
             <Property name="text" type="java.lang.String" value="View"/>
           </Properties>
           <SubComponents>
