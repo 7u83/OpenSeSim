@@ -41,7 +41,7 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
         account_id = se.createAccount(money, shares);
         this.se = se;
         this.config = config;
-        this.name = "";
+        this.name = name;
         this.id=id;
 
     }
