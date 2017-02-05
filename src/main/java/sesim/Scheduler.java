@@ -42,25 +42,26 @@ import java.util.TreeSet;
  */
 public class Scheduler extends Thread {
 
-    private double multiplier = 0.0;
+    private double acceleration = 0.0;
 
-    public void setMultiply(double val) {
-        
-        this.multiplier = val;
-        synchronized(this){
+    public void setAcceleration(double val) {
+
+        this.acceleration = val;
+        synchronized (this) {
             this.notify();
         }
     }
 
-    public double getMultiply() {
-        return this.multiplier;
+    public double getAcceleration() {
+        return this.acceleration;
     }
 
     private final SortedMap<Long, SortedSet<TimerTask>> event_queue = new TreeMap<>();
 
     public interface TimerTask {
-        
+
         long timerTask();
+
         long getID();
     }
 
@@ -84,16 +85,15 @@ public class Scheduler extends Thread {
         }
         this.initScheduler();
         super.start();
-        
-        
+
     }
 
     private class ObjectComparator implements Comparator<Object> {
 
         @Override
         public int compare(Object o1, Object o2) {
-            
-            return (((TimerTask)o1).getID() - ((TimerTask)o2).getID())<0 ? -1:1;
+
+            return (((TimerTask) o1).getID() - ((TimerTask) o2).getID()) < 0 ? -1 : 1;
             //return System.identityHashCode(o1) - System.identityHashCode(o2);
         }
     }
@@ -108,9 +108,10 @@ public class Scheduler extends Thread {
     public long currentTimeMillis1() {
 
         long diff = System.currentTimeMillis() - last_time_millis;
-       // diff=12199999L;
+        
+//       diff = 12199999L;
         last_time_millis += diff;
-        this.current_time_millis += diff * this.multiplier;
+        this.current_time_millis += diff * this.acceleration;
 //System.out.printf("Current TM: %f\n", this.current_time_millis);
         return (long) this.current_time_millis;
 
@@ -181,15 +182,16 @@ public class Scheduler extends Thread {
             long t = event_queue.firstKey();
             long ct = currentTimeMillis1();
 
-            //System.out.printf("Current CMP %d %d\n", ct, t);
             if (t <= ct) {
                 this.current_time_millis = t;
                 SortedSet s = event_queue.get(t);
-                event_queue.remove(t);
+                Object rc = event_queue.remove(t);
                 Iterator<TimerTask> it = s.iterator();
                 while (it.hasNext()) {
                     TimerTask e = it.next();
                     long next_t = this.fireEvent(e);
+                    if (next_t == 0 )
+                        next_t++;
 
                     this.addEvent(e, next_t + t);
                 }
