@@ -411,7 +411,7 @@ public class FullChart extends javax.swing.JPanel {
     public FullChart() {
         initComponents();
         Chart chart = new Chart();
-        this.jScrollPane1.setViewportView(chart);
+//        this.jScrollPane1.setViewportView(chart);
       
         
        // this.jScrollPane1.setRowHeaderView(chart);
@@ -427,43 +427,39 @@ public class FullChart extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        chart1 = new chart.Chart();
+        chart2 = new chart.Chart();
 
-        javax.swing.GroupLayout chart1Layout = new javax.swing.GroupLayout(chart1);
-        chart1.setLayout(chart1Layout);
-        chart1Layout.setHorizontalGroup(
-            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 3480, Short.MAX_VALUE)
+        javax.swing.GroupLayout chart2Layout = new javax.swing.GroupLayout(chart2);
+        chart2.setLayout(chart2Layout);
+        chart2Layout.setHorizontalGroup(
+            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 617, Short.MAX_VALUE)
         );
-        chart1Layout.setVerticalGroup(
-            chart1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 280, Short.MAX_VALUE)
+        chart2Layout.setVerticalGroup(
+            chart2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
-
-        jScrollPane1.setViewportView(chart1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
+                .addComponent(chart2, javax.swing.GroupLayout.DEFAULT_SIZE, 617, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(27, Short.MAX_VALUE)
+                .addComponent(chart2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private chart.Chart chart1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private chart.Chart chart2;
     // End of variables declaration//GEN-END:variables
 }

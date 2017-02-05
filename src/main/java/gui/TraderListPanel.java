@@ -125,7 +125,6 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             @Override
             public void run() {
-                System.out.print("TTrunner\n");
                 model.update(this.newlist);
             }
 

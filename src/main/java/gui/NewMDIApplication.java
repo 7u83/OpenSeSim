@@ -125,7 +125,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jRunButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jSpinner2 = new javax.swing.JSpinner();
+        accelSpinner = new javax.swing.JSpinner();
         clock1 = new gui.Clock();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -211,10 +211,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
         });
 
-        jSpinner2.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, null, 100.0d));
-        jSpinner2.addChangeListener(new javax.swing.event.ChangeListener() {
+        accelSpinner.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, null, 100.0d));
+        accelSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinner2StateChanged(evt);
+                accelSpinnerStateChanged(evt);
             }
         });
 
@@ -231,7 +231,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(clock1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17)
-                .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(accelSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -241,7 +241,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(accelSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
@@ -466,6 +466,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     void startSim(){
         resetSim();
         this.startTraders();
+        //Globals.se.timer.set
         Globals.se.timer.start();
         
     }
@@ -583,10 +584,10 @@ startSim();
         
     }//GEN-LAST:event_viewClockActionPerformed
 
-    private void jSpinner2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner2StateChanged
-        Double val = (Double)this.jSpinner2.getValue();
-        Globals.se.timer.setMultiply(val);
-    }//GEN-LAST:event_jSpinner2StateChanged
+    private void accelSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_accelSpinnerStateChanged
+        Double val = (Double)this.accelSpinner.getValue();
+        Globals.se.timer.setAcceleration(val);
+    }//GEN-LAST:event_accelSpinnerStateChanged
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
@@ -667,6 +668,7 @@ startSim();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JSpinner accelSpinner;
     private chart.Chart chart;
     private gui.Clock clock1;
     private javax.swing.JMenuItem contentMenuItem;
@@ -690,7 +692,6 @@ startSim();
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JSpinner jSpinner2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;

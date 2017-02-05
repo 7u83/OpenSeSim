@@ -238,9 +238,9 @@ public class RandomTrader extends AutoTrader {
         Action a = getAction();
         switch (a) {
             case BUY:
-                return doBuy();
+                return doBuy()+1;
             case SELL:
-                return doSell();
+                return doSell()+1;
 
         }
 //        System.out.printf("%s: do nothing\n",this.getName());
