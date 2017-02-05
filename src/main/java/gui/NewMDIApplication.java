@@ -460,13 +460,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     
     void pauseSim(){
-        
+        Globals.se.timer.pause();
     }
     
     void startSim(){
         resetSim();
         this.startTraders();
         Globals.se.timer.setAcceleration((Double)this.accelSpinner.getValue());
+        Globals.se.timer.setPause(false);
         Globals.se.timer.start();
         
     }

@@ -53,6 +53,7 @@ public class Scheduler extends Thread {
     }
 
     public double getAcceleration() {
+
         return this.acceleration;
     }
 
@@ -108,9 +109,14 @@ public class Scheduler extends Thread {
     public long currentTimeMillis1() {
 
         long diff = System.currentTimeMillis() - last_time_millis;
-        
+
 //       diff = 12199999L;
         last_time_millis += diff;
+
+        if (pause) {
+            return (long) this.current_time_millis;
+        }
+
         this.current_time_millis += diff * this.acceleration;
 //System.out.printf("Current TM: %f\n", this.current_time_millis);
         return (long) this.current_time_millis;
@@ -151,11 +157,20 @@ public class Scheduler extends Thread {
     private boolean pause = false;
 
     public void pause() {
-        pause = !pause;
+        setPause(!pause);
+
+    }
+    
+    public void setPause(boolean val){
+        pause=val;
         synchronized (this) {
             this.notify();
         }
 
+    }
+    
+    public boolean getPause(){
+        return pause;
     }
 
     public long fireEvent(TimerTask e) {
@@ -190,8 +205,9 @@ public class Scheduler extends Thread {
                 while (it.hasNext()) {
                     TimerTask e = it.next();
                     long next_t = this.fireEvent(e);
-                    if (next_t == 0 )
+                    if (next_t == 0) {
                         next_t++;
+                    }
 
                     this.addEvent(e, next_t + t);
                 }
