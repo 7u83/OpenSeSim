@@ -144,8 +144,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         simMenu = new javax.swing.JMenu();
         simMenuStart = new javax.swing.JMenuItem();
         simMenuPause = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        simMenuStop = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -341,6 +340,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         simMenu.setMnemonic('s');
         simMenu.setText("Sim");
 
+        simMenuStart.setMnemonic('s');
         simMenuStart.setText("Start");
         simMenuStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -349,6 +349,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         simMenu.add(simMenuStart);
 
+        simMenuPause.setMnemonic('p');
         simMenuPause.setText("Pause");
         simMenuPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -357,16 +358,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         simMenu.add(simMenuPause);
 
-        jMenuItem5.setText("Stop");
-        simMenu.add(jMenuItem5);
-
-        jMenuItem6.setText("Reset");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+        simMenuStop.setMnemonic('t');
+        simMenuStop.setText("Stop");
+        simMenuStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                simMenuStopActionPerformed(evt);
             }
         });
-        simMenu.add(jMenuItem6);
+        simMenu.add(simMenuStop);
 
         menuBar.add(simMenu);
 
@@ -598,20 +597,17 @@ startSim();
         startSim();
     }//GEN-LAST:event_simMenuStartActionPerformed
 
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        resetSim();
- 
-        //this.chart.
-       //this.initComponents();
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         stopSim();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void simMenuPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simMenuPauseActionPerformed
-        // TODO add your handling code here:
+        pauseSim();
     }//GEN-LAST:event_simMenuPauseActionPerformed
+
+    private void simMenuStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simMenuStopActionPerformed
+        stopSim();
+    }//GEN-LAST:event_simMenuStopActionPerformed
 
     /**
      * @param args the command line arguments
@@ -686,8 +682,6 @@ startSim();
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton jRunButton;
     private javax.swing.JScrollPane jScrollPane2;
@@ -703,6 +697,7 @@ startSim();
     private javax.swing.JMenu simMenu;
     private javax.swing.JMenuItem simMenuPause;
     private javax.swing.JMenuItem simMenuStart;
+    private javax.swing.JMenuItem simMenuStop;
     private javax.swing.JMenuItem viewClock;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables

@@ -127,6 +127,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="simMenuStart">
               <Properties>
+                <Property name="mnemonic" type="int" value="115"/>
                 <Property name="text" type="java.lang.String" value="Start"/>
               </Properties>
               <Events>
@@ -135,23 +136,20 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="simMenuPause">
               <Properties>
+                <Property name="mnemonic" type="int" value="112"/>
                 <Property name="text" type="java.lang.String" value="Pause"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="simMenuPauseActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem5">
+            <MenuItem class="javax.swing.JMenuItem" name="simMenuStop">
               <Properties>
+                <Property name="mnemonic" type="int" value="116"/>
                 <Property name="text" type="java.lang.String" value="Stop"/>
               </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem6">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Reset"/>
-              </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem6ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="simMenuStopActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
