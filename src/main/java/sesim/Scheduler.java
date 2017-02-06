@@ -110,7 +110,7 @@ public class Scheduler extends Thread {
 
         long diff = System.currentTimeMillis() - last_time_millis;
 
-//       diff = 12199999L;
+ //      diff = 12199999L;
         last_time_millis += diff;
 
         if (pause) {
@@ -215,7 +215,7 @@ public class Scheduler extends Thread {
 
             } else {
                 return 0;
-                //return (t - currentTimeMillis1())/(long)this.multiplier;
+                //return (t - currentTimeMillis())/(long)this.acceleration;
             }
         }
 

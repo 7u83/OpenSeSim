@@ -51,21 +51,23 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
     
     abstract ArrayList <Order> getOrderBook();
 
-    private Color hdr_color = Color.LIGHT_GRAY;
+ //  private Color hdr_color = Color.LIGHT_GRAY;
 
     private class OrderBookCellRenderer extends DefaultTableCellRenderer {
 
-        @Override
+    /*    @Override
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus,
                 int row, int column) {
             DefaultTableCellRenderer renderer
                     = (DefaultTableCellRenderer) super.getTableCellRendererComponent(
                             table, value, isSelected, hasFocus, row, column);
-            renderer.setBackground(hdr_color);
+  //          renderer.setBackground(hdr_color);
             return renderer;
         }
+        */
     }
+        
 
     @Override
     public void UpdateOrderBook() {
@@ -169,7 +171,11 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
          //   Formatter f = new Formatter();
             switch (c) {
                 case 0:
-                    return String.format("#%06x", o.getID());
+                   // o.getAccount().getID();
+                    
+                    return o.getAccount().getOwner().getName();
+                    
+                    //return String.format("#%06x", o.getID());
 
                 case 1:
                     //return String.format("%.f",o.getLimit());
@@ -196,8 +202,8 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
         //System.out.print("init Orderbook]\n");
         initComponents();
 
-        this.setBorder(BorderFactory.createEmptyBorder());
-        this.orderBookScroller.setBorder(BorderFactory.createBevelBorder(0));
+   //     this.setBorder(BorderFactory.createEmptyBorder());
+   //     this.orderBookScroller.setBorder(BorderFactory.createBevelBorder(0));
 
         if (Globals.se == null) {
             return;
@@ -206,12 +212,12 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
         this.model = new OrderBookListModel();
         this.orderBookList.setModel(model);
         
-        orderBookList.setBorder(BorderFactory.createEmptyBorder());
+     //   orderBookList.setBorder(BorderFactory.createEmptyBorder());
 
         JTableHeader h = this.orderBookList.getTableHeader();
-        h.setBackground(hdr_color);
-        h.setForeground(Color.green);
-        h.setDefaultRenderer(new OrderBookCellRenderer());
+      //  h.setBackground(hdr_color);
+      //  h.setForeground(Color.green);
+      //  h.setDefaultRenderer(new OrderBookCellRenderer());
 
     }
 
@@ -227,6 +233,8 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
         orderBookScroller = new javax.swing.JScrollPane();
         orderBookList = new javax.swing.JTable();
 
+        orderBookList.setAutoCreateRowSorter(true);
+        orderBookList.setBorder(new javax.swing.border.MatteBorder(null));
         orderBookList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"1", null, null},
@@ -272,8 +280,8 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
                 return canEdit [columnIndex];
             }
         });
-        orderBookList.setDoubleBuffered(true);
         orderBookList.setFocusable(false);
+        orderBookList.setOpaque(false);
         orderBookScroller.setViewportView(orderBookList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

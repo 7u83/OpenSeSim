@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import sesim.Exchange.Account;
+
 /**
  *
  * @author 7u83
@@ -39,6 +41,10 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
 
     public AutoTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
+        Account a = se.getAccount(account_id);
+        
+        a.owner=this;
+        
         this.se = se;
         this.config = config;
         this.name = name;

@@ -68,6 +68,7 @@ public class Exchange {
         private final double id;
         private double shares;
         private double money;
+        protected AutoTrader owner;
 
         private final HashMap<Long, Order> orders;
 
@@ -94,6 +95,10 @@ public class Exchange {
 
         public double getMoney() {
             return money;
+        }
+        
+        public AutoTrader getOwner(){
+            return owner;
         }
 
     }

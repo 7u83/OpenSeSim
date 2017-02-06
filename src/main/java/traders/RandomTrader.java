@@ -157,8 +157,12 @@ public class RandomTrader extends AutoTrader {
         return n;
 
     }
+    
+    
+    
 
     public long doBuy() {
+        
         RandomTraderConfig myconfig = (RandomTraderConfig) this.config;
         AccountData ad = this.se.getAccountData(account_id);
 
@@ -171,26 +175,44 @@ public class RandomTrader extends AutoTrader {
         }
         
         
-            //System.out.printf("%s: calling rand for money\n", this.getName());        
-        // how much money we ant to envest?
+             
+        // how much money we ant to invest?
         double money = getRandomAmmount(ad.money, myconfig.buy_volume);
-
+        
+     
         Quote q = se.getCurrentPrice();
         double lp = q == null ? getStart() : q.price;
+        
+               
 
         double limit;
         limit = lp + getRandomAmmount(lp, myconfig.buy_limit);
+        
+        
+        
+        
 
+        // 10 
+        // 24   13 
+        
+       
+        
 //        System.out.printf("MyLimit: %f\n",limit);
-        long volume = (long) (money / (limit * 1));
+        long volume = (long) (money / limit);
+        
+        
         if (volume <= 0) {
-            return 0;
+
+            volume=1;
+            limit = money;
+
+                
         }
 
 //       double volume = (money / (limit * 1));
-        if (volume <= 0) {
-            return 0;
-        }
+//        if (volume <= 0) {
+ //           return 0;
+  //      }
 
         
         //System.out.printf("%s: create order %s %f\n", this.getName(),type.toString(),limit);
@@ -220,7 +242,7 @@ public class RandomTrader extends AutoTrader {
 //        long volume = (long) (money / (limit * 1));
         if (volume <= 0) {
 //            System.out.print("SellVolume 0\n");
-            return 0;
+            return 5000;
         }
 
 //        System.out.print("Volume is:"+volume+"\n");

@@ -69,13 +69,11 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             JSONObject jo = new JSONObject();
             for (int x = 0; x < model.getColumnCount(); x++) {
                 Object cw = model.getValueAt(i, x);
-                
-                System.out.printf("CWSaver: %s\n",cw.getClass().toString());
 
+                //System.out.printf("CWSaver: %s\n",cw.getClass().toString());
                 if (cw != null) {
                     jo.put((String) th.getColumnModel().getColumn(x).getHeaderValue(), cw.toString());
                 }
-                //ja.put(Integer.toString(i),jo);
 
             }
             ja.put(jo);
@@ -83,7 +81,6 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
         Globals.prefs.put("Traders", ja.toString());
 
-        //      System.out.printf("Arlist: %s\n", ja.toString());
     }
 
     final void load() {
@@ -91,13 +88,20 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         JSONArray traders = Globals.getTraders();
         DefaultTableModel model = (DefaultTableModel) list.getModel();
         model.setRowCount(traders.length());
-        
+
         for (int row = 0; row < traders.length(); row++) {
             JSONObject rowobj = traders.getJSONObject(row);
             for (int col = 0; col < list.getColumnCount(); col++) {
                 String h = this.getColumnHeader(col);
                 System.out.printf("Doing stuff for %s\n", h);
-                String val = rowobj.getString(h);
+
+                String val = null;
+                try {
+                    val = rowobj.getString(h);
+                } catch (Exception e) {
+                    continue;
+                }
+
                 System.out.printf("Want to set (%d,%d): %s\n", row, col, val);
 
                 //list.getModel().setValueAt(val, row, col);
@@ -116,8 +120,8 @@ public class EditAutoTraderList extends javax.swing.JPanel {
                 if (cl == Boolean.class) {
                     cv = rowobj.getBoolean(h);
                 }
-                if (cl == Object.class){
-                    cv=rowobj.getString(h);
+                if (cl == Object.class) {
+                    cv = rowobj.getString(h);
                 }
                 list.getModel().setValueAt(cv, row, col);
 
@@ -132,16 +136,16 @@ public class EditAutoTraderList extends javax.swing.JPanel {
      */
     public EditAutoTraderList() {
         initComponents();
-        
-        if (Globals.se==null)
+
+        if (Globals.se == null) {
             return;
+        }
 
         this.load();
 
         JComboBox comboBox = new JComboBox();
-        
-        Globals.getStrategiesIntoComboBox(comboBox);
 
+        Globals.getStrategiesIntoComboBox(comboBox);
 
         DefaultTableModel model = (DefaultTableModel) list.getModel();
         list.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
@@ -149,34 +153,32 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         //  model.setRowCount(3);
 
         list.setRowHeight(30);
-        
+
         list.getModel().addTableModelListener((TableModelEvent e) -> {
             System.out.printf("Table has changed\n", "");
 //            if (summary==null)
-          //      return;
-            
-            Double money=0.0;
-            Double shares=0.0;
-            
-            for (int r = 0; r < model.getRowCount(); r++) {            
-                money+=(Double)list.getValueAt( r, list.getColumn("Money").getModelIndex());
-                shares+=(Double)list.getValueAt( r, list.getColumn("Shares").getModelIndex());                
-                System.out.printf("Row: %d %f %f\n",r,money,shares);
+            //      return;
+
+            Double money = 0.0;
+            Double shares = 0.0;
+
+            for (int r = 0; r < model.getRowCount(); r++) {
+//                money += (Double) list.getValueAt(r, list.getColumn("Money").getModelIndex());
+//                shares += (Double) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
+                System.out.printf("Row: %d %f %f\n", r, money, shares);
             }
-            
-            this.summary.setText(String.format("Fair Value: %.5f", money/shares));
+
+            this.summary.setText(String.format("Fair Value: %.5f", money / shares));
         });
-        
-      
+
     }
-    
-    
-    void add(){
-         DefaultTableModel model = (DefaultTableModel) list.getModel();
-         model.setRowCount(model.getRowCount()+1);
+
+    void add() {
+        DefaultTableModel model = (DefaultTableModel) list.getModel();
+        model.setRowCount(model.getRowCount() + 1);
     }
-    
-    JLabel summary=null;
+
+    JLabel summary = null;
 
     /**
      * This method is called from within the constructor to initialize the form.
