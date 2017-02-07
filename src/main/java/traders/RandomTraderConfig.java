@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.AutoTrader;
-import sesim.AutoTraderBase;
+import sesim.AutoTraderConfigBase;
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
@@ -40,7 +40,7 @@ import sesim.Exchange;
  *
  * @author 7u83
  */
-public class RandomTraderConfig extends AutoTraderBase implements AutoTraderConfig {
+public class RandomTraderConfig extends AutoTraderConfigBase implements AutoTraderConfig {
 
     public Float[] sell_volume = {100f, 100f};
     public Float[] sell_limit = {-0.1f, 0.10101f};

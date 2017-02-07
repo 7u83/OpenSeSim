@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +45,8 @@ import sesim.AutoTraderLoader;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Globals {
+    
+    public static JFrame frame;
 
     static final String STRATEGYPREFS = "Strategies";
     static final String TRADERPREFS = "Traders";

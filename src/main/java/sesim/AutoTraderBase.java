@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,18 @@
  */
 package sesim;
 
-import org.json.JSONObject;
-
 /**
  *
- * @author tobias
+ * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AutoTraderBase implements AutoTraderConfig{
+public abstract class AutoTraderBase extends AutoTrader implements AutoTraderConfig{
 
- 
+ //   public AutoTraderBase(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
+ //       super(se, id, name, money, shares, config);
+//    }
 
-    @Override
-    public boolean getDevelStatus() {
-        return true;
-    }
-
+   
+     
+    
     
 }
-    

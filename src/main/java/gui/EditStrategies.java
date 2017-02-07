@@ -295,6 +295,7 @@ public final class EditStrategies extends javax.swing.JDialog {
             acgui.setVisible(true);
 
         } else {
+            System.out.printf("Adding default gui panel\n");
             guiPanel.add(this.defaultGuiPanel, java.awt.BorderLayout.CENTER);
         }
         this.revalidate();
@@ -314,7 +315,9 @@ public final class EditStrategies extends javax.swing.JDialog {
 
     private void jSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveButtonActionPerformed
 
-        acgui.save();
+        if (acgui!=null)
+            acgui.save();
+        
         JSONObject o = ac.getConfig();
 
         String item = (String) this.jComboBoxStrategySelector.getSelectedItem();
@@ -391,6 +394,9 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
         
         AutoTraderConfig ac = Globals.tloader.getStrategyBase(sd.result.base);
         JSONObject cfg = ac.getConfig();
+        System.out.printf("Initial cfg %s\n", cfg.toString(2));
+        cfg.put("base", ac.getClass().getCanonicalName());
+        
         Globals.saveStrategy(sd.result.name, cfg);
         this.initComboBox();
     }//GEN-LAST:event_jNewButtonActionPerformed

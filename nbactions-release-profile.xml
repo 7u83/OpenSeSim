@@ -2,14 +2,83 @@
 <actions>
         <action>
             <actionName>run</actionName>
-            <displayName>Tube</displayName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
             <goals>
                 <goal>process-classes</goal>
-                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:jnlp</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath ${packageClassName}</exec.args>
+                <exec.args>-classpath %classpath gui.NewMDIApplication</exec.args>
                 <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath gui.NewMDIApplication</exec.args>
+                <exec.executable>java</exec.executable>
+                <jpda.listen>true</jpda.listen>
+            </properties>
+        </action>
+        <action>
+            <actionName>profile</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-classpath %classpath gui.NewMDIApplication</exec.args>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>build</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>webstart:jnlp-single</goal>
+                
+            </goals>
+            <properties>
+                <jar.finalName>sesim</jar.finalName>
+                <createChecksum>true</createChecksum>
+                <updateReleaseInfo>true</updateReleaseInfo>
+                <jnlp.archive>sesimj</jnlp.archive>
+                <jnlp.canUnsign>true</jnlp.canUnsign>
+                
+                
+            </properties>
+        </action>
+        <action>
+            <actionName>rebuild</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>nbm:standalone-zip</goal>
+                
+            </goals>
+            <properties>
+                <jar.finalName>sesim</jar.finalName>
+                <createChecksum>true</createChecksum>
+                <updateReleaseInfo>true</updateReleaseInfo>
+                <jnlp.archive>sesim</jnlp.archive>
+                <webstart.verbose>true</webstart.verbose>
+                <netbeans.branding.token>SeSim</netbeans.branding.token>
+                <project>SeSim</project>
             </properties>
         </action>
     </actions>

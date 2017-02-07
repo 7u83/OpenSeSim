@@ -93,7 +93,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             JSONObject rowobj = traders.getJSONObject(row);
             for (int col = 0; col < list.getColumnCount(); col++) {
                 String h = this.getColumnHeader(col);
-                System.out.printf("Doing stuff for %s\n", h);
+               // System.out.printf("Doing stuff for %s\n", h);
 
                 String val = null;
                 try {

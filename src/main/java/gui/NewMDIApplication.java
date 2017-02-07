@@ -55,60 +55,74 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public NewMDIApplication() {
         initComponents();
+        Globals.frame=this;
         this.setLocationRelativeTo(this);
         this.setTitle("SeSim - Stock Exchange Simmulator");
+    }
+
+    AutoTrader createTraderNew(Exchange se,long id,String name, double money, double shares, JSONObject cfg) {
+        System.out.printf("!!!! creating new\n");
+        String base = cfg.getString("base");
+        AutoTrader ac = (AutoTrader)Globals.tloader.getStrategyBase(base);
+        ((AutoTraderConfig)ac).putConfig(cfg);
+        ac.init(se, id, name, money, shares, cfg);
+        return ac;
     }
 
     public void startTraders() {
 
         JSONArray tlist = Globals.getTraders();
-        
-        Double moneyTotal=0.0;
-        Double sharesTotal=0.0;
-        long id=0;
-        for (int i=0; i<tlist.length();i++){
-            JSONObject t=tlist.getJSONObject(i);
+
+        Double moneyTotal = 0.0;
+        Double sharesTotal = 0.0;
+        long id = 0;
+        for (int i = 0; i < tlist.length(); i++) {
+            JSONObject t = tlist.getJSONObject(i);
             String strategy_name = t.getString("Strategy");
             JSONObject strategy = Globals.getStrategy(strategy_name);
             String base = strategy.getString("base");
             AutoTraderConfig ac = Globals.tloader.getStrategyBase(base);
-            
-            System.out.printf("Load Strat: %s\n",strategy_name);
+
+            System.out.printf("Load Strat: %s\n", strategy_name);
             System.out.printf("Base %s\n", base);
-            Integer count =  t.getInt("Count");
+            Integer count = t.getInt("Count");
             Double shares = t.getDouble("Shares");
             Double money = t.getDouble("Money");
-            
+
             Boolean enabled = t.getBoolean("Enabled");
-            if (!enabled)
+            if (!enabled) {
                 continue;
-            
-            System.out.printf("Count: %d Shares: %f Money %f\n", count,shares,money);
-            
-            
-            
-            for (int i1=0;i1<count;i1++){
-                AutoTrader trader = ac.createTrader(Globals.se, strategy, id++, t.getString("Name")+i1,money, shares);                
+            }
+
+            System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
+
+            for (int i1 = 0; i1 < count; i1++) {
+                AutoTrader trader = ac.createTrader(Globals.se, strategy, id++, t.getString("Name") + i1, money, shares);
+                if (trader == null) {
+                    System.out.printf("shoudl create new\n");
+                    trader = this.createTraderNew(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
+             
+                }
+
                 Globals.se.traders.add(trader);
 //                trader.setName(t.getString("Name")+i1);
-                
-                moneyTotal+=money;
-                sharesTotal+=shares;
-                
-    //            trader.start();
+
+                moneyTotal += money;
+                sharesTotal += shares;
+
+                //            trader.start();
             }
-            
+
         }
-        
-        Globals.se.fairValue=moneyTotal/sharesTotal;
-        
-        Globals.se.fairValue=15.0;
-        
-        for (int i=0; i<Globals.se.traders.size(); i++){
+
+        Globals.se.fairValue = moneyTotal / sharesTotal;
+
+        Globals.se.fairValue = 15.0;
+
+        for (int i = 0; i < Globals.se.traders.size(); i++) {
             Globals.se.traders.get(i).start();
         }
-        
-  
+
     }
 
     /**
@@ -453,7 +467,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jChartScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                    .addComponent(jChartScrollPane)
                     .addComponent(orderBookPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -471,43 +485,42 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-    
-    void pauseSim(){
+    void pauseSim() {
         Globals.se.timer.pause();
     }
-    
-    void startSim(){
+
+    void startSim() {
 
         resetSim();
-     this.stopButton.setEnabled(true);
+        this.stopButton.setEnabled(true);
         this.startTraders();
-        
+
         Globals.se.timer.setPause(false);
         Globals.se.timer.start();
-        Globals.se.timer.setAcceleration((Double)this.accelSpinner.getValue());
+        Globals.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
 
-                this.clock.invalidate();
-                this.clock.repaint();
-        
+        this.clock.invalidate();
+        this.clock.repaint();
+
     }
-    
-    void stopSim(){
+
+    void stopSim() {
         Globals.se.timer.terminate();
         this.stopButton.setEnabled(false);
     }
-    
-    void resetSim(){
+
+    void resetSim() {
         Globals.se.terminate();
         Globals.se.reset();
-       chart.initChart();
-       chart.invalidate();
-       chart.repaint();
-       this.orderBookPanel.invalidate();
-       this.orderBookPanel.repaint();
-        
+        chart.initChart();
+        chart.invalidate();
+        chart.repaint();
+        this.orderBookPanel.invalidate();
+        this.orderBookPanel.repaint();
+
     }
-    
-    
+
+
     private void editPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesActionPerformed
         Globals.LOGGER.info("Edit prefs...");
 
@@ -530,71 +543,62 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private void pasteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteMenuItemActionPerformed
         EditStrategies s = new EditStrategies(this, true);
         s.setVisible(rootPaneCheckingEnabled);
-        
-        
-        
-        
+
+
     }//GEN-LAST:event_pasteMenuItemActionPerformed
 
-    
-    private final LoggerDialog log_d = new LoggerDialog(this,false);
-    
+    private final LoggerDialog log_d = new LoggerDialog(this, false);
+
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         log_d.setVisible(!log_d.isShowing());
-        
+
 
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
-       
+
     }//GEN-LAST:event_openMenuItemActionPerformed
 
     private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
         JFileChooser fc = new JFileChooser();
-       
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("SeSim Files","sesim");
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("SeSim Files", "sesim");
         fc.setFileFilter(filter);
-        
-       
-        
-        if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION){
+
+        if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }
-        
-        
+
         File f = fc.getSelectedFile();
-        
-        String [] e = ((FileNameExtensionFilter)fc.getFileFilter()).getExtensions();
-        
+
+        String[] e = ((FileNameExtensionFilter) fc.getFileFilter()).getExtensions();
+
         System.out.printf("Abs: %s\n", f.getAbsoluteFile());
-        
-        String fn=f.getAbsolutePath();
-        
-        
-        if (!f.getAbsolutePath().endsWith(e[0])){
-            f = new File(f.getAbsolutePath()+"."+e[0]);
+
+        String fn = f.getAbsolutePath();
+
+        if (!f.getAbsolutePath().endsWith(e[0])) {
+            f = new File(f.getAbsolutePath() + "." + e[0]);
         }
-        
 
         Globals.saveFile(f);
-        
-        
-        System.out.printf("Sel File: %s \n",f.getAbsolutePath());
-        
-        
+
+        System.out.printf("Sel File: %s \n", f.getAbsolutePath());
+
+
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
     private void editExchangeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExchangeMenuItemActionPerformed
-        EditExchangeDialog ed=new EditExchangeDialog((Frame) this.getParent(),true);
+        EditExchangeDialog ed = new EditExchangeDialog((Frame) this.getParent(), true);
         int rc = ed.showdialog();
-      //  System.out.printf("EDRET: %d\n",rc);
-        
+        //  System.out.printf("EDRET: %d\n",rc);
+
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
 
     private void viewClockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewClockActionPerformed
-        ClockDialog cd = new ClockDialog(this,true);
+        ClockDialog cd = new ClockDialog(this, true);
         cd.setVisible(rootPaneCheckingEnabled);
-        
+
     }//GEN-LAST:event_viewClockActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -614,7 +618,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_simMenuStopActionPerformed
 
     private void accelSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_accelSpinnerStateChanged
-        Double val = (Double)this.accelSpinner.getValue();
+        Double val = (Double) this.accelSpinner.getValue();
         Globals.se.timer.setAcceleration(val);
     }//GEN-LAST:event_accelSpinnerStateChanged
 
@@ -665,12 +669,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
         }
 
         for (Class<AutoTraderConfig> at_class : traders) {
-            System.out.printf("Class = %s\n",at_class.getName());
+            System.out.printf("Class = %s\n", at_class.getName());
             if (Modifier.isAbstract(at_class.getModifiers())) {
                 continue;
             }
-            
+
             AutoTraderConfig cfg = at_class.newInstance();
+
             System.out.printf("Have a Trader with name: %s\n", cfg.getDisplayName());
         }
 
