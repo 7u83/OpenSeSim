@@ -42,7 +42,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     
     public final void initChart(){
 //        data = new OHLCData(60000*30);        
-        data = new OHLCData(60000);        
+        data = new OHLCData(60000*1);        
     }
 
     /**

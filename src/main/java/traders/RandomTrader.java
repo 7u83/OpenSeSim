@@ -166,7 +166,7 @@ public class RandomTrader extends AutoTrader {
         RandomTraderConfig myconfig = (RandomTraderConfig) this.config;
         AccountData ad = this.se.getAccountData(account_id);
 
-        OrderType type = OrderType.BID;
+        OrderType type = OrderType.BUYLIMIT;
 
         if (ad == null || myconfig == null) {
             //System.out.printf("%s: myconf = 0 \n", this.getName());
@@ -226,7 +226,7 @@ public class RandomTrader extends AutoTrader {
         RandomTraderConfig myconfig = (RandomTraderConfig) this.config;
         AccountData ad = this.se.getAccountData(account_id);
 
-        OrderType type = OrderType.ASK;
+        OrderType type = OrderType.SELLLIMIT;
 
             //System.out.printf("%s: calling rand for volume\n", this.getName());                
         // how much money we ant to envest?

@@ -39,7 +39,10 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
     public ManTraderConsoleDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
     }
+    
+    
 
     public ManTraderConsole getConsole(){
         return this.console;

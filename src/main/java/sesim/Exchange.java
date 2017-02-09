@@ -50,7 +50,7 @@ public class Exchange {
      * Definition of order types
      */
     public enum OrderType {
-        BID, ASK
+        BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY
     }
 
     IDGenerator account_id = new IDGenerator();
@@ -96,9 +96,13 @@ public class Exchange {
         public double getMoney() {
             return money;
         }
-        
-        public AutoTrader getOwner(){
+
+        public AutoTrader getOwner() {
             return owner;
+        }
+
+        public Map getOrders() {
+            return orders;
         }
 
     }
@@ -136,10 +140,10 @@ public class Exchange {
         public int compare(Order left, Order right) {
             double d;
             switch (this.type) {
-                case BID:
+                case BUYLIMIT:
                     d = right.limit - left.limit;
                     break;
-                case ASK:
+                case SELLLIMIT:
                     d = left.limit - right.limit;
                     break;
                 default:
@@ -164,7 +168,6 @@ public class Exchange {
 
             return 0;
 
-//            return left.id < right.id ? -1 : 1;
         }
 
     }
@@ -181,7 +184,7 @@ public class Exchange {
         private final double initial_volume;
         private long id;
         long created;
-        private Account account;
+        private final Account account;
 
         Order(Account account, OrderType type, double volume, double limit) {
             id = order_id.getNext();
@@ -317,8 +320,8 @@ public class Exchange {
 
     public Quote getCurrentPrice() {
 
-        SortedSet<Order> bid = order_books.get(OrderType.BID);
-        SortedSet<Order> ask = order_books.get(OrderType.ASK);
+        SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
+        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
         Quote q = null;
 
@@ -366,9 +369,9 @@ public class Exchange {
 
     private ArrayList<BookReceiver> selectBookReceiver(OrderType t) {
         switch (t) {
-            case ASK:
+            case SELLLIMIT:
                 return ask_bookreceivers;
-            case BID:
+            case BUYLIMIT:
                 return bid_bookreceivers;
         }
         return null;
@@ -411,8 +414,8 @@ public class Exchange {
     }
 
     // long time = 0;
-    double theprice = 12.9;
-    long orderid = 1;
+    //double theprice = 12.9;
+//    long orderid = 1;
 
     double lastprice = 100.0;
     long lastsvolume;
@@ -476,7 +479,7 @@ public class Exchange {
         }
 
         tradelock.unlock();
-        this.updateBookReceivers(OrderType.BID);
+        this.updateBookReceivers(OrderType.BUYLIMIT);
 
         return ret;
     }
@@ -525,8 +528,8 @@ public class Exchange {
      */
     public void executeOrders() {
 
-        SortedSet<Order> bid = order_books.get(OrderType.BID);
-        SortedSet<Order> ask = order_books.get(OrderType.ASK);
+        SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
+        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
         double volume_total = 0;
         double money_total = 0;
@@ -593,8 +596,7 @@ public class Exchange {
      * @return
      */
     public long createOrder(double account_id, OrderType type, double volume, double limit) {
-        
-        
+
         Account a = accounts.get(account_id);
         if (a == null) {
             return -1;
@@ -614,8 +616,8 @@ public class Exchange {
         this.executeOrders();
 
         tradelock.unlock();
-        this.updateBookReceivers(OrderType.ASK);
-        this.updateBookReceivers(OrderType.BID);
+        this.updateBookReceivers(OrderType.SELLLIMIT);
+        this.updateBookReceivers(OrderType.BUYLIMIT);
 
         return o.id;
     }

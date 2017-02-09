@@ -26,6 +26,7 @@
 package traders.ManTrader;
 
 import gui.Globals;
+import gui.OrdersList;
 import org.json.JSONObject;
 import sesim.AutoTrader;
 import sesim.AutoTraderBase;
@@ -55,8 +56,11 @@ public class ManTrader extends AutoTraderBase implements AutoTraderConfig {
     public void start() {
         se.timer.startTimerEvent(this, 0);
         consoleDialog = new ManTraderConsoleDialog(Globals.frame, false);
+              
+       // consoleDialog.     rdersList1.account=trader.getAccount();
         
         consoleDialog.getConsole().trader=this;
+        
         
         consoleDialog.setVisible(true);
 
@@ -65,6 +69,8 @@ public class ManTrader extends AutoTraderBase implements AutoTraderConfig {
     @Override
     public long timerTask() {
         System.out.printf("TimerTask\n");
+        OrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
+        ol.updateModel();
         return 1000;
     }
 

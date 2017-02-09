@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, tobias
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,26 +23,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui;
-
-import java.util.ArrayList;
-import sesim.Exchange.*;
+package sesim;
 
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tobias
  */
-public class BidBook extends OrderBook {
-
-    @Override
-    ArrayList<Order> getOrderBook() {
-        return Globals.se.getOrderBook(OrderType.BUYLIMIT, 40);
-    }
-
-    public BidBook() {
-        if (Globals.se == null) {
-            return;
-        }
-        Globals.se.addBookReceiver(OrderType.BUYLIMIT, this);
-    }
+public class Order {
+    
 }
