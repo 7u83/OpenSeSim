@@ -50,7 +50,7 @@ public class Exchange {
      * Definition of order types
      */
     public enum OrderType {
-        BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY
+        BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
     }
 
     IDGenerator account_id = new IDGenerator();
@@ -141,9 +141,13 @@ public class Exchange {
             double d;
             switch (this.type) {
                 case BUYLIMIT:
+                case STOPBUY:    
+                case BUY:    
                     d = right.limit - left.limit;
                     break;
                 case SELLLIMIT:
+                case STOPLOSS:    
+                case SELL:
                     d = left.limit - right.limit;
                     break;
                 default:
@@ -522,6 +526,24 @@ public class Exchange {
         book.remove(book.first());
 
     }
+    
+    void checkSLOrders(double price){
+        SortedSet<Order> sl = order_books.get(OrderType.STOPLOSS);
+        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+        
+        if (sl.isEmpty())
+            return;
+        
+        Order s = sl.first();
+        if (price<=s.limit){
+            sl.remove(s);
+            
+            s.type=OrderType.SELL;
+            addOrderToBook(s);
+        
+            System.out.printf("Stoploss hit %f %f\n", s.volume,s.limit);
+        }
+    }
 
     /**
      *
@@ -530,11 +552,19 @@ public class Exchange {
 
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+        
+        SortedSet<Order> ul_buy = order_books.get(OrderType.BUY);
+        SortedSet<Order> ul_sell = order_books.get(OrderType.SELL);
+
 
         double volume_total = 0;
         double money_total = 0;
 
         while (!bid.isEmpty() && !ask.isEmpty()) {
+            
+            
+            
+            
 
             Order b = bid.first();
             Order a = ask.first();
@@ -559,11 +589,15 @@ public class Exchange {
             //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
             volume_total += volume;
             money_total += price * volume;
+            
+            
 
             num_trades++;
 
             removeOrderIfExecuted(a);
             removeOrderIfExecuted(b);
+            
+            this.checkSLOrders(price);
 
         }
 //System.out.print("Volume total is "+volume_total+"\n");
@@ -604,7 +638,7 @@ public class Exchange {
 
         Order o = new Order(a, type, volume, limit);
         if (o.volume <= 0 || o.limit <= 0) {
-            System.out.print("binweg\n");
+            //System.out.print("binweg\n");
             return -1;
         }
         tradelock.lock();

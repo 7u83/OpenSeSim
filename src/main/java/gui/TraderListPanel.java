@@ -135,7 +135,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         }
 
-        System.out.print("TimerTaskUpdater\n");
+        //System.out.print("TimerTaskUpdater\n");
 
         ArrayList<TraderListItem> newlist = getTraderList();
         SwingUtilities.invokeLater(new Updater(this.model, newlist));

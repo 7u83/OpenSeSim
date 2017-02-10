@@ -68,7 +68,7 @@ public class ManTrader extends AutoTraderBase implements AutoTraderConfig {
 
     @Override
     public long timerTask() {
-        System.out.printf("TimerTask\n");
+        
         OrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
         ol.updateModel();
         return 1000;
