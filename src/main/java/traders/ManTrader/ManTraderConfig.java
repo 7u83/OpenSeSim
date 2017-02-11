@@ -48,10 +48,6 @@ public class ManTraderConfig extends AutoTraderBase{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public AutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name, double money, double shares) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public String getDisplayName() {

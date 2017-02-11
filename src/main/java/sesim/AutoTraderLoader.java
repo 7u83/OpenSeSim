@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -42,17 +43,38 @@ import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class AutoTraderLoader {
 
-    public void pf(String file) {
-        System.out.printf("File\n", file);
+    
+    /**
+     * Check if a given class can instaciated as AutoTrader.
+     * @param cls Class to check
+     * @return true if it is an AutoTrader, otherwise false
+     */
+    public boolean isAutoTrader(Class<?> cls){
+        if (Modifier.isAbstract(cls.getModifiers()))
+            return false;
+        
+        do {
+            for (Class<?> i : cls.getInterfaces()) {
+                if (i.equals(AutoTraderInterface.class)) {
+                    return true;
+                }
+            }
+
+        }while ((cls=cls.getSuperclass())!=null);
+        return false;
     }
 
-    Class<AutoTraderConfig> loadClass(String filename, String classname) {
+
+    Class<AutoTraderInterface> loadClass(String filename, String classname) {
 
         String clnam = classname.substring(1, classname.length() - 6).replace('/', '.');
         File f = new File(filename);
@@ -71,24 +93,26 @@ public class AutoTraderLoader {
 
         try {
             Class<?> cls = cl.loadClass(clnam);
-            String kanone = cls.getCanonicalName();
-            for (Class<?> i : cls.getInterfaces()) {
-                if (i.equals(AutoTraderConfig.class)) {
-                    return (Class<AutoTraderConfig>) cls;
-                }
+            System.out.printf("Check Class: %s\n",cls.getCanonicalName());
+            if (isAutoTrader(cls)){
+                System.out.printf("AT: %s\n",cls.getCanonicalName());
+                return (Class<AutoTraderInterface>) cls;
+                
             }
+             
 
         } catch (ClassNotFoundException ex) {
+            System.out.printf("Outch\n");
         }
         return null;
 
     }
 
-    public ArrayList<Class<AutoTraderConfig>> getTraders() {
+    public ArrayList<Class<AutoTraderInterface>> getTraders() {
 
         int curlen = 0;
 
-        ArrayList<Class<AutoTraderConfig>> traders;
+        ArrayList<Class<AutoTraderInterface>> traders;
         traders = new ArrayList<>();
 
         for (String classpathEntry : System.getProperty("java.class.path").split(System.getProperty("path.separator"))) {
@@ -98,7 +122,7 @@ public class AutoTraderLoader {
                 public void accept(Object t) {
                     String fn = ((Path) t).toString();
                     if (fn.toLowerCase().endsWith(".class")) {
-                        Class<AutoTraderConfig> cls = loadClass(fn, fn.substring(classpathEntry.length()));
+                        Class<AutoTraderInterface> cls = loadClass(fn, fn.substring(classpathEntry.length()));
                         if (cls == null) {
                             return;
                         }
@@ -147,7 +171,7 @@ public class AutoTraderLoader {
     }
 
     public ArrayList<String> getDefaultStrategyNames(boolean devel) {
-        ArrayList<Class<AutoTraderConfig>> trclasses;
+        ArrayList<Class<AutoTraderInterface>> trclasses;
         trclasses = this.getTraders();
         ArrayList<String> ret = new ArrayList<>();
         trclasses = getTraders();
@@ -155,12 +179,13 @@ public class AutoTraderLoader {
         for (int i = 0; i < trclasses.size(); i++) {
             try {
                 
-                AutoTraderConfig ac = trclasses.get(i).newInstance();
+                AutoTraderInterface ac = trclasses.get(i).newInstance();
                 if (ac.getDevelStatus() && devel==false){
                     continue;
                 }
                 ret.add(ac.getClass().getCanonicalName());
-            } catch (InstantiationException | IllegalAccessException ex) {
+            } catch (Exception e) {
+                System.out.printf("Can't load \n");
 
             }
 
@@ -173,11 +198,11 @@ public class AutoTraderLoader {
         return this.getDefaultStrategyNames(true);
     }
 
-    public AutoTraderConfig getStrategyBase(String name) {
-        ArrayList<Class<AutoTraderConfig>> traders = this.getTraders();
+    public AutoTraderInterface getStrategyBase(String name) {
+        ArrayList<Class<AutoTraderInterface>> traders = this.getTraders();
         for (int i = 0; i < traders.size(); i++) {
             try {
-                AutoTraderConfig ac = traders.get(i).newInstance();
+                AutoTraderInterface ac = traders.get(i).newInstance();
 
                 System.out.printf("Looking for in %s == %s\n", ac.getClass().getCanonicalName(),name);
                 

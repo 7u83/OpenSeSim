@@ -44,7 +44,7 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
         account_id = se.createAccount(money, shares);
         Account a = se.getAccount(account_id);
         
-        a.owner=this;
+      //  a.owner=this;
         
         this.se = se;
         this.config = config;
@@ -78,7 +78,7 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
     
     public void init(Exchange se,long id,String name, double money, double shares, JSONObject cfg){
         this.account_id=se.createAccount(money, shares);
-        se.getAccount(account_id).owner=this;
+//        se.getAccount(account_id).owner=this;
            this.se = se;
         this.name = name;
         this.id=id;

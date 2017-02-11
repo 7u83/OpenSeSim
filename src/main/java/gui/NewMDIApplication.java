@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
+import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import traders.RandomTraderConfig;
 
@@ -60,11 +61,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
         this.setTitle("SeSim - Stock Exchange Simmulator");
     }
 
-    AutoTrader createTraderNew(Exchange se,long id,String name, double money, double shares, JSONObject cfg) {
+    AutoTraderInterface createTraderNew(Exchange se,long id,String name, double money, double shares, JSONObject cfg) {
         System.out.printf("!!!! creating new\n");
         String base = cfg.getString("base");
-        AutoTrader ac = (AutoTrader)Globals.tloader.getStrategyBase(base);
-        ((AutoTraderConfig)ac).putConfig(cfg);
+        AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
+        ac.putConfig(cfg);
         ac.init(se, id, name, money, shares, cfg);
         return ac;
     }
@@ -81,7 +82,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             String strategy_name = t.getString("Strategy");
             JSONObject strategy = Globals.getStrategy(strategy_name);
             String base = strategy.getString("base");
-            AutoTraderConfig ac = Globals.tloader.getStrategyBase(base);
+            AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
 
             System.out.printf("Load Strat: %s\n", strategy_name);
             System.out.printf("Base %s\n", base);
@@ -97,12 +98,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
             System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
 
             for (int i1 = 0; i1 < count; i1++) {
-                AutoTrader trader = ac.createTrader(Globals.se, strategy, id++, t.getString("Name") + i1, money, shares);
-                if (trader == null) {
+                AutoTraderInterface  trader;
+//                AutoTrader trader = ac.createTrader(Globals.se, strategy, id++, t.getString("Name") + i1, money, shares);
+//                if (trader == null) {
                     System.out.printf("shoudl create new\n");
                     trader = this.createTraderNew(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
              
-                }
+  //              }
 
                 Globals.se.traders.add(trader);
 //                trader.setName(t.getString("Name")+i1);
@@ -117,7 +119,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         Globals.se.fairValue = moneyTotal / sharesTotal;
 
-        Globals.se.fairValue = 15.0;
+        Globals.se.fairValue = 1.0;
 
         for (int i = 0; i < Globals.se.traders.size(); i++) {
             Globals.se.traders.get(i).start();
@@ -640,50 +642,27 @@ public class NewMDIApplication extends javax.swing.JFrame {
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
+        
+        sesim.AutoTraderLoader tl = new sesim.AutoTraderLoader();
+        tl.getTraders();
+        
+        //System.exit(0);
+        
+        
+        
+        
         Globals.se = new Exchange();
 
-        class Tube {
-
-        }
+   
 
         Class<?> c = sesim.Exchange.class;
         Globals.prefs = Preferences.userNodeForPackage(c);
 
         Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
 
-        /*        try {
-            // Set cross-platform Java L&F (also called "Metal")
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-        } catch (UnsupportedLookAndFeelException | ClassNotFoundException |
-                InstantiationException | IllegalAccessException e) {
-        }
-         */
-        ArrayList<Class<AutoTraderConfig>> traders;
-        traders = null;
-
-        sesim.AutoTraderLoader tl = new sesim.AutoTraderLoader();
-        try {
-            traders = tl.getTraders();
-        } catch (Exception e) {
-            System.out.print("Execption\n");
-        }
-
-        for (Class<AutoTraderConfig> at_class : traders) {
-            System.out.printf("Class = %s\n", at_class.getName());
-            if (Modifier.isAbstract(at_class.getModifiers())) {
-                continue;
-            }
-
-            AutoTraderConfig cfg = at_class.newInstance();
-
-            System.out.printf("Have a Trader with name: %s\n", cfg.getDisplayName());
-        }
-
-        //System.exit(0);
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
-//                Globals.prefs = Preferences.userNodeForPackage(this)        
                 new NewMDIApplication().setVisible(true);
             }
         });

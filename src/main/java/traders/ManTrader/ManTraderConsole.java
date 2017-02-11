@@ -28,6 +28,7 @@ package traders.ManTrader;
 import gui.OrdersList;
 import javax.swing.JTable;
 import sesim.AutoTrader;
+import sesim.AutoTraderInterface;
 import sesim.Exchange;
 
 /**
@@ -36,7 +37,7 @@ import sesim.Exchange;
  */
 public class ManTraderConsole extends javax.swing.JPanel {
     
-    public AutoTrader trader;
+    public ManTrader trader;
 
     public OrdersList getOrderListPanel(){
         return this.ordersList1;

@@ -58,7 +58,7 @@ public class Exchange {
 
     public Scheduler timer; // = new Scheduler();
 
-    public ArrayList<AutoTrader> traders;
+    public ArrayList<AutoTraderInterface> traders;
 
     /**
      * Implements a trading account
@@ -68,7 +68,7 @@ public class Exchange {
         private final double id;
         private double shares;
         private double money;
-        protected AutoTrader owner;
+        protected AutoTraderInterface owner;
 
         private final HashMap<Long, Order> orders;
 
@@ -97,7 +97,7 @@ public class Exchange {
             return money;
         }
 
-        public AutoTrader getOwner() {
+        public AutoTraderInterface getOwner() {
             return owner;
         }
 

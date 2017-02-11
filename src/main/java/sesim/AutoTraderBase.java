@@ -25,15 +25,72 @@
  */
 package sesim;
 
+import org.json.JSONObject;
+import sesim.Scheduler.TimerTask;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AutoTraderBase extends AutoTrader implements AutoTraderConfig{
+public abstract class AutoTraderBase implements AutoTraderInterface, TimerTask{
 
- //   public AutoTraderBase(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
- //       super(se, id, name, money, shares, config);
-//    }
+     protected double account_id;
+    protected Exchange se;
+    protected AutoTraderConfig config;
+
+    protected String name;
+
+    public AutoTraderBase(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
+        account_id = se.createAccount(money, shares);
+        Exchange.Account a = se.getAccount(account_id);
+        
+     //   a.owner=this;
+        
+        this.se = se;
+        this.config = config;
+        this.name = name;
+        this.id=id;
+
+    }
+    
+    public AutoTraderBase(){
+        se=null;
+        id=0;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+    
+  //  @Override
+    public long getID(){
+        return id;
+    }
+    private long id;
+    
+    public Exchange.Account getAccount(){
+        return se.getAccount(account_id);
+    }
+    
+    public void init(Exchange se,long id,String name, double money, double shares, JSONObject cfg){
+        this.account_id=se.createAccount(money, shares);
+        se.getAccount(account_id).owner=this;
+           this.se = se;
+        this.name = name;
+        this.id=id;
+        
+  
+    }
+    
+    public Exchange getSE(){
+        return se;
+    }
+
+    public abstract void start();
 
    
      

@@ -28,6 +28,7 @@ package traders;
 import gui.Globals;
 import java.util.*;
 import java.util.Random;
+import org.json.JSONObject;
 //import java.util.TimerTask;
 /*import sesim.AccountData;*/
 
@@ -42,15 +43,19 @@ import sesim.*;
  * @author 7u83
  */
 public class RandomTrader extends AutoTrader {
+    
+    
+    
 
-    long event() {
+  /*  long event() {
 
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
         return rc;
 
     }
-
+*/
+    
     public RandomTrader(Exchange se, long id, String name, double money, double shares, RandomTraderConfig config) {
         super(se, id, name,money, shares, config);
         if (this.config == null) {
@@ -72,6 +77,8 @@ public class RandomTrader extends AutoTrader {
 
 //        return this.event();
     }
+
+ 
 
     protected enum Action {
         BUY, SELL, RANDOM

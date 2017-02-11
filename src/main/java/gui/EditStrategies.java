@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import sesim.AutoTrader;
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
+import sesim.AutoTraderInterface;
 
 /**
  *
@@ -77,11 +78,8 @@ public final class EditStrategies extends javax.swing.JDialog {
 
     }
 
-    void setStrategy(String strategy) {
-        ArrayList<Class<AutoTraderConfig>> s = Globals.tloader.getTraders();
 
-    }
-
+    
     final String STRATEGYPREFS = "Strategies";
 
     void reloadStrategyConfigs() {
@@ -246,7 +244,7 @@ public final class EditStrategies extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     AutoTraderGui acgui;
-    AutoTraderConfig ac;
+    AutoTraderInterface ac;
 
     private void jComboBoxStrategySelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxStrategySelectorActionPerformed
 
@@ -392,7 +390,7 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
         if (sd.result==null)
             return;
         
-        AutoTraderConfig ac = Globals.tloader.getStrategyBase(sd.result.base);
+        AutoTraderInterface ac = Globals.tloader.getStrategyBase(sd.result.base);
         JSONObject cfg = ac.getConfig();
         System.out.printf("Initial cfg %s\n", cfg.toString(2));
         cfg.put("base", ac.getClass().getCanonicalName());

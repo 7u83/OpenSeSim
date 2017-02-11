@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,54 +23,32 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders;
+package sesim;
 
-import javax.swing.JPanel;
 import org.json.JSONObject;
-import sesim.AutoTrader;
-import sesim.AutoTraderConfig;
-import sesim.AutoTraderGui;
-import sesim.Exchange;
 
 /**
  *
- * @author tobias
+ * @author 7u83 <7u83@mail.ru>
  */
-public class SuperTraderConfig implements AutoTraderConfig{
+public interface AutoTraderInterface {
 
-    @Override
-    public AutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name,double money, double shares) {
-        return null;
-    }
+    public abstract boolean getDevelStatus();
 
-    @Override
-    public String getDisplayName() {
-        return "SuperTrader";
-    }
+    public abstract String getDisplayName();
+
+    public abstract AutoTraderGui getGui();
+
+    public abstract JSONObject getConfig();
+
+    public abstract void putConfig(JSONObject cfg);
     
+    public abstract String getName();
     
-    public SuperTraderConfig(){
-        
-    }
+        public void init(Exchange se,long id,String name, double money, double shares, JSONObject cfg);
 
-    @Override
-    public AutoTraderGui getGui() {
-        return null;
-    }
+    public Exchange.Account getAccount();
 
-    @Override
-    public JSONObject getConfig() {
-        return null;
-    }
+    public void start();
 
-    @Override
-    public void putConfig(JSONObject cfg) {
-        
-    }
-
-    @Override
-    public boolean getDevelStatus() {
-        return true;
-    }
-    
 }

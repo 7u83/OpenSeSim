@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import sesim.AutoTrader;
+import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Scheduler;
 
@@ -100,10 +101,10 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         sesim.Quote q = se.getLastQuoete();
         double price = q == null ? 0 : q.price;
-        Iterator<AutoTrader> it = se.traders.iterator();
+        Iterator<AutoTraderInterface> it = se.traders.iterator();
         ArrayList<TraderListItem> tlist = new ArrayList<>();
         while (it.hasNext()) {
-            AutoTrader at = it.next();
+            AutoTraderInterface at = it.next();
             Exchange.Account a = at.getAccount();
 
             TraderListItem ti = new TraderListItem();

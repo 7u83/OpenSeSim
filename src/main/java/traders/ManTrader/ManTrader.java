@@ -39,7 +39,7 @@ import sesim.Exchange;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ManTrader extends AutoTraderBase implements AutoTraderConfig {
+public class ManTrader extends AutoTraderBase  {
 
     public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
         //  super(se, id, name, money, shares, null);
@@ -74,11 +74,12 @@ public class ManTrader extends AutoTraderBase implements AutoTraderConfig {
         return 1000;
     }
 
-    @Override
+ /*   @Override
     public AutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name, double money, double shares) {
         return null;
     }
-
+*/
+    
     @Override
     public String getDisplayName() {
         return null;
