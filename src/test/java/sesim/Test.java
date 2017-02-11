@@ -57,17 +57,6 @@ public class Test {
         System.out.print("haha\n");
     }
 
-    static void print_account(AccountData ad) {
-        System.out.print(
-                "Account ID:"
-                + ad.id
-                + " Ballance:"
-                + ad.money
-                + " Shares:"
-                + ad.shares
-                + "\n"
-        );
-    }
 
     static public String getFullClassName(String classFileName) throws IOException {
         File file = new File(classFileName);

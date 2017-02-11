@@ -67,11 +67,15 @@ public class NewMDIApplication extends javax.swing.JFrame {
         AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
         ac.putConfig(cfg);
         ac.init(se, id, name, money, shares, cfg);
+        
         return ac;
     }
 
     public void startTraders() {
 
+        Globals.se.setMoneyDecimals(8);
+        Globals.se.setSharesDecimals(0);        
+        
         JSONArray tlist = Globals.getTraders();
 
         Double moneyTotal = 0.0;
@@ -495,14 +499,19 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         resetSim();
         this.stopButton.setEnabled(true);
+        
+        this.orderBookPanel.invalidate();
+        this.orderBookPanel.repaint();
+        this.clock.invalidate();
+        this.clock.repaint();
+        
         this.startTraders();
 
         Globals.se.timer.setPause(false);
         Globals.se.timer.start();
         Globals.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
 
-        this.clock.invalidate();
-        this.clock.repaint();
+
 
     }
 

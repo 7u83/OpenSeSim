@@ -57,7 +57,8 @@ public class RandomTraderConfig extends AutoTraderConfigBase implements AutoTrad
         if (cfg != null) {
             this.putConfig(cfg);
         }
-        return new traders.RandomTrader(se, id, name, money, shares, this);
+        return null;
+        //return new traders.RandomTrader(se, id, name, money, shares, this);
     }
 
     @Override
@@ -67,7 +68,8 @@ public class RandomTraderConfig extends AutoTraderConfigBase implements AutoTrad
 
     @Override
     public AutoTraderGui getGui() {
-        return new RandomTraderGui(this);
+        return null;
+        //return new RandomTraderGui(this);
     }
 
     final String SELL_VOLUME = "sell_volume";

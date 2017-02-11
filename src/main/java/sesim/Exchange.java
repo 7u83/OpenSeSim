@@ -101,7 +101,7 @@ public class Exchange {
             return owner;
         }
 
-        public Map getOrders() {
+        public HashMap<Long,Order> getOrders() {
             return orders;
         }
 
@@ -676,7 +676,7 @@ public class Exchange {
         return accounts.get(account_id);
     }
 
-    public AccountData getAccountData(double account_id) {
+    /*public AccountData getAccountData(double account_id) {
         tradelock.lock();
         Account a = accounts.get(account_id);
         tradelock.unlock();
@@ -713,7 +713,8 @@ public class Exchange {
         //KeySet ks = a.orders.keySet();
         return ad;
     }
-
+*/
+    
     public ArrayList<OrderData> getOpenOrders(double account_id) {
 
         Account a = accounts.get(account_id);
