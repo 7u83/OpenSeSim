@@ -25,16 +25,15 @@
  */
 package traders;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JPanel;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sesim.AutoTrader;
+
 import sesim.AutoTraderConfigBase;
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
+import sesim.OldAutoTrader;
 
 /**
  *
@@ -53,7 +52,7 @@ public class RandomTraderConfig extends AutoTraderConfigBase implements AutoTrad
     public Long[] wait_after_buy = {10L, 30L};
 
     @Override
-    public AutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name, double money, double shares) {
+    public OldAutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name, double money, double shares) {
         if (cfg != null) {
             this.putConfig(cfg);
         }

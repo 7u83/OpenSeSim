@@ -296,28 +296,28 @@
     <Component class="javax.swing.JSpinner" name="waitAfterBuyMin">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1000" type="number"/>
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Long" stepSize="1000" type="number"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="waitAfterSellMin">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1000" type="number"/>
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Long" stepSize="1000" type="number"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="waitAfterSellMax">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1000" type="number"/>
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Long" stepSize="1000" type="number"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="waitAfterBuyMax">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1000" type="number"/>
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Long" stepSize="1000" type="number"/>
         </Property>
       </Properties>
     </Component>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,56 +25,76 @@
  */
 package gui;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.Timer;
+import java.util.TimerTask;
+import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import sesim.AutoTraderInterface;
+import sesim.Exchange;
 import sesim.Exchange.Account;
-import sesim.Exchange.Order;
 
 /**
  *
- * @author tobias
+ * @author 7u83 <7u83@mail.ru>
  */
-public class OrdersList extends javax.swing.JPanel {
+public class TraderListPanel2 extends javax.swing.JPanel {
 
-    public Account account;
     DefaultTableModel model;
 
-    public final void updateModel() {
-        if (null == account) {
+    final void updateModel() {
+        if (Globals.se == null) {
             return;
         }
 
-        int row = 0;
-
-        Iterator<Map.Entry<Long, Order>> it = account.getOrders().entrySet().iterator();
-        model.setRowCount(account.getOrders().size());
-        while (it.hasNext()) {
-            Map.Entry e = it.next();
-            Long k = (Long) e.getKey();
-            Order o = (Order) e.getValue();
-
-            model.setValueAt(k, row, 0);
-
-            model.setValueAt(((Order) o).getType().toString(), row, 1);
-
-            model.setValueAt(((Order) o).getLimit(), row, 2);
-            model.setValueAt(((Order) o).getVolume(), row, 3);
-            model.setValueAt(((Order) o).getOrderStatus().toString(), row, 4);
-            row++;
+        if (Globals.se.traders == null) {
+            return;
         }
-        this.order_table.getRowSorter().allRowsChanged();
+
+       sesim.Quote q = Globals.se.getLastQuoete();
+        double price = q == null ? 0 : q.price;
+
+        int size = Globals.se.traders.size();
+        model.setRowCount(size);
+        for (int i = 0; i < size; i++) {
+            AutoTraderInterface at = Globals.se.traders.get(i);
+            Account a = at.getAccount();
+            model.setValueAt(i, i, 0);
+            model.setValueAt(at.getName(), i, 1);
+            model.setValueAt(a.getMoney(), i, 2);
+            model.setValueAt(a.getShares(), i, 3);
+
+            double wealth = a.getShares() * price + a.getMoney();
+            model.setValueAt(wealth, i, 4);
+        }
+        list.getRowSorter().allRowsChanged();
     }
 
+    TimerTask updater;
+
     /**
-     * Creates new form OrdersList
+     * Creates new form TraderListPanel2
      */
-    public OrdersList() {
+    public TraderListPanel2() {
         initComponents();
-        model = (DefaultTableModel) order_table.getModel();
+        model = (DefaultTableModel) list.getModel();
         updateModel();
+
+        Timer timer = new Timer();
+        updater = new TimerTask() {
+            @Override
+            public void run() {
+                updateModel();
+
+            }
+        };
+
+        timer.schedule(updater, 0, 1000);
+
     }
 
     /**
@@ -87,22 +107,23 @@ public class OrdersList extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        order_table = new javax.swing.JTable();
+        list = new javax.swing.JTable();
 
-        order_table.setAutoCreateRowSorter(true);
-        order_table.setModel(new javax.swing.table.DefaultTableModel(
+        list.setAutoCreateRowSorter(true);
+        list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Type", "Limit", "Volume", "Status"
+                "ID", "Name", "Money", "Shares", "Wealth"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
+                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false
@@ -116,25 +137,45 @@ public class OrdersList extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(order_table);
+        list.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(list);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
+        if (evt.getClickCount() == 2) {
+            int index = list.rowAtPoint(evt.getPoint());
+            
+            index = list.getRowSorter().convertRowIndexToModel(index);
+            Integer tid = (Integer)model.getValueAt(index, 0);
+            System.out.printf("Trader ID %d\n", tid);
+            
+            JDialog console = Globals.se.traders.get(tid).getGuiConsole();
+            if (console == null)
+                return;
+            console.setVisible(true);
+            
+        }
+
+    }//GEN-LAST:event_listMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable order_table;
+    private javax.swing.JTable list;
     // End of variables declaration//GEN-END:variables
 }

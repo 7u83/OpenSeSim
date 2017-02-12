@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sesim.AutoTrader;
+
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.AutoTraderInterface;

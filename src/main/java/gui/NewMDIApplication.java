@@ -39,7 +39,7 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sesim.AutoTrader;
+
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
@@ -73,8 +73,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     public void startTraders() {
 
-        Globals.se.setMoneyDecimals(8);
-        Globals.se.setSharesDecimals(0);        
+     //   Globals.se.setMoneyDecimals(8);
+    //    Globals.se.setSharesDecimals(0);        
         
         JSONArray tlist = Globals.getTraders();
 
@@ -458,13 +458,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(orderBookPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jChartScrollPane)))
+                .addComponent(orderBookPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jChartScrollPane)
                 .addContainerGap())
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -496,8 +494,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }
 
     void startSim() {
-
+        
+        
+        
         resetSim();
+        JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", "{}"));
+        Globals.se.putConfig(jo);
+        
         this.stopButton.setEnabled(true);
         
         this.orderBookPanel.invalidate();

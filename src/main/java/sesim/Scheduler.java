@@ -109,18 +109,14 @@ public class Scheduler extends Thread {
     public long currentTimeMillis1() {
 
         long diff = System.currentTimeMillis() - last_time_millis;
-
-  //     diff = 12199999L;
         last_time_millis += diff;
-
+        if (diff==0)
+            diff++;     
         if (pause) {
             return (long) this.current_time_millis;
         }
-
-        this.current_time_millis += diff * this.acceleration;
-//System.out.printf("Current TM: %f\n", this.current_time_millis);
+        this.current_time_millis += ((double)diff) * this.acceleration;
         return (long) this.current_time_millis;
-
     }
 
     public long currentTimeMillis() {
@@ -214,8 +210,10 @@ public class Scheduler extends Thread {
                 return 0;
 
             } else {
-                return 0;
-                //return (t - currentTimeMillis())/(long)this.acceleration;
+                //return 0;
+                long n =(t - currentTimeMillis())/(long)this.acceleration;
+                System.out.printf("Return wait %d\n",n);
+                return n;
             }
         }
 

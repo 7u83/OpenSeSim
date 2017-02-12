@@ -31,10 +31,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import javax.swing.JDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 //import sesim.AccountData;
-import sesim.AutoTrader;
+
 import sesim.AutoTraderBase;
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
@@ -178,6 +179,11 @@ public class RandomTraderA extends AutoTraderBase {
       
     }
 
+    @Override
+    public JDialog getGuiConsole() {
+        return null;
+    }
+
     protected enum Action {
         BUY, SELL, RANDOM
     }
@@ -276,18 +282,21 @@ public class RandomTraderA extends AutoTraderBase {
 
         // how much money we ant to invest?
         double money = getRandomAmmount(ad.getMoney(), buy_volume);
-        money = se.roundMoney(money);
-
+    
         Quote q = se.getCurrentPrice();
         double lp = q == null ? getStart() : q.price;
 
         double limit;
         limit = lp + getRandomAmmount(lp, buy_limit);
-        limit = se.roundMoney(limit);
+
 
         double volume = money / limit;
-        volume = se.roundShares(volume);
 
+    //    System.out.printf("Volume : %f", volume);
+        
+        limit = se.roundMoney(limit);
+        volume = se.roundShares(volume);
+        
         if (volume <= 0 || money <= 0) {
             return false;
         }

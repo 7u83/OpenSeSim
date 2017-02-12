@@ -32,7 +32,7 @@ import sesim.Exchange.Account;
  *
  * @author 7u83
  */
-public abstract class AutoTrader implements Scheduler.TimerTask {
+public abstract class OldAutoTrader implements Scheduler.TimerTask {
 
     protected double account_id;
     protected Exchange se;
@@ -40,7 +40,7 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
 
     protected String name;
 
-    public AutoTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
+    public OldAutoTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
         Account a = se.getAccount(account_id);
         
@@ -53,7 +53,7 @@ public abstract class AutoTrader implements Scheduler.TimerTask {
 
     }
     
-    public AutoTrader(){
+    public OldAutoTrader(){
         se=null;
         id=0;
     }

@@ -35,7 +35,7 @@ import java.util.ArrayList;
  */
 public class AutoTraderList {
     
-    SortedSet <AutoTrader> traders;
+    SortedSet <OldAutoTrader> traders;
 
     AutoTraderList(){
         

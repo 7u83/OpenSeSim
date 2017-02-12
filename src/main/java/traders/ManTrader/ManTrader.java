@@ -27,19 +27,21 @@ package traders.ManTrader;
 
 import gui.Globals;
 import gui.OrdersList;
+import javax.swing.JDialog;
 import org.json.JSONObject;
-import sesim.AutoTrader;
+
 import sesim.AutoTraderBase;
 import sesim.AutoTraderConfigBase;
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
+import sesim.Exchange.AccountListener;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ManTrader extends AutoTraderBase  {
+public class ManTrader extends AutoTraderBase  implements AccountListener{
 
     public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
         //  super(se, id, name, money, shares, null);
@@ -47,9 +49,14 @@ public class ManTrader extends AutoTraderBase  {
     }
 
     public ManTrader() {
-
+        super();
+        
     }
-
+    
+    public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg){
+        super.init(se, id, name, money, shares, cfg);
+        getAccount().setListener(this);
+    }
     ManTraderConsoleDialog consoleDialog;
 
     @Override
@@ -68,17 +75,13 @@ public class ManTrader extends AutoTraderBase  {
 
     @Override
     public long timerTask() {
-        
+    
         OrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
         ol.updateModel();
         return 1000;
     }
 
- /*   @Override
-    public AutoTrader createTrader(Exchange se, JSONObject cfg, long id, String name, double money, double shares) {
-        return null;
-    }
-*/
+ 
     
     @Override
     public String getDisplayName() {
@@ -104,6 +107,19 @@ public class ManTrader extends AutoTraderBase  {
     @Override
     public boolean getDevelStatus() {
         return true;
+    }
+
+    @Override
+    public JDialog getGuiConsole() {
+        return this.consoleDialog;
+    }
+
+    @Override
+    public void accountUpdated(Exchange.Account a, Exchange.Order o) {
+        //this.consoleDialog.cons
+        System.out.printf("AccountListener called\n");
+        
+        this.consoleDialog.getConsole().getOrderListPanel().updateModel();
     }
 
 }

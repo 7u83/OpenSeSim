@@ -26,9 +26,7 @@
 package traders.ManTrader;
 
 import gui.OrdersList;
-import javax.swing.JTable;
-import sesim.AutoTrader;
-import sesim.AutoTraderInterface;
+
 import sesim.Exchange;
 
 /**
@@ -40,7 +38,8 @@ public class ManTraderConsole extends javax.swing.JPanel {
     public ManTrader trader;
 
     public OrdersList getOrderListPanel(){
-        return this.ordersList1;
+        
+        return this.ordersList;
     }
     
     /**
@@ -48,6 +47,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
      */
     public ManTraderConsole() {
         initComponents();
+        
       //  this.ordersList1.account=trader.getAccount();
     }
 
@@ -68,7 +68,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
         sellButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         moneyText = new javax.swing.JLabel();
-        ordersList1 = new gui.OrdersList();
+        ordersList = new gui.OrdersList();
         stopLossButton = new javax.swing.JButton();
 
         limitSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
@@ -111,7 +111,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ordersList1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ordersList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -139,7 +139,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ordersList1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ordersList, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -174,6 +174,9 @@ public class ManTraderConsole extends javax.swing.JPanel {
         long createOrder = trader.getSE().createOrder(trader.getAccount().getID(), Exchange.OrderType.BUYLIMIT, volume, limit);
         System.out.printf("The retval is %d",createOrder);
         
+        this.ordersList.account=this.trader.getAccount();
+        this.ordersList.updateModel();
+        
         
     }//GEN-LAST:event_buyButtonActionPerformed
 
@@ -205,7 +208,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSpinner limitSpinner;
     private javax.swing.JLabel moneyText;
-    private gui.OrdersList ordersList1;
+    private gui.OrdersList ordersList;
     private javax.swing.JButton sellButton;
     private javax.swing.JButton stopLossButton;
     private javax.swing.JSpinner volumeSpinner;

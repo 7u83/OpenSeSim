@@ -46,29 +46,32 @@ public class RandomTraderGuiA extends AutoTraderGui {
 
         JDialog d;
 
-        this.initialDelayMin.setValue(cfg.initial_delay[0]);
-        this.initialDelayMax.setValue(cfg.initial_delay[1]);
+        try {
+            this.initialDelayMin.setValue(cfg.initial_delay[0]);
+            this.initialDelayMax.setValue(cfg.initial_delay[1]);
 
-        this.buyVolMin.setValue(cfg.buy_volume[0]);
-        this.buyVolMax.setValue(cfg.buy_volume[1]);
-        this.sellVolMin.setValue(cfg.sell_volume[0]);
-        this.sellVolMax.setValue(cfg.sell_volume[1]);
-        this.buyLimitMin.setValue(cfg.buy_limit[0]);
-        this.buyLimitMax.setValue(cfg.buy_limit[1]);
-        this.sellLimitMin.setValue(cfg.sell_limit[0]);
-        this.sellLimitMax.setValue(cfg.sell_limit[1]);
+            this.buyVolMin.setValue(cfg.buy_volume[0]);
+            this.buyVolMax.setValue(cfg.buy_volume[1]);
+            this.sellVolMin.setValue(cfg.sell_volume[0]);
+            this.sellVolMax.setValue(cfg.sell_volume[1]);
+            this.buyLimitMin.setValue(cfg.buy_limit[0]);
+            this.buyLimitMax.setValue(cfg.buy_limit[1]);
+            this.sellLimitMin.setValue(cfg.sell_limit[0]);
+            this.sellLimitMax.setValue(cfg.sell_limit[1]);
 
-        this.buyWaitMin.setValue(cfg.buy_wait[0]);
-        this.buyWaitMax.setValue(cfg.buy_wait[1]);
-        this.sellWaitMin.setValue(cfg.sell_wait[0]);
-        this.sellWaitMax.setValue(cfg.sell_wait[1]);
+            this.buyWaitMin.setValue(cfg.buy_wait[0]);
+            this.buyWaitMax.setValue(cfg.buy_wait[1]);
+            this.sellWaitMin.setValue(cfg.sell_wait[0]);
+            this.sellWaitMax.setValue(cfg.sell_wait[1]);
 
-        this.waitAfterBuyMin.setValue(cfg.wait_after_buy[0]);
-        this.waitAfterBuyMax.setValue(cfg.wait_after_buy[1]);
+            this.waitAfterBuyMin.setValue(cfg.wait_after_buy[0]);
+            this.waitAfterBuyMax.setValue(cfg.wait_after_buy[1]);
 
-        this.waitAfterSellMin.setValue(cfg.wait_after_sell[0]);
-        this.waitAfterSellMax.setValue(cfg.wait_after_sell[1]);
+            this.waitAfterSellMin.setValue(cfg.wait_after_sell[0]);
+            this.waitAfterSellMax.setValue(cfg.wait_after_sell[1]);
+        } catch (Exception e) {
 
+        }
     }
 
     @Override
@@ -179,13 +182,13 @@ public class RandomTraderGuiA extends AutoTraderGui {
 
         sellLimitMin.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
 
-        waitAfterBuyMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+        waitAfterBuyMin.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 
-        waitAfterSellMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+        waitAfterSellMin.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 
-        waitAfterSellMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+        waitAfterSellMax.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 
-        waitAfterBuyMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1000));
+        waitAfterBuyMax.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 
         buyVolMin.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
 

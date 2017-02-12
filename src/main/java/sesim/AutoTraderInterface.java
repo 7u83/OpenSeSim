@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import javax.swing.JDialog;
 import org.json.JSONObject;
 
 /**
@@ -39,13 +40,15 @@ public interface AutoTraderInterface {
 
     public abstract AutoTraderGui getGui();
 
+    public abstract JDialog getGuiConsole();
+
     public abstract JSONObject getConfig();
 
     public abstract void putConfig(JSONObject cfg);
-    
+
     public abstract String getName();
-    
-        public void init(Exchange se,long id,String name, double money, double shares, JSONObject cfg);
+
+    public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg);
 
     public Exchange.Account getAccount();
 

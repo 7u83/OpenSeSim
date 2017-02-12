@@ -27,7 +27,7 @@ package gui;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import sesim.AutoTrader;
+
 import sesim.Exchange;
 import traders.*;
 

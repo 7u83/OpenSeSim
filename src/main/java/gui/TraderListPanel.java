@@ -36,7 +36,7 @@ import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
-import sesim.AutoTrader;
+
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Scheduler;
@@ -247,6 +247,11 @@ public class TraderListPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        traderList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                traderListMouseClicked(evt);
+            }
+        });
         traderListScroller.setViewportView(traderList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -260,6 +265,10 @@ public class TraderListPanel extends javax.swing.JPanel {
             .addComponent(traderListScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void traderListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_traderListMouseClicked
+       
+    }//GEN-LAST:event_traderListMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

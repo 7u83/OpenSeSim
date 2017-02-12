@@ -61,9 +61,19 @@ public class Exchange {
     public ArrayList<AutoTraderInterface> traders;
 
     /**
+     *
+     */
+    public interface AccountListener {
+
+        public void accountUpdated(Account a, Order o);
+    }
+
+    /**
      * Implements a trading account
      */
     public class Account implements Comparable {
+
+        private AccountListener listener = null;
 
         private final double id;
         private double shares;
@@ -101,8 +111,19 @@ public class Exchange {
             return owner;
         }
 
-        public HashMap<Long,Order> getOrders() {
+        public HashMap<Long, Order> getOrders() {
             return orders;
+        }
+
+        public void setListener(AccountListener al) {
+            this.listener = al;
+        }
+
+        public void update(Order o) {
+            if (listener == null) {
+                return;
+            }
+            listener.accountUpdated(this, o);
         }
 
     }
@@ -128,6 +149,13 @@ public class Exchange {
         return a.id;
     }
 
+    public enum OrderStatus {
+        OPEN,
+        PARTIALLY_EXECUTED,
+        CLOSED,
+        CANCELED
+    }
+
     class OrderComparator implements Comparator<Order> {
 
         OrderType type;
@@ -141,12 +169,12 @@ public class Exchange {
             double d;
             switch (this.type) {
                 case BUYLIMIT:
-                case STOPBUY:    
-                case BUY:    
+                case STOPBUY:
+                case BUY:
                     d = right.limit - left.limit;
                     break;
                 case SELLLIMIT:
-                case STOPLOSS:    
+                case STOPLOSS:
                 case SELL:
                     d = left.limit - right.limit;
                     break;
@@ -182,6 +210,7 @@ public class Exchange {
 
     public class Order {
 
+        OrderStatus status;
         OrderType type;
         private double limit;
         private double volume;
@@ -198,6 +227,7 @@ public class Exchange {
             this.volume = roundShares(volume);
             this.initial_volume = this.volume;
             this.created = timer.currentTimeMillis();
+            this.status=OrderStatus.OPEN;
         }
 
         public long getID() {
@@ -227,6 +257,11 @@ public class Exchange {
         public Account getAccount() {
             return account;
         }
+        
+        public OrderStatus getOrderStatus(){
+            return status;
+        }
+        
 
     }
 
@@ -322,8 +357,25 @@ public class Exchange {
 
     }
 
+    public final String CFG_MONEY_DECIMALS = "money_decimals";
+    public final String CFG_SHARES_DECIMALS = "shares_decimals";
+
+    public void putConfig(JSONObject cfg) {
+        this.setMoneyDecimals(cfg.getInt(CFG_MONEY_DECIMALS));
+        this.setSharesDecimals(cfg.getInt(CFG_SHARES_DECIMALS));
+
+    }
+
     public Quote getCurrentPrice() {
 
+        /*    if (!this.quoteHistory.isEmpty()){
+            Quote q = this.quoteHistory.pollLast();
+            System.out.printf("Quote: %f\n", q.price);
+            return q;
+        }
+        
+        return null;
+         */
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -420,7 +472,6 @@ public class Exchange {
     // long time = 0;
     //double theprice = 12.9;
 //    long orderid = 1;
-
     double lastprice = 100.0;
     long lastsvolume;
 
@@ -451,7 +502,10 @@ public class Exchange {
     }
 
     public Quote getLastQuoete() {
-        return this.quoteHistory.last();
+        if (this.quoteHistory.isEmpty()) {
+            return null;
+        }
+        return this.quoteHistory.pollLast();
     }
 
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
@@ -459,6 +513,7 @@ public class Exchange {
         dst.money += money;
         src.shares -= shares;
         dst.shares += shares;
+
     }
 
     public boolean cancelOrder(double account_id, long order_id) {
@@ -516,6 +571,8 @@ public class Exchange {
 
     private void removeOrderIfExecuted(Order o) {
         if (o.volume != 0) {
+            o.status=OrderStatus.PARTIALLY_EXECUTED;
+            o.account.update(o);
             return;
         }
 
@@ -525,23 +582,27 @@ public class Exchange {
 
         book.remove(book.first());
 
+        o.status=OrderStatus.CLOSED;
+        o.account.update(o);
+
     }
-    
-    void checkSLOrders(double price){
+
+    void checkSLOrders(double price) {
         SortedSet<Order> sl = order_books.get(OrderType.STOPLOSS);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
-        
-        if (sl.isEmpty())
+
+        if (sl.isEmpty()) {
             return;
-        
+        }
+
         Order s = sl.first();
-        if (price<=s.limit){
+        if (price <= s.limit) {
             sl.remove(s);
-            
-            s.type=OrderType.SELL;
+
+            s.type = OrderType.SELL;
             addOrderToBook(s);
-        
-            System.out.printf("Stoploss hit %f %f\n", s.volume,s.limit);
+
+            System.out.printf("Stoploss hit %f %f\n", s.volume, s.limit);
         }
     }
 
@@ -552,19 +613,14 @@ public class Exchange {
 
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
-        
+
         SortedSet<Order> ul_buy = order_books.get(OrderType.BUY);
         SortedSet<Order> ul_sell = order_books.get(OrderType.SELL);
-
 
         double volume_total = 0;
         double money_total = 0;
 
         while (!bid.isEmpty() && !ask.isEmpty()) {
-            
-            
-            
-            
 
             Order b = bid.first();
             Order a = ask.first();
@@ -581,22 +637,24 @@ public class Exchange {
             //System.out.printf("Price %f Vol %f\n", price,volume);
             // Transfer money and shares
             transferMoneyAndShares(b.account, a.account, volume * price, -volume);
-//System.out.print("Transfer Shares was called with volume "+volume+"\n");
+
+
             // Update volume
             b.volume -= volume;
             a.volume -= volume;
 
+         //   a.account.update(a);
+         //   b.account.update(b);
+
             //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
             volume_total += volume;
             money_total += price * volume;
-            
-            
 
             num_trades++;
 
             removeOrderIfExecuted(a);
             removeOrderIfExecuted(b);
-            
+
             this.checkSLOrders(price);
 
         }
@@ -646,6 +704,7 @@ public class Exchange {
 
         addOrderToBook(o);
         a.orders.put(o.id, o);
+        a.update(o);
 
         this.executeOrders();
 
@@ -713,8 +772,7 @@ public class Exchange {
         //KeySet ks = a.orders.keySet();
         return ad;
     }
-*/
-    
+     */
     public ArrayList<OrderData> getOpenOrders(double account_id) {
 
         Account a = accounts.get(account_id);
