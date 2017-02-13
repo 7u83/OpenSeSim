@@ -28,6 +28,7 @@ package gui;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -46,12 +47,28 @@ import sesim.AutoTraderLoader;
  */
 public class Globals {
     
+    public interface CfgListener{
+        void cfgChanged();
+    }
+    
+    static ArrayList <CfgListener> cfg_listeners = new ArrayList<>();
+    public static void notifyCfgListeners(){
+        for (CfgListener l : cfg_listeners){
+            l.cfgChanged();
+        }
+    }
+    
+    public static void addCfgListener(CfgListener l){
+        cfg_listeners.add(l);
+    }
+    
     public static JFrame frame;
 
     static final String STRATEGYPREFS = "Strategies";
     static final String TRADERPREFS = "Traders";
     
     static final String DEVELSTATUS = "devel_status";
+    static final String GODMODE = "godmode";
 
     static public sesim.Exchange se;
 

@@ -125,7 +125,7 @@ public class QuotePanel extends javax.swing.JPanel implements sesim.Exchange.Quo
         
                 
         
-        u.text = String.format("%.2f\n(%.0f)", q.price,q.volume);
+        u.text = String.format("%.8f\n(%.0f)", q.price,q.volume);
         
         SwingUtilities.invokeLater(u);
         

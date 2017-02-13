@@ -1,5 +1,3 @@
-package gui;
-
 /*
  * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
@@ -25,22 +23,20 @@ package gui;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+package gui;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class TraderListDialog extends javax.swing.JDialog {
+public class OrderBookDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form TraderList
-     *
-     * @param parent
-     * @param modal
+     * Creates new form OrderBookDialog
      */
-    public TraderListDialog(java.awt.Frame parent, boolean modal) {
+    public OrderBookDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.setLocationRelativeTo(MainWin.instance);
     }
 
     /**
@@ -52,21 +48,15 @@ public class TraderListDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        traderListPanel22 = new gui.TraderListPanel();
+        orderBookNew1 = new gui.OrderBookNew();
+        quotePanel1 = new gui.QuotePanel();
+        orderBookNew2 = new gui.OrderBookNew();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Trader List");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(traderListPanel22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(traderListPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-        );
+        getContentPane().setLayout(new java.awt.FlowLayout());
+        getContentPane().add(orderBookNew1);
+        getContentPane().add(quotePanel1);
+        getContentPane().add(orderBookNew2);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -88,21 +78,20 @@ public class TraderListDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TraderListDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OrderBookDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TraderListDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OrderBookDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TraderListDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OrderBookDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TraderListDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OrderBookDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                TraderListDialog dialog = new TraderListDialog(new javax.swing.JFrame(), true);
+                OrderBookDialog dialog = new OrderBookDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -115,6 +104,8 @@ public class TraderListDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private gui.TraderListPanel traderListPanel22;
+    private gui.OrderBookNew orderBookNew1;
+    private gui.OrderBookNew orderBookNew2;
+    private gui.QuotePanel quotePanel1;
     // End of variables declaration//GEN-END:variables
 }

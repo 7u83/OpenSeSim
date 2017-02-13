@@ -243,7 +243,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="orderBookPanel" min="-2" pref="233" max="-2" attributes="0"/>
+              <Component id="oderBookPanelNew1" min="-2" pref="220" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jChartScrollPane" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -259,7 +259,10 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jChartScrollPane" max="32767" attributes="0"/>
-                  <Component id="orderBookPanel" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="oderBookPanelNew1" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -267,8 +270,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="gui.OrderBookPanel" name="orderBookPanel">
-    </Component>
     <Container class="javax.swing.JScrollPane" name="jChartScrollPane">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
@@ -419,5 +420,7 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="gui.OderBookPanelNew" name="oderBookPanelNew1">
+    </Component>
   </SubComponents>
 </Form>

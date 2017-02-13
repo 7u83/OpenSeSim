@@ -74,7 +74,7 @@ public class AutoTraderLoader {
     }
 
 
-    Class<AutoTraderInterface> loadClass(String filename, String classname) {
+    Class<AutoTraderInterface> loadAutoTraderClass(String filename, String classname) {
 
         String clnam = classname.substring(1, classname.length() - 6).replace('/', '.');
         File f = new File(filename);
@@ -95,20 +95,24 @@ public class AutoTraderLoader {
             Class<?> cls = cl.loadClass(clnam);
             System.out.printf("Check Class: %s\n",cls.getCanonicalName());
             if (isAutoTrader(cls)){
-                System.out.printf("AT: %s\n",cls.getCanonicalName());
                 return (Class<AutoTraderInterface>) cls;
                 
             }
-             
-
         } catch (ClassNotFoundException ex) {
-            System.out.printf("Outch\n");
+            // something wnet wrong, but we ignore it
         }
         return null;
 
     }
 
+
+    ArrayList<Class<AutoTraderInterface>> traders_cache=null;
+    
     public ArrayList<Class<AutoTraderInterface>> getTraders() {
+        
+        if (traders_cache!=null){
+            return traders_cache;
+        }
 
         int curlen = 0;
 
@@ -122,7 +126,7 @@ public class AutoTraderLoader {
                 public void accept(Object t) {
                     String fn = ((Path) t).toString();
                     if (fn.toLowerCase().endsWith(".class")) {
-                        Class<AutoTraderInterface> cls = loadClass(fn, fn.substring(classpathEntry.length()));
+                        Class<AutoTraderInterface> cls = loadAutoTraderClass(fn, fn.substring(classpathEntry.length()));
                         if (cls == null) {
                             return;
                         }
@@ -165,7 +169,7 @@ public class AutoTraderLoader {
             }
 
         }
-
+        traders_cache=traders;
         return traders;
 
     }

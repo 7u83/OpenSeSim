@@ -25,21 +25,18 @@
  */
 package gui;
 
-import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.BorderFactory;
-import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
-import sesim.Scheduler;
+import sesim.Exchange.Account;
 
 /**
  *
@@ -47,179 +44,56 @@ import sesim.Scheduler;
  */
 public class TraderListPanel extends javax.swing.JPanel {
 
-    Exchange se;
-    TraderListModel model;
+    DefaultTableModel model;
 
-    TimerTask updater;
-
-    /**
-     * Creates new form TraderListPanel
-     */
-    public TraderListPanel() {
-        initComponents();
-
-        this.setBorder(BorderFactory.createEmptyBorder());
-//        this.orderBookScroller.setBorder(BorderFactory.createBevelBorder(0));
-
+    final void updateModel() {
         if (Globals.se == null) {
             return;
         }
 
-        this.model = new TraderListModel();
-        this.traderList.setModel(this.model);
-
-        traderList.setBorder(BorderFactory.createEmptyBorder());
-
-        JTableHeader h = this.traderList.getTableHeader();
-//        h.setBackground(Color.BLUE);
-//        h.setForeground(Color.green);
-
-        if (Globals.se != null) {
-            this.se = Globals.se;
-            this.list = this.getTraderList();
-            //        se.timer.startTimerEvent(this, 1000);
-
-            Timer timer = new Timer();
-            updater = new TimerTask() {
-                @Override
-                public void run() {
-                    timerTask();
-
-                }
-            };
-
-            timer.schedule(updater, 0, 1000);
-
+        if (Globals.se.traders == null) {
+            return;
         }
 
-    }
-
-    final ArrayList<TraderListItem> getTraderList() {
-        if (se.traders == null) {
-            return new ArrayList<>();
-        }
-
-        sesim.Quote q = se.getLastQuoete();
+        sesim.Quote q = Globals.se.getLastQuoete();
         double price = q == null ? 0 : q.price;
-        Iterator<AutoTraderInterface> it = se.traders.iterator();
-        ArrayList<TraderListItem> tlist = new ArrayList<>();
-        while (it.hasNext()) {
-            AutoTraderInterface at = it.next();
-            Exchange.Account a = at.getAccount();
 
-            TraderListItem ti = new TraderListItem();
-            ti.name = at.getName();
-            ti.shares = a.getShares();
-            ti.money = a.getMoney();
-            ti.welth = price == 0 ? 0 : ti.shares * price + ti.money;
-            tlist.add(ti);
+        int size = Globals.se.traders.size();
+        model.setRowCount(size);
+        for (int i = 0; i < size; i++) {
+            AutoTraderInterface at = Globals.se.traders.get(i);
+            Account a = at.getAccount();
+            model.setValueAt(i, i, 0);
+            model.setValueAt(at.getName(), i, 1);
+            model.setValueAt(a.getMoney(), i, 2);
+            model.setValueAt(a.getShares(), i, 3);
 
+            double wealth = a.getShares() * price + a.getMoney();
+            model.setValueAt(wealth, i, 4);
         }
-        return tlist;
+        list.getRowSorter().allRowsChanged();
     }
 
-    public long timerTask() {
-        class Updater implements Runnable {
+    TimerTask updater;
 
-            TraderListModel model;
-            ArrayList<TraderListItem> newlist;
+    /**
+     * Creates new form TraderListPanel2
+     */
+    public TraderListPanel() {
+        initComponents();
+        model = (DefaultTableModel) list.getModel();
+        updateModel();
 
+        Timer timer = new Timer();
+        updater = new TimerTask() {
             @Override
             public void run() {
-                model.update(this.newlist);
+                updateModel();
+
             }
+        };
 
-            Updater(TraderListModel model, ArrayList newlist) {
-                this.model = model;
-                this.newlist = newlist;
-            }
-
-        }
-
-        //System.out.print("TimerTaskUpdater\n");
-
-        ArrayList<TraderListItem> newlist = getTraderList();
-        SwingUtilities.invokeLater(new Updater(this.model, newlist));
-
-        return 2000;
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    class TraderListItem {
-
-        public String name;
-        public double shares;
-        public double money;
-        public double welth;
-    }
-
-    private ArrayList<TraderListItem> list = new ArrayList<>();
-
-    protected class TraderListModel extends AbstractTableModel {
-
-        //private final boolean desc = false;
-        public TraderListModel() {
-
-        }
-
-        public void update(ArrayList newlist) {
-
-            list = newlist; //getOrderBook();
-            this.fireTableDataChanged();
-        }
-
-        @Override
-        public String getColumnName(int c) {
-            switch (c) {
-                case 0:
-                    return "ID";
-                case 1:
-                    return "Name";
-                case 2:
-                    return "Money";
-                case 3:
-                    return "Shares";
-                case 4:
-                    return "Wealth";
-            }
-            return "";
-        }
-
-        @Override
-        public int getRowCount() {
-            int rc = list.size();
-            //System.out.print("Size" + rc + "\n");
-            return list.size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return 5;
-        }
-
-        @Override
-        public Object getValueAt(int r, int c) {
-            TraderListItem ti;
-            ti = list.get(r);
-
-            int s = list.size();
-            Formatter f = new Formatter();
-            switch (c) {
-                case 0:
-                    return String.format("#%06x", 0);
-
-                case 1:
-                    return String.format("%s", ti.name);
-                case 2:
-                    return String.format("%.2f", ti.money);
-                case 3:
-                    return String.format("%.2f", ti.shares);
-                case 4:
-                    return ti.welth; //String.format("%.2f", ti.welth);
-            }
-
-            return "x";
-        }
+        timer.schedule(updater, 0, 1000);
 
     }
 
@@ -232,47 +106,77 @@ public class TraderListPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        traderListScroller = new javax.swing.JScrollPane();
-        traderList = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        list = new javax.swing.JTable();
 
-        traderList.setAutoCreateRowSorter(true);
-        traderList.setModel(new javax.swing.table.DefaultTableModel(
+        list.setAutoCreateRowSorter(true);
+        list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Name", "Money", "Shares", "Wealth"
             }
-        ));
-        traderList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                traderListMouseClicked(evt);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
-        traderListScroller.setViewportView(traderList);
+        list.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(list);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(traderListScroller, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(traderListScroller, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void traderListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_traderListMouseClicked
-       
-    }//GEN-LAST:event_traderListMouseClicked
+    private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
+        if (evt.getClickCount() == 2) {
+            int index = list.rowAtPoint(evt.getPoint());
+
+            index = list.getRowSorter().convertRowIndexToModel(index);
+            Integer tid = (Integer) model.getValueAt(index, 0);
+            System.out.printf("Trader ID %d\n", tid);
+
+            JDialog console = Globals.se.traders.get(tid).getGuiConsole();
+            if (console == null) {
+                return;
+            }
+            console.setVisible(true);
+
+        }
+
+    }//GEN-LAST:event_listMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable traderList;
-    private javax.swing.JScrollPane traderListScroller;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable list;
     // End of variables declaration//GEN-END:variables
 }

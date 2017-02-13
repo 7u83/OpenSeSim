@@ -210,10 +210,7 @@ public class Scheduler extends Thread {
                 return 0;
 
             } else {
-                //return 0;
-                long n =(t - currentTimeMillis())/(long)this.acceleration;
-                System.out.printf("Return wait %d\n",n);
-                return n;
+                return(t - currentTimeMillis())/(long)this.acceleration;
             }
         }
 

@@ -94,7 +94,6 @@ public class OrdersList extends javax.swing.JPanel {
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
-                {null, null, null, null, null},
                 {null, null, null, null, null}
             },
             new String [] {

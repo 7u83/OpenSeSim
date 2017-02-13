@@ -25,75 +25,81 @@
  */
 package gui;
 
+import gui.Globals.CfgListener;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Timer;
-import java.util.TimerTask;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import sesim.AutoTraderInterface;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import sesim.Exchange;
-import sesim.Exchange.Account;
+import sesim.Exchange.Order;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class TraderListPanel2 extends javax.swing.JPanel {
+public class OrderBookNew extends javax.swing.JPanel implements Exchange.BookReceiver, CfgListener {
 
     DefaultTableModel model;
+    TableColumn trader_column = null;
 
-    final void updateModel() {
-        if (Globals.se == null) {
+    public void setGodMode(boolean on) {
+        TableColumnModel tcm = list.getColumnModel();        
+        if (on){
+            if (list.getColumnCount()==3){
+                return;
+            }
+            tcm.addColumn(trader_column);
+            tcm.moveColumn(2, 0);
             return;
         }
-
-        if (Globals.se.traders == null) {
-            return;
+        else{
+            if (list.getColumnCount()==2){
+                return;
+            }
+            tcm.removeColumn(tcm.getColumn(0));
+            
+            
+            
         }
-
-       sesim.Quote q = Globals.se.getLastQuoete();
-        double price = q == null ? 0 : q.price;
-
-        int size = Globals.se.traders.size();
-        model.setRowCount(size);
-        for (int i = 0; i < size; i++) {
-            AutoTraderInterface at = Globals.se.traders.get(i);
-            Account a = at.getAccount();
-            model.setValueAt(i, i, 0);
-            model.setValueAt(at.getName(), i, 1);
-            model.setValueAt(a.getMoney(), i, 2);
-            model.setValueAt(a.getShares(), i, 3);
-
-            double wealth = a.getShares() * price + a.getMoney();
-            model.setValueAt(wealth, i, 4);
-        }
-        list.getRowSorter().allRowsChanged();
+       
     }
 
-    TimerTask updater;
+    @Override
+    public void cfgChanged() {
+        boolean gm = Globals.prefs.get(Globals.GODMODE, "false").equals("true");
+        System.out.printf("GM %s\n",gm?"true":"false");
+        setGodMode(gm);
+        list.invalidate();
+        list.repaint();
+        
+    }
 
+    
     /**
-     * Creates new form TraderListPanel2
+     * Creates new form OrderBookNew
      */
-    public TraderListPanel2() {
+    public OrderBookNew() {
         initComponents();
-        model = (DefaultTableModel) list.getModel();
-        updateModel();
+        if (Globals.se==null)
+            return;
+        model = (DefaultTableModel) this.list.getModel();
+        trader_column = list.getColumnModel().getColumn(0);
+        cfgChanged();
+        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
+        Globals.addCfgListener(this);
+    }
 
-        Timer timer = new Timer();
-        updater = new TimerTask() {
-            @Override
-            public void run() {
-                updateModel();
-
-            }
-        };
-
-        timer.schedule(updater, 0, 1000);
+    @Override
+    public void UpdateOrderBook() {
+        ArrayList<Order> ob = Globals.se.getOrderBook(Exchange.OrderType.SELLLIMIT, 40);
+        model.setRowCount(ob.size());
+        int row = 0;
+        for (Order ob1 : ob) {
+            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
+            model.setValueAt(ob1.getLimit(), row, 1);
+            model.setValueAt(ob1.getVolume(), row, 2);
+            row++;
+        }
 
     }
 
@@ -109,24 +115,22 @@ public class TraderListPanel2 extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         list = new javax.swing.JTable();
 
-        list.setAutoCreateRowSorter(true);
         list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "ID", "Name", "Money", "Shares", "Wealth"
+                "Trader", "Price", "Volume"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+                java.lang.String.class, java.lang.Double.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -137,45 +141,25 @@ public class TraderListPanel2 extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        list.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                listMouseClicked(evt);
-            }
-        });
         jScrollPane1.setViewportView(list);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
-        if (evt.getClickCount() == 2) {
-            int index = list.rowAtPoint(evt.getPoint());
-            
-            index = list.getRowSorter().convertRowIndexToModel(index);
-            Integer tid = (Integer)model.getValueAt(index, 0);
-            System.out.printf("Trader ID %d\n", tid);
-            
-            JDialog console = Globals.se.traders.get(tid).getGuiConsole();
-            if (console == null)
-                return;
-            console.setVisible(true);
-            
-        }
-
-    }//GEN-LAST:event_listMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable list;
     // End of variables declaration//GEN-END:variables
+
+
 }
