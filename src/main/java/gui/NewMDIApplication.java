@@ -65,6 +65,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         System.out.printf("!!!! creating new\n");
         String base = cfg.getString("base");
         AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
+        if (ac==null)
+            return null;
         ac.putConfig(cfg);
         ac.init(se, id, name, money, shares, cfg);
         
@@ -142,8 +144,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jChartScrollPane = new javax.swing.JScrollPane();
-        chart = new chart.Chart();
         jPanel2 = new javax.swing.JPanel();
         stopButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
@@ -151,7 +151,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
         accelSpinner = new javax.swing.JSpinner();
         clock = new gui.Clock();
         jComboBox1 = new javax.swing.JComboBox<>();
-        oderBookPanelNew1 = new gui.OderBookPanelNew();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jSplitPane2 = new javax.swing.JSplitPane();
+        jChartScrollPane = new javax.swing.JScrollPane();
+        chart = new chart.Chart();
+        orderBookNew1 = new gui.orderbook.OrderBookNew();
+        traderListPanel1 = new gui.TraderListPanel();
+        orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -172,8 +178,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
         simMenuStop = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
         viewClock = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -185,20 +192,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 480));
-        setPreferredSize(new java.awt.Dimension(800, 561));
-
-        javax.swing.GroupLayout chartLayout = new javax.swing.GroupLayout(chart);
-        chart.setLayout(chartLayout);
-        chartLayout.setHorizontalGroup(
-            chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
-        chartLayout.setVerticalGroup(
-            chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
-
-        jChartScrollPane.setViewportView(chart);
 
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/toolbarButtonGraphics/general/Stop24.gif"))); // NOI18N
         stopButton.setText("Stop");
@@ -254,7 +247,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 374, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(clock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -281,6 +274,32 @@ public class NewMDIApplication extends javax.swing.JFrame {
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
+
+        getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
+
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        javax.swing.GroupLayout chartLayout = new javax.swing.GroupLayout(chart);
+        chart.setLayout(chartLayout);
+        chartLayout.setHorizontalGroup(
+            chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+        chartLayout.setVerticalGroup(
+            chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        jChartScrollPane.setViewportView(chart);
+
+        jSplitPane2.setBottomComponent(jChartScrollPane);
+        jSplitPane2.setLeftComponent(orderBookNew1);
+
+        jSplitPane1.setTopComponent(jSplitPane2);
+        jSplitPane1.setRightComponent(traderListPanel1);
+        jSplitPane1.setBottomComponent(orderBooksHorizontal1);
+
+        getContentPane().add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -414,6 +433,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         viewMenu.add(jMenuItem2);
 
+        viewClock.setText("Clock");
+        viewClock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewClockActionPerformed(evt);
+            }
+        });
+        viewMenu.add(viewClock);
+
         jMenuItem3.setText("LogWindow");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -422,13 +449,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         viewMenu.add(jMenuItem3);
 
-        viewClock.setText("Clock");
-        viewClock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewClockActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewClock);
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+        viewMenu.add(jCheckBoxMenuItem1);
 
         menuBar.add(viewMenu);
 
@@ -451,32 +474,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(oderBookPanelNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jChartScrollPane)
-                .addContainerGap())
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jChartScrollPane)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(oderBookPanelNew1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -697,6 +694,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jChartScrollPane;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
@@ -705,10 +703,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuBar menuBar;
-    private gui.OderBookPanelNew oderBookPanelNew1;
     private javax.swing.JMenuItem openMenuItem;
+    private gui.orderbook.OrderBookNew orderBookNew1;
+    private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JButton runButton;
     private javax.swing.JMenuItem saveAsMenuItem;
@@ -718,6 +719,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem simMenuStart;
     private javax.swing.JMenuItem simMenuStop;
     private javax.swing.JButton stopButton;
+    private gui.TraderListPanel traderListPanel1;
     private javax.swing.JMenuItem viewClock;
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables

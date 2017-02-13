@@ -23,8 +23,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui;
+package gui.orderbook;
 
+import gui.Globals;
 import gui.Globals.CfgListener;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
@@ -32,6 +33,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import sesim.Exchange;
 import sesim.Exchange.Order;
+import sesim.Exchange.OrderType;
 
 /**
  *
@@ -41,6 +43,9 @@ public class OrderBookNew extends javax.swing.JPanel implements Exchange.BookRec
 
     DefaultTableModel model;
     TableColumn trader_column = null;
+    
+    OrderType type = OrderType.BUYLIMIT;
+    int depth=40;
 
     public void setGodMode(boolean on) {
         TableColumnModel tcm = list.getColumnModel();        
@@ -57,23 +62,25 @@ public class OrderBookNew extends javax.swing.JPanel implements Exchange.BookRec
                 return;
             }
             tcm.removeColumn(tcm.getColumn(0));
-            
-            
-            
         }
-       
     }
-
+    
+    /**
+     * Bla
+     */
     @Override
-    public void cfgChanged() {
-        boolean gm = Globals.prefs.get(Globals.GODMODE, "false").equals("true");
+    public final void cfgChanged() {
+        boolean gm = Globals.prefs.get(Globals.CfgStrings.GODMODE, "false").equals("true");
         System.out.printf("GM %s\n",gm?"true":"false");
         setGodMode(gm);
         list.invalidate();
         list.repaint();
-        
     }
 
+    public void setType(OrderType type){
+        this.type=type;
+        Globals.se.addBookReceiver(type, this);
+    }
     
     /**
      * Creates new form OrderBookNew
@@ -85,13 +92,13 @@ public class OrderBookNew extends javax.swing.JPanel implements Exchange.BookRec
         model = (DefaultTableModel) this.list.getModel();
         trader_column = list.getColumnModel().getColumn(0);
         cfgChanged();
-        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
+//        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
         Globals.addCfgListener(this);
     }
 
     @Override
     public void UpdateOrderBook() {
-        ArrayList<Order> ob = Globals.se.getOrderBook(Exchange.OrderType.SELLLIMIT, 40);
+        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
         model.setRowCount(ob.size());
         int row = 0;
         for (Order ob1 : ob) {
@@ -147,11 +154,11 @@ public class OrderBookNew extends javax.swing.JPanel implements Exchange.BookRec
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

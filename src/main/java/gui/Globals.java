@@ -68,11 +68,19 @@ public class Globals {
     static final String TRADERPREFS = "Traders";
     
     static final String DEVELSTATUS = "devel_status";
-    static final String GODMODE = "godmode";
+    public static final String GODMODE = "godmode";
 
     static public sesim.Exchange se;
 
     static public Preferences prefs;
+    
+    
+    public static class CfgStrings{
+        public static final String GODMODE = "godmode";        
+    }
+    
+    //CfgStrings 
+    
 
     static void setLookAndFeel(String selected) {
 

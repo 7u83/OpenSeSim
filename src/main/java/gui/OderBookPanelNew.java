@@ -48,8 +48,8 @@ public class OderBookPanelNew extends javax.swing.JPanel {
     private void initComponents() {
 
         quotePanel1 = new gui.QuotePanel();
-        orderBookNew3 = new gui.OrderBookNew();
-        orderBookNew4 = new gui.OrderBookNew();
+        orderBookNew3 = new gui.orderbook.OrderBookNew();
+        orderBookNew4 = new gui.orderbook.OrderBookNew();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -88,8 +88,8 @@ public class OderBookPanelNew extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
-    private gui.OrderBookNew orderBookNew3;
-    private gui.OrderBookNew orderBookNew4;
+    private gui.orderbook.OrderBookNew orderBookNew3;
+    private gui.orderbook.OrderBookNew orderBookNew4;
     private gui.QuotePanel quotePanel1;
     // End of variables declaration//GEN-END:variables
 }

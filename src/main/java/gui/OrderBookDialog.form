@@ -23,11 +23,11 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
   <SubComponents>
-    <Component class="gui.OrderBookNew" name="orderBookNew1">
+    <Component class="gui.orderbook.OrderBookNew" name="orderBookNew1">
     </Component>
     <Component class="gui.QuotePanel" name="quotePanel1">
     </Component>
-    <Component class="gui.OrderBookNew" name="orderBookNew2">
+    <Component class="gui.orderbook.OrderBookNew" name="orderBookNew2">
     </Component>
   </SubComponents>
 </Form>

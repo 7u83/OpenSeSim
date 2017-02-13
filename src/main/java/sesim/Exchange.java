@@ -361,8 +361,13 @@ public class Exchange {
     public final String CFG_SHARES_DECIMALS = "shares_decimals";
 
     public void putConfig(JSONObject cfg) {
-        this.setMoneyDecimals(cfg.getInt(CFG_MONEY_DECIMALS));
-        this.setSharesDecimals(cfg.getInt(CFG_SHARES_DECIMALS));
+        try{
+            this.setMoneyDecimals(cfg.getInt(CFG_MONEY_DECIMALS));
+            this.setSharesDecimals(cfg.getInt(CFG_SHARES_DECIMALS));
+        }
+        catch (Exception e){
+            
+        }
 
     }
 
@@ -434,8 +439,19 @@ public class Exchange {
     }
 
     public void addBookReceiver(OrderType t, BookReceiver br) {
+
+        if (br==null){
+            System.out.printf("Br is null\n");
+        }
+        else{
+            System.out.printf("Br is not Nukk\n");
+        }
+        
         ArrayList<BookReceiver> bookreceivers;
         bookreceivers = selectBookReceiver(t);
+        if (bookreceivers == null){
+            System.out.printf("null in bookreceivers\n");
+        }
         bookreceivers.add(br);
     }
 

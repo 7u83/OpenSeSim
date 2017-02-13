@@ -85,7 +85,7 @@ public class LoggerDialog extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         logArea = new javax.swing.JTextArea();
-        orderBookNew1 = new gui.OrderBookNew();
+        orderBookNew1 = new gui.orderbook.OrderBookNew();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -161,6 +161,6 @@ public class LoggerDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea logArea;
-    private gui.OrderBookNew orderBookNew1;
+    private gui.orderbook.OrderBookNew orderBookNew1;
     // End of variables declaration//GEN-END:variables
 }
