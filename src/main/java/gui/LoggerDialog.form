@@ -59,7 +59,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="gui.orderbook.OrderBookNew" name="orderBookNew1">
+    <Component class="gui.orderbook.OrderBook" name="orderBookNew1">
     </Component>
   </SubComponents>
 </Form>

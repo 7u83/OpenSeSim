@@ -521,7 +521,8 @@ public class Exchange {
         if (this.quoteHistory.isEmpty()) {
             return null;
         }
-        return this.quoteHistory.pollLast();
+        System.out.printf("qhSize: %d\n",this.quoteHistory.size());
+        return this.quoteHistory.last();
     }
 
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {

@@ -57,6 +57,8 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         sesim.Quote q = Globals.se.getLastQuoete();
         double price = q == null ? 0 : q.price;
+        
+        System.out.printf("Price?: %f\n", price);
 
         int size = Globals.se.traders.size();
         model.setRowCount(size);
@@ -137,6 +139,7 @@ public class TraderListPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        list.setDoubleBuffered(true);
         list.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listMouseClicked(evt);

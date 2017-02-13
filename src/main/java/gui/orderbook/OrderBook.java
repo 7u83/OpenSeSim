@@ -39,7 +39,7 @@ import sesim.Exchange.OrderType;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OrderBookNew extends javax.swing.JPanel implements Exchange.BookReceiver, CfgListener {
+public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiver, CfgListener {
 
     DefaultTableModel model;
     TableColumn trader_column = null;
@@ -85,7 +85,7 @@ public class OrderBookNew extends javax.swing.JPanel implements Exchange.BookRec
     /**
      * Creates new form OrderBookNew
      */
-    public OrderBookNew() {
+    public OrderBook() {
         initComponents();
         if (Globals.se==null)
             return;

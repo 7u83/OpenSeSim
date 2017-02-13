@@ -25,6 +25,7 @@
  */
 package gui.orderbook;
 
+import gui.Globals;
 import sesim.Exchange;
 
 /**
@@ -38,10 +39,16 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
      */
     public OrderBooksHorizontal() {
         initComponents();
-
+        if (Globals.se==null)
+            return;
         
-        askBook.setType(Exchange.OrderType.BUYLIMIT);
-        bidBook.setType(Exchange.OrderType.SELLLIMIT);
+        bidBook.setType(Exchange.OrderType.BUYLIMIT);
+        askBook.setType(Exchange.OrderType.SELLLIMIT);
+    }
+    
+    public void setDepth(int depth){
+        bidBook.depth=depth;
+        askBook.depth=depth;
     }
 
     /**
@@ -53,32 +60,82 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        askBook = new gui.orderbook.OrderBookNew();
-        qutoesHorizontal1 = new gui.orderbook.QutoesHorizontal();
-        bidBook = new gui.orderbook.OrderBookNew();
+        bidBookPanel = new javax.swing.JPanel();
+        bidBook = new gui.orderbook.OrderBook();
+        jLabel2 = new javax.swing.JLabel();
+        quoteVertical2 = new gui.orderbook.QuoteVertical();
+        askBookPanel = new javax.swing.JPanel();
+        askBook = new gui.orderbook.OrderBook();
+        jLabel1 = new javax.swing.JLabel();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
-        add(askBook);
 
-        javax.swing.GroupLayout qutoesHorizontal1Layout = new javax.swing.GroupLayout(qutoesHorizontal1);
-        qutoesHorizontal1.setLayout(qutoesHorizontal1Layout);
-        qutoesHorizontal1Layout.setHorizontalGroup(
-            qutoesHorizontal1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 77, Short.MAX_VALUE)
+        bidBookPanel.setPreferredSize(new java.awt.Dimension(320, 296));
+
+        jLabel2.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Bid");
+
+        javax.swing.GroupLayout bidBookPanelLayout = new javax.swing.GroupLayout(bidBookPanel);
+        bidBookPanel.setLayout(bidBookPanelLayout);
+        bidBookPanelLayout.setHorizontalGroup(
+            bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bidBookPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        qutoesHorizontal1Layout.setVerticalGroup(
-            qutoesHorizontal1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 296, Short.MAX_VALUE)
+        bidBookPanelLayout.setVerticalGroup(
+            bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bidBookPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
         );
 
-        add(qutoesHorizontal1);
-        add(bidBook);
+        add(bidBookPanel);
+        add(quoteVertical2);
+
+        askBookPanel.setPreferredSize(new java.awt.Dimension(320, 296));
+
+        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Ask");
+
+        javax.swing.GroupLayout askBookPanelLayout = new javax.swing.GroupLayout(askBookPanel);
+        askBookPanel.setLayout(askBookPanelLayout);
+        askBookPanelLayout.setHorizontalGroup(
+            askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(askBookPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        askBookPanelLayout.setVerticalGroup(
+            askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, askBookPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+        );
+
+        add(askBookPanel);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private gui.orderbook.OrderBookNew askBook;
-    private gui.orderbook.OrderBookNew bidBook;
-    private gui.orderbook.QutoesHorizontal qutoesHorizontal1;
+    private gui.orderbook.OrderBook askBook;
+    private javax.swing.JPanel askBookPanel;
+    private gui.orderbook.OrderBook bidBook;
+    private javax.swing.JPanel bidBookPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private gui.orderbook.QuoteVertical quoteVertical2;
     // End of variables declaration//GEN-END:variables
 }

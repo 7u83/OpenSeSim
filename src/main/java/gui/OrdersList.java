@@ -25,6 +25,8 @@
  */
 package gui;
 
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +67,8 @@ public class OrdersList extends javax.swing.JPanel {
             model.setValueAt(((Order) o).getOrderStatus().toString(), row, 4);
             row++;
         }
-        this.order_table.getRowSorter().allRowsChanged();
+        this.table.getRowSorter().allRowsChanged();
+
     }
 
     /**
@@ -73,8 +76,10 @@ public class OrdersList extends javax.swing.JPanel {
      */
     public OrdersList() {
         initComponents();
-        model = (DefaultTableModel) order_table.getModel();
+        model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
         updateModel();
+        table.setFillsViewportHeight(true);
     }
 
     /**
@@ -86,11 +91,24 @@ public class OrdersList extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ctxMenu = new javax.swing.JPopupMenu();
+        ctxMenuCreateOrder = new javax.swing.JMenuItem();
+        ctxMenuCancelOrder = new javax.swing.JMenuItem();
+        ctxMenuModifyOder = new javax.swing.JMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
-        order_table = new javax.swing.JTable();
+        table = new javax.swing.JTable();
 
-        order_table.setAutoCreateRowSorter(true);
-        order_table.setModel(new javax.swing.table.DefaultTableModel(
+        ctxMenuCreateOrder.setText("Create Order");
+        ctxMenu.add(ctxMenuCreateOrder);
+
+        ctxMenuCancelOrder.setText("Cancel Order");
+        ctxMenu.add(ctxMenuCancelOrder);
+
+        ctxMenuModifyOder.setText("Modify Oder");
+        ctxMenu.add(ctxMenuModifyOder);
+
+        table.setAutoCreateRowSorter(true);
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -115,7 +133,13 @@ public class OrdersList extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(order_table);
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableMousePressed(evt);
+            }
+        });
+        jScrollPane1.setViewportView(table);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -125,15 +149,42 @@ public class OrdersList extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
+        System.out.printf("The mouse is here\n");
+
+        Point point = evt.getPoint();
+        int currentRow = table.rowAtPoint(point);
+        if (currentRow==-1){
+            
+        }
+        else {
+        
+            table.setRowSelectionInterval(currentRow, currentRow);
+        }
+
+        int nbuttons = MouseInfo.getNumberOfButtons();
+        int button = evt.getButton();
+        if (!evt.isPopupTrigger()) {
+            return;
+        };
+
+        this.ctxMenu.show(this, evt.getX(), evt.getY());
+
+        System.out.printf("Button %d %d \n", nbuttons, button);
+
+    }//GEN-LAST:event_tableMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu ctxMenu;
+    private javax.swing.JMenuItem ctxMenuCancelOrder;
+    private javax.swing.JMenuItem ctxMenuCreateOrder;
+    private javax.swing.JMenuItem ctxMenuModifyOder;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable order_table;
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

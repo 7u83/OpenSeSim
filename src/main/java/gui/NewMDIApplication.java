@@ -34,6 +34,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -155,7 +156,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jSplitPane2 = new javax.swing.JSplitPane();
         jChartScrollPane = new javax.swing.JScrollPane();
         chart = new chart.Chart();
-        orderBookNew1 = new gui.orderbook.OrderBookNew();
+        orderBookNew1 = new gui.orderbook.OrderBook();
+        quoteVertical1 = new gui.orderbook.QuoteVertical();
         traderListPanel1 = new gui.TraderListPanel();
         orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
         menuBar = new javax.swing.JMenuBar();
@@ -247,7 +249,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 374, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 484, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(clock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -294,6 +296,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         jSplitPane2.setBottomComponent(jChartScrollPane);
         jSplitPane2.setLeftComponent(orderBookNew1);
+        jSplitPane2.setLeftComponent(quoteVertical1);
 
         jSplitPane1.setTopComponent(jSplitPane2);
         jSplitPane1.setRightComponent(traderListPanel1);
@@ -451,6 +454,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
         viewMenu.add(jCheckBoxMenuItem1);
 
         menuBar.add(viewMenu);
@@ -647,6 +655,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
         stopSim();
     }//GEN-LAST:event_stopButtonActionPerformed
 
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        JDialog jd = new gui.orderbook.OrderBookDialog(this, false);
+        jd.setVisible(rootPaneCheckingEnabled);
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
@@ -708,9 +721,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
-    private gui.orderbook.OrderBookNew orderBookNew1;
+    private gui.orderbook.OrderBook orderBookNew1;
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
     private javax.swing.JMenuItem pasteMenuItem;
+    private gui.orderbook.QuoteVertical quoteVertical1;
     private javax.swing.JButton runButton;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;

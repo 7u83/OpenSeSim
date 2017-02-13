@@ -45,6 +45,7 @@
                 <Column editable="false" title="Wealth" type="java.lang.Double"/>
               </Table>
             </Property>
+            <Property name="doubleBuffered" type="boolean" value="true"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="listMouseClicked"/>
