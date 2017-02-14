@@ -227,7 +227,7 @@ public class Exchange {
             this.volume = roundShares(volume);
             this.initial_volume = this.volume;
             this.created = timer.currentTimeMillis();
-            this.status=OrderStatus.OPEN;
+            this.status = OrderStatus.OPEN;
         }
 
         public long getID() {
@@ -257,11 +257,10 @@ public class Exchange {
         public Account getAccount() {
             return account;
         }
-        
-        public OrderStatus getOrderStatus(){
+
+        public OrderStatus getOrderStatus() {
             return status;
         }
-        
 
     }
 
@@ -361,52 +360,66 @@ public class Exchange {
     public final String CFG_SHARES_DECIMALS = "shares_decimals";
 
     public void putConfig(JSONObject cfg) {
-        try{
+        try {
             this.setMoneyDecimals(cfg.getInt(CFG_MONEY_DECIMALS));
             this.setSharesDecimals(cfg.getInt(CFG_SHARES_DECIMALS));
-        }
-        catch (Exception e){
-            
+        } catch (Exception e) {
+
         }
 
     }
 
     public Quote getCurrentPrice() {
 
-        /*    if (!this.quoteHistory.isEmpty()){
-            Quote q = this.quoteHistory.pollLast();
-            System.out.printf("Quote: %f\n", q.price);
-            return q;
-        }
-        
-        return null;
-         */
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
-        Quote q = null;
-
         tradelock.lock();
-        if (!bid.isEmpty() && !ask.isEmpty()) {
-            q = new Quote();
-            q.price = (bid.first().limit + ask.first().limit) / 2.0;
-
+        Quote lq = this.getLastQuoete();
+        Order b = null, a = null;
+        if (!bid.isEmpty()) {
+            b = bid.first();
+        }
+        if (!ask.isEmpty()) {
+            a = ask.first();
         }
         tradelock.unlock();
 
-        if (q != null) {
-            return q;
+        if (a != null && b != null) {
+            Quote q = new Quote();
+            if (lq == null) {
+                q.price = (bid.first().limit + ask.first().limit) / 2.0;
+                return q;
+            }
+            if (lq.price < b.limit) {
+                q.price = b.limit;
+                return q;
+            }
+            if (lq.price > a.limit) {
+                q.price = a.limit;
+                return q;
+            }
         }
 
-        if (this.quoteHistory.isEmpty()) {
-
-            return null;
+        if (a != null) {
+            Quote q = new Quote();
+            if (lq == null) {
+                q.price = a.limit;
+                return q;
+            }
+            return lq;
         }
 
-        q = this.quoteHistory.last();
+        if (b != null) {
+            Quote q = new Quote();
+            if (lq == null) {
+                q.price = b.limit;
+                return q;
+            }
+            return lq;
+        }
 
-        return q;
-
+        return null;
     }
 
     // Class to describe an executed order
@@ -440,16 +453,15 @@ public class Exchange {
 
     public void addBookReceiver(OrderType t, BookReceiver br) {
 
-        if (br==null){
+        if (br == null) {
             System.out.printf("Br is null\n");
-        }
-        else{
+        } else {
             System.out.printf("Br is not Nukk\n");
         }
-        
+
         ArrayList<BookReceiver> bookreceivers;
         bookreceivers = selectBookReceiver(t);
-        if (bookreceivers == null){
+        if (bookreceivers == null) {
             System.out.printf("null in bookreceivers\n");
         }
         bookreceivers.add(br);
@@ -521,7 +533,7 @@ public class Exchange {
         if (this.quoteHistory.isEmpty()) {
             return null;
         }
-        System.out.printf("qhSize: %d\n",this.quoteHistory.size());
+
         return this.quoteHistory.last();
     }
 
@@ -551,6 +563,7 @@ public class Exchange {
             boolean rc = ob.remove(o);
 
             a.orders.remove(o.id);
+            a.update(o);
             ret = true;
         }
 
@@ -587,10 +600,23 @@ public class Exchange {
     public double fairValue = 0;
 
     private void removeOrderIfExecuted(Order o) {
+        if (o.getAccount().getOwner().getName().equals("Tobias0")) {
+            System.out.printf("Tobias 0 test\n");
+        }
+
         if (o.volume != 0) {
-            o.status=OrderStatus.PARTIALLY_EXECUTED;
+
+            if (o.getAccount().getOwner().getName().equals("Tobias0")) {
+                System.out.printf("Patially remove tobias\n");
+            }
+
+            o.status = OrderStatus.PARTIALLY_EXECUTED;
             o.account.update(o);
             return;
+        }
+
+        if (o.getAccount().getOwner().getName().equals("Tobias0")) {
+            System.out.printf("Fully remove tobias\n");
         }
 
         o.account.orders.remove(o.id);
@@ -599,7 +625,7 @@ public class Exchange {
 
         book.remove(book.first());
 
-        o.status=OrderStatus.CLOSED;
+        o.status = OrderStatus.CLOSED;
         o.account.update(o);
 
     }
@@ -655,14 +681,12 @@ public class Exchange {
             // Transfer money and shares
             transferMoneyAndShares(b.account, a.account, volume * price, -volume);
 
-
             // Update volume
             b.volume -= volume;
             a.volume -= volume;
 
-         //   a.account.update(a);
-         //   b.account.update(b);
-
+            //   a.account.update(a);
+            //   b.account.update(b);
             //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
             volume_total += volume;
             money_total += price * volume;

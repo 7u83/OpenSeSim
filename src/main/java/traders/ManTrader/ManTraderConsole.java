@@ -48,6 +48,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
     public ManTraderConsole() {
         initComponents();
         
+        
       //  this.ordersList1.account=trader.getAccount();
     }
 
@@ -177,8 +178,8 @@ public class ManTraderConsole extends javax.swing.JPanel {
         long createOrder = trader.getSE().createOrder(trader.getAccount().getID(), Exchange.OrderType.BUYLIMIT, volume, limit);
         System.out.printf("The retval is %d",createOrder);
         
-        this.ordersList.account=this.trader.getAccount();
-        this.ordersList.updateModel();
+    //    this.ordersList.account=this.trader.getAccount();
+    //    this.ordersList.updateModel();
         
         
     }//GEN-LAST:event_buyButtonActionPerformed

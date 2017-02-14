@@ -284,6 +284,7 @@ public class RandomTraderA extends AutoTraderBase {
         double money = getRandomAmmount(ad.getMoney(), buy_volume);
     
         Quote q = se.getCurrentPrice();
+        //q=se.getLastQuoete();
         double lp = q == null ? getStart() : q.price;
 
         double limit;
@@ -323,7 +324,12 @@ public class RandomTraderA extends AutoTraderBase {
 
         //    double lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getCurrentPrice();
+          //      q=se.getLastQuoete();
         double lp = q == null ? getStart() : q.price;
+        
+        
+        
+        
 
         double limit;
         limit = lp + getRandomAmmount(lp, sell_limit);

@@ -8,15 +8,29 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="javax.swing.JMenuItem" name="ctxMenuCreateOrder">
+        <MenuItem class="javax.swing.JMenuItem" name="ctxMenuCreateBuyOrder">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Create Order"/>
+            <Property name="text" type="java.lang.String" value="Create Buy Order"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ctxMenuCreateBuyOrderActionPerformed"/>
+          </Events>
+        </MenuItem>
+        <MenuItem class="javax.swing.JMenuItem" name="ctxMenuCreateSellOrder">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Create Sell Order"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ctxMenuCreateSellOrderActionPerformed"/>
+          </Events>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="ctxMenuCancelOrder">
           <Properties>
             <Property name="text" type="java.lang.String" value="Cancel Order"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ctxMenuCancelOrderActionPerformed"/>
+          </Events>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="ctxMenuModifyOder">
           <Properties>

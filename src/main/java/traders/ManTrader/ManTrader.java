@@ -36,12 +36,13 @@ import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
 import sesim.Exchange.AccountListener;
+import sesim.Exchange.OrderStatus;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ManTrader extends AutoTraderBase  implements AccountListener{
+public class ManTrader extends AutoTraderBase implements AccountListener {
 
     public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
         //  super(se, id, name, money, shares, null);
@@ -50,10 +51,10 @@ public class ManTrader extends AutoTraderBase  implements AccountListener{
 
     public ManTrader() {
         super();
-        
+
     }
-    
-    public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg){
+
+    public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
         super.init(se, id, name, money, shares, cfg);
         getAccount().setListener(this);
     }
@@ -62,27 +63,23 @@ public class ManTrader extends AutoTraderBase  implements AccountListener{
     @Override
     public void start() {
         se.timer.startTimerEvent(this, 0);
-        consoleDialog = new ManTraderConsoleDialog(Globals.frame, false);
-              
-       // consoleDialog.     rdersList1.account=trader.getAccount();
-        
-        consoleDialog.getConsole().trader=this;
-        
-        
+        consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, this.getAccount());
+        this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
+        // consoleDialog.     rdersList1.account=trader.getAccount();
+
+//        consoleDialog.getConsole().trader=this;
         consoleDialog.setVisible(true);
 
     }
 
     @Override
     public long timerTask() {
-    
-        OrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
-        ol.updateModel();
+
+//        OrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
+//        ol.updateModel();
         return 1000;
     }
 
- 
-    
     @Override
     public String getDisplayName() {
         return null;
@@ -118,8 +115,14 @@ public class ManTrader extends AutoTraderBase  implements AccountListener{
     public void accountUpdated(Exchange.Account a, Exchange.Order o) {
         //this.consoleDialog.cons
         System.out.printf("AccountListener called\n");
-        
-        this.consoleDialog.getConsole().getOrderListPanel().updateModel();
+
+        System.out.printf("%d %s\n", o.getID(), o.getOrderStatus().toString());
+
+        if (o.getOrderStatus()==OrderStatus.CLOSED){
+            o.getAccount().getOrders().put(o.getID(), o);
+        }
+        this.consoleDialog.getOrderList().updateModel();
+        this.consoleDialog.getBalancePanel().updateBalance(o.getAccount());
     }
 
 }

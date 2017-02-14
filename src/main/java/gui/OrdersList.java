@@ -25,6 +25,7 @@
  */
 package gui;
 
+import java.awt.Frame;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.util.Iterator;
@@ -32,8 +33,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import javax.swing.table.DefaultTableModel;
+import sesim.Exchange;
 import sesim.Exchange.Account;
 import sesim.Exchange.Order;
+import sesim.Exchange.OrderType;
+import traders.ManTrader.CreateOrderDialog;
 
 /**
  *
@@ -41,13 +45,17 @@ import sesim.Exchange.Order;
  */
 public class OrdersList extends javax.swing.JPanel {
 
-    public Account account;
+    private Account account;
     DefaultTableModel model;
 
     public final void updateModel() {
+        System.out.printf("Update Model\n");
         if (null == account) {
+
             return;
         }
+
+        System.out.printf("Now updateing\n");
 
         int row = 0;
 
@@ -78,8 +86,13 @@ public class OrdersList extends javax.swing.JPanel {
         initComponents();
         model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        updateModel();
         table.setFillsViewportHeight(true);
+        updateModel();
+    }
+
+    public void initOrderList(Account account) {
+        this.account = account;
+        updateModel();
     }
 
     /**
@@ -92,16 +105,35 @@ public class OrdersList extends javax.swing.JPanel {
     private void initComponents() {
 
         ctxMenu = new javax.swing.JPopupMenu();
-        ctxMenuCreateOrder = new javax.swing.JMenuItem();
+        ctxMenuCreateBuyOrder = new javax.swing.JMenuItem();
+        ctxMenuCreateSellOrder = new javax.swing.JMenuItem();
         ctxMenuCancelOrder = new javax.swing.JMenuItem();
         ctxMenuModifyOder = new javax.swing.JMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
 
-        ctxMenuCreateOrder.setText("Create Order");
-        ctxMenu.add(ctxMenuCreateOrder);
+        ctxMenuCreateBuyOrder.setText("Create Buy Order");
+        ctxMenuCreateBuyOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuCreateBuyOrderActionPerformed(evt);
+            }
+        });
+        ctxMenu.add(ctxMenuCreateBuyOrder);
+
+        ctxMenuCreateSellOrder.setText("Create Sell Order");
+        ctxMenuCreateSellOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuCreateSellOrderActionPerformed(evt);
+            }
+        });
+        ctxMenu.add(ctxMenuCreateSellOrder);
 
         ctxMenuCancelOrder.setText("Cancel Order");
+        ctxMenuCancelOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuCancelOrderActionPerformed(evt);
+            }
+        });
         ctxMenu.add(ctxMenuCancelOrder);
 
         ctxMenuModifyOder.setText("Modify Oder");
@@ -158,11 +190,10 @@ public class OrdersList extends javax.swing.JPanel {
 
         Point point = evt.getPoint();
         int currentRow = table.rowAtPoint(point);
-        if (currentRow==-1){
-            
-        }
-        else {
-        
+        if (currentRow == -1) {
+
+        } else {
+
             table.setRowSelectionInterval(currentRow, currentRow);
         }
 
@@ -178,11 +209,38 @@ public class OrdersList extends javax.swing.JPanel {
 
     }//GEN-LAST:event_tableMousePressed
 
+    private void createOrder(OrderType t) {
+        CreateOrderDialog cd = new CreateOrderDialog(Globals.frame, true, account, t);
+        //cd.initDialog(account);
+        cd.setVisible(true);
+
+    }
+
+
+    private void ctxMenuCreateSellOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateSellOrderActionPerformed
+        createOrder(OrderType.SELLLIMIT);
+
+    }//GEN-LAST:event_ctxMenuCreateSellOrderActionPerformed
+
+    private void ctxMenuCreateBuyOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateBuyOrderActionPerformed
+        createOrder(OrderType.BUYLIMIT);
+    }//GEN-LAST:event_ctxMenuCreateBuyOrderActionPerformed
+
+    private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed
+        int r = table.getSelectedRow();
+        Long id = (Long) model.getValueAt(r, 0);
+        
+        System.out.printf("Should cancel %d\n", id);
+        Globals.se.cancelOrder(account.getID(), id);
+        
+    }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu ctxMenu;
     private javax.swing.JMenuItem ctxMenuCancelOrder;
-    private javax.swing.JMenuItem ctxMenuCreateOrder;
+    private javax.swing.JMenuItem ctxMenuCreateBuyOrder;
+    private javax.swing.JMenuItem ctxMenuCreateSellOrder;
     private javax.swing.JMenuItem ctxMenuModifyOder;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;

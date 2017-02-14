@@ -26,6 +26,7 @@
 package traders.ManTrader;
 
 import javax.swing.JPanel;
+import sesim.Exchange.Account;
 
 /**
  *
@@ -36,17 +37,26 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
     /**
      * Creates new form ManTraderConsole
      */
-    public ManTraderConsoleDialog(java.awt.Frame parent, boolean modal) {
+    public ManTraderConsoleDialog(java.awt.Frame parent, boolean modal, Account account) {
         super(parent, modal);
         initComponents();
+        this.ordersList.initOrderList(account);
+        this.setTitle(account.getOwner().getName()+" - Trading Console");
+    }
+    
+    public gui.OrdersList getOrderList(){
+        return this.ordersList;
+    }
+    
+    public AccountBalance getBalancePanel(){
+        return this.accountBalance1;
         
     }
     
-    
 
-    public ManTraderConsole getConsole(){
-        return this.console;
-    }
+   // public ManTraderConsole getConsole(){
+   //     return this.console;
+  //  }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,21 +67,35 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        console = new traders.ManTrader.ManTraderConsole();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        ordersList = new gui.OrdersList();
+        accountBalance1 = new traders.ManTrader.AccountBalance();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jTabbedPane1.addTab("Open Orders", ordersList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(console, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(accountBalance1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(console, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(accountBalance1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         pack();
@@ -108,7 +132,7 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ManTraderConsoleDialog dialog = new ManTraderConsoleDialog(new javax.swing.JFrame(), true);
+                ManTraderConsoleDialog dialog = new ManTraderConsoleDialog(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -121,6 +145,8 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private traders.ManTrader.ManTraderConsole console;
+    private traders.ManTrader.AccountBalance accountBalance1;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private gui.OrdersList ordersList;
     // End of variables declaration//GEN-END:variables
 }
