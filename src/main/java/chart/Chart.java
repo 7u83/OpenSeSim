@@ -38,11 +38,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     protected Dimension gdim;
 
     private int first_bar, last_bar;
-    
-    
-    public final void initChart(){
+
+    public final void initChart() {
 //        data = new OHLCData(60000*30);        
-        data = new OHLCData(60000*15);        
+        //data = new OHLCData(60000*30);        
+        data = Globals.se.getOHLCdata(60000 * 30);
     }
 
     /**
@@ -51,6 +51,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     public Chart() {
         initComponents();
         initChart();
+        //setCompression(60000);
         if (Globals.se == null) {
             return;
         }
@@ -59,16 +60,13 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
-
     OHLCData data;
-
 
     OHLCDataItem current = null;
 
     //void drawCandle(Graphics2D g, OHLCData d, int x, int y) {
 //
- //   }
-
+    //   }
     @Override
     public Dimension getPreferredScrollableViewportSize() {
         return this.getPreferredSize();
@@ -105,7 +103,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         String getAt(int unit) {
-            Date date = new Date(/*sesim.Scheduler.timeStart*/ 0 + unit * 5000);
+            Date date = new Date(/*sesim.Scheduler.timeStart*/0 + unit * 5000);
 //            DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             String dateFormatted = formatter.format(date);
@@ -188,25 +186,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     float getY(float y) {
 
         if (logs) {
-            
-            float m = c_mm.max/c_mm.min;
-            
+
+            float m = c_mm.max / c_mm.min;
+
             //System.out.printf("Min: %f  Max: %f M: %f\n",c_mm.min,c_mm.max,m);
-            
-            
             //float fac = (float) c_rect.height /(float) Math.log(c_mm.max * c_yscaling);
-            float fac = (float) c_rect.height /(float)Math.log(m);
-            
+            float fac = (float) c_rect.height / (float) Math.log(m);
 
             float fmin = c_rect.height - ((float) Math.log((y / c_mm.min)) * fac);
-            
-            
+
             //System.out.printf("Fac: %f fmin: %f\n", fac, fmin);
             return fmin;
 
             //return c_rect.height - ((float) Math.log((y - c_mm.min) * c_yscaling) * fac);
-            
-            
         }
 
         return c_rect.height - ((y - c_mm.min) * c_yscaling);
@@ -294,14 +286,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         int yw = (int) (this.y_legend_width * this.em_size);
 
 //        System.out.printf("MinMax: %f %f\n", c_mm.min, c_mm.max);
-
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
 
 //        float yscale = gdim.height / c_mm.getDiff();
         c_yscaling = c_rect.height / c_mm.getDiff();
 
 //        System.out.printf("yscale %f\n", c_yscaling);
-
         for (float y = c_mm.min; y < c_mm.max; y += c_mm.getDiff() / 10.0) {
 
             int my = (int) getY(y); //c_rect.height - (int) ((y - c_mm.min) * c_yscaling);
@@ -349,7 +339,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //this.getSize();
         int pwidth = em_width * num_bars;
         int phight = 400;
-     //   phight=this.getVisibleRect().height;
+        //   phight=this.getVisibleRect().height;
 
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
         this.revalidate();
@@ -414,9 +404,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         this.initEmSize(g);
         this.gdim = this.getParent().getSize(gdim);
         this.getParent().setPreferredSize(gdim);
-        
-        
-        
+
         this.clip_bounds = g.getClipBounds(this.clip_bounds);
 
 //        System.out.printf("X:%d %d\n",gdim.width,gdim.height);
@@ -437,11 +425,77 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ctxMenu = new javax.swing.JPopupMenu();
+        jMenu1 = new javax.swing.JMenu();
+        ctxMenuComp5s = new javax.swing.JMenuItem();
+        ctxMenuComp1m = new javax.swing.JMenuItem();
+        ctxMenuComp5min = new javax.swing.JMenuItem();
+        ctxMenuComp1h = new javax.swing.JMenuItem();
+        ctxMenuComp4h = new javax.swing.JMenuItem();
+        ctxMenuComp1d = new javax.swing.JMenuItem();
+
+        jMenu1.setText("Compression");
+
+        ctxMenuComp5s.setText("5 s");
+        ctxMenuComp5s.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuComp5sActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ctxMenuComp5s);
+
+        ctxMenuComp1m.setText("1 min");
+        ctxMenuComp1m.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuComp1mActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ctxMenuComp1m);
+
+        ctxMenuComp5min.setText("5 min");
+        ctxMenuComp5min.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuComp5minActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ctxMenuComp5min);
+
+        ctxMenuComp1h.setText("1 h");
+        ctxMenuComp1h.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuComp1hActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ctxMenuComp1h);
+
+        ctxMenuComp4h.setText("4 h");
+        ctxMenuComp4h.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuComp4hActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ctxMenuComp4h);
+
+        ctxMenuComp1d.setText("1 d");
+        ctxMenuComp1d.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuComp1dActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ctxMenuComp1d);
+
+        ctxMenu.add(jMenu1);
+
         setBackground(java.awt.Color.white);
         setBorder(null);
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(300, 300));
         setRequestFocusEnabled(false);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -455,17 +509,65 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        System.out.printf("Mouse ohlc was pressed\n");
+        if (!evt.isPopupTrigger()) {
+            return;
+        };
+
+        this.ctxMenu.show(this, evt.getX(), evt.getY());
+
+
+    }//GEN-LAST:event_formMousePressed
+
+    void setCompression(int timeFrame) {
+        data = Globals.se.getOHLCdata(timeFrame);
+        repaint();
+    }
+
+    private void ctxMenuComp1mActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuComp1mActionPerformed
+        this.setCompression(60000);
+    }//GEN-LAST:event_ctxMenuComp1mActionPerformed
+
+    private void ctxMenuComp1hActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuComp1hActionPerformed
+        this.setCompression(60000*60);
+    }//GEN-LAST:event_ctxMenuComp1hActionPerformed
+
+    private void ctxMenuComp4hActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuComp4hActionPerformed
+        this.setCompression(60000*60*4);
+    }//GEN-LAST:event_ctxMenuComp4hActionPerformed
+
+    private void ctxMenuComp1dActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuComp1dActionPerformed
+        this.setCompression(60000*60*24);
+    }//GEN-LAST:event_ctxMenuComp1dActionPerformed
+
+    private void ctxMenuComp5sActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuComp5sActionPerformed
+        this.setCompression(1000*5);
+    }//GEN-LAST:event_ctxMenuComp5sActionPerformed
+
+    private void ctxMenuComp5minActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuComp5minActionPerformed
+        this.setCompression(60*1000*5);      
+    }//GEN-LAST:event_ctxMenuComp5minActionPerformed
+
     @Override
     public void UpdateQuote(Quote q) {
         //    System.out.print("Quote Received\n");
 //        this.realTimeAdd(q.time, (float) q.price, (float)q.volume);
 
-        data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
+//        data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
         //    this.invalidate();
         this.repaint();
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu ctxMenu;
+    private javax.swing.JMenuItem ctxMenuComp1d;
+    private javax.swing.JMenuItem ctxMenuComp1h;
+    private javax.swing.JMenuItem ctxMenuComp1m;
+    private javax.swing.JMenuItem ctxMenuComp4h;
+    private javax.swing.JMenuItem ctxMenuComp5min;
+    private javax.swing.JMenuItem ctxMenuComp5s;
+    private javax.swing.JMenu jMenu1;
     // End of variables declaration//GEN-END:variables
 }

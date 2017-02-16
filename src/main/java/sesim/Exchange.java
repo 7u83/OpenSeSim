@@ -68,6 +68,55 @@ public class Exchange {
         public void accountUpdated(Account a, Order o);
     }
 
+    HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
+
+    public OHLCData buildOHLCData(int timeFrame) {
+        OHLCData data = new OHLCData(timeFrame);
+        if (this.quoteHistory == null) {
+            return data;
+        }
+        
+
+        Iterator<Quote> it = quoteHistory.iterator();
+        while (it.hasNext()) {
+            Quote q = it.next();
+            data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
+
+        }
+
+        return data;
+    }
+
+    public OHLCData getOHLCdata(Integer timeFrame) {
+        OHLCData data; //=new OHLCData(timeFrame);
+        data = ohlc_data.get(timeFrame);
+        if (data == null){
+        //    data = new OHLCData(timeFrame);
+            data = this.buildOHLCData(timeFrame);
+            ohlc_data.put(timeFrame, data);
+        }
+        
+        return data;
+/*        try {
+            data = ohlc_data.get(timeFrame);
+        } catch (Exception e) {
+            data = null;
+        }
+        if (data == null) {
+            data = buildOHLCData(timeFrame);
+        }
+*/
+        
+    }
+
+    void updateOHLCData(Quote q) {
+        Iterator<OHLCData> it = ohlc_data.values().iterator();
+        while (it.hasNext()) {
+            OHLCData data = it.next();
+            data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
+        }
+    }
+
     /**
      * Implements a trading account
      */
@@ -279,6 +328,8 @@ public class Exchange {
         traders = new ArrayList();
 
         num_trades = 0;
+        
+        this.ohlc_data = new HashMap();
 
         // Create order books
         order_books = new HashMap();
@@ -385,6 +436,10 @@ public class Exchange {
         }
         tradelock.unlock();
 
+        if (lq == null && b == null && a == null) {
+            return null;
+        }
+
         if (a != null && b != null) {
             Quote q = new Quote();
             if (lq == null) {
@@ -399,11 +454,17 @@ public class Exchange {
                 q.price = a.limit;
                 return q;
             }
+            return lq;
         }
 
         if (a != null) {
             Quote q = new Quote();
             if (lq == null) {
+
+                q.price = a.limit;
+                return q;
+            }
+            if (lq.price > a.limit) {
                 q.price = a.limit;
                 return q;
             }
@@ -416,10 +477,15 @@ public class Exchange {
                 q.price = b.limit;
                 return q;
             }
+            if (lq.price < b.limit) {
+                q.price = b.limit;
+                return q;
+            }
+
             return lq;
         }
 
-        return null;
+        return lq;
     }
 
     // Class to describe an executed order
@@ -710,6 +776,7 @@ public class Exchange {
 
 //        System.out.print("There was a trade:"+q.price+"\n");
         this.quoteHistory.add(q);
+        this.updateOHLCData(q);
 
         this.updateQuoteReceivers(q);
 

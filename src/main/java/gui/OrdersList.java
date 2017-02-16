@@ -186,7 +186,7 @@ public class OrdersList extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
-        System.out.printf("The mouse is here\n");
+        
 
         Point point = evt.getPoint();
         int currentRow = table.rowAtPoint(point);

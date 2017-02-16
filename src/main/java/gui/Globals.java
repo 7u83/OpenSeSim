@@ -79,6 +79,13 @@ public class Globals {
         public static final String GODMODE = "godmode";        
     }
     
+    
+    public static String DEFAULT_EXCHANGE_CFG = 
+              "{"
+            + "  money_decimals: 2,"
+            + "  shares_decimals: 0"
+            + "}";
+    
     //CfgStrings 
     
 

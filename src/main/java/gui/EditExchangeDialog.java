@@ -31,7 +31,7 @@ import org.json.JSONObject;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class EditExchangeDialog extends javax.swing.JDialog {
+public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
 
     /**
      * Creates new form EditExchnageDialog
@@ -40,9 +40,11 @@ public class EditExchangeDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(parent);
-        JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", "{}"));
-        this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.se.CFG_MONEY_DECIMALS));
-        this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.se.CFG_SHARES_DECIMALS));
+        JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", Globals.DEFAULT_EXCHANGE_CFG));
+
+            this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.se.CFG_MONEY_DECIMALS));
+            this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.se.CFG_SHARES_DECIMALS));
+            this.setLocationRelativeTo(parent);
     }
 
     int showdialog() {

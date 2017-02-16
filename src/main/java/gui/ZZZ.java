@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, tobias
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,23 +27,16 @@ package gui;
 
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tobias
  */
-public class EscDialog extends javax.swing.JDialog {
+public class ZZZ extends EscDialog {
 
     /**
-     * Creates new form EscDialog
+     * Creates new form ZZZ
      */
-    public EscDialog(java.awt.Frame parent, boolean modal) {
+    public ZZZ(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        System.out.printf("Adding Key Listener\n", "");
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                formKeyReleased(evt);
-            }        
-            });
-        this.setLocationRelativeTo(parent);
     }
 
     /**
@@ -56,11 +49,6 @@ public class EscDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                formKeyReleased(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -75,10 +63,6 @@ public class EscDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
-        dispose();
-    }//GEN-LAST:event_formKeyReleased
 
     /**
      * @param args the command line arguments
@@ -97,20 +81,20 @@ public class EscDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EscDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ZZZ.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EscDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ZZZ.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EscDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ZZZ.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EscDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ZZZ.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                EscDialog dialog = new EscDialog(new javax.swing.JFrame(), true);
+                ZZZ dialog = new ZZZ(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
