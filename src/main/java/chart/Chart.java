@@ -31,22 +31,18 @@ import sesim.Scheduler;
 public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
 
     class ChartDef {
-        
-    }
-    
-    
-    
-    protected int em_size = 1;
 
-    
-    protected float bar_width = 2.0f;
-    
-    
-    public void setBarWidth(float bw){
-        bar_width=bw;
     }
-    
-    
+
+    protected int em_size = 1;
+    protected double x_unit_width = 1.0;
+
+    protected float bar_width = 0.9f * 2.0f;
+
+    public void setBarWidth(float bw) {
+        bar_width = bw;
+    }
+
     //protected float bar_width_em = 1;
     protected float y_legend_width = 10;
 
@@ -64,13 +60,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         this.setCompression(10000);
     }
 
-
-    
     /**
      * Creates new form Chart
      */
     public Chart() {
-        if (Globals.se==null){
+        if (Globals.se == null) {
             return;
         }
 
@@ -83,53 +77,49 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         Globals.se.addQuoteReceiver(this);
-        
+
 //                scrollPane=new JScrollPane();
-   //     scrollPane.setViewportView(this);
-
-
+        //     scrollPane.setViewportView(this);
     }
 
-    private String [] ctxMenuCompressionText = {
+    private String[] ctxMenuCompressionText = {
         "5 s", "10 s", "15 s", "30 s",
         "1 m", "2 m", "5 m", "10 m", "15 m", "30 m",
         "1 h", "2 h", "4 h",
         "1 d", "2 d"
     };
-    private Integer[] ctxMenuCompressionValues ={
-        5*1000, 10*1000, 15*1000, 30*1000,
-        60*1000, 2*60*1000, 5*60*1000, 10*60*1000, 15*60*1000, 30*60*1000,
-        1*3600*1000,2*3600*1000, 4*3600*1000, 
-        1*24*3600*1000, 2*24*3600*1000
+    private Integer[] ctxMenuCompressionValues = {
+        5 * 1000, 10 * 1000, 15 * 1000, 30 * 1000,
+        60 * 1000, 2 * 60 * 1000, 5 * 60 * 1000, 10 * 60 * 1000, 15 * 60 * 1000, 30 * 60 * 1000,
+        1 * 3600 * 1000, 2 * 3600 * 1000, 4 * 3600 * 1000,
+        1 * 24 * 3600 * 1000, 2 * 24 * 3600 * 1000
     };
-    
+
     void initCtxMenu() {
-        for (int i=0; i<this.ctxMenuCompressionValues.length;i++){
-            JMenuItem item=new JMenuItem(this.ctxMenuCompressionText[i]);
-          
-        
-        item.addActionListener((java.awt.event.ActionEvent evt) -> {
-            ctxMenuCompActionPerformed(evt);
+        for (int i = 0; i < this.ctxMenuCompressionValues.length; i++) {
+            JMenuItem item = new JMenuItem(this.ctxMenuCompressionText[i]);
+
+            item.addActionListener((java.awt.event.ActionEvent evt) -> {
+                ctxMenuCompActionPerformed(evt);
             });
-        this.compMenu.add(item);
+            this.compMenu.add(item);
+        }
     }
-    }
-    
+
     private void ctxMenuCompActionPerformed(java.awt.event.ActionEvent evt) {
         String cmd = evt.getActionCommand();
-        for (int i=0;i<this.ctxMenuCompressionText.length;i++){
-            if (this.ctxMenuCompressionText[i].equals(cmd)){
+        for (int i = 0; i < this.ctxMenuCompressionText.length; i++) {
+            if (this.ctxMenuCompressionText[i].equals(cmd)) {
                 System.out.printf("Equality to %s\n", cmd);
                 this.setCompression(this.ctxMenuCompressionValues[i]);
             }
         }
-        System.out.printf("ACtion %s\n",cmd);
+        System.out.printf("ACtion %s\n", cmd);
         //this.setCompression(1000 * 5);
-    }     
+    }
 
     OHLCData data;
 
-    
     @Override
     public Dimension getPreferredScrollableViewportSize() {
         return this.getPreferredSize();
@@ -157,7 +147,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     class XLegendDef {
 
-        double unit_width = 1;
+        //  double unit_width = 1.5;
         int big_tick = 8;
         long start;
 
@@ -166,10 +156,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         String getAt(int unit) {
-            
+
             int fs = data.getFrameSize();
-            return Scheduler.formatTimeMillis(0+unit*fs);
-            
+            return Scheduler.formatTimeMillis(0 + unit * fs);
 
         }
 
@@ -179,11 +168,16 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
+    /**
+     * Draw the one and only one X legend
+     *
+     * @param g Graphics conext to draw
+     * @param xld Definition
+     */
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
         g = (Graphics2D) g.create();
 
-        
         Dimension dim = getSize();
         int y = dim.height - em_height * 3;
 
@@ -192,7 +186,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         int n;
         double x;
 
-        for (n = 0, x = 0; x < dim.width; x += em_size * xld.unit_width) {
+        for (n = 0, x = 0; x < dim.width; x += em_size * x_unit_width) {
 
             if (n % xld.big_tick == 0) {
                 g.drawLine((int) x, y, (int) x, y + em_size);
@@ -203,7 +197,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             if (n % xld.big_tick == 0) {
                 String text;
                 text = xld.getAt(n);
-                
+
                 int swidth = g.getFontMetrics().stringWidth(text);
 
                 g.drawString(text, (int) x - swidth / 2, y + em_height * 2);
@@ -239,7 +233,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
     }
 
-    boolean logs = true;
+    boolean logs = false;
 
     float getY(float y) {
 
@@ -259,21 +253,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             //return c_rect.height - ((float) Math.log((y - c_mm.min) * c_yscaling) * fac);
         }
 
-        return c_rect.height - ((y - c_mm.min) * c_yscaling);
+        return (c_rect.height - ((y - c_mm.min) * c_yscaling)) + c_rect.y;
 
 //        return c_rect.height - ((y - c_mm.min) * c_yscaling);
     }
 
-    /*   private void old_drawItem(Graphics2D g, Rectangle r, int prevx, int x, OHLCDataItem prev, OHLCDataItem item, float s, float min) {
-
-        if (prev == null) {
-            prev = item;
-        }
-
-        g.drawLine(prevx, (int) getYc(prev.close, min, s, r), x, (int) getYc(item.close, min, s, r));
-        g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
-    }
-     */
     private void drawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
 
         if (prev == null) {
@@ -286,7 +270,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
     }
 
-    private void drawItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+    private void drawCandleItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
         if (prev == null) {
             prev = i;
@@ -294,9 +278,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Graphics2D g = ctx.g;
 
         Rectangle r = ctx.rect;
-//        g.drawLine(prevx, (int) ctx.getYc(prev.close), x, (int) ctx.getYc(item.close));
 
-//        g.drawLine(x,(int)ctx.getYc(i.high),x,(int)ctx.getYc(i.low));
         if (i.open < i.close) {
             int xl = (int) (x + ctx.iwidth / 2);
 
@@ -328,38 +310,59 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         }
 
-//        g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
     }
 
-//    float getYc(float y) {
-    //       return c_rect.height - ((y - c_mm.min) * scaling);
-    //   }
+    private void drawBarItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+        Graphics2D g = ctx.g;
+
+        
+        g.drawLine(x, (int) ctx.getYc(0), x, (int) ctx.getYc(i.volume));
+
+        Rectangle r = ctx.rect;
+    }
+
+    enum ChartType {
+        CANDLESTICK,
+        BAR,
+        VOL,
+    }
+
+    ChartType ct = ChartType.CANDLESTICK;
+
+    private void drawItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+        switch (ct) {
+            case CANDLESTICK:
+                this.drawCandleItem(ctx, prevx, x, prev, i);
+                break;
+            case VOL:
+                this.drawBarItem(ctx, prevx, x, prev, i);
+                break;
+
+        }
+    }
+
     float c_yscaling;
 
-    private void drawYLegend(Graphics2D g) {
+    private void drawYLegend(RenderCtx ctx) {
 
-     //   g.setClip(null);
-System.out.printf("Drawing legend\n");
-        Dimension dim0 = this.getSize();
-        Rectangle dim = g.getClipBounds();
+        Graphics2D g=ctx.g;
+        
+        //   g.setClip(null);
+        System.out.printf("Drawing legend\n");
+        //Dimension dim0 = this.getSize();
+        Rectangle dim ;
         dim = this.clip_bounds;
-        
- 
-        
+
         Dimension rv = this.getSize();
-        System.out.printf("W: %d,%d\n",rv.width,rv.height );
-        
-        
+        System.out.printf("W: %d,%d\n", rv.width, rv.height);
 
         int yw = (int) (this.y_legend_width * this.em_size);
 
-
         g.setColor(Color.BLUE);
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
-                g.setColor(Color.YELLOW);
-System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
+        g.setColor(Color.YELLOW);
+        System.out.printf("Dim: %d %d %d %d\n", dim.x, dim.y, dim.width, dim.height);
 
-//        float yscale = gdim.height / c_mm.getDiff();
         c_yscaling = c_rect.height / c_mm.getDiff();
 
 //        System.out.printf("yscale %f\n", c_yscaling);
@@ -372,21 +375,44 @@ System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
             g.drawString(String.format("%.2f", y), dim.width + dim.x - yw + em_size * 1.5f, my + c_font_height / 3);
         }
 
-//        g.setColor(Color.red);
-//        g.drawLine(0,(int)getYc(c_mm.min), 1000, (int)getYc(c_mm.min));
-        //g.setColor(Color.green);
-        //g.drawRect(c_rect.x, c_rect.y, c_rect.width, c_rect.height);
-        // System.out.printf("Size: %d %d\n",gdim.width,gdim.height);
-        //  System.exit(0);
     }
 
     private MinMax c_mm = null;
     private Rectangle c_rect;
 
-    
     private int em_height;
     private int em_width;
-    
+
+    void drawChart(RenderCtx ctx) {
+
+        c_yscaling = c_rect.height / c_mm.getDiff();
+
+        ctx.g.setClip(null);
+        ctx.g.setColor(Color.ORANGE);
+     //     ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);
+      //   ctx.g.drawRect(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);     
+        this.drawYLegend(ctx);
+
+        ctx.g.setColor(Color.ORANGE);
+        int yw=(int) (this.y_legend_width * this.em_size);
+        
+System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;       
+        ctx.g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width-yw, clip_bounds.height);
+        //       ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width-yw, ctx.rect.height);
+
+        OHLCDataItem prev = null;
+        for (int i = first_bar; i < last_bar && i < data.size(); i++) {
+            OHLCDataItem di = data.get(i);
+            int x = (int) (i * em_size * x_unit_width); //em_width;
+            this.drawItem(ctx, x - em_width, x, prev, di); //, ctx.scaling, data.getMin());
+
+            //    myi++;
+            prev = di;
+
+        }
+
+    }
+
     private void draw(Graphics2D g) {
 
         if (data == null) {
@@ -401,30 +427,35 @@ System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
             return;
         }
 
-        c_mm.min /= 1.5; //-= c_mm.min/ 2.0f;
-        c_mm.max *= 1.2; //+= c_mm.max / 10.0f;
+        c_mm.min /= 1; //-= c_mm.min/ 2.0f;
+        c_mm.max *= 1; //+= c_mm.max / 10.0f;
 
         em_height = g.getFontMetrics().getHeight();
         em_width = g.getFontMetrics().stringWidth("M");
-        
-        
-        
-        OHLCDataItem di0 = data.get(0);
+
         XLegendDef xld = new XLegendDef();
         this.drawXLegend(g, xld);
 
-
-        //this.getSize();
-        int pwidth = em_width * num_bars;
+        int pwidth = (int) (em_width*x_unit_width * num_bars);
         int phight = 400;
         //   phight=this.getVisibleRect().height;
 
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
         this.revalidate();
+        
 
-        Rectangle r = new Rectangle(0, 0, pwidth, gdim.height - 6 * em_width);
+        int bww = (int) (data.size()*(this.x_unit_width * this.em_size));
+        int p0 = bww-clip_bounds.width;
+        if (p0<0)
+            p0=0;
+        JViewport vp=(JViewport) this.getParent();
+  //      vp.setViewPosition(new Point(pwidth-400,0));
+        
+        
+        
+
+        Rectangle r = new Rectangle(0, 0, pwidth, gdim.height - 16 * em_width);
         c_rect = r;
-        this.drawYLegend(g);
 
         //       Dimension gdim = this.getSize();
         //    Iterator<OHLCDataItem> it = data.iterator();
@@ -433,26 +464,34 @@ System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
 
         RenderCtx ctx = new RenderCtx();
 
-//        MinMax mm = data.getMinMax(first_bar, last_bar);
-//        if(mm==null)
-//            return ;
+        c_rect.x = 0;
+        c_rect.y = 50;
+        c_rect.height = 100;
         ctx.rect = c_rect;
         ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
         ctx.min = c_mm.getMin();
         ctx.g = g;
-        ctx.iwidth = (bar_width * em_size) * 0.9f; // em_width - em_width / 5f;
+        ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
 
-        //g.setClip(clip_bounds.x, clip_bounds.y, (int)(clip_bounds.width-this.y_legend_width*this.em_size), clip_bounds.height);
-        for (int i = first_bar; i < last_bar && i < data.size(); i++) {
-            OHLCDataItem di = data.get(i);
-            int x = (int) (i * em_size * bar_width); //em_width;
-            this.drawItem(ctx, x - em_width, x, prev, di); //, ctx.scaling, data.getMin());
+        this.ct = ChartType.CANDLESTICK;
+        drawChart(ctx);
 
-            //    myi++;
-            prev = di;
+        c_mm = data.getVolMinMax(first_bar, last_bar);
 
-        }
+        System.out.printf("Volminmax: %f %f\n", c_mm.min, c_mm.max);
+        c_mm.min = 0f;
 
+        c_rect.x = 0;
+        c_rect.y = 250;
+        c_rect.height = 50;
+        ctx.rect = c_rect;
+        ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
+        ctx.min = c_mm.getMin();
+        ctx.g = g;
+        ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
+
+        this.ct = ChartType.VOL;
+        drawChart(ctx);
         //System.out.printf("Scaling: %f  %f %f %f %f\n",diff,(float)r.height,data.getMin(),data.getMax(),yscaling);
 /*        while (it.hasNext()) {
             OHLCDataItem di = it.next();
@@ -467,7 +506,6 @@ System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
          */
     }
 
-    
     private float c_font_height;
 
     @Override
@@ -476,45 +514,33 @@ System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
 
         // Calculate the number of pixels for 1 em
         em_size = g.getFontMetrics().stringWidth("M");
-        
 
         this.gdim = this.getParent().getSize(gdim);
         this.getParent().setPreferredSize(gdim);
 
-        Object o = this.getParent();
-        
+        //Object o = this.getParent();
         JViewport vp = (JViewport) this.getParent();
-        vp.getExtentSize();
+
+        //this.clip_bounds=g.getClipBounds();
+        this.clip_bounds = vp.getViewRect();
         
-        
- 
-        this.clip_bounds=g.getClipBounds();
-        
-        Dimension r = vp.getExtentSize();
-        
-        System.out.printf("Repainting called %d %d %d %d\n", r.width,r.height,clip_bounds.width,clip_bounds.height);
-        
-        clip_bounds.width=r.width;
-        clip_bounds.height=r.height;
-        clip_bounds.x=0;
-        clip_bounds.y=0;
-        Point vvp = vp.getViewPosition();
-        clip_bounds.x=vvp.x;
-        clip_bounds.y=vvp.y;
-        
-        this.clip_bounds=vp.getViewRect();
-        
-        
+//        vp.setViewPosition(new Point(0,0));
 
 //        System.out.printf("X:%d %d\n",gdim.width,gdim.height);
-        first_bar = (int) (clip_bounds.x / (this.bar_width * this.em_size));
-        last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.bar_width * this.em_size));
+        first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.em_size));
+        last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.x_unit_width * this.em_size));
 
+        
+//        int vpwidth=(int) ((last_bar-first_bar)*x_unit_width*em_size);
+        num_bars=data.size() + (int) (clip_bounds.width / (this.x_unit_width * this.em_size))+5;
+        
         
         c_font_height = g.getFontMetrics().getHeight();
-
-        System.out.printf("First %d, last %d\n", first_bar,last_bar);
         
+
+
+        System.out.printf("First %d, last %d\n", first_bar, last_bar);
+
         draw((Graphics2D) g);
     }
 
@@ -568,11 +594,10 @@ System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
             return;
         };
 
-        this.invalidate();
-        
+        //    this.invalidate();
         this.ctxMenu.setVisible(true);
         this.ctxMenu.show(this, evt.getX(), evt.getY());
-        
+
         this.invalidate();
         this.repaint();
 
@@ -584,8 +609,7 @@ System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
         invalidate();
         repaint();
     }
-    
-    
+
     @Override
     public void UpdateQuote(Quote q) {
         //    System.out.print("Quote Received\n");

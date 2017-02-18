@@ -31,58 +31,79 @@ import java.util.*;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OHLCData { 
+public class OHLCData {
 
-    private float max=0;
-    private float min=0;
-    
-    private int frame_size=60000;
-    int max_size=100;
-    
-     
-    
-    public OHLCData(){
+    private float max = 0;
+    private float min = 0;
+
+    private int frame_size = 60000;
+    int max_size = 100;
+
+    public OHLCData() {
 
     }
-    
-    public OHLCData(int frame_size){
-        
-        this.frame_size=frame_size;
+
+    public OHLCData(int frame_size) {
+
+        this.frame_size = frame_size;
     }
 
     public float getMax() {
         return max;
     }
-    
-    public float getMin(){
+
+    public float getMin() {
         return min;
     }
-    
-    public int size(){
+
+    public int size() {
         return data.size();
     }
-    
-    
-    public int getFrameSize(){
+
+    public int getFrameSize() {
         return this.frame_size;
     }
-    
-    public MinMax getMinMax(int first, int last){
-        
-        if (first>=data.size())
-            return null;
-        
+
+    public MinMax getMinMax(int first, int last) {
+
+        if (first >= data.size()) {
+            OHLCDataItem di = data.get(data.size() - 1);
+            return new MinMax(di.low, di.high);
+        }
+
         OHLCDataItem di = data.get(first);
-        MinMax minmax=new MinMax(di.low,di.high);        
-        
-        for (int i=first+1; i<last && i<data.size(); i++){
+        MinMax minmax = new MinMax(di.low, di.high);
+
+        for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);
-            if (di.low<minmax.min){
-                minmax.min=di.low;
+            if (di.low < minmax.min) {
+                minmax.min = di.low;
             }
-            if (di.high>minmax.max){
-                minmax.max=di.high;
-            }            
+            if (di.high > minmax.max) {
+                minmax.max = di.high;
+            }
+        }
+        return minmax;
+    }
+
+    public MinMax getVolMinMax(int first, int last) {
+
+        if (first >= data.size()) {
+            OHLCDataItem di = data.get(data.size() - 1);
+            return new MinMax(di.volume, di.volume);
+        }
+
+        OHLCDataItem di = data.get(first);
+        MinMax minmax = new MinMax(di.volume, di.volume);
+
+        for (int i = first + 1; i < last && i < data.size(); i++) {
+            di = data.get(i);
+            if (di.volume < minmax.min) {
+                minmax.min = di.volume;
+            }
+            if (di.volume > minmax.max) {
+                minmax.max = di.volume;
+            }
         }
         return minmax;
     }
@@ -95,57 +116,52 @@ public class OHLCData {
     }
 
     public ArrayList<OHLCDataItem> data = new ArrayList<>();
-    
-    public OHLCDataItem get(int n){
+
+    public OHLCDataItem get(int n) {
         return data.get(n);
     }
-    
-    
-    private void updateMinMax(float price){
-        if (price > max){
-            
+
+    private void updateMinMax(float price) {
+        if (price > max) {
+
             max = price;
         }
-        if (price < min){
+        if (price < min) {
             min = price;
         }
 
     }
-    
-    public Iterator <OHLCDataItem> iterator(){
+
+    public Iterator<OHLCDataItem> iterator() {
         return data.iterator();
-    } 
+    }
 
     // Start and end of current frame
     private long current_frame_end = 0;
-    private long current_frame_start =0;
+    private long current_frame_start = 0;
 
     public boolean realTimeAdd(long time, float price, float volume) {
-        
-        
+
         if (time >= current_frame_end) {
-            if (current_frame_end==0){
-   
-                this.min=price;
-                this.max=price;
+            if (current_frame_end == 0) {
+
+                this.min = price;
+                this.max = price;
             }
-            
-            long last_frame_start=current_frame_start;
+
+            long last_frame_start = current_frame_start;
             current_frame_start = getFrameStart(time);
-            
-                      
-            
+
             current_frame_end = current_frame_start + frame_size;
-            
+
             //System.out.printf("TA %d TE %d\n",this.current_frame_start,this.current_frame_end);
-            
             data.add(new OHLCDataItem(this.current_frame_start, price, volume));
             this.updateMinMax(price);
             return true;
         }
 
         this.updateMinMax(price);
-        
+
         OHLCDataItem d = data.get(data.size() - 1);
         boolean rc = d.update(price, volume);
         return rc;
