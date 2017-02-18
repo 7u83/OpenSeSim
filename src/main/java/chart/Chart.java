@@ -18,8 +18,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import sesim.MinMax;
+import sesim.Scheduler;
 
 /**
  *
@@ -27,11 +30,25 @@ import sesim.MinMax;
  */
 public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
 
+    class ChartDef {
+        
+    }
+    
+    
+    
     protected int em_size = 1;
 
-    protected float bar_width = 0.8f;
-    protected float bar_width_em = 1;
-    protected float y_legend_width = 8;
+    
+    protected float bar_width = 2.0f;
+    
+    
+    public void setBarWidth(float bw){
+        bar_width=bw;
+    }
+    
+    
+    //protected float bar_width_em = 1;
+    protected float y_legend_width = 10;
 
     protected int num_bars = 4000;
 
@@ -44,12 +61,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 //        data = new OHLCData(60000*30);        
         //data = new OHLCData(60000*30);        
         //data = Globals.se.getOHLCdata(60000 * 30);
+        this.setCompression(10000);
     }
 
+
+    
     /**
      * Creates new form Chart
      */
     public Chart() {
+        if (Globals.se==null){
+            return;
+        }
+
         initComponents();
         initChart();
         initCtxMenu();
@@ -59,6 +83,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         Globals.se.addQuoteReceiver(this);
+        
+//                scrollPane=new JScrollPane();
+   //     scrollPane.setViewportView(this);
+
 
     }
 
@@ -101,12 +129,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     OHLCData data;
 
-    OHLCDataItem current = null;
-
-    //void drawCandle(Graphics2D g, OHLCData d, int x, int y) {
-//
     
-    //   }
     @Override
     public Dimension getPreferredScrollableViewportSize() {
         return this.getPreferredSize();
@@ -135,7 +158,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     class XLegendDef {
 
         double unit_width = 1;
-        int big_tick = 10;
+        int big_tick = 8;
         long start;
 
         XLegendDef() {
@@ -143,11 +166,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         String getAt(int unit) {
-            Date date = new Date(/*sesim.Scheduler.timeStart*/0 + unit * 5000);
-//            DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
-            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-            String dateFormatted = formatter.format(date);
-            return dateFormatted;
+            
+            int fs = data.getFrameSize();
+            return Scheduler.formatTimeMillis(0+unit*fs);
+            
+
         }
 
     }
@@ -158,15 +181,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
-        //XLegendDef xld = new XLegendDef();
         g = (Graphics2D) g.create();
 
-        int xl_height = 30;
-        Dimension dim = this.getSize();
-
-        int em_height = g.getFontMetrics().getHeight();
-        int em_width = g.getFontMetrics().stringWidth("M");
-
+        
+        Dimension dim = getSize();
         int y = dim.height - em_height * 3;
 
         g.drawLine(0, y, dim.width, y);
@@ -174,18 +192,18 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         int n;
         double x;
 
-        for (n = 0, x = 0; x < dim.width; x += em_width * xld.unit_width) {
+        for (n = 0, x = 0; x < dim.width; x += em_size * xld.unit_width) {
 
             if (n % xld.big_tick == 0) {
-                g.drawLine((int) x, y, (int) x, y + em_height);
+                g.drawLine((int) x, y, (int) x, y + em_size);
             } else {
-                g.drawLine((int) x, y, (int) x, y + em_height / 2);
+                g.drawLine((int) x, y, (int) x, y + em_size / 2);
             }
 
             if (n % xld.big_tick == 0) {
-                String text = "Hello";
-
+                String text;
                 text = xld.getAt(n);
+                
                 int swidth = g.getFontMetrics().stringWidth(text);
 
                 g.drawString(text, (int) x - swidth / 2, y + em_height * 2);
@@ -320,13 +338,26 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     private void drawYLegend(Graphics2D g) {
 
+     //   g.setClip(null);
+System.out.printf("Drawing legend\n");
         Dimension dim0 = this.getSize();
         Rectangle dim = g.getClipBounds();
+        dim = this.clip_bounds;
+        
+ 
+        
+        Dimension rv = this.getSize();
+        System.out.printf("W: %d,%d\n",rv.width,rv.height );
+        
+        
 
         int yw = (int) (this.y_legend_width * this.em_size);
 
-//        System.out.printf("MinMax: %f %f\n", c_mm.min, c_mm.max);
+
+        g.setColor(Color.BLUE);
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
+                g.setColor(Color.YELLOW);
+System.out.printf("Dim: %d %d %d %d\n", dim.x,dim.y,dim.width,dim.height);
 
 //        float yscale = gdim.height / c_mm.getDiff();
         c_yscaling = c_rect.height / c_mm.getDiff();
@@ -352,6 +383,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     private MinMax c_mm = null;
     private Rectangle c_rect;
 
+    
+    private int em_height;
+    private int em_width;
+    
     private void draw(Graphics2D g) {
 
         if (data == null) {
@@ -369,12 +404,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         c_mm.min /= 1.5; //-= c_mm.min/ 2.0f;
         c_mm.max *= 1.2; //+= c_mm.max / 10.0f;
 
+        em_height = g.getFontMetrics().getHeight();
+        em_width = g.getFontMetrics().stringWidth("M");
+        
+        
+        
         OHLCDataItem di0 = data.get(0);
         XLegendDef xld = new XLegendDef();
         this.drawXLegend(g, xld);
 
-        int em_height = g.getFontMetrics().getHeight();
-        int em_width = g.getFontMetrics().stringWidth("M");
 
         //this.getSize();
         int pwidth = em_width * num_bars;
@@ -429,30 +467,54 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
          */
     }
 
-    protected void initEmSize(Graphics g) {
-
-        em_size = g.getFontMetrics().stringWidth("M");
-
-    }
-
+    
     private float c_font_height;
 
     @Override
     public final void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        this.initEmSize(g);
+        // Calculate the number of pixels for 1 em
+        em_size = g.getFontMetrics().stringWidth("M");
+        
+
         this.gdim = this.getParent().getSize(gdim);
         this.getParent().setPreferredSize(gdim);
 
-        this.clip_bounds = g.getClipBounds(this.clip_bounds);
+        Object o = this.getParent();
+        
+        JViewport vp = (JViewport) this.getParent();
+        vp.getExtentSize();
+        
+        
+ 
+        this.clip_bounds=g.getClipBounds();
+        
+        Dimension r = vp.getExtentSize();
+        
+        System.out.printf("Repainting called %d %d %d %d\n", r.width,r.height,clip_bounds.width,clip_bounds.height);
+        
+        clip_bounds.width=r.width;
+        clip_bounds.height=r.height;
+        clip_bounds.x=0;
+        clip_bounds.y=0;
+        Point vvp = vp.getViewPosition();
+        clip_bounds.x=vvp.x;
+        clip_bounds.y=vvp.y;
+        
+        this.clip_bounds=vp.getViewRect();
+        
+        
 
 //        System.out.printf("X:%d %d\n",gdim.width,gdim.height);
         first_bar = (int) (clip_bounds.x / (this.bar_width * this.em_size));
         last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.bar_width * this.em_size));
 
+        
         c_font_height = g.getFontMetrics().getHeight();
 
+        System.out.printf("First %d, last %d\n", first_bar,last_bar);
+        
         draw((Graphics2D) g);
     }
 
@@ -467,12 +529,18 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         ctxMenu = new javax.swing.JPopupMenu();
         compMenu = new javax.swing.JMenu();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
 
         compMenu.setText("Compression");
         ctxMenu.add(compMenu);
 
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+        ctxMenu.add(jCheckBoxMenuItem1);
+
         setBackground(java.awt.Color.white);
         setBorder(null);
+        setDoubleBuffered(false);
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(300, 300));
         setRequestFocusEnabled(false);
@@ -486,7 +554,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 589, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -500,16 +568,24 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             return;
         };
 
+        this.invalidate();
+        
+        this.ctxMenu.setVisible(true);
         this.ctxMenu.show(this, evt.getX(), evt.getY());
+        
+        this.invalidate();
+        this.repaint();
 
 
     }//GEN-LAST:event_formMousePressed
 
     void setCompression(int timeFrame) {
         data = Globals.se.getOHLCdata(timeFrame);
+        invalidate();
         repaint();
     }
-
+    
+    
     @Override
     public void UpdateQuote(Quote q) {
         //    System.out.print("Quote Received\n");
@@ -524,5 +600,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu compMenu;
     private javax.swing.JPopupMenu ctxMenu;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     // End of variables declaration//GEN-END:variables
 }

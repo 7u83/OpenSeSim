@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OHLCData { //extends ArrayList <OHLCDataItem> {
+public class OHLCData { 
 
     private float max=0;
     private float min=0;
@@ -39,6 +39,7 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
     private int frame_size=60000;
     int max_size=100;
     
+     
     
     public OHLCData(){
 
@@ -48,9 +49,6 @@ public class OHLCData { //extends ArrayList <OHLCDataItem> {
         
         this.frame_size=frame_size;
     }
-
-   // long time_start;
-   // long time_step;
 
     public float getMax() {
         return max;
