@@ -145,6 +145,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jSplitPane2 = new javax.swing.JSplitPane();
+        orderBookNew1 = new gui.orderbook.OrderBook();
+        traderListPanel1 = new gui.TraderListPanel();
         jPanel2 = new javax.swing.JPanel();
         stopButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
@@ -152,14 +156,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
         accelSpinner = new javax.swing.JSpinner();
         clock = new gui.Clock();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jSplitPane2 = new javax.swing.JSplitPane();
+        jSplitPane3 = new javax.swing.JSplitPane();
+        jSplitPane4 = new javax.swing.JSplitPane();
+        orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
         jChartScrollPane = new javax.swing.JScrollPane();
         chart = new chart.Chart();
-        orderBookNew1 = new gui.orderbook.OrderBook();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
-        traderListPanel1 = new gui.TraderListPanel();
-        orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -191,6 +193,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jTextArea1.setText("Hakke");
         jScrollPane2.setViewportView(jTextArea1);
+
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        jSplitPane2.setLeftComponent(orderBookNew1);
+
+        jSplitPane1.setTopComponent(jSplitPane2);
+        jSplitPane1.setRightComponent(traderListPanel1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 480));
@@ -279,7 +288,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane4.setBottomComponent(orderBooksHorizontal1);
 
         javax.swing.GroupLayout chartLayout = new javax.swing.GroupLayout(chart);
         chart.setLayout(chartLayout);
@@ -294,15 +304,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         jChartScrollPane.setViewportView(chart);
 
-        jSplitPane2.setBottomComponent(jChartScrollPane);
-        jSplitPane2.setLeftComponent(orderBookNew1);
-        jSplitPane2.setLeftComponent(quoteVertical1);
+        jSplitPane4.setLeftComponent(jChartScrollPane);
 
-        jSplitPane1.setTopComponent(jSplitPane2);
-        jSplitPane1.setRightComponent(traderListPanel1);
-        jSplitPane1.setBottomComponent(orderBooksHorizontal1);
+        jSplitPane3.setRightComponent(jSplitPane4);
+        jSplitPane3.setLeftComponent(quoteVertical1);
 
-        getContentPane().add(jSplitPane1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -718,6 +725,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JSplitPane jSplitPane3;
+    private javax.swing.JSplitPane jSplitPane4;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
