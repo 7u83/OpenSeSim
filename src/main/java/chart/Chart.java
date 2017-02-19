@@ -314,8 +314,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     private void drawBarItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
         Graphics2D g = ctx.g;
+        g.setColor(Color.BLACK);
 
-        
         g.drawLine(x, (int) ctx.getYc(0), x, (int) ctx.getYc(i.volume));
 
         Rectangle r = ctx.rect;
@@ -345,23 +345,23 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     private void drawYLegend(RenderCtx ctx) {
 
-        Graphics2D g=ctx.g;
-        
+        Graphics2D g = ctx.g;
+
         //   g.setClip(null);
-        System.out.printf("Drawing legend\n");
+//        System.out.printf("Drawing legend\n");
         //Dimension dim0 = this.getSize();
-        Rectangle dim ;
+        Rectangle dim;
         dim = this.clip_bounds;
 
         Dimension rv = this.getSize();
-        System.out.printf("W: %d,%d\n", rv.width, rv.height);
+        //System.out.printf("W: %d,%d\n", rv.width, rv.height);
 
         int yw = (int) (this.y_legend_width * this.em_size);
 
-        g.setColor(Color.BLUE);
+        //   g.setColor(Color.BLUE);
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
-        g.setColor(Color.YELLOW);
-        System.out.printf("Dim: %d %d %d %d\n", dim.x, dim.y, dim.width, dim.height);
+        // g.setColor(Color.YELLOW);
+        //System.out.printf("Dim: %d %d %d %d\n", dim.x, dim.y, dim.width, dim.height);
 
         c_yscaling = c_rect.height / c_mm.getDiff();
 
@@ -388,16 +388,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         c_yscaling = c_rect.height / c_mm.getDiff();
 
         ctx.g.setClip(null);
-        ctx.g.setColor(Color.ORANGE);
-     //     ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);
-      //   ctx.g.drawRect(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);     
+        // ctx.g.setColor(Color.ORANGE);
+        //     ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);
+        //   ctx.g.drawRect(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);     
         this.drawYLegend(ctx);
 
-        ctx.g.setColor(Color.ORANGE);
-        int yw=(int) (this.y_legend_width * this.em_size);
-        
-System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;       
-        ctx.g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width-yw, clip_bounds.height);
+        ///  ctx.g.setColor(Color.ORANGE);
+        int yw = (int) (this.y_legend_width * this.em_size);
+
+        ctx.g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);
         //       ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width-yw, ctx.rect.height);
 
         OHLCDataItem prev = null;
@@ -412,6 +411,9 @@ System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;
         }
 
     }
+
+    boolean autoScroll = true;
+    int lastvpos = 0;
 
     private void draw(Graphics2D g) {
 
@@ -436,37 +438,49 @@ System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;
         XLegendDef xld = new XLegendDef();
         this.drawXLegend(g, xld);
 
-        int pwidth = (int) (em_width*x_unit_width * num_bars);
-        int phight = 400;
+        int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
+        //   int phight = 400;
         //   phight=this.getVisibleRect().height;
 
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
         this.revalidate();
-        
 
-        int bww = (int) (data.size()*(this.x_unit_width * this.em_size));
-        int p0 = bww-clip_bounds.width;
-        if (p0<0)
-            p0=0;
-        JViewport vp=(JViewport) this.getParent();
-  //      vp.setViewPosition(new Point(pwidth-400,0));
-        
-        
-        
+        int bww = (int) (data.size() * (this.x_unit_width * this.em_size));
+        int p0 = pwidth - clip_bounds.width - (clip_bounds.width - (int) (13 * em_size));
+        if (p0 < 0) {
+            p0 = 0;
+        }
+        JViewport vp = (JViewport) this.getParent();
+        Point pp = vp.getViewPosition();
+        //  System.out.printf("View Pos: %d %d\n", pp.x,pp.y);
+        //  System.out.printf("Calc Pos: %d pw:%d\n", p0,pwidth);        
+        Point cp = vp.getViewPosition();
 
-        Rectangle r = new Rectangle(0, 0, pwidth, gdim.height - 16 * em_width);
+        if (autoScroll && this.lastvpos != cp.x) {
+            autoScroll = false;
+        }
+
+        if (!autoScroll && cp.x >= p0) {
+            autoScroll = true;
+        }
+
+        if (autoScroll) {
+            vp.setViewPosition(new Point(p0, 0));
+            lastvpos = p0;
+
+        }
+
+        int cheight = gdim.height - 6 * em_width;
+
+        int h = (int) (cheight * 0.8);
+
+        Rectangle r = new Rectangle(0, 0, pwidth, h);
         c_rect = r;
 
-        //       Dimension gdim = this.getSize();
-        //    Iterator<OHLCDataItem> it = data.iterator();
-        OHLCDataItem prev = null;
-        //  int myi = 0;
-
         RenderCtx ctx = new RenderCtx();
-
-        c_rect.x = 0;
-        c_rect.y = 50;
-        c_rect.height = 100;
+        //   c_rect.x = 0;
+        //  c_rect.y = 50;
+        //  c_rect.height = ;
         ctx.rect = c_rect;
         ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
         ctx.min = c_mm.getMin();
@@ -478,12 +492,18 @@ System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;
 
         c_mm = data.getVolMinMax(first_bar, last_bar);
 
-        System.out.printf("Volminmax: %f %f\n", c_mm.min, c_mm.max);
+        //System.out.printf("Volminmax: %f %f\n", c_mm.min, c_mm.max);
         c_mm.min = 0f;
 
-        c_rect.x = 0;
-        c_rect.y = 250;
-        c_rect.height = 50;
+        int h1 = h + em_width;
+        h = (int) (cheight * 0.2);
+
+        r = new Rectangle(0, h1, pwidth, h);
+        c_rect = r;
+
+        //   c_rect.x = 0;
+        //   c_rect.y = 250;
+        //   c_rect.height = 50;
         ctx.rect = c_rect;
         ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
         ctx.min = c_mm.getMin();
@@ -492,18 +512,7 @@ System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;
 
         this.ct = ChartType.VOL;
         drawChart(ctx);
-        //System.out.printf("Scaling: %f  %f %f %f %f\n",diff,(float)r.height,data.getMin(),data.getMax(),yscaling);
-/*        while (it.hasNext()) {
-            OHLCDataItem di = it.next();
 
-            int x = myi * em_width;
-            this.drawItem(ctx, x - em_width, x, prev, di); //, ctx.scaling, data.getMin());
-
-            myi++;
-            prev = di;
-
-        }
-         */
     }
 
     private float c_font_height;
@@ -523,24 +532,18 @@ System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;
 
         //this.clip_bounds=g.getClipBounds();
         this.clip_bounds = vp.getViewRect();
-        
-//        vp.setViewPosition(new Point(0,0));
 
+//        vp.setViewPosition(new Point(0,0));
 //        System.out.printf("X:%d %d\n",gdim.width,gdim.height);
         first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.em_size));
         last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.x_unit_width * this.em_size));
 
-        
 //        int vpwidth=(int) ((last_bar-first_bar)*x_unit_width*em_size);
-        num_bars=data.size() + (int) (clip_bounds.width / (this.x_unit_width * this.em_size))+5;
-        
-        
+        num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_size))+5;
+
         c_font_height = g.getFontMetrics().getHeight();
-        
 
-
-        System.out.printf("First %d, last %d\n", first_bar, last_bar);
-
+        //  System.out.printf("First %d, last %d\n", first_bar, last_bar);
         draw((Graphics2D) g);
     }
 
@@ -570,6 +573,11 @@ System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(300, 300));
         setRequestFocusEnabled(false);
+        addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                formMouseWheelMoved(evt);
+            }
+        });
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 formMousePressed(evt);
@@ -603,6 +611,25 @@ System.out.printf("YYYYYYYYYYYYYYYYYYYYw %d",yw) ;
 
 
     }//GEN-LAST:event_formMousePressed
+
+    private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
+        System.out.printf("Wheel  %f\n", evt.getPreciseWheelRotation());
+
+        double n = evt.getPreciseWheelRotation()*(-1.0);
+        
+        
+        System.out.printf("My n %f\n",n);
+        if (n < 0) {
+            if (this.x_unit_width > 0.3) {
+                this.x_unit_width += 0.1 * n;
+            }
+        } else {
+            this.x_unit_width += 0.1 * n;
+        }
+
+        this.invalidate();
+        this.repaint();
+    }//GEN-LAST:event_formMouseWheelMoved
 
     void setCompression(int timeFrame) {
         data = Globals.se.getOHLCdata(timeFrame);
