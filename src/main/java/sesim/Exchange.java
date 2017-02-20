@@ -3,6 +3,7 @@ package sesim;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -86,14 +87,35 @@ public class Exchange {
 
         return data;
     }
+    
+    
+    public void injectMoney(){
+        
+        
+        accounts.forEach(new BiConsumer(){
+            @Override
+            public void accept(Object t, Object u) {
+                Account a = (Account)u;
+                a.money+=2000.0;
+
+            }
+            
+        });
+      
+    }
+    
+    
+    
 
     public OHLCData getOHLCdata(Integer timeFrame) {
         OHLCData data; //=new OHLCData(timeFrame);
         data = ohlc_data.get(timeFrame);
         if (data == null){
-        //    data = new OHLCData(timeFrame);
+        
+            this.tradelock.lock();
             data = this.buildOHLCData(timeFrame);
             ohlc_data.put(timeFrame, data);
+            this.tradelock.unlock();
         }
         
         return data;
@@ -807,6 +829,9 @@ public class Exchange {
             //System.out.print("binweg\n");
             return -1;
         }
+        
+        //System.out.printf("Creating Order width Volume %f %f \n",o.volume,o.limit);
+        
         tradelock.lock();
         num_orders++;
 
