@@ -182,6 +182,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
         simMenuStart = new javax.swing.JMenuItem();
         simMenuPause = new javax.swing.JMenuItem();
         simMenuStop = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         viewClock = new javax.swing.JMenuItem();
@@ -433,6 +436,18 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
         });
         simMenu.add(simMenuStop);
+        simMenu.add(jSeparator3);
+
+        jMenuItem4.setText("Point Zero");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        simMenu.add(jMenuItem4);
+
+        jMenuItem5.setText("jMenuItem5");
+        simMenu.add(jMenuItem5);
 
         menuBar.add(simMenu);
 
@@ -537,7 +552,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             @Override
             public long timerTask() {
                 System.out.printf("Hello i will inject money\n");
-                Globals.se.injectMoney();
+               // Globals.se.injectMoney();
                 return 1000*60*10;        
             }
 
@@ -687,6 +702,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jd.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        Globals.se.pointZero();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
@@ -739,10 +758,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
