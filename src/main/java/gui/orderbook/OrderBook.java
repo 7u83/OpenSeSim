@@ -147,10 +147,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
 
         list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Trader", "Price", "Volume"
