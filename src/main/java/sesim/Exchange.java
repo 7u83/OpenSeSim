@@ -76,7 +76,6 @@ public class Exchange {
         if (this.quoteHistory == null) {
             return data;
         }
-        
 
         Iterator<Quote> it = quoteHistory.iterator();
         while (it.hasNext()) {
@@ -87,39 +86,47 @@ public class Exchange {
 
         return data;
     }
-    
-    
-    public void injectMoney(){
-        
-        
-        accounts.forEach(new BiConsumer(){
+
+    public void injectMoney() {
+
+        accounts.forEach(new BiConsumer() {
             @Override
             public void accept(Object t, Object u) {
-                Account a = (Account)u;
-                a.money+=2000.0;
+                Account a = (Account) u;
+                a.money += 20000.0;
 
             }
-            
+
         });
-      
+
     }
-    
-    
-    
+
+    public void pointZero() {
+        accounts.forEach(new BiConsumer() {
+            @Override
+            public void accept(Object t, Object u) {
+                Account a = (Account) u;
+                a.money = 20000.0;
+
+            }
+
+        });
+
+    }
 
     public OHLCData getOHLCdata(Integer timeFrame) {
         OHLCData data; //=new OHLCData(timeFrame);
         data = ohlc_data.get(timeFrame);
-        if (data == null){
-        
+        if (data == null) {
+
             this.tradelock.lock();
             data = this.buildOHLCData(timeFrame);
             ohlc_data.put(timeFrame, data);
             this.tradelock.unlock();
         }
-        
+
         return data;
-/*        try {
+        /*        try {
             data = ohlc_data.get(timeFrame);
         } catch (Exception e) {
             data = null;
@@ -127,8 +134,8 @@ public class Exchange {
         if (data == null) {
             data = buildOHLCData(timeFrame);
         }
-*/
-        
+         */
+
     }
 
     void updateOHLCData(Quote q) {
@@ -286,8 +293,8 @@ public class Exchange {
         private double limit;
         private double volume;
         private final double initial_volume;
-        private long id;
-        long created;
+        private final long id;
+        private final long created;
         private final Account account;
 
         Order(Account account, OrderType type, double volume, double limit) {
@@ -350,7 +357,7 @@ public class Exchange {
         traders = new ArrayList();
 
         num_trades = 0;
-        
+
         this.ohlc_data = new HashMap();
 
         // Create order books
@@ -737,6 +744,22 @@ public class Exchange {
         }
     }
 
+    public void executeUnlimitedOrders() {
+
+    }
+
+    private void finishTrade(Order b, Order a, double price, double volume) {
+        // Transfer money and shares
+        transferMoneyAndShares(b.account, a.account, volume * price, -volume);
+
+        // Update volume
+        b.volume -= volume;
+        a.volume -= volume;
+
+        removeOrderIfExecuted(a);
+        removeOrderIfExecuted(b);
+    }
+
     /**
      *
      */
@@ -751,12 +774,26 @@ public class Exchange {
         double volume_total = 0;
         double money_total = 0;
 
-        while (!bid.isEmpty() && !ask.isEmpty()) {
+        // Match unlimited sell orders against unlimited buy orders
+        while (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
+            System.out.printf("Cannot match two unlimited orders!\n");
+            System.exit(0);
 
+        }
+
+        // Match unlimited sell orders against limited buy orders
+        while (!ul_sell.isEmpty() && !bid.isEmpty()) {
+            Order b = bid.first();
+            Order a = ul_sell.first();
+            double price = b.limit;
+            double volume = b.volume >= a.volume ? a.volume : b.volume;
+
+        }
+
+        while (!bid.isEmpty() && !ask.isEmpty()) {
             Order b = bid.first();
             Order a = ask.first();
 
-            //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
             if (b.limit < a.limit) {
                 break;
             }
@@ -765,24 +802,12 @@ public class Exchange {
             double price = b.id < a.id ? b.limit : a.limit;
             double volume = b.volume >= a.volume ? a.volume : b.volume;
 
-            //System.out.printf("Price %f Vol %f\n", price,volume);
-            // Transfer money and shares
-            transferMoneyAndShares(b.account, a.account, volume * price, -volume);
+            finishTrade(b, a, price, volume);
 
-            // Update volume
-            b.volume -= volume;
-            a.volume -= volume;
-
-            //   a.account.update(a);
-            //   b.account.update(b);
-            //System.out.printf("In %f (%f) < %f (%f)\n",b.limit,b.volume,a.limit,a.volume);
             volume_total += volume;
             money_total += price * volume;
 
             num_trades++;
-
-            removeOrderIfExecuted(a);
-            removeOrderIfExecuted(b);
 
             this.checkSLOrders(price);
 
@@ -829,9 +854,8 @@ public class Exchange {
             //System.out.print("binweg\n");
             return -1;
         }
-        
+
         //System.out.printf("Creating Order width Volume %f %f \n",o.volume,o.limit);
-        
         tradelock.lock();
         num_orders++;
 
