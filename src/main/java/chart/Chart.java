@@ -176,7 +176,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      */
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
+        
         g = (Graphics2D) g.create();
+
+        int yw = (int) (this.y_legend_width * this.em_size);
+
+        g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);        
 
         Dimension dim = getSize();
         int y = dim.height - em_height * 3;
@@ -488,6 +493,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
 
         this.ct = ChartType.CANDLESTICK;
+        logs=true;
         drawChart(ctx);
 
         c_mm = data.getVolMinMax(first_bar, last_bar);
@@ -510,6 +516,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         ctx.g = g;
         ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
 
+        logs=false;
         this.ct = ChartType.VOL;
         drawChart(ctx);
 
@@ -519,6 +526,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     @Override
     public final void paintComponent(Graphics g) {
+        if (Globals.se==null){
+            return;
+        }
         super.paintComponent(g);
 
         // Calculate the number of pixels for 1 em
@@ -569,7 +579,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         setBackground(java.awt.Color.white);
         setBorder(null);
-        setDoubleBuffered(false);
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(300, 300));
         setRequestFocusEnabled(false);
@@ -615,10 +624,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
         System.out.printf("Wheel  %f\n", evt.getPreciseWheelRotation());
 
-        double n = evt.getPreciseWheelRotation()*(-1.0);
-        
-        
-        System.out.printf("My n %f\n",n);
+        double n = evt.getPreciseWheelRotation() * (-1.0);
+
+        System.out.printf("My n %f\n", n);
         if (n < 0) {
             if (this.x_unit_width > 0.3) {
                 this.x_unit_width += 0.1 * n;
@@ -632,9 +640,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }//GEN-LAST:event_formMouseWheelMoved
 
     void setCompression(int timeFrame) {
-        data = Globals.se.getOHLCdata(timeFrame);
-        invalidate();
-        repaint();
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            data = Globals.se.getOHLCdata(timeFrame);
+            invalidate();
+            repaint();
+        });
+
     }
 
     @Override
