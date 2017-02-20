@@ -43,8 +43,14 @@ public class Clock extends javax.swing.JPanel {
      */
     public Clock() {
         initComponents();
+        
 
         this.timer = new Timer();
+
+        if(Globals.se==null)
+            return;
+
+        
         clockUpdater = new TimerTask() {
             @Override
             public void run() {

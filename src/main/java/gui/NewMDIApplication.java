@@ -30,6 +30,7 @@ import java.awt.Frame;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.TimerTask;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -44,6 +45,7 @@ import org.json.JSONObject;
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
+import sesim.Scheduler;
 import traders.RandomTraderConfig;
 
 /**
@@ -531,6 +533,22 @@ public class NewMDIApplication extends javax.swing.JFrame {
         Globals.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
 
 
+        Scheduler.TimerTask tt = new Scheduler.TimerTask() {
+            @Override
+            public long timerTask() {
+                System.out.printf("Hello i will inject money\n");
+                Globals.se.injectMoney();
+                return 1000*60*10;        
+            }
+
+            @Override
+            public long getID() {
+                  return 7L;
+            }
+   
+        };
+        Globals.se.timer.startTimerEvent(tt, 0);
+        
 
     }
 
