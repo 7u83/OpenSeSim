@@ -774,23 +774,33 @@ public class Exchange {
         double volume_total = 0;
         double money_total = 0;
 
-        // Match unlimited sell orders against unlimited buy orders
-        while (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
-            System.out.printf("Cannot match two unlimited orders!\n");
-            System.exit(0);
 
-        }
+        while (true) {
 
-        // Match unlimited sell orders against limited buy orders
-        while (!ul_sell.isEmpty() && !bid.isEmpty()) {
-            Order b = bid.first();
-            Order a = ul_sell.first();
-            double price = b.limit;
-            double volume = b.volume >= a.volume ? a.volume : b.volume;
+            // Match unlimited sell orders against unlimited buy orders
+            while (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
+                System.out.printf("Cannot match two unlimited orders!\n");
+                System.exit(0);
 
-        }
+            }
 
-        while (!bid.isEmpty() && !ask.isEmpty()) {
+            // Match unlimited sell orders against limited buy orders
+            while (!ul_sell.isEmpty() && !bid.isEmpty()) {
+                Order b = bid.first();
+                Order a = ul_sell.first();
+                double price = b.limit;
+                double volume = b.volume >= a.volume ? a.volume : b.volume;
+                finishTrade(b, a, price, volume);
+                volume_total += volume;
+                money_total += price * volume;
+                this.checkSLOrders(price);
+            }
+
+            // Match limited against limited orders
+            if (bid.isEmpty() || ask.isEmpty()) {
+                break;
+            }
+
             Order b = bid.first();
             Order a = ask.first();
 
@@ -803,7 +813,6 @@ public class Exchange {
             double volume = b.volume >= a.volume ? a.volume : b.volume;
 
             finishTrade(b, a, price, volume);
-
             volume_total += volume;
             money_total += price * volume;
 
@@ -812,7 +821,7 @@ public class Exchange {
             this.checkSLOrders(price);
 
         }
-//System.out.print("Volume total is "+volume_total+"\n");
+
         if (volume_total == 0) {
             return;
         }
