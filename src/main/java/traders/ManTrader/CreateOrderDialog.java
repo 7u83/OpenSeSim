@@ -53,8 +53,8 @@ public class CreateOrderDialog extends javax.swing.JDialog {
     public CreateOrderDialog(java.awt.Frame parent, boolean modal, Account account, OrderType type) {
         this(parent, modal);
         this.account = account;
-        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Buy Lim", "Sell Lim", "Sell"}));
-        typeList = new OrderType[]{OrderType.BUYLIMIT, OrderType.SELLLIMIT, OrderType.SELL};
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Buy Lim", "Sell Lim", "Buy", "Sell"}));
+        typeList = new OrderType[]{OrderType.BUYLIMIT, OrderType.SELLLIMIT, OrderType.BUY,OrderType.SELL};
         for (int i = 0; i < typeList.length; i++) {
             if (typeList[i] == type) {
                 this.typeComboBox.setSelectedIndex(i);
@@ -72,7 +72,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
 
     public void initDialog() {
         OrderType t = getOrderType();
-        Quote q = Globals.se.getCurrentPrice();
+        Quote q = Globals.se.getBestPrice_0();
         Double price = q == null ? 0.0 : q.price;
         
         if (t == OrderType.BUYLIMIT) {
@@ -123,7 +123,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
             }
         });
 
-        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Buy Limit", "Sell Limit", "Sell" }));
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Buy Limit", "Sell Limit", "Sell", "Buy" }));
 
         limitSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 0.1d));
 

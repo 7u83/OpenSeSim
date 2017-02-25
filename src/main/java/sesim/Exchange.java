@@ -449,12 +449,11 @@ public class Exchange {
 
     }
 
-    public Quote getCurrentPrice() {
+    public Double getBestPrice() {
 
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
-        tradelock.lock();
         Quote lq = this.getLastQuoete();
         Order b = null, a = null;
         if (!bid.isEmpty()) {
@@ -463,18 +462,99 @@ public class Exchange {
         if (!ask.isEmpty()) {
             a = ask.first();
         }
-        tradelock.unlock();
 
+        // If there is neither bid nor ask and no last quote
+        // we can't return a quote
         if (lq == null && b == null && a == null) {
             return null;
         }
 
+        // there is bid and ask
         if (a != null && b != null) {
             Quote q = new Quote();
+
+            // if there is no last quote calculate from bid and ask
+            if (lq == null) {
+                return (bid.first().limit + ask.first().limit) / 2.0;
+
+            }
+
+            if (lq.price < b.limit) {
+                return b.limit;
+
+            }
+            if (lq.price > a.limit) {
+                return a.limit;
+
+            }
+            return lq.price;
+        }
+
+        if (a != null) {
+            Quote q = new Quote();
+            if (lq == null) {
+
+                return a.limit;
+
+            }
+            if (lq.price > a.limit) {
+                return a.limit;
+
+            }
+            return lq.price;
+        }
+
+        if (b != null) {
+            Quote q = new Quote();
+            if (lq == null) {
+                return b.limit;
+
+            }
+            if (lq.price < b.limit) {
+                return b.limit;
+
+            }
+
+            return lq.price;
+        }
+
+        if (lq == null) {
+            return null;
+        }
+
+        return lq.price;
+    }
+
+    public Quote getBestPrice_0() {
+
+        SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
+        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+
+        Quote lq = this.getLastQuoete();
+        Order b = null, a = null;
+        if (!bid.isEmpty()) {
+            b = bid.first();
+        }
+        if (!ask.isEmpty()) {
+            a = ask.first();
+        }
+
+        // If there is neither bid nor ask and no last quote
+        // we can't return a quote
+        if (lq == null && b == null && a == null) {
+            return null;
+        }
+
+        // there is bid and ask
+        if (a != null && b != null) {
+            Quote q = new Quote();
+
+            // if there is no last quote calculate from bid and ask
             if (lq == null) {
                 q.price = (bid.first().limit + ask.first().limit) / 2.0;
                 return q;
             }
+
             if (lq.price < b.limit) {
                 q.price = b.limit;
                 return q;
@@ -774,13 +854,38 @@ public class Exchange {
         double volume_total = 0;
         double money_total = 0;
 
-
         while (true) {
 
             // Match unlimited sell orders against unlimited buy orders
-            while (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
-                System.out.printf("Cannot match two unlimited orders!\n");
-                System.exit(0);
+            if (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
+                Order a = ul_sell.first();
+                Order b = ul_buy.first();
+
+                Double price = getBestPrice();
+                if (price == null) {
+                    break;
+                }
+
+                double volume = b.volume >= a.volume ? a.volume : b.volume;
+                finishTrade(b, a, price, volume);
+                volume_total += volume;
+                money_total += price * volume;
+                this.checkSLOrders(price);
+
+                //System.out.printf("Cannot match two unlimited orders!\n");
+                //System.exit(0);
+
+            }
+
+            while (!ul_buy.isEmpty() && !ask.isEmpty()) {
+                Order a = ask.first();
+                Order b = ul_buy.first();
+                double price = a.limit;
+                double volume = b.volume >= a.volume ? a.volume : b.volume;
+                finishTrade(b, a, price, volume);
+                volume_total += volume;
+                money_total += price * volume;
+                this.checkSLOrders(price);
 
             }
 
@@ -830,7 +935,6 @@ public class Exchange {
         q.volume = volume_total;
         q.time = timer.currentTimeMillis();
 
-//        System.out.print("There was a trade:"+q.price+"\n");
         this.quoteHistory.add(q);
         this.updateOHLCData(q);
 
