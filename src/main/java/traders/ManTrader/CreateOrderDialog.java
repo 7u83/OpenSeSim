@@ -54,7 +54,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
         this(parent, modal);
         this.account = account;
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Buy Lim", "Sell Lim", "Buy", "Sell"}));
-        typeList = new OrderType[]{OrderType.BUYLIMIT, OrderType.SELLLIMIT, OrderType.BUY,OrderType.SELL};
+        typeList = new OrderType[]{OrderType.BUYLIMIT, OrderType.SELLLIMIT, OrderType.BUY, OrderType.SELL};
         for (int i = 0; i < typeList.length; i++) {
             if (typeList[i] == type) {
                 this.typeComboBox.setSelectedIndex(i);
@@ -74,17 +74,16 @@ public class CreateOrderDialog extends javax.swing.JDialog {
         OrderType t = getOrderType();
         Quote q = Globals.se.getBestPrice_0();
         Double price = q == null ? 0.0 : q.price;
-        
+
         if (t == OrderType.BUYLIMIT) {
             this.limitSpinner.setValue(Globals.se.roundMoney(price));
-            this.volumeSpinner.setValue(Globals.se.roundShares(account.getMoney()/price));
+            this.volumeSpinner.setValue(Globals.se.roundShares(account.getMoney() / price));
         }
         if (t == OrderType.SELLLIMIT) {
             this.limitSpinner.setValue(Globals.se.roundMoney(price));
             this.volumeSpinner.setValue(Globals.se.roundShares(account.getShares()));
         }
-        
-        
+
     }
 
     /**
@@ -180,6 +179,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         double volume = (double) volumeSpinner.getValue();
         double limit = (double) limitSpinner.getValue();
@@ -188,8 +188,16 @@ public class CreateOrderDialog extends javax.swing.JDialog {
             System.out.printf("Account is null\n");
         }
         OrderType type = this.getOrderType();
-        Globals.se.createOrder(account.getID(), type, volume, limit);
+
+        new Thread() {
+            @Override
+            public void run() {
+                Globals.se.createOrder(account.getID(), type, volume, limit);
+            }
+        }.start();
+
         dispose();
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

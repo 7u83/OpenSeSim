@@ -32,7 +32,9 @@ import java.util.TimerTask;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JTable;
+
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
@@ -58,6 +60,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         sesim.Quote q = Globals.se.getLastQuoete();
         double price = q == null ? 0 : q.price;
         
+        //DefaultTableModel newmodel = new DefaultTableModel();
        
         int size = Globals.se.traders.size();
         model.setRowCount(size);
@@ -72,7 +75,8 @@ public class TraderListPanel extends javax.swing.JPanel {
             double wealth = a.getShares() * price + a.getMoney();
             model.setValueAt(wealth, i, 4);
         }
-        list.getRowSorter().allRowsChanged();
+        
+       list.getRowSorter().allRowsChanged();
     }
 
     TimerTask updater;
@@ -81,21 +85,97 @@ public class TraderListPanel extends javax.swing.JPanel {
      * Creates new form TraderListPanel2
      */
     public TraderListPanel() {
+        
         initComponents();
         model = (DefaultTableModel) list.getModel();
-        updateModel();
+//        updateModel();
 
         Timer timer = new Timer();
         updater = new TimerTask() {
             @Override
             public void run() {
+                
+                //System.out.printf("Run traderlist\n");
+             //   javax.swing.SwingUtilities.invokeLater(()->{updateModel();});
+             
+             try{
                 updateModel();
+             }
+             catch (Exception e)
+             {
+             }
 
             }
         };
-
+        
+        //TableRowSorter sorter = (TableRowSorter) list.getRowSorter();
+        //sorter.setSortsOnUpdates(true);
+        
+        
         timer.schedule(updater, 0, 1000);
 
+    }
+    
+    class MyModel extends DefaultTableModel{
+        MyModel(Object arg0[][], Object arg1[]){
+            super(arg0,arg1);
+        }
+        @Override
+        public void fireTableDataChanged(){
+            
+        }
+        
+        
+
+        @Override
+        public void fireTableStructureChanged() {
+
+        }
+
+        @Override
+        public void fireTableRowsUpdated(int firstRow, int lastRow) {
+        }
+
+        @Override
+        public void fireTableCellUpdated(int row, int column) {
+
+        }
+
+        
+    }
+   
+    
+    void test(){
+
+      
+//        new javax.swing.table.DefaultTableModel
+        MyModel m = new MyModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Name", "Money", "Shares", "Wealth"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        };
     }
 
     /**
@@ -111,7 +191,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         list = new javax.swing.JTable();
 
         list.setAutoCreateRowSorter(true);
-        list.setModel(new javax.swing.table.DefaultTableModel(
+        list.setModel(new MyModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -164,7 +244,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             index = list.getRowSorter().convertRowIndexToModel(index);
             Integer tid = (Integer) model.getValueAt(index, 0);
-            System.out.printf("Trader ID %d\n", tid);
+           // System.out.printf("Trader ID %d\n", tid);
 
             JDialog console = Globals.se.traders.get(tid).getGuiConsole();
             if (console == null) {

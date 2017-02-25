@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -69,6 +71,11 @@ public class Exchange {
         public void accountUpdated(Account a, Order o);
     }
 
+    public interface OrderListener {
+
+        public void orderUpdated(Order o);
+    }
+
     HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
 
     public OHLCData buildOHLCData(int timeFrame) {
@@ -119,10 +126,10 @@ public class Exchange {
         data = ohlc_data.get(timeFrame);
         if (data == null) {
 
-            this.tradelock.lock();
-            data = this.buildOHLCData(timeFrame);
-            ohlc_data.put(timeFrame, data);
-            this.tradelock.unlock();
+            synchronized (executor) {
+                data = this.buildOHLCData(timeFrame);
+                ohlc_data.put(timeFrame, data);
+            }
         }
 
         return data;
@@ -375,6 +382,7 @@ public class Exchange {
         qrlist = (new CopyOnWriteArrayList<>());
 
         initExchange();
+        executor.start();
 
     }
 
@@ -397,11 +405,39 @@ public class Exchange {
 
     }
 
+    class Executor extends Thread {
+
+        @Override
+        public void run() {
+            synchronized (this) {
+                try {
+                    while (true) {
+                        System.out.printf("Executor waits -0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0--0-0-00--0-0\n");
+                        this.wait();
+                        System.out.printf("Executor runs\n");
+                        executeOrders();
+
+                        updateBookReceivers(OrderType.SELLLIMIT);
+                        updateBookReceivers(OrderType.BUYLIMIT);
+                    }
+
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Exchange.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
+
+    }
+
+    final Executor executor = new Executor();
+
     /**
      * Start the exchange
      */
     public void start() {
         timer.start();
+
     }
 
     public void reset() {
@@ -678,29 +714,31 @@ public class Exchange {
     double lastprice = 100.0;
     long lastsvolume;
 
-    private final Locker tradelock = new Locker();
-
+    // private final Locker tradelock = new Locker();
     public ArrayList<Order> getOrderBook(OrderType type, int depth) {
 
         SortedSet<Order> book = order_books.get(type);
         if (book == null) {
             return null;
         }
-        tradelock.lock();
-        ArrayList<Order> ret = new ArrayList<>();
+        ArrayList<Order> ret;
+        synchronized (executor) {
 
-        Iterator<Order> it = book.iterator();
+            ret = new ArrayList<>();
 
-        for (int i = 0; i < depth && it.hasNext(); i++) {
-            Order o = it.next();
-            //   System.out.print(o.volume);
-            if (o.volume <= 0) {
-                System.exit(0);
+            Iterator<Order> it = book.iterator();
+
+            for (int i = 0; i < depth && it.hasNext(); i++) {
+                Order o = it.next();
+                //   System.out.print(o.volume);
+                if (o.volume <= 0) {
+                    System.out.printf("Volume < 0\n");
+                    System.exit(0);
+                }
+                ret.add(o);
             }
-            ret.add(o);
+            // System.out.println();
         }
-        // System.out.println();
-        tradelock.unlock();
         return ret;
     }
 
@@ -728,22 +766,25 @@ public class Exchange {
 
         boolean ret = false;
 
-        tradelock.lock();
-        Order o = a.orders.get(order_id);
+        Order o;
+        synchronized (executor) {
+            o = a.orders.get(order_id);
 
-        //   System.out.print("The Order:"+o.limit+"\n");
-        if (o != null) {
-            SortedSet ob = order_books.get(o.type);
+            //   System.out.print("The Order:"+o.limit+"\n");
+            if (o != null) {
+                SortedSet ob = order_books.get(o.type);
 
-            boolean rc = ob.remove(o);
+                boolean rc = ob.remove(o);
 
-            a.orders.remove(o.id);
-            a.update(o);
-            ret = true;
+                a.orders.remove(o.id);
+                a.update(o);
+                ret = true;
+            }
+
         }
-
-        tradelock.unlock();
-        this.updateBookReceivers(OrderType.BUYLIMIT);
+        if (ret) {
+            this.updateBookReceivers(o.type);
+        }
 
         return ret;
     }
@@ -845,6 +886,7 @@ public class Exchange {
      */
     public void executeOrders() {
 
+        System.out.printf("Exec Orders\n");
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -874,7 +916,6 @@ public class Exchange {
 
                 //System.out.printf("Cannot match two unlimited orders!\n");
                 //System.exit(0);
-
             }
 
             while (!ul_buy.isEmpty() && !ask.isEmpty()) {
@@ -964,23 +1005,17 @@ public class Exchange {
 
         Order o = new Order(a, type, volume, limit);
         if (o.volume <= 0 || o.limit <= 0) {
-            //System.out.print("binweg\n");
             return -1;
         }
 
-        //System.out.printf("Creating Order width Volume %f %f \n",o.volume,o.limit);
-        tradelock.lock();
-        num_orders++;
+        synchronized (executor) {
+            num_orders++;
+            addOrderToBook(o);
+            a.orders.put(o.id, o);
+            a.update(o);
+            executor.notify();
 
-        addOrderToBook(o);
-        a.orders.put(o.id, o);
-        a.update(o);
-
-        this.executeOrders();
-
-        tradelock.unlock();
-        this.updateBookReceivers(OrderType.SELLLIMIT);
-        this.updateBookReceivers(OrderType.BUYLIMIT);
+        }
 
         return o.id;
     }

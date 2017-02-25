@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -94,8 +95,8 @@ public class Scheduler extends Thread {
         @Override
         public int compare(Object o1, Object o2) {
 
-            return (((TimerTask) o1).getID() - ((TimerTask) o2).getID()) < 0 ? -1 : 1;
-            //return System.identityHashCode(o1) - System.identityHashCode(o2);
+           //return (((TimerTask) o1).getID() - ((TimerTask) o2).getID()) < 0 ? -1 : 1;
+            return System.identityHashCode(o1) - System.identityHashCode(o2);
         }
     }
 
@@ -110,12 +111,13 @@ public class Scheduler extends Thread {
 
         long diff = System.currentTimeMillis() - last_time_millis;
         last_time_millis += diff;
-        if (diff==0)
-            diff++;     
+        if (diff == 0) {
+            diff++;
+        }
         if (pause) {
             return (long) this.current_time_millis;
         }
-        this.current_time_millis += ((double)diff) * this.acceleration;
+        this.current_time_millis += ((double) diff) * this.acceleration;
         return (long) this.current_time_millis;
     }
 
@@ -140,10 +142,10 @@ public class Scheduler extends Thread {
      * @param e
      * @param time
      */
-    public void startTimerEvent(TimerTask e, long time) {
+    public void startTimerTask(TimerTask e, long time) {
         long evtime = time + currentTimeMillis();
         synchronized (event_queue) {
-            this.addEvent(e, evtime);
+            this.addTimerTask(e, evtime);
         }
         synchronized (this) {
             notify();
@@ -156,16 +158,16 @@ public class Scheduler extends Thread {
         setPause(!pause);
 
     }
-    
-    public void setPause(boolean val){
-        pause=val;
+
+    public void setPause(boolean val) {
+        pause = val;
         synchronized (this) {
             this.notify();
         }
 
     }
-    
-    public boolean getPause(){
+
+    public boolean getPause() {
         return pause;
     }
 
@@ -173,7 +175,9 @@ public class Scheduler extends Thread {
         return e.timerTask();
     }
 
-    private boolean addEvent(TimerTask e, long evtime) {
+    HashMap<TimerTask, Long> tasks = new HashMap<>();
+
+    private boolean addTimerTask(TimerTask e, long evtime) {
 
         //   long evtime = time + currentTimeMillis();
         SortedSet<TimerTask> s = event_queue.get(evtime);
@@ -181,7 +185,43 @@ public class Scheduler extends Thread {
             s = new TreeSet<>(new ObjectComparator());
             event_queue.put(evtime, s);
         }
+        
+        System.out.printf("Put timer task for %d %d\n",System.identityHashCode(e),evtime);
+        tasks.put(e, evtime);
+
         return s.add(e);
+    }
+
+    public void cancelTimerTask(TimerTask e) {
+        synchronized (event_queue) {
+            Long evtime = tasks.get(e);
+            
+          
+            
+            if (evtime == null) {
+                System.out.printf("Cancel evtime is null\n","");
+                return;
+            }
+            
+                System.out.printf("Cancel evtime is %d\n",evtime);            
+                
+            SortedSet<TimerTask> s = event_queue.get(evtime);
+            if (s == null) {
+                System.out.printf("Task was null\n", "");
+                return;
+            }
+            
+            System.out.printf("Remove now\n", "");
+            
+            Boolean rc = s.remove(e);
+            
+            
+            System.out.printf("Remove RC %s",rc.toString());
+            if (s.isEmpty()) {
+                System.out.printf("Complete removed\n");
+                event_queue.remove(evtime);
+            }
+        }
     }
 
     public long runEvents() {
@@ -205,12 +245,12 @@ public class Scheduler extends Thread {
                         next_t++;
                     }
 
-                    this.addEvent(e, next_t + t);
+                    this.addTimerTask(e, next_t + t);
                 }
                 return 0;
 
             } else {
-                return(t - currentTimeMillis())/(long)this.acceleration;
+                return (t - currentTimeMillis()) / (long) this.acceleration;
             }
         }
 

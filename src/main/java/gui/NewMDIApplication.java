@@ -75,8 +75,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
         
         return ac;
     }
+    
+    
+    
 
     public void startTraders() {
+        
+       WaitBox wb = new WaitBox();
+
 
      //   Globals.se.setMoneyDecimals(8);
     //    Globals.se.setSharesDecimals(0);        
@@ -108,20 +114,17 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface  trader;
-//                AutoTrader trader = ac.createTrader(Globals.se, strategy, id++, t.getString("Name") + i1, money, shares);
-//                if (trader == null) {
+
                     System.out.printf("shoudl create new\n");
                     trader = this.createTraderNew(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
              
-  //              }
 
                 Globals.se.traders.add(trader);
-//                trader.setName(t.getString("Name")+i1);
+
 
                 moneyTotal += money;
                 sharesTotal += shares;
 
-                //            trader.start();
             }
 
         }
@@ -150,7 +153,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane2 = new javax.swing.JSplitPane();
         orderBookNew1 = new gui.orderbook.OrderBook();
-        traderListPanel1 = new gui.TraderListPanel();
         jPanel2 = new javax.swing.JPanel();
         stopButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
@@ -190,6 +192,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         viewClock = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -204,7 +207,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jSplitPane2.setLeftComponent(orderBookNew1);
 
         jSplitPane1.setTopComponent(jSplitPane2);
-        jSplitPane1.setRightComponent(traderListPanel1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 480));
@@ -487,6 +489,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         viewMenu.add(jCheckBoxMenuItem1);
 
+        viewTraderListCheckBox.setText("Traders");
+        viewTraderListCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewTraderListCheckBoxActionPerformed(evt);
+            }
+        });
+        viewMenu.add(viewTraderListCheckBox);
+
         menuBar.add(viewMenu);
 
         helpMenu.setMnemonic('h');
@@ -562,7 +572,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
    
         };
-        Globals.se.timer.startTimerEvent(tt, 0);
+//        Globals.se.timer.startTimerTask(tt, 0);
         
 
     }
@@ -591,6 +601,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         d.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_editPreferencesActionPerformed
 
+    
+    
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         TraderListDialog d = new TraderListDialog(this, false);
         d.setVisible(rootPaneCheckingEnabled);
@@ -706,6 +718,23 @@ public class NewMDIApplication extends javax.swing.JFrame {
         Globals.se.pointZero();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
+    
+    TraderListDialog tld=null;
+    private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
+       if (this.viewTraderListCheckBox.getState()){
+           if (tld == null){
+               tld=new TraderListDialog(this,false);
+           }
+           tld.setVisible(true);
+       }
+       else {
+           if (tld!=null)
+               tld.setVisible(false);
+       }
+            
+            
+    }//GEN-LAST:event_viewTraderListCheckBoxActionPerformed
+
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
@@ -784,9 +813,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem simMenuStart;
     private javax.swing.JMenuItem simMenuStop;
     private javax.swing.JButton stopButton;
-    private gui.TraderListPanel traderListPanel1;
     private javax.swing.JMenuItem viewClock;
     private javax.swing.JMenu viewMenu;
+    private javax.swing.JCheckBoxMenuItem viewTraderListCheckBox;
     // End of variables declaration//GEN-END:variables
 
 }

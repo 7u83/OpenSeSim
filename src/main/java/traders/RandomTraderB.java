@@ -76,7 +76,7 @@ public class RandomTraderB extends AutoTraderBase {
     @Override
     public void start() {
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-        se.timer.startTimerEvent(this, delay);
+        se.timer.startTimerTask(this, delay);
     }
 
     @Override

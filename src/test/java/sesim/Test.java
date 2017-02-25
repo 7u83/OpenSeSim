@@ -57,7 +57,6 @@ public class Test {
         System.out.print("haha\n");
     }
 
-
     static public String getFullClassName(String classFileName) throws IOException {
         File file = new File(classFileName);
 
@@ -72,7 +71,7 @@ public class Test {
         return "";
     }
 
-  /*  static private <T extends Number> void to(T n, Double o) {
+    /*  static private <T extends Number> void to(T n, Double o) {
         if (Float == T) {
             System.out.printf("Double ret %", o.floatValue());
 
@@ -80,27 +79,25 @@ public class Test {
         }
 
     }
-*/
+     */
     
+    static class Z{
+        Double x;
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
+        
+        Z z = new Z();
+        
+        z.x = 3.1415926;
 
-        Double x = 3.1415926;
-        
-        Double r = Math.floor(x*100.0)/100.0;
-        
-        
-        
-        System.out.print(r);
-        System.out.println();
-        
-        Double p = Math.pow(10, 5);
-        System.out.print(p);
-        
-        
-        
+        System.out.printf("ID: %d\n", System.identityHashCode(z));
+
+        z.x = 90.0;
+
+        System.out.printf("ID: %d\n", System.identityHashCode(z));
 
     }
 

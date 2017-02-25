@@ -62,7 +62,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener {
 
     @Override
     public void start() {
-        se.timer.startTimerEvent(this, 0);
+        se.timer.startTimerTask(this, 0);
         consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, this.getAccount());
         this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
         // consoleDialog.     rdersList1.account=trader.getAccount();

@@ -26,30 +26,24 @@
 package traders;
 
 import gui.Globals;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import javax.swing.JDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
-//import sesim.AccountData;
-
 import sesim.AutoTraderBase;
-import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
 import sesim.Exchange.Account;
-import sesim.Exchange.Order;
-import sesim.OrderData;
+import sesim.Exchange.AccountListener;
+import sesim.Exchange.OrderStatus;
 import sesim.Quote;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderA extends AutoTraderBase {
+public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     public Float[] initial_delay = {0f, 5.0f};
 
@@ -75,14 +69,19 @@ public class RandomTraderA extends AutoTraderBase {
 
     @Override
     public void start() {
+        Account a = se.getAccount(account_id);
+        a.setListener(this);
+
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-        se.timer.startTimerEvent(this, delay);
+        se.timer.startTimerTask(this, delay);
     }
 
     @Override
     public long timerTask() {
+        System.out.printf("Enter TimerTask for %d\n", System.identityHashCode(this));
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
+        System.out.printf("Exit TimerTask for %d\n", System.identityHashCode(this));        
         return rc;
 
     }
@@ -165,23 +164,41 @@ public class RandomTraderA extends AutoTraderBase {
         int n = se.getNumberOfOpenOrders(account_id);
         if (n > 0) {
             Account ad = se.getAccount(account_id);
-            
 
-            Set <Long>keys = ad.getOrders().keySet();
-                    
-           Iterator<Long> it = keys.iterator();
-           while (it.hasNext()) {
-      //          Order od = it.next();
+            Set<Long> keys = ad.getOrders().keySet();
+
+            Iterator<Long> it = keys.iterator();
+            while (it.hasNext()) {
+                //          Order od = it.next();
                 boolean rc = se.cancelOrder(account_id, it.next());
-           }
+            }
         }
         return n;
-      
+
     }
 
     @Override
     public JDialog getGuiConsole() {
         return null;
+    }
+
+    @Override
+    public void accountUpdated(Account a, Exchange.Order o) {
+        System.out.printf("Order waht %s\n", o.getOrderStatus().toString());
+        if (o.getOrderStatus() == OrderStatus.CLOSED && false) {
+
+            System.out.printf("Enteter canel timer\n");
+            se.timer.cancelTimerTask(this);
+System.out.printf("back from canel timer %d\n", System.identityHashCode(this));
+System.exit(0);
+
+            Long w = doTrade();
+            System.out.printf("We have no to wait for %d\n", w);
+            se.timer.startTimerTask(this, w);
+
+        }
+//        System.out.printf("Updatetd Account\n", "");
+
     }
 
     protected enum Action {
@@ -197,11 +214,10 @@ public class RandomTraderA extends AutoTraderBase {
 
     }
 
-    Action mode=Action.RANDOM;
-    
-    long doTrade() {
-        cancelOrders();
-        Action a = getAction();
+    Action mode = Action.RANDOM;
+
+    Integer doTrade1(Action a) {
+
         switch (a) {
             case BUY: {
                 boolean rc = doBuy();
@@ -209,22 +225,59 @@ public class RandomTraderA extends AutoTraderBase {
                     mode = Action.BUY;
                     return getRandom(buy_wait);
                 }
-                return 5000;
+                return null;
             }
 
-            case SELL:
-            {
+            case SELL: {
                 boolean rc = doSell();
-                if (rc){
+                if (rc) {
                     mode = Action.SELL;
                     return getRandom(sell_wait);
-                    
+
                 }
-                return 5000;
-                
+                return null;
+
             }
 
         }
+        return 0;
+
+    }
+
+    long doTrade() {
+        cancelOrders();
+        Action a = getAction();
+
+        if (mode == Action.RANDOM) {
+
+            System.out.printf("Action: %s\n", a.toString());
+            Integer rc = doTrade1(a);
+            if (rc != null) {
+                return rc;
+            }
+
+            rc = doTrade1(Action.BUY);
+            if (rc != null) {
+                return rc;
+            }
+            rc = doTrade1(Action.SELL);
+            if (rc != null) {
+                return rc;
+            }
+            System.out.printf("All ha s failed\n");
+            return 5000;
+        }
+
+        if (mode == Action.BUY) {
+            mode = Action.RANDOM;
+            return getRandom(wait_after_buy);
+        }
+
+        if (mode == Action.SELL) {
+            mode = Action.RANDOM;
+            return getRandom(wait_after_sell);
+        }
+
         return 0;
 
     }
@@ -271,7 +324,6 @@ public class RandomTraderA extends AutoTraderBase {
     public boolean doBuy() {
 
 //        AccountData ad = this.se.getAccountData(account_id);
-
         Account ad = se.getAccount(account_id);
 
         Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
@@ -282,7 +334,7 @@ public class RandomTraderA extends AutoTraderBase {
 
         // how much money we ant to invest?
         double money = getRandomAmmount(ad.getMoney(), buy_volume);
-    
+
         Quote q = se.getBestPrice_0();
         //q=se.getLastQuoete();
         double lp = q == null ? getStart() : q.price;
@@ -290,15 +342,14 @@ public class RandomTraderA extends AutoTraderBase {
         double limit;
         limit = lp + getRandomAmmount(lp, buy_limit);
 
-
         double volume = money / limit;
 
-    //    System.out.printf("Volume : %f", volume);
-        
+        //    System.out.printf("Volume : %f", volume);
         limit = se.roundMoney(limit);
         volume = se.roundShares(volume);
-        
+
         if (volume <= 0 || money <= 0) {
+            System.out.printf("Buy Order wont work\n");
             return false;
         }
 
@@ -311,40 +362,32 @@ public class RandomTraderA extends AutoTraderBase {
     public boolean doSell() {
         //   RandomTraderConfig myoldconfig = (RandomTraderConfig) this.oldconfig;
         //AccountData ad = this.se.getAccountData(account_id);
-        
+
         Account ad = se.getAccount(account_id);
 
         Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
 
-               
         // how much shares we ant to sell?
         double volume = getRandomAmmount(ad.getShares(), sell_volume);
         volume = se.roundShares(volume);
-        
 
         //    double lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getBestPrice_0();
-          //      q=se.getLastQuoete();
+        //      q=se.getLastQuoete();
         double lp = q == null ? getStart() : q.price;
-        
-        
-        
-        
 
         double limit;
         limit = lp + getRandomAmmount(lp, sell_limit);
         se.roundMoney(limit);
 
-
-        if (volume <= 0 || limit <=0) {
+        if (volume <= 0 || limit <= 0) {
+            System.out.printf("Sell wont work\n");
             return false;
         }
-
+        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
         se.createOrder(account_id, type, volume, limit);
-        
+
         return true;
-
-
 
     }
 

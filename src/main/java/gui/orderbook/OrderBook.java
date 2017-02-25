@@ -27,8 +27,12 @@ package gui.orderbook;
 
 import gui.Globals;
 import gui.Globals.CfgListener;
+import java.awt.Component;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -45,6 +49,29 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     DefaultTableModel model;
     TableColumn trader_column = null;
 
+    class Renderer extends DefaultTableCellRenderer {
+
+        private final DecimalFormat formatter = new DecimalFormat("#.0000");
+
+        Renderer() {
+            super();
+            this.setHorizontalAlignment(RIGHT);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table, Object value, boolean isSelected,
+                boolean hasFocus, int row, int column) {
+
+            // First format the cell value as required
+            value = formatter.format((Number) value);
+
+            // And pass it on to parent class
+            return super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+        }
+    }
+
     OrderType type = OrderType.BUYLIMIT;
     int depth = 40;
 
@@ -56,7 +83,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
             }
             tcm.addColumn(trader_column);
             tcm.moveColumn(2, 0);
-            
+
         } else {
             if (list.getColumnCount() == 2) {
                 return;
@@ -86,41 +113,23 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
      */
     public OrderBook() {
         initComponents();
+
         if (Globals.se == null) {
             return;
         }
         model = (DefaultTableModel) this.list.getModel();
         trader_column = list.getColumnModel().getColumn(0);
+        list.getColumnModel().getColumn(1).setCellRenderer(new Renderer());
         cfgChanged();
 //        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
         Globals.addCfgListener(this);
     }
 
     boolean oupdate = false;
+    boolean new_oupdate = false;
 
-    @Override
-    public synchronized void UpdateOrderBook() {
-
-        if (oupdate) {
-            return;
-        }
-        oupdate = true;
-
-        SwingUtilities.invokeLater(() -> {
-            ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
-            model.setRowCount(ob.size());
-            int row = 0;
-            for (Order ob1 : ob) {
-                model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
-                model.setValueAt(ob1.getLimit(), row, 1);
-                model.setValueAt(ob1.getVolume(), row, 2);
-                row++;
-            }
-
-            oupdate = false;
-        });
-
-        /*        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
+    void oupdater() {
+        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
         model.setRowCount(ob.size());
         int row = 0;
         for (Order ob1 : ob) {
@@ -129,7 +138,26 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
             model.setValueAt(ob1.getVolume(), row, 2);
             row++;
         }
-         */
+
+        oupdate = false;
+
+    }
+
+    @Override
+    public synchronized void UpdateOrderBook() {
+
+        if (oupdate) {
+            new_oupdate=true;
+            return;
+        }
+
+        oupdate = true;
+
+        SwingUtilities.invokeLater(() -> {
+            oupdater();
+        });
+        
+
     }
 
     /**
