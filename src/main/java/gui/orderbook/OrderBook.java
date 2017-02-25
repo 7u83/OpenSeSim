@@ -56,7 +56,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
             }
             tcm.addColumn(trader_column);
             tcm.moveColumn(2, 0);
-            return;
+            
         } else {
             if (list.getColumnCount() == 2) {
                 return;
@@ -71,7 +71,6 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     @Override
     public final void cfgChanged() {
         boolean gm = Globals.prefs.get(Globals.CfgStrings.GODMODE, "false").equals("true");
-        System.out.printf("GM %s\n", gm ? "true" : "false");
         setGodMode(gm);
         list.invalidate();
         list.repaint();
