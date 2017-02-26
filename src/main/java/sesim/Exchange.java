@@ -165,7 +165,7 @@ public class Exchange {
         private double money;
         protected AutoTraderInterface owner;
 
-        private final HashMap<Long, Order> orders;
+        private final ConcurrentHashMap<Long, Order> orders;
 
         @Override
         public int compareTo(Object a) {
@@ -175,7 +175,7 @@ public class Exchange {
 
         Account(double money, double shares) {
             id = (random.nextDouble() + (account_id.getNext()));
-            orders = new HashMap();
+            orders = new ConcurrentHashMap();
             this.money = money;
             this.shares = shares;
         }
@@ -196,7 +196,7 @@ public class Exchange {
             return owner;
         }
 
-        public HashMap<Long, Order> getOrders() {
+        public ConcurrentHashMap<Long, Order> getOrders() {
             return orders;
         }
 
@@ -412,9 +412,9 @@ public class Exchange {
             synchronized (this) {
                 try {
                     while (true) {
-                        System.out.printf("Executor waits -0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0--0-0-00--0-0\n");
+
                         this.wait();
-                        System.out.printf("Executor runs\n");
+
                         executeOrders();
 
                         updateBookReceivers(OrderType.SELLLIMIT);
@@ -563,6 +563,7 @@ public class Exchange {
 
     public Quote getBestPrice_0() {
 
+        synchronized (executor){
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -631,6 +632,7 @@ public class Exchange {
         }
 
         return lq;
+        }
     }
 
     // Class to describe an executed order
@@ -665,15 +667,15 @@ public class Exchange {
     public void addBookReceiver(OrderType t, BookReceiver br) {
 
         if (br == null) {
-            System.out.printf("Br is null\n");
+//            System.out.printf("Br is null\n");
         } else {
-            System.out.printf("Br is not Nukk\n");
+  //          System.out.printf("Br is not Nukk\n");
         }
 
         ArrayList<BookReceiver> bookreceivers;
         bookreceivers = selectBookReceiver(t);
         if (bookreceivers == null) {
-            System.out.printf("null in bookreceivers\n");
+//            System.out.printf("null in bookreceivers\n");
         }
         bookreceivers.add(br);
     }
@@ -690,7 +692,7 @@ public class Exchange {
     }
 
     // Here we store the list of quote receivers
-    private List<QuoteReceiver> qrlist;
+    private final List<QuoteReceiver> qrlist;
 
     /**
      *
@@ -767,7 +769,10 @@ public class Exchange {
         boolean ret = false;
 
         Order o;
+
+//        System.out.printf("Getting executor %d\n", Thread.currentThread().getId());
         synchronized (executor) {
+//            System.out.printf("Have executor %d\n", Thread.currentThread().getId());
             o = a.orders.get(order_id);
 
             //   System.out.print("The Order:"+o.limit+"\n");
@@ -785,7 +790,7 @@ public class Exchange {
         if (ret) {
             this.updateBookReceivers(o.type);
         }
-
+//        System.out.printf("Levave executor %d\n", Thread.currentThread().getId());
         return ret;
     }
 
@@ -817,13 +822,13 @@ public class Exchange {
 
     private void removeOrderIfExecuted(Order o) {
         if (o.getAccount().getOwner().getName().equals("Tobias0")) {
-            System.out.printf("Tobias 0 test\n");
+//            System.out.printf("Tobias 0 test\n");
         }
 
         if (o.volume != 0) {
 
             if (o.getAccount().getOwner().getName().equals("Tobias0")) {
-                System.out.printf("Patially remove tobias\n");
+//                System.out.printf("Patially remove tobias\n");
             }
 
             o.status = OrderStatus.PARTIALLY_EXECUTED;
@@ -832,7 +837,7 @@ public class Exchange {
         }
 
         if (o.getAccount().getOwner().getName().equals("Tobias0")) {
-            System.out.printf("Fully remove tobias\n");
+//            System.out.printf("Fully remove tobias\n");
         }
 
         o.account.orders.remove(o.id);
@@ -861,7 +866,7 @@ public class Exchange {
             s.type = OrderType.SELL;
             addOrderToBook(s);
 
-            System.out.printf("Stoploss hit %f %f\n", s.volume, s.limit);
+//            System.out.printf("Stoploss hit %f %f\n", s.volume, s.limit);
         }
     }
 
@@ -886,7 +891,7 @@ public class Exchange {
      */
     public void executeOrders() {
 
-        System.out.printf("Exec Orders\n");
+//        System.out.printf("Exec Orders\n");
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -1008,15 +1013,18 @@ public class Exchange {
             return -1;
         }
 
+//        System.out.printf("Getting executor in create Order\n", Thread.currentThread().getId());
         synchronized (executor) {
+//                    System.out.printf("Have executor in create Order\n", Thread.currentThread().getId());
             num_orders++;
             addOrderToBook(o);
             a.orders.put(o.id, o);
+//            System.out.printf("Calling in create Order oupdate for %s\n", o.getOrderStatus().toString());
             a.update(o);
             executor.notify();
 
         }
-
+     //       a.update(o);
         return o.id;
     }
 

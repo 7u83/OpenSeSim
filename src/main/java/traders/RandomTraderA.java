@@ -78,10 +78,11 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     @Override
     public long timerTask() {
-        System.out.printf("Enter TimerTask for %d\n", System.identityHashCode(this));
+//        System.out.printf("Enter TimerTask for %d / %d\n", System.identityHashCode(this), Thread.currentThread().getId());
         sesim.Exchange.Account a = se.getAccount(account_id);
+//        System.out.printf("Have Account %d\n", Thread.currentThread().getId());
         long rc = this.doTrade();
-        System.out.printf("Exit TimerTask for %d\n", System.identityHashCode(this));        
+//        System.out.printf("Exit TimerTask for %d / %d\n", System.identityHashCode(this), Thread.currentThread().getId());
         return rc;
 
     }
@@ -184,16 +185,16 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
-        System.out.printf("Order waht %s\n", o.getOrderStatus().toString());
-        if (o.getOrderStatus() == OrderStatus.CLOSED && false) {
+//        System.out.printf("Order what %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
+        if (o.getOrderStatus() == OrderStatus.CLOSED ) {
 
-            System.out.printf("Enteter canel timer\n");
+//            System.out.printf("Enteter canel timer %d\n", Thread.currentThread().getId());
             se.timer.cancelTimerTask(this);
-System.out.printf("back from canel timer %d\n", System.identityHashCode(this));
-System.exit(0);
+//System.out.printf("back from canel timer %d\n", System.identityHashCode(this));
+//System.exit(0);
 
-            Long w = doTrade();
-            System.out.printf("We have no to wait for %d\n", w);
+            Long w = waitAfterOrder();
+//            System.out.printf("We have now to wait for %d\n", w);
             se.timer.startTimerTask(this, w);
 
         }
@@ -243,14 +244,37 @@ System.exit(0);
         return 0;
 
     }
+    
+    
+    long waitAfterOrder(){
+                if (mode == Action.BUY) {
+            mode = Action.RANDOM;
+            return getRandom(wait_after_buy);
+        }
+
+        if (mode == Action.SELL) {
+            mode = Action.RANDOM;
+            return getRandom(wait_after_sell);
+        }
+
+//        System.out.printf("Return action 0\n");
+        return 0;
+
+    }
+    
 
     long doTrade() {
+
+//        System.out.printf("Do Trader %d\n", Thread.currentThread().getId());
         cancelOrders();
+//        System.out.printf("Orders Canceled %d\n", Thread.currentThread().getId());
         Action a = getAction();
+
+//        System.out.printf("Action is %s\n", a.toString());
 
         if (mode == Action.RANDOM) {
 
-            System.out.printf("Action: %s\n", a.toString());
+//            System.out.printf("Action: %s\n", a.toString());
             Integer rc = doTrade1(a);
             if (rc != null) {
                 return rc;
@@ -264,22 +288,11 @@ System.exit(0);
             if (rc != null) {
                 return rc;
             }
-            System.out.printf("All ha s failed\n");
+//            System.out.printf("All ha s failed\n");
             return 5000;
         }
 
-        if (mode == Action.BUY) {
-            mode = Action.RANDOM;
-            return getRandom(wait_after_buy);
-        }
-
-        if (mode == Action.SELL) {
-            mode = Action.RANDOM;
-            return getRandom(wait_after_sell);
-        }
-
-        return 0;
-
+        return waitAfterOrder();
     }
 
     /**
@@ -349,7 +362,7 @@ System.exit(0);
         volume = se.roundShares(volume);
 
         if (volume <= 0 || money <= 0) {
-            System.out.printf("Buy Order wont work\n");
+//            System.out.printf("Buy Order wont work\n");
             return false;
         }
 
@@ -381,10 +394,10 @@ System.exit(0);
         se.roundMoney(limit);
 
         if (volume <= 0 || limit <= 0) {
-            System.out.printf("Sell wont work\n");
+//            System.out.printf("Sell wont work\n");
             return false;
         }
-        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
+//        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
         se.createOrder(account_id, type, volume, limit);
 
         return true;

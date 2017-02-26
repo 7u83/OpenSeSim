@@ -251,7 +251,7 @@ public final class EditStrategies extends javax.swing.JDialog {
         String cfglist = Globals.prefs.get(STRATEGYPREFS, "{}");
         JSONObject cfgs = new JSONObject(cfglist);
         String item = (String) this.jComboBoxStrategySelector.getSelectedItem();
-        System.out.printf("The item selected: %s\n", item);
+
 
         if (item == null) {
             return;

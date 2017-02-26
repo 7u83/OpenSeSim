@@ -110,12 +110,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         String cmd = evt.getActionCommand();
         for (int i = 0; i < this.ctxMenuCompressionText.length; i++) {
             if (this.ctxMenuCompressionText[i].equals(cmd)) {
-                System.out.printf("Equality to %s\n", cmd);
+                
                 this.setCompression(this.ctxMenuCompressionValues[i]);
             }
         }
-        System.out.printf("ACtion %s\n", cmd);
-        //this.setCompression(1000 * 5);
+
+        
     }
 
     OHLCData data;
@@ -246,8 +246,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             float m = c_mm.max / c_mm.min;
 
-            //System.out.printf("Min: %f  Max: %f M: %f\n",c_mm.min,c_mm.max,m);
-            //float fac = (float) c_rect.height /(float) Math.log(c_mm.max * c_yscaling);
             float fac = (float) c_rect.height / (float) Math.log(m);
 
             float fmin = c_rect.height - ((float) Math.log((y / c_mm.min)) * fac);

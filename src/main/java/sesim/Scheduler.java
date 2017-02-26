@@ -32,10 +32,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -95,7 +98,7 @@ public class Scheduler extends Thread {
         @Override
         public int compare(Object o1, Object o2) {
 
-           //return (((TimerTask) o1).getID() - ((TimerTask) o2).getID()) < 0 ? -1 : 1;
+            //return (((TimerTask) o1).getID() - ((TimerTask) o2).getID()) < 0 ? -1 : 1;
             return System.identityHashCode(o1) - System.identityHashCode(o2);
         }
     }
@@ -137,19 +140,34 @@ public class Scheduler extends Thread {
 
     }
 
+    class TimerTaskDef {
+
+        TimerTask task;
+        long evtime;
+
+        TimerTaskDef(TimerTask e, long t) {
+            task = e;
+            evtime = t;
+        }
+
+    }
+  
+    //LinkedList<TimerTaskDef> set_tasks = new LinkedList<>();
+    ConcurrentLinkedQueue<TimerTaskDef> set_tasks = new ConcurrentLinkedQueue<>();
     /**
      *
      * @param e
      * @param time
      */
     public void startTimerTask(TimerTask e, long time) {
+
         long evtime = time + currentTimeMillis();
-        synchronized (event_queue) {
-            this.addTimerTask(e, evtime);
-        }
+        set_tasks.add(new TimerTaskDef(e, evtime));
+
         synchronized (this) {
             notify();
         }
+
     }
 
     private boolean pause = false;
@@ -185,47 +203,45 @@ public class Scheduler extends Thread {
             s = new TreeSet<>(new ObjectComparator());
             event_queue.put(evtime, s);
         }
-        
-        System.out.printf("Put timer task for %d %d\n",System.identityHashCode(e),evtime);
+
         tasks.put(e, evtime);
 
         return s.add(e);
     }
 
+    private final LinkedList<TimerTask> cancel_queue = new LinkedList();
+
     public void cancelTimerTask(TimerTask e) {
-        synchronized (event_queue) {
-            Long evtime = tasks.get(e);
-            
-          
-            
-            if (evtime == null) {
-                System.out.printf("Cancel evtime is null\n","");
-                return;
-            }
-            
-                System.out.printf("Cancel evtime is %d\n",evtime);            
-                
-            SortedSet<TimerTask> s = event_queue.get(evtime);
-            if (s == null) {
-                System.out.printf("Task was null\n", "");
-                return;
-            }
-            
-            System.out.printf("Remove now\n", "");
-            
-            Boolean rc = s.remove(e);
-            
-            
-            System.out.printf("Remove RC %s",rc.toString());
-            if (s.isEmpty()) {
-                System.out.printf("Complete removed\n");
-                event_queue.remove(evtime);
-            }
+        cancel_queue.add(e);
+    }
+
+    private void cancelMy(TimerTask e) {
+
+        Long evtime = tasks.get(e);
+
+        if (evtime == null) {
+            return;
         }
+
+        SortedSet<TimerTask> s = event_queue.get(evtime);
+        if (s == null) {
+
+            return;
+        }
+
+        Boolean rc = s.remove(e);
+
+        if (s.isEmpty()) {
+
+            event_queue.remove(evtime);
+        }
+
     }
 
     public long runEvents() {
         synchronized (event_queue) {
+//            System.out.printf("Have Event Queue in run events %d\n", Thread.currentThread().getId());
+
             if (event_queue.isEmpty()) {
                 return -1;
             }
@@ -247,11 +263,14 @@ public class Scheduler extends Thread {
 
                     this.addTimerTask(e, next_t + t);
                 }
+//                System.out.printf("Leave Event Queue in run events a %d\n", Thread.currentThread().getId());
                 return 0;
 
             } else {
+//                System.out.printf("Leave Event Queue in run events %d\n", Thread.currentThread().getId());
                 return (t - currentTimeMillis()) / (long) this.acceleration;
             }
+
         }
 
     }
@@ -266,6 +285,13 @@ public class Scheduler extends Thread {
     public void run() {
 
         while (!terminate) {
+
+            while (!set_tasks.isEmpty()) {
+                TimerTaskDef td = set_tasks.poll();
+                this.cancelMy(td.task);
+                this.addTimerTask(td.task, td.evtime);
+
+            }
 
             long wtime = runEvents();
 
