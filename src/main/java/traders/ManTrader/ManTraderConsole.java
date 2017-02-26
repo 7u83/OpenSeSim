@@ -25,7 +25,7 @@
  */
 package traders.ManTrader;
 
-import gui.OrdersList;
+import gui.OpenOrdersList;
 
 import sesim.Exchange;
 
@@ -37,7 +37,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
     
     public ManTrader trader;
 
-    public OrdersList getOrderListPanel(){
+    public OpenOrdersList getOrderListPanel(){
         
         return this.ordersList;
     }
@@ -71,7 +71,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
         moneyText = new javax.swing.JLabel();
         stopLossButton = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        ordersList = new gui.OrdersList();
+        ordersList = new gui.OpenOrdersList();
 
         limitSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
 
@@ -213,7 +213,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JSpinner limitSpinner;
     private javax.swing.JLabel moneyText;
-    private gui.OrdersList ordersList;
+    private gui.OpenOrdersList ordersList;
     private javax.swing.JButton sellButton;
     private javax.swing.JButton stopLossButton;
     private javax.swing.JSpinner volumeSpinner;

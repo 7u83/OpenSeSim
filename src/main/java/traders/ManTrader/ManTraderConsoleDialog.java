@@ -44,7 +44,7 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
         this.setTitle(account.getOwner().getName()+" - Trading Console");
     }
     
-    public gui.OrdersList getOrderList(){
+    public gui.OpenOrdersList getOrderList(){
         return this.ordersList;
     }
     
@@ -68,7 +68,7 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        ordersList = new gui.OrdersList();
+        ordersList = new gui.OpenOrdersList();
         accountBalance1 = new traders.ManTrader.AccountBalance();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -147,6 +147,6 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private traders.ManTrader.AccountBalance accountBalance1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private gui.OrdersList ordersList;
+    private gui.OpenOrdersList ordersList;
     // End of variables declaration//GEN-END:variables
 }

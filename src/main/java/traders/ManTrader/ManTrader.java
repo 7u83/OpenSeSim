@@ -26,7 +26,7 @@
 package traders.ManTrader;
 
 import gui.Globals;
-import gui.OrdersList;
+import gui.OpenOrdersList;
 import javax.swing.JDialog;
 import org.json.JSONObject;
 
@@ -75,7 +75,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener {
     @Override
     public long timerTask() {
 
-//        OrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
+//        OpenOrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
 //        ol.updateModel();
         return 1000;
     }

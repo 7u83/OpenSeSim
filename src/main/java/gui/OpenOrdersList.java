@@ -43,7 +43,7 @@ import traders.ManTrader.CreateOrderDialog;
  *
  * @author tobias
  */
-public class OrdersList extends javax.swing.JPanel {
+public class OpenOrdersList extends javax.swing.JPanel {
 
     private Account account;
     DefaultTableModel model;
@@ -82,7 +82,7 @@ public class OrdersList extends javax.swing.JPanel {
     /**
      * Creates new form OrdersList
      */
-    public OrdersList() {
+    public OpenOrdersList() {
         initComponents();
         model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
@@ -186,7 +186,6 @@ public class OrdersList extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
-        
 
         Point point = evt.getPoint();
         int currentRow = table.rowAtPoint(point);
@@ -201,7 +200,7 @@ public class OrdersList extends javax.swing.JPanel {
         int button = evt.getButton();
         if (!evt.isPopupTrigger()) {
             return;
-        };
+        }
 
         this.ctxMenu.show(this, evt.getX(), evt.getY());
 
@@ -229,10 +228,10 @@ public class OrdersList extends javax.swing.JPanel {
     private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed
         int r = table.getSelectedRow();
         Long id = (Long) model.getValueAt(r, 0);
-        
+
         System.out.printf("Should cancel %d\n", id);
         Globals.se.cancelOrder(account.getID(), id);
-        
+
     }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
 
 
