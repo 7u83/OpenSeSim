@@ -27,6 +27,7 @@ package gui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JDialog;
@@ -74,10 +75,13 @@ public class TraderListPanel extends javax.swing.JPanel {
             double wealth = a.getShares() * price + a.getMoney();
             model.setValueAt(wealth, i, 4);
         }
-        
-        
-        model.fireTableDataChanged();
-        //list.getRowSorter().allRowsChanged();
+        List l = list.getRowSorter().getSortKeys();
+        if (l.size() > 0) {
+            list.getRowSorter().allRowsChanged();
+        } else {
+            model.fireTableDataChanged();
+        }
+
     }
 
     TimerTask updater;
@@ -115,7 +119,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         @Override
         public void fireTableDataChanged() {
-                super.fireTableDataChanged();
+            super.fireTableDataChanged();
         }
 
         @Override
