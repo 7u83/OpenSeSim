@@ -27,6 +27,9 @@ package gui;
 
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -59,34 +62,30 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public NewMDIApplication() {
         initComponents();
-        Globals.frame=this;
+        Globals.frame = this;
         this.setLocationRelativeTo(this);
         this.setTitle("SeSim - Stock Exchange Simmulator");
     }
 
-    AutoTraderInterface createTraderNew(Exchange se,long id,String name, double money, double shares, JSONObject cfg) {
+    AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
         System.out.printf("!!!! creating new\n");
         String base = cfg.getString("base");
         AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
-        if (ac==null)
+        if (ac == null) {
             return null;
+        }
         ac.putConfig(cfg);
         ac.init(se, id, name, money, shares, cfg);
-        
+
         return ac;
     }
-    
-    
-    
 
     public void startTraders() {
-        
-       WaitBox wb = new WaitBox();
 
+        WaitBox wb = new WaitBox();
 
-     //   Globals.se.setMoneyDecimals(8);
-    //    Globals.se.setSharesDecimals(0);        
-        
+        //   Globals.se.setMoneyDecimals(8);
+        //    Globals.se.setSharesDecimals(0);        
         JSONArray tlist = Globals.getTraders();
 
         Double moneyTotal = 0.0;
@@ -113,14 +112,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
             System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
 
             for (int i1 = 0; i1 < count; i1++) {
-                AutoTraderInterface  trader;
+                AutoTraderInterface trader;
 
-                    System.out.printf("shoudl create new\n");
-                    trader = this.createTraderNew(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
-             
+                System.out.printf("shoudl create new\n");
+                trader = this.createTraderNew(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
 
                 Globals.se.traders.add(trader);
-
 
                 moneyTotal += money;
                 sharesTotal += shares;
@@ -188,11 +185,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
         viewClock = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
-        viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -456,13 +452,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
         viewMenu.setMnemonic('v');
         viewMenu.setText("View");
 
-        jMenuItem2.setText("Traders");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        viewTraderListCheckBox.setMnemonic('t');
+        viewTraderListCheckBox.setText("Traders");
+        viewTraderListCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                viewTraderListCheckBoxActionPerformed(evt);
             }
         });
-        viewMenu.add(jMenuItem2);
+        viewMenu.add(viewTraderListCheckBox);
 
         viewClock.setText("Clock");
         viewClock.addActionListener(new java.awt.event.ActionListener() {
@@ -480,22 +477,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         viewMenu.add(jMenuItem3);
 
-        jCheckBoxMenuItem1.setSelected(true);
-        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+        jCheckBoxMenuItem1.setText("Orderbook");
         jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBoxMenuItem1ActionPerformed(evt);
             }
         });
         viewMenu.add(jCheckBoxMenuItem1);
-
-        viewTraderListCheckBox.setText("Traders");
-        viewTraderListCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewTraderListCheckBoxActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewTraderListCheckBox);
 
         menuBar.add(viewMenu);
 
@@ -537,43 +525,39 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }
 
     void startSim() {
-        
-        
-        
+
         resetSim();
         JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", "{}"));
         Globals.se.putConfig(jo);
-        
+
         this.stopButton.setEnabled(true);
-        
+
 //        this.orderBookPanel.invalidate();
 //        this.orderBookPanel.repaint();
         this.clock.invalidate();
         this.clock.repaint();
-        
+
         this.startTraders();
 
         Globals.se.timer.setPause(false);
         Globals.se.timer.start();
         Globals.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
 
-
         Scheduler.TimerTask tt = new Scheduler.TimerTask() {
             @Override
             public long timerTask() {
                 System.out.printf("Hello i will inject money\n");
-               // Globals.se.injectMoney();
-                return 1000*60*10;        
+                // Globals.se.injectMoney();
+                return 1000 * 60 * 10;
             }
 
             @Override
             public long getID() {
-                  return 7L;
+                return 7L;
             }
-   
+
         };
 //        Globals.se.timer.startTimerTask(tt, 0);
-        
 
     }
 
@@ -601,12 +585,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         d.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_editPreferencesActionPerformed
 
-    
-    
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        TraderListDialog d = new TraderListDialog(this, false);
-        d.setVisible(rootPaneCheckingEnabled);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteMenuItemActionPerformed
         EditAutoTraderListDialog ed = new EditAutoTraderListDialog(this, true);
@@ -718,21 +696,27 @@ public class NewMDIApplication extends javax.swing.JFrame {
         Globals.se.pointZero();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
-    
-    TraderListDialog tld=null;
+    TraderListDialog tld = null;
     private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
-       if (this.viewTraderListCheckBox.getState()){
-           if (tld == null){
-               tld=new TraderListDialog(this,false);
-           }
-           tld.setVisible(true);
-       }
-       else {
-           if (tld!=null)
-               tld.setVisible(false);
-       }
-            
-            
+        System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
+        if (this.viewTraderListCheckBox.getState()) {
+            if (tld == null) {
+                tld = new TraderListDialog(this, false);
+                tld.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        super.windowClosing(e);
+                        viewTraderListCheckBox.setState(false);
+                        System.out.printf("Set menu false\n");
+                    }
+                });
+
+            }
+            tld.setVisible(true);
+        } else if (tld != null) {
+            System.out.printf("Set visible = false\n");
+            tld.setVisible(false);
+        }
     }//GEN-LAST:event_viewTraderListCheckBoxActionPerformed
 
     /**
@@ -741,18 +725,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
-        
+
         sesim.AutoTraderLoader tl = new sesim.AutoTraderLoader();
         tl.getTraders();
-        
-        //System.exit(0);
-        
-        
-        
-        
-        Globals.se = new Exchange();
 
-   
+        //System.exit(0);
+        Globals.se = new Exchange();
 
         Class<?> c = sesim.Exchange.class;
         Globals.prefs = Preferences.userNodeForPackage(c);
@@ -785,7 +763,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
