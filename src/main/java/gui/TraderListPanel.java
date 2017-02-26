@@ -59,9 +59,8 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         sesim.Quote q = Globals.se.getLastQuoete();
         double price = q == null ? 0 : q.price;
-        
+
         //DefaultTableModel newmodel = new DefaultTableModel();
-       
         int size = Globals.se.traders.size();
         model.setRowCount(size);
         for (int i = 0; i < size; i++) {
@@ -76,7 +75,9 @@ public class TraderListPanel extends javax.swing.JPanel {
             model.setValueAt(wealth, i, 4);
         }
         
-       list.getRowSorter().allRowsChanged();
+        
+        model.fireTableDataChanged();
+        //list.getRowSorter().allRowsChanged();
     }
 
     TimerTask updater;
@@ -85,47 +86,37 @@ public class TraderListPanel extends javax.swing.JPanel {
      * Creates new form TraderListPanel2
      */
     public TraderListPanel() {
-        
+
         initComponents();
         model = (DefaultTableModel) list.getModel();
-//        updateModel();
+//       updateModel();
 
         Timer timer = new Timer();
         updater = new TimerTask() {
             @Override
             public void run() {
-                
-                //System.out.printf("Run traderlist\n");
-             //   javax.swing.SwingUtilities.invokeLater(()->{updateModel();});
-             
-             try{
-                updateModel();
-             }
-             catch (Exception e)
-             {
-             }
+                try {
+                    updateModel();
+                } catch (Exception e) {
+                }
 
             }
         };
-        
-        //TableRowSorter sorter = (TableRowSorter) list.getRowSorter();
-        //sorter.setSortsOnUpdates(true);
-        
-        
+
         timer.schedule(updater, 0, 1000);
 
     }
-    
-    class MyModel extends DefaultTableModel{
-        MyModel(Object arg0[][], Object arg1[]){
-            super(arg0,arg1);
+
+    class MyModel extends DefaultTableModel {
+
+        MyModel(Object arg0[][], Object arg1[]) {
+            super(arg0, arg1);
         }
+
         @Override
-        public void fireTableDataChanged(){
-            
+        public void fireTableDataChanged() {
+                super.fireTableDataChanged();
         }
-        
-        
 
         @Override
         public void fireTableStructureChanged() {
@@ -141,39 +132,36 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         }
 
-        
     }
-   
-    
-    void test(){
 
-      
+    void test() {
+
 //        new javax.swing.table.DefaultTableModel
         MyModel m = new MyModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "ID", "Name", "Money", "Shares", "Wealth"
-            }
+                new Object[][]{
+                    {null, null, null, null, null},
+                    {null, null, null, null, null},
+                    {null, null, null, null, null},
+                    {null, null, null, null, null},
+                    {null, null, null, null, null}
+                },
+                new String[]{
+                    "ID", "Name", "Money", "Shares", "Wealth"
+                }
         ) {
-            Class[] types = new Class [] {
+            Class[] types = new Class[]{
                 java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
             };
-            boolean[] canEdit = new boolean [] {
+            boolean[] canEdit = new boolean[]{
                 false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         };
     }
@@ -244,7 +232,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             index = list.getRowSorter().convertRowIndexToModel(index);
             Integer tid = (Integer) model.getValueAt(index, 0);
-           // System.out.printf("Trader ID %d\n", tid);
+            // System.out.printf("Trader ID %d\n", tid);
 
             JDialog console = Globals.se.traders.get(tid).getGuiConsole();
             if (console == null) {
