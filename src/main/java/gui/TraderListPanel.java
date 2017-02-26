@@ -25,6 +25,7 @@
  */
 package gui;
 
+import gui.tools.NummericCellRenderer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -106,7 +107,9 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             }
         };
-
+        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(3));
+        list.getColumnModel().getColumn(3).setCellRenderer(new NummericCellRenderer(0));
+        list.getColumnModel().getColumn(4).setCellRenderer(new NummericCellRenderer(3));        
         timer.schedule(updater, 0, 1000);
 
     }

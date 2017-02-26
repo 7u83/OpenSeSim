@@ -299,10 +299,15 @@ public class Exchange {
         OrderType type;
         private double limit;
         private double volume;
+        
+        
         private final double initial_volume;
         private final long id;
         private final long created;
+        
         private final Account account;
+        
+        double cost;
 
         Order(Account account, OrderType type, double volume, double limit) {
             id = order_id.getNext();
@@ -313,6 +318,7 @@ public class Exchange {
             this.initial_volume = this.volume;
             this.created = timer.currentTimeMillis();
             this.status = OrderStatus.OPEN;
+            this.cost=0;
         }
 
         public long getID() {
@@ -338,6 +344,17 @@ public class Exchange {
         public double getInitialVolume() {
             return initial_volume;
         }
+        
+        public double getCost(){
+            return cost;
+        }
+        
+        public double getAvaragePrice(){
+            double e = getExecuted();
+            if (e<=0)
+                return -1;
+            return cost/e; 
+        }
 
         public Account getAccount() {
             return account;
@@ -347,6 +364,9 @@ public class Exchange {
             return status;
         }
 
+        public long getCreated(){
+            return created;
+        }
     }
 
     /**
@@ -881,6 +901,9 @@ public class Exchange {
         // Update volume
         b.volume -= volume;
         a.volume -= volume;
+        
+        b.cost+=price*volume;
+        a.cost+=price*volume;
 
         removeOrderIfExecuted(a);
         removeOrderIfExecuted(b);

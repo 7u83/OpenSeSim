@@ -71,8 +71,10 @@ public class OpenOrdersList extends javax.swing.JPanel {
             model.setValueAt(((Order) o).getType().toString(), row, 1);
 
             model.setValueAt(((Order) o).getLimit(), row, 2);
-            model.setValueAt(((Order) o).getVolume(), row, 3);
-            model.setValueAt(((Order) o).getOrderStatus().toString(), row, 4);
+            model.setValueAt(((Order) o).getExecuted(), row, 3);
+            model.setValueAt(((Order) o).getAvaragePrice(), row, 4);
+            model.setValueAt(((Order) o).getInitialVolume(), row, 5);
+            model.setValueAt(((Order) o).getOrderStatus().toString(), row, 6);
             row++;
         }
         this.table.getRowSorter().allRowsChanged();
@@ -142,19 +144,19 @@ public class OpenOrdersList extends javax.swing.JPanel {
         table.setAutoCreateRowSorter(true);
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Type", "Limit", "Volume", "Status"
+                "ID", "Type", "Limit", "Vol. Executed", "Av. Price", "Volume", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
+                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
