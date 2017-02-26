@@ -27,6 +27,7 @@ package gui.orderbook;
 
 import gui.Globals;
 import gui.Globals.CfgListener;
+import gui.tools.NummericCellRenderer;
 import java.awt.Component;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -119,7 +120,8 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
         }
         model = (DefaultTableModel) this.list.getModel();
         trader_column = list.getColumnModel().getColumn(0);
-        list.getColumnModel().getColumn(1).setCellRenderer(new Renderer());
+        list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
+        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));        
         cfgChanged();
 //        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
         Globals.addCfgListener(this);
