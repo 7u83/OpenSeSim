@@ -620,11 +620,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
-        System.out.printf("Wheel  %f\n", evt.getPreciseWheelRotation());
+        //System.out.printf("Wheel  %f\n", evt.getPreciseWheelRotation());
 
         double n = evt.getPreciseWheelRotation() * (-1.0);
 
-        System.out.printf("My n %f\n", n);
+        //System.out.printf("My n %f\n", n);
         if (n < 0) {
             if (this.x_unit_width > 0.3) {
                 this.x_unit_width += 0.1 * n;
