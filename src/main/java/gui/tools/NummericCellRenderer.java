@@ -58,7 +58,13 @@ public class NummericCellRenderer extends DefaultTableCellRenderer {
             JTable table, Object value, boolean isSelected,
             boolean hasFocus, int row, int column) {
 
-        // First format the cell value as required
+        
+        if (!(value instanceof Double)) {
+            return super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+        }
+
+        // Format the cell value as required
         value = formatter.format((Number) value);
 
         // And pass it on to parent class

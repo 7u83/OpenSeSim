@@ -163,6 +163,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jChartScrollPane = new javax.swing.JScrollPane();
         chart = new chart.Chart();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
+        jSplitPane5 = new javax.swing.JSplitPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -313,6 +314,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         jSplitPane3.setRightComponent(jSplitPane4);
         jSplitPane3.setLeftComponent(quoteVertical1);
+
+        jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane3.setLeftComponent(jSplitPane5);
 
         getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
 
@@ -775,6 +779,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JSplitPane jSplitPane4;
+    private javax.swing.JSplitPane jSplitPane5;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
