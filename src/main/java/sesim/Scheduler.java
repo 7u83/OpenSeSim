@@ -106,17 +106,24 @@ public class Scheduler extends Thread {
     long last_time_millis = System.currentTimeMillis();
     double current_time_millis = 0.0;
 
+    Clock clock;
+
     /**
      *
      * @return
      */
     public long currentTimeMillis1() {
 
-        long diff = System.currentTimeMillis() - last_time_millis;
-        last_time_millis += diff;
-        if (diff == 0) {
-            diff++;
-        }
+        long cur = System.currentTimeMillis();
+
+        long diff = cur - last_time_millis;
+
+        last_time_millis = cur;
+
+//  last_time_millis += diff;
+        //if (diff == 0) {
+        //      diff++;
+        //  }
         if (pause) {
             return (long) this.current_time_millis;
         }
@@ -151,9 +158,10 @@ public class Scheduler extends Thread {
         }
 
     }
-  
+
     //LinkedList<TimerTaskDef> set_tasks = new LinkedList<>();
     ConcurrentLinkedQueue<TimerTaskDef> set_tasks = new ConcurrentLinkedQueue<>();
+
     /**
      *
      * @param e
@@ -240,7 +248,6 @@ public class Scheduler extends Thread {
 
     public long runEvents() {
         synchronized (event_queue) {
-//            System.out.printf("Have Event Queue in run events %d\n", Thread.currentThread().getId());
 
             if (event_queue.isEmpty()) {
                 return -1;
@@ -249,27 +256,23 @@ public class Scheduler extends Thread {
             long t = event_queue.firstKey();
             long ct = currentTimeMillis1();
 
-            if (t <= ct) {
-                this.current_time_millis = t;
-                SortedSet s = event_queue.get(t);
-                Object rc = event_queue.remove(t);
-                Iterator<TimerTask> it = s.iterator();
-                while (it.hasNext()) {
-                    TimerTask e = it.next();
-                    long next_t = this.fireEvent(e);
-                    if (next_t == 0) {
-                        next_t++;
-                    }
-
-                    this.addTimerTask(e, next_t + t);
-                }
-//                System.out.printf("Leave Event Queue in run events a %d\n", Thread.currentThread().getId());
-                return 0;
-
-            } else {
-//                System.out.printf("Leave Event Queue in run events %d\n", Thread.currentThread().getId());
+            if (t > ct) {
+                //                System.out.printf("Leave Event Queue in run events %d\n", Thread.currentThread().getId());
+                System.out.printf("Sleeping somewat %d\n", (long) (t - this.current_time_millis / this.acceleration));
                 return (t - currentTimeMillis()) / (long) this.acceleration;
             }
+
+            //  if (t <= ct) {
+            this.current_time_millis = t;
+            SortedSet s = event_queue.get(t);
+            Object rc = event_queue.remove(t);
+            Iterator<TimerTask> it = s.iterator();
+            while (it.hasNext()) {
+                TimerTask e = it.next();
+                long next_t = this.fireEvent(e);
+                this.addTimerTask(e, next_t + t);
+            }
+            return 0;
 
         }
 
