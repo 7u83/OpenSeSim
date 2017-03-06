@@ -547,7 +547,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         Globals.se.timer.start();
         Globals.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
 
-        Scheduler.TimerTask tt = new Scheduler.TimerTask() {
+        Scheduler.TimerTaskRunner tt = new Scheduler.TimerTaskRunner() {
             @Override
             public long timerTask() {
                 System.out.printf("Hello i will inject money\n");

@@ -26,13 +26,13 @@
 package sesim;
 
 import org.json.JSONObject;
-import sesim.Scheduler.TimerTask;
+import sesim.Scheduler.TimerTaskRunner;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AutoTraderBase implements AutoTraderInterface, TimerTask {
+public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRunner {
 
     protected double account_id;
     protected Exchange se;

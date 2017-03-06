@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83
+ * Copyright (c) 2017, tobias
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,71 +25,54 @@
  */
 package sesim;
 
-import org.json.JSONObject;
-import sesim.Exchange.Account;
+import java.util.Date;
 
 /**
  *
- * @author 7u83
+ * @author tobias
+ *
+ * Implements an adjustable clock
+ *
  */
-public abstract class OldAutoTrader implements Scheduler.TimerTaskRunner {
+public class Clock {
 
-    protected double account_id;
-    protected Exchange se;
-    protected AutoTraderConfig config;
-
-    protected String name;
-
-    public OldAutoTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
-        account_id = se.createAccount(money, shares);
-        Account a = se.getAccount(account_id);
-        
-      //  a.owner=this;
-        
-        this.se = se;
-        this.config = config;
-        this.name = name;
-        this.id=id;
-
-    }
+    private double acceleration=1.0;
+    private double current_time_millis=0.0;
+    private long last_time_millis=System.currentTimeMillis();
+    private boolean pause=false;
     
-    public OldAutoTrader(){
-        se=null;
-        id=0;
-    }
+    
+    
+    public synchronized long currentTimeMillis1() {
 
-    public void setName(String name) {
-        this.name = name;
-    }
+        long cur = System.currentTimeMillis();
 
-    public String getName() {
-        return name;
-    }
-    
-    @Override
-    public long getID(){
-        return id;
-    }
-    private long id;
-    
-    public Exchange.Account getAccount(){
-        return se.getAccount(account_id);
-    }
-    
-    public void init(Exchange se,long id,String name, double money, double shares, JSONObject cfg){
-        this.account_id=se.createAccount(money, shares);
-//        se.getAccount(account_id).owner=this;
-           this.se = se;
-        this.name = name;
-        this.id=id;
-        
+        double diff = cur - last_time_millis;
+        last_time_millis = cur;
   
+        
+        if (pause) {
+            return (long) this.current_time_millis;
+        }
+        
+  //      System.out.printf("Floaf TM: %f\n", this.current_time_millis);
+   
+        this.current_time_millis +=  diff * acceleration;
+        return (long) this.current_time_millis;
+    }
+
+   /**
+    * Set the clock acceleration
+    * @param acceleration 
+    */
+    public void setAcceleration(double acceleration){
+        this.acceleration=acceleration;
     }
     
-    public Exchange getSE(){
-        return se;
+    
+    public void setPause(boolean p){
+        pause=p;
     }
-
-    public abstract void start();
-
+    
+    
 }

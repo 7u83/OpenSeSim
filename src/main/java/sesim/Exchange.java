@@ -1,6 +1,7 @@
 package sesim;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
@@ -14,6 +15,8 @@ import org.json.JSONObject;
  * @author 7u83
  */
 public class Exchange {
+
+    ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
     private double money_df = 10000;
 
@@ -299,14 +302,13 @@ public class Exchange {
         OrderType type;
         private double limit;
         private double volume;
-        
-        
+
         private final double initial_volume;
         private final long id;
         private final long created;
-        
+
         private final Account account;
-        
+
         double cost;
 
         Order(Account account, OrderType type, double volume, double limit) {
@@ -318,7 +320,7 @@ public class Exchange {
             this.initial_volume = this.volume;
             this.created = timer.currentTimeMillis();
             this.status = OrderStatus.OPEN;
-            this.cost=0;
+            this.cost = 0;
         }
 
         public long getID() {
@@ -344,16 +346,17 @@ public class Exchange {
         public double getInitialVolume() {
             return initial_volume;
         }
-        
-        public double getCost(){
+
+        public double getCost() {
             return cost;
         }
-        
-        public double getAvaragePrice(){
+
+        public double getAvaragePrice() {
             double e = getExecuted();
-            if (e<=0)
+            if (e <= 0) {
                 return -1;
-            return cost/e; 
+            }
+            return cost / e;
         }
 
         public Account getAccount() {
@@ -364,7 +367,7 @@ public class Exchange {
             return status;
         }
 
-        public long getCreated(){
+        public long getCreated() {
             return created;
         }
     }
@@ -435,7 +438,14 @@ public class Exchange {
 
                         this.wait();
 
-                        executeOrders();
+                        Order o;
+                        while (null != (o = order_queue.poll())) {
+                            addOrderToBook(o);
+                            Account a = o.account;
+                            a.orders.put(o.id, o);
+                            a.update(o);
+                            executeOrders();
+                        }
 
                         updateBookReceivers(OrderType.SELLLIMIT);
                         updateBookReceivers(OrderType.BUYLIMIT);
@@ -583,75 +593,75 @@ public class Exchange {
 
     public Quote getBestPrice_0() {
 
-        synchronized (executor){
-        SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
-        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+        synchronized (executor) {
+            SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
+            SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
-        Quote lq = this.getLastQuoete();
-        Order b = null, a = null;
-        if (!bid.isEmpty()) {
-            b = bid.first();
-        }
-        if (!ask.isEmpty()) {
-            a = ask.first();
-        }
-
-        // If there is neither bid nor ask and no last quote
-        // we can't return a quote
-        if (lq == null && b == null && a == null) {
-            return null;
-        }
-
-        // there is bid and ask
-        if (a != null && b != null) {
-            Quote q = new Quote();
-
-            // if there is no last quote calculate from bid and ask
-            if (lq == null) {
-                q.price = (bid.first().limit + ask.first().limit) / 2.0;
-                return q;
+            Quote lq = this.getLastQuoete();
+            Order b = null, a = null;
+            if (!bid.isEmpty()) {
+                b = bid.first();
+            }
+            if (!ask.isEmpty()) {
+                a = ask.first();
             }
 
-            if (lq.price < b.limit) {
-                q.price = b.limit;
-                return q;
+            // If there is neither bid nor ask and no last quote
+            // we can't return a quote
+            if (lq == null && b == null && a == null) {
+                return null;
             }
-            if (lq.price > a.limit) {
-                q.price = a.limit;
-                return q;
+
+            // there is bid and ask
+            if (a != null && b != null) {
+                Quote q = new Quote();
+
+                // if there is no last quote calculate from bid and ask
+                if (lq == null) {
+                    q.price = (bid.first().limit + ask.first().limit) / 2.0;
+                    return q;
+                }
+
+                if (lq.price < b.limit) {
+                    q.price = b.limit;
+                    return q;
+                }
+                if (lq.price > a.limit) {
+                    q.price = a.limit;
+                    return q;
+                }
+                return lq;
             }
+
+            if (a != null) {
+                Quote q = new Quote();
+                if (lq == null) {
+
+                    q.price = a.limit;
+                    return q;
+                }
+                if (lq.price > a.limit) {
+                    q.price = a.limit;
+                    return q;
+                }
+                return lq;
+            }
+
+            if (b != null) {
+                Quote q = new Quote();
+                if (lq == null) {
+                    q.price = b.limit;
+                    return q;
+                }
+                if (lq.price < b.limit) {
+                    q.price = b.limit;
+                    return q;
+                }
+
+                return lq;
+            }
+
             return lq;
-        }
-
-        if (a != null) {
-            Quote q = new Quote();
-            if (lq == null) {
-
-                q.price = a.limit;
-                return q;
-            }
-            if (lq.price > a.limit) {
-                q.price = a.limit;
-                return q;
-            }
-            return lq;
-        }
-
-        if (b != null) {
-            Quote q = new Quote();
-            if (lq == null) {
-                q.price = b.limit;
-                return q;
-            }
-            if (lq.price < b.limit) {
-                q.price = b.limit;
-                return q;
-            }
-
-            return lq;
-        }
-
-        return lq;
         }
     }
 
@@ -689,7 +699,7 @@ public class Exchange {
         if (br == null) {
 //            System.out.printf("Br is null\n");
         } else {
-  //          System.out.printf("Br is not Nukk\n");
+            //          System.out.printf("Br is not Nukk\n");
         }
 
         ArrayList<BookReceiver> bookreceivers;
@@ -901,9 +911,9 @@ public class Exchange {
         // Update volume
         b.volume -= volume;
         a.volume -= volume;
-        
-        b.cost+=price*volume;
-        a.cost+=price*volume;
+
+        b.cost += price * volume;
+        a.cost += price * volume;
 
         removeOrderIfExecuted(a);
         removeOrderIfExecuted(b);
@@ -1038,16 +1048,21 @@ public class Exchange {
 
 //        System.out.printf("Getting executor in create Order\n", Thread.currentThread().getId());
         synchronized (executor) {
-//                    System.out.printf("Have executor in create Order\n", Thread.currentThread().getId());
+
             num_orders++;
             addOrderToBook(o);
             a.orders.put(o.id, o);
-//            System.out.printf("Calling in create Order oupdate for %s\n", o.getOrderStatus().toString());
             a.update(o);
-            executor.notify();
 
+            executeOrders();
+            updateBookReceivers(OrderType.SELLLIMIT);
+            updateBookReceivers(OrderType.BUYLIMIT);
+
+//            System.out.printf("Order to Queeue %s %f %f\n",o.type.toString(),o.volume,o.limit);
+//            order_queue.add(o);
+//            executor.notify();
         }
-     //       a.update(o);
+//       a.update(o);
         return o.id;
     }
 

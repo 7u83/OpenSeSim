@@ -33,14 +33,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -154,12 +152,13 @@ public class Scheduler extends Thread {
     public class TimerTaskDef implements Comparable {
 
         TimerTaskRunner taskRunner;
-        long evtime;
+        long curevtime;
+        long newevtime;
         int id;
 
         TimerTaskDef(TimerTaskRunner e, long t) {
             taskRunner = e;
-            evtime = t;
+            newevtime = t;
             id = nextTimerTask.getAndAdd(1);
 
         }
@@ -167,7 +166,7 @@ public class Scheduler extends Thread {
         @Override
         public int compareTo(Object o) {
             return ((TimerTaskDef) o).id - this.id;
-         
+
         }
 
     }
@@ -184,14 +183,23 @@ public class Scheduler extends Thread {
     public TimerTaskDef startTimerTask(TimerTaskRunner e, long time) {
 
         long evtime = time + currentTimeMillis();
-        
-        TimerTaskDef task = new TimerTaskDef(e,evtime);
+
+        TimerTaskDef task = new TimerTaskDef(e, evtime);
         set_tasks.add(task);
 
         synchronized (this) {
             notify();
         }
         return task;
+    }
+
+    public void XXXrescheduleTimerTask(TimerTaskDef task, long time) {
+        long evtime = time + currentTimeMillis();
+        set_tasks.add(task);
+
+        synchronized (this) {
+            notify();
+        }
     }
 
     private boolean pause = false;
@@ -217,18 +225,20 @@ public class Scheduler extends Thread {
         return e.timerTask();
     }
 
-    HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
+  //  HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
 
-    private boolean addTimerTask(TimerTaskDef e, long evtime) {
+    private boolean addTimerTask(TimerTaskDef e) {
 
         //   long evtime = time + currentTimeMillis();
-        SortedSet<TimerTaskDef> s = event_queue.get(evtime);
+        SortedSet<TimerTaskDef> s = event_queue.get(e.newevtime);
         if (s == null) {
             s = new TreeSet<>();
-            event_queue.put(evtime, s);
+            event_queue.put(e.newevtime, s);
         }
+        
+        e.curevtime=e.newevtime;
 
-        tasks.put(e, evtime);
+  //      tasks.put(e, e.evtime);
 
         return s.add(e);
     }
@@ -241,13 +251,13 @@ public class Scheduler extends Thread {
 
     private void cancelMy(TimerTaskDef e) {
 
-        Long evtime = tasks.get(e);
+//        Long evtime = tasks.get(e.curevtime);
 
-        if (evtime == null) {
-            return;
-        }
+//        if (evtime == null) {
+//            return;
+//        }
 
-        SortedSet<TimerTaskDef> s = event_queue.get(evtime);
+        SortedSet<TimerTaskDef> s = event_queue.get(e.curevtime);
         if (s == null) {
 
             return;
@@ -257,7 +267,7 @@ public class Scheduler extends Thread {
 
         if (s.isEmpty()) {
 
-            event_queue.remove(evtime);
+            event_queue.remove(e.curevtime);
         }
 
     }
@@ -287,7 +297,8 @@ public class Scheduler extends Thread {
             while (it.hasNext()) {
                 TimerTaskDef e = it.next();
                 long next_t = this.fireEvent(e.taskRunner);
-                this.addTimerTask(e, next_t + t);
+                e.newevtime = next_t + t;
+                this.addTimerTask(e);
             }
             return 0;
 
@@ -325,7 +336,7 @@ public class Scheduler extends Thread {
             while (!set_tasks.isEmpty()) {
                 TimerTaskDef td = set_tasks.poll();
                 this.cancelMy(td);
-                this.addTimerTask(td, td.evtime);
+                this.addTimerTask(td);
 
             }
 

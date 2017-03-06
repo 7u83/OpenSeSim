@@ -38,6 +38,9 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.lang.ClassLoader.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import sesim.Scheduler.TimerTaskRunner;
 
 /**
  *
@@ -80,25 +83,85 @@ public class Test {
 
     }
      */
-    
-    static class Z{
-        Double x;
+    static class Exer extends Thread {
+
+        int value = 0;
+
+        @Override
+        public void run() {
+
+            while (true) {
+                try {
+                    System.out.printf("Exer getting Exer Lock");
+                    synchronized (this) {
+                        System.out.printf("Exer having Exer Lock wait 30000\n");
+                        this.wait();
+                    }
+
+                } catch (InterruptedException ex) {
+                    System.out.printf("Interrupted\n");
+                }
+
+                System.out.printf("Exer Value %d\n", value);
+            }
+        }
+
     }
+
+    static class Runner extends Thread {
+
+    }
+    static   Scheduler s = new Scheduler();
+    
+    static class MyTask implements TimerTaskRunner{
+
+        long ctr=0;
+        @Override
+        public long timerTask() {
+            ctr++;
+            double r=1;
+            for (int i=0; i<100000; i++){
+                r=r+i*r;
+                r=r+1.0;
+            }
+            synchronized (this){
+                try {
+                    wait(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            System.out.printf("TimerTask %d %d %f\n",ctr,s.currentTimeMillis(),r);
+
+            return 1000;
+        }
+
+        @Override
+        public long getID() {
+            return 0;
+        }
+        
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
+
+        Clock clock = new Clock();
         
-        Z z = new Z();
+      
+        s.start();
+
+        s.setAcceleration(1);
+
+        MyTask t = new MyTask();
         
-        z.x = 3.1415926;
+        s.setAcceleration(1.0);
+        s.startTimerTask(t, 0);
 
-        System.out.printf("ID: %d\n", System.identityHashCode(z));
-
-        z.x = 90.0;
-
-        System.out.printf("ID: %d\n", System.identityHashCode(z));
-
+        s.join();
     }
 
 }

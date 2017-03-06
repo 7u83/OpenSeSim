@@ -38,6 +38,26 @@ public class Clock extends javax.swing.JPanel {
 
     protected final Timer timer;
     TimerTask clockUpdater;
+    
+    
+    class ClockUpdater implements sesim.Scheduler.TimerTaskRunner{
+
+        @Override
+        public long timerTask() {
+               long t = Globals.se.timer.currentTimeMillis();  
+               jLabel1.setText(Scheduler.formatTimeMillis(t));
+               return 1000;
+        }
+
+        @Override
+        public long getID() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+    }
+    
+    
+    
     /**
      * Creates new form Clock
      */
@@ -51,7 +71,7 @@ public class Clock extends javax.swing.JPanel {
             return;
 
         
-        clockUpdater = new TimerTask() {
+        clockUpdater = new TimerTask () {
             @Override
             public void run() {
                 long t = Globals.se.timer.currentTimeMillis();
