@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Scheduler extends Thread {
 
-    private double acceleration = 0.0;
+    private double acceleration = 1.0;
 
     public void setAcceleration(double val) {
 
@@ -108,16 +108,54 @@ public class Scheduler extends Thread {
 
     Clock clock;
 
+    long last_nanos = System.nanoTime();
+    double current_nanos = 0;
+
     /**
      *
      * @return
      */
     public long currentTimeMillis1() {
 
+        long cur = System.nanoTime();
+        long diff = cur - last_nanos;
+        last_nanos = cur;
+       
+        if (pause) {
+            return (long) this.current_time_millis;
+        }
+
+        //  this.cur_nano += (((double)diff_nano)/1000000.0)*this.acceleration;
+        //     return (long)(cur_nano/1000000.0);        
+
+  
+        
+  
+        this.current_nanos +=     (double)diff * (double)this.acceleration;
+        
+//        this.current_time_millis += ((double) diff) * this.acceleration;
+        
+        this.current_time_millis = this.current_nanos/1000000.0;
+        
+        return (long) this.current_time_millis;
+    }
+    
+    
+        /**
+     *
+     * @return
+     */
+    public long currentTimeMillis1_old() {
+
+        long cur_nano = System.nanoTime();
+        long diff_nano = cur_nano - last_nanos;
+        last_nanos = cur_nano;
+
         long cur = System.currentTimeMillis();
 
-        long diff = cur - last_time_millis;
+        long diff = (cur - last_time_millis);
 
+        //System.out.printf("Diff Nanos: %d Diff Millis %d, ND: %d\n", diff_nano, diff, diff_nano/1000000);
         last_time_millis = cur;
 
 //  last_time_millis += diff;
@@ -127,11 +165,21 @@ public class Scheduler extends Thread {
         if (pause) {
             return (long) this.current_time_millis;
         }
+
+        //  this.cur_nano += (((double)diff_nano)/1000000.0)*this.acceleration;
+        //     return (long)(cur_nano/1000000.0);        
+        double fac = (((double) diff) + 10.0) * this.acceleration;
+        System.out.printf("Difdif: %f %f\n", fac, this.acceleration);
         this.current_time_millis += ((double) diff) * this.acceleration;
         return (long) this.current_time_millis;
     }
 
+    
+    
+    
+
     public long currentTimeMillis() {
+//            return (long)(cur_nano/1000000.0);
         return (long) this.current_time_millis;
     }
 
@@ -225,8 +273,7 @@ public class Scheduler extends Thread {
         return e.timerTask();
     }
 
-  //  HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
-
+    //  HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
     private boolean addTimerTask(TimerTaskDef e) {
 
         //   long evtime = time + currentTimeMillis();
@@ -235,11 +282,10 @@ public class Scheduler extends Thread {
             s = new TreeSet<>();
             event_queue.put(e.newevtime, s);
         }
-        
-        e.curevtime=e.newevtime;
 
-  //      tasks.put(e, e.evtime);
+        e.curevtime = e.newevtime;
 
+        //      tasks.put(e, e.evtime);
         return s.add(e);
     }
 
@@ -252,11 +298,9 @@ public class Scheduler extends Thread {
     private void cancelMy(TimerTaskDef e) {
 
 //        Long evtime = tasks.get(e.curevtime);
-
 //        if (evtime == null) {
 //            return;
 //        }
-
         SortedSet<TimerTaskDef> s = event_queue.get(e.curevtime);
         if (s == null) {
 
@@ -281,16 +325,26 @@ public class Scheduler extends Thread {
 
             long t = event_queue.firstKey();
             long ct = currentTimeMillis1();
-            ct = t;
 
+
+//            ct = t;
             if (t > ct) {
-                //                System.out.printf("Leave Event Queue in run events %d\n", Thread.currentThread().getId());
-                System.out.printf("Sleeping somewat %d\n", (long) (t - this.currentTimeMillis() / this.acceleration));
-                return (t - currentTimeMillis()) / (long) this.acceleration;
+            //if ((long) diff > 0) {
+                //              System.out.printf("Leave Event Queue in run events %d\n", Thread.currentThread().getId());
+//                System.out.printf("Sleeping somewat %d\n", (long) (0.5 + (t - this.currentTimeMillis()) / this.acceleration));
+              //  return (long) diff;
+                    return (long) (((double)t - this.currentTimeMillis()) /  this.acceleration );
             }
 
+            if (t<ct){
+              //  System.out.printf("Time is overslipping: %d\n",ct-t);
+                          this.current_time_millis = t;
+           this.current_nanos=this.current_time_millis*1000000.0;
+
+          }
+            
             //  if (t <= ct) {
-            this.current_time_millis = t;
+            
             SortedSet s = event_queue.get(t);
             Object rc = event_queue.remove(t);
             Iterator<TimerTaskDef> it = s.iterator();
@@ -323,7 +377,7 @@ public class Scheduler extends Thread {
 
     void initScheduler() {
         current_time_millis = 0.0;
-        //  this.startTimerTask(new EmptyCtr(), 0);
+        this.startTimerTask(new EmptyCtr(), 0);
         terminate = false;
 
     }
