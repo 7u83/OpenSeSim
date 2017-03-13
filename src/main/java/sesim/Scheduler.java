@@ -121,28 +121,22 @@ public class Scheduler extends Thread {
         long cur = System.nanoTime();
         long diff = cur - last_nanos;
         last_nanos = cur;
-       
+
         if (pause) {
             return (long) this.current_time_millis;
         }
 
         //  this.cur_nano += (((double)diff_nano)/1000000.0)*this.acceleration;
         //     return (long)(cur_nano/1000000.0);        
+        this.current_nanos += (double) diff * (double) this.acceleration;
 
-  
-        
-  
-        this.current_nanos +=     (double)diff * (double)this.acceleration;
-        
 //        this.current_time_millis += ((double) diff) * this.acceleration;
-        
-        this.current_time_millis = this.current_nanos/1000000.0;
-        
+        this.current_time_millis = this.current_nanos / 1000000.0;
+
         return (long) this.current_time_millis;
     }
-    
-    
-        /**
+
+    /**
      *
      * @return
      */
@@ -174,10 +168,6 @@ public class Scheduler extends Thread {
         this.current_time_millis += ((double) diff) * this.acceleration;
         return (long) this.current_time_millis;
     }
-
-    
-    
-    
 
     public long currentTimeMillis() {
 //            return (long)(cur_nano/1000000.0);
@@ -327,30 +317,37 @@ public class Scheduler extends Thread {
             long t = event_queue.firstKey();
             long ct = currentTimeMillis1();
 
-
 //            ct = t;
             if (t > ct) {
-            //if ((long) diff > 0) {
+                //if ((long) diff > 0) {
                 //              System.out.printf("Leave Event Queue in run events %d\n", Thread.currentThread().getId());
 //                System.out.printf("Sleeping somewat %d\n", (long) (0.5 + (t - this.currentTimeMillis()) / this.acceleration));
-              //  return (long) diff;
-                    return (long) (((double)t - this.currentTimeMillis()) /  this.acceleration );
+                //  return (long) diff;
+                return (long) (((double) t - this.currentTimeMillis()) / this.acceleration);
             }
 
-            if (t<ct){
-              //  System.out.printf("Time is overslipping: %d\n",ct-t);
-                          this.current_time_millis = t;
-           this.current_nanos=this.current_time_millis*1000000.0;
+            if (t < ct) {
+                //  System.out.printf("Time is overslipping: %d\n",ct-t);
+                this.current_time_millis = t;
+                this.current_nanos = this.current_time_millis * 1000000.0;
 
-          }
-            
+            }
+
             //  if (t <= ct) {
-            
             SortedSet s = event_queue.get(t);
             Object rc = event_queue.remove(t);
+
+            if (s.size() > 1) {
+                System.out.printf("Events in a row: %d\n", s.size());
+            }
+
             Iterator<TimerTaskDef> it = s.iterator();
             while (it.hasNext()) {
                 TimerTaskDef e = it.next();
+                if (s.size() > 1) {
+                    System.out.printf("Sicku: %d %d\n", e.id, e.curevtime);
+                }
+
                 long next_t = this.fireEvent(e.taskRunner);
                 e.newevtime = next_t + t;
                 this.addTimerTask(e);
@@ -365,7 +362,7 @@ public class Scheduler extends Thread {
 
         @Override
         public long timerTask() {
-         //   System.out.printf("Current best brice %f\n", Globals.se.getBestPrice());
+            //   System.out.printf("Current best brice %f\n", Globals.se.getBestPrice());
             return 1000;
         }
 

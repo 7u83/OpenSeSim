@@ -117,7 +117,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     void setStatus(String format, Object... arguments) {
   //     String s = String.format(format, arguments);
-  //     System.out.printf("%s: %s\n", this.getName(), s);
+//       System.out.printf("%s: %s\n", this.getName(), s);
     }
 
     private Float[] to_float(JSONArray a) {
