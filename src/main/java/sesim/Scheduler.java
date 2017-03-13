@@ -26,6 +26,7 @@
 package sesim;
 
 //import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import gui.Globals;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -364,6 +365,7 @@ public class Scheduler extends Thread {
 
         @Override
         public long timerTask() {
+         //   System.out.printf("Current best brice %f\n", Globals.se.getBestPrice());
             return 1000;
         }
 
@@ -402,7 +404,7 @@ public class Scheduler extends Thread {
 
             synchronized (this) {
                 try {
-                    System.out.printf("My WTIME %d\n", wtime);
+//                    System.out.printf("My WTIME %d\n", wtime);
                     if (wtime != -1 && !pause) {
                         wait(wtime);
                     } else {

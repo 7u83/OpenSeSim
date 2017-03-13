@@ -305,11 +305,11 @@
                   <Component id="jButton2" min="-2" pref="67" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="stopButton" min="-2" pref="63" max="-2" attributes="0"/>
-                  <EmptySpace pref="389" max="32767" attributes="0"/>
+                  <EmptySpace pref="375" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="clock" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jComboBox1" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="accelSpinner" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
@@ -326,18 +326,12 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                   <Component id="clock" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="accelSpinner" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jComboBox1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="accelSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace min="0" pref="5" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -394,35 +388,23 @@
         <Component class="javax.swing.JSpinner" name="accelSpinner">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="1.0" minimum="0.0" numberType="java.lang.Double" stepSize="100.0" type="number"/>
+              <SpinnerModel initial="1.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
             </Property>
           </Properties>
           <Events>
             <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="accelSpinnerStateChanged"/>
+            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="accelSpinnerPropertyChange"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="NewMDIApplication_accelSpinner"/>
+          </AuxValues>
         </Component>
         <Component class="gui.Clock" name="clock">
         </Component>
-        <Component class="javax.swing.JComboBox" name="jComboBox1">
+        <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="7">
-                <StringItem index="0" value="1x"/>
-                <StringItem index="1" value="2x"/>
-                <StringItem index="2" value="4x"/>
-                <StringItem index="3" value="10x"/>
-                <StringItem index="4" value="100x"/>
-                <StringItem index="5" value="1000x"/>
-                <StringItem index="6" value="max."/>
-              </StringArray>
-            </Property>
+            <Property name="text" type="java.lang.String" value="Acceleration:"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

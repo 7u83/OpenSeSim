@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.lang.ClassLoader.*;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sesim.Scheduler.TimerTaskRunner;
@@ -111,27 +112,28 @@ public class Test {
     static class Runner extends Thread {
 
     }
-    static   Scheduler s = new Scheduler();
-    
-    static class MyTask implements TimerTaskRunner{
+    static Scheduler s = new Scheduler();
 
-        long ctr=0;
+    static class MyTask implements TimerTaskRunner {
+
+        long ctr = 0;
+
         @Override
         public long timerTask() {
             ctr++;
-            double r=1;
-            for (int i=0; i<100000; i++){
-                r=r+i*r;
-                r=r+1.0;
+            double r = 1;
+            for (int i = 0; i < 100000; i++) {
+                r = r + i * r;
+                r = r + 1.0;
             }
-            synchronized (this){
+            synchronized (this) {
                 try {
                     wait(500);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.printf("TimerTask %d %d %f\n",ctr,s.currentTimeMillis(),r);
+            System.out.printf("TimerTask %d %d %f\n", ctr, s.currentTimeMillis(), r);
 
             return 1000;
         }
@@ -140,28 +142,21 @@ public class Test {
         public long getID() {
             return 0;
         }
-        
+
     }
-    
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
 
-        Clock clock = new Clock();
-        
-      
-        s.start();
+        Random r;
+        r = new Random(10);
 
-        s.setAcceleration(1);
-
-        MyTask t = new MyTask();
-        
-        s.setAcceleration(1.0);
-        s.startTimerTask(t, 0);
-
-        s.join();
+        for (int i = 0; i < 100; i++) {
+            int e = r.nextInt(50);
+            System.out.printf("Zufallszahl: %d\n", e);
+        }
     }
 
 }

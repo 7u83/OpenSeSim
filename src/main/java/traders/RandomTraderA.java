@@ -73,7 +73,8 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         a.setListener(this);
 
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-         timerTask = se.timer.startTimerTask(this, delay);
+        setStatus("Inital delay: %d\n",delay);
+        timerTask = se.timer.startTimerTask(this, delay);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         sesim.Exchange.Account a = se.getAccount(account_id);
 //        System.out.printf("Have Account %d\n", Thread.currentThread().getId());
         long rc = this.doTrade();
-//        System.out.printf("Exit TimerTask for %d / %d\n", System.identityHashCode(this), Thread.currentThread().getId());
+        setStatus("Sleeping for %d ms", rc);
         return rc;
 
     }
@@ -112,6 +113,11 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         jo.put("base", this.getClass().getCanonicalName());
 
         return jo;
+    }
+
+    void setStatus(String format, Object... arguments) {
+  //     String s = String.format(format, arguments);
+  //     System.out.printf("%s: %s\n", this.getName(), s);
     }
 
     private Float[] to_float(JSONArray a) {
@@ -184,21 +190,23 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     }
 
     sesim.Scheduler.TimerTaskDef timerTask;
-    
+
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
 //        System.out.printf("Order what %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
-        if (o.getOrderStatus() == OrderStatus.CLOSED ) {
+        if (o.getOrderStatus() == OrderStatus.CLOSED) {
 
 //            System.out.printf("Enteter canel timer %d\n", Thread.currentThread().getId());
-        //    se.timer.cancelTimerTask(this);
+            //    se.timer.cancelTimerTask(this);
 //System.out.printf("back from canel timer %d\n", System.identityHashCode(this));
 //System.exit(0);
-
             Long w = waitAfterOrder();
+
+            setStatus("Order closed, %s", o.getType().toString());
+
 //            System.out.printf("We have now to wait for %d\n", w);
             //timerTask = se.timer.startTimerTask(this, w);
-          se.timer.XXXrescheduleTimerTask(timerTask, w);
+          //  se.timer.XXXrescheduleTimerTask(timerTask, w);
 
         }
 //        System.out.printf("Updatetd Account\n", "");
@@ -247,54 +255,68 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         return 0;
 
     }
-    
-    
-    long waitAfterOrder(){
-                if (mode == Action.BUY) {
+
+    long waitAfterOrder() {
+        if (mode == Action.BUY) {
             mode = Action.RANDOM;
-            return getRandom(wait_after_buy);
+            long r = getRandom(wait_after_buy);
+            setStatus("Wait after buy: %d ms", r);
+            return r;
         }
 
         if (mode == Action.SELL) {
             mode = Action.RANDOM;
-            return getRandom(wait_after_sell);
+            long r = getRandom(wait_after_sell);
+            setStatus("Wait after sell: %d ms", r);
+            return r;
         }
 
 //        System.out.printf("Return action 0\n");
         return 0;
 
     }
-    
 
     long doTrade() {
 
-//        System.out.printf("Do Trader %d\n", Thread.currentThread().getId());
-        cancelOrders();
-//        System.out.printf("Orders Canceled %d\n", Thread.currentThread().getId());
+        long co = cancelOrders();
+        setStatus("Orders cancled: %d",co);
+        if (co>0)
+            mode = Action.RANDOM;
+
         Action a = getAction();
 
 //        System.out.printf("Action is %s\n", a.toString());
-
         if (mode == Action.RANDOM) {
-
+            
+            setStatus("Mode is %s, next action is %s",mode.toString(),a.toString());
+            
 //            System.out.printf("Action: %s\n", a.toString());
             Integer rc = doTrade1(a);
             if (rc != null) {
+                setStatus("Action %s success full, ret %d",a.toString(),rc);
                 return rc;
             }
 
+            
             rc = doTrade1(Action.BUY);
             if (rc != null) {
+                setStatus("BuyAction %s successfull, ret %d",a.toString(),rc);
+
                 return rc;
             }
             rc = doTrade1(Action.SELL);
             if (rc != null) {
+                setStatus("SellAction %s successfull, ret %d",a.toString(),rc);
                 return rc;
             }
+            
+            setStatus("No trade possible, returning 5000");
 //            System.out.printf("All ha s failed\n");
             return 5000;
         }
 
+       
+        setStatus("Current mode is %s",mode.toString());
         return waitAfterOrder();
     }
 
