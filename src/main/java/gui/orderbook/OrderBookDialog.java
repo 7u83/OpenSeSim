@@ -37,7 +37,7 @@ public class OrderBookDialog extends javax.swing.JDialog {
     public OrderBookDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        books.setDepth(1000);
+        books.setDepth(1000000);
     }
 
     /**

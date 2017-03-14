@@ -344,9 +344,9 @@ public class Scheduler extends Thread {
             Iterator<TimerTaskDef> it = s.iterator();
             while (it.hasNext()) {
                 TimerTaskDef e = it.next();
-                if (s.size() > 1) {
-                    System.out.printf("Sicku: %d %d\n", e.id, e.curevtime);
-                }
+          //      if (s.size() > 1) {
+           //         System.out.printf("Sicku: %d %d\n", e.id, e.curevtime);
+           //     }
 
                 long next_t = this.fireEvent(e.taskRunner);
                 e.newevtime = next_t + t;

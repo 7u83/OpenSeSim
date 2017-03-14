@@ -516,7 +516,7 @@ public class Exchange {
     }
 
     public Double getBestPrice() {
-
+System.out.printf("Get BP\n");
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -538,13 +538,15 @@ public class Exchange {
         // there is bid and ask
         if (a != null && b != null) {
             Quote q = new Quote();
-
+System.out.printf("aaaaa bbbbb %f %f \n",a.limit,b.limit);
             // if there is no last quote calculate from bid and ask
-            if (lq == null) {
-                return (bid.first().limit + ask.first().limit) / 2.0;
+            //if (lq == null) {
+                double rc =(bid.first().limit + ask.first().limit) / 2.0;
+                System.out.printf("RCRC2.0: %f\n",rc);
+                return rc;
 
-            }
-
+           // }
+/*
             if (lq.price < b.limit) {
                 return b.limit;
 
@@ -554,6 +556,7 @@ public class Exchange {
 
             }
             return lq.price;
+*/           
         }
 
         if (a != null) {
@@ -617,12 +620,12 @@ public class Exchange {
                 Quote q = new Quote();
 
                 // if there is no last quote calculate from bid and ask
-                if (lq == null) {
+          //      if (lq == null) {
                     q.price = (bid.first().limit + ask.first().limit) / 2.0;
                     return q;
-                }
+          //      }
 
-                if (lq.price < b.limit) {
+          /*      if (lq.price < b.limit) {
                     q.price = b.limit;
                     return q;
                 }
@@ -631,6 +634,7 @@ public class Exchange {
                     return q;
                 }
                 return lq;
+          */
             }
 
             if (a != null) {

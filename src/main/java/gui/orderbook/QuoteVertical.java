@@ -116,8 +116,8 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
     public void UpdateQuote(Quote q) {
         
         
-/*        
-        javax.swing.SwingUtilities.invokeLater(() -> {
+        
+     //   javax.swing.SwingUtilities.invokeLater(() -> {
             String text, vtext;
             text = dfm.format(q.price);
             vtext = dfv.format(q.volume);
@@ -132,8 +132,8 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
             last_price = q.price;
             this.quoteLabel.setText(text);
             this.volumeLabel.setText("(" + vtext + ")");
-        });
-*/
+     //   });
+
 
 }
 

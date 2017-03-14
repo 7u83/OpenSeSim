@@ -379,6 +379,8 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
         double limit;
         limit = lp + getRandomAmmount(lp, buy_limit);
+        
+        System.out.printf("Creating Buy Order from lp: %f, %f\n",lp,limit);
 
         double volume = money / limit;
 
@@ -392,7 +394,8 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         }
 
         se.createOrder(account_id, type, volume, limit);
-
+        System.out.printf("Creating Sell Order from lp: %f, %f\n",lp,limit);
+        
         return true;
 
     }
