@@ -68,7 +68,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }
 
     AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
-        System.out.printf("!!!! creating new\n");
+   
         String base = cfg.getString("base");
         AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
         if (ac == null) {
@@ -114,7 +114,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
 
-                System.out.printf("shoudl create new\n");
                 trader = this.createTraderNew(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
 
                 Globals.se.traders.add(trader);
@@ -166,6 +165,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         chart = new chart.Chart();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
+        statistics1 = new gui.Statistics();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -319,6 +319,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jSplitPane3.setLeftComponent(quoteVertical1);
 
         jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane5.setTopComponent(statistics1);
+
         jSplitPane3.setLeftComponent(jSplitPane5);
 
         getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
@@ -801,6 +803,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem simMenuPause;
     private javax.swing.JMenuItem simMenuStart;
     private javax.swing.JMenuItem simMenuStop;
+    private gui.Statistics statistics1;
     private javax.swing.JButton stopButton;
     private javax.swing.JMenuItem viewClock;
     private javax.swing.JMenu viewMenu;

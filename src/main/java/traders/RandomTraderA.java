@@ -73,7 +73,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         a.setListener(this);
 
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-        setStatus("Inital delay: %d\n",delay);
+        setStatus("Inital delay: %d\n", delay);
         timerTask = se.timer.startTimerTask(this, delay);
     }
 
@@ -82,6 +82,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 //        System.out.printf("Enter TimerTask for %d / %d\n", System.identityHashCode(this), Thread.currentThread().getId());
         sesim.Exchange.Account a = se.getAccount(account_id);
 //        System.out.printf("Have Account %d\n", Thread.currentThread().getId());
+        Globals.se.ua(a);
         long rc = this.doTrade();
         setStatus("Sleeping for %d ms", rc);
         return rc;
@@ -116,7 +117,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     }
 
     void setStatus(String format, Object... arguments) {
-  //     String s = String.format(format, arguments);
+        //     String s = String.format(format, arguments);
 //       System.out.printf("%s: %s\n", this.getName(), s);
     }
 
@@ -206,8 +207,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
 //            System.out.printf("We have now to wait for %d\n", w);
             //timerTask = se.timer.startTimerTask(this, w);
-          //  se.timer.XXXrescheduleTimerTask(timerTask, w);
-
+            //  se.timer.XXXrescheduleTimerTask(timerTask, w);
         }
 //        System.out.printf("Updatetd Account\n", "");
 
@@ -237,6 +237,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
                     mode = Action.BUY;
                     return getRandom(buy_wait);
                 }
+                //    System.out.printf("Buy failed\n");
                 return null;
             }
 
@@ -247,6 +248,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
                     return getRandom(sell_wait);
 
                 }
+                //     System.out.printf("Sell failed\n");
                 return null;
 
             }
@@ -279,44 +281,43 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     long doTrade() {
 
         long co = cancelOrders();
-        setStatus("Orders cancled: %d",co);
-        if (co>0)
+        setStatus("Orders cancled: %d", co);
+        if (co > 0) {
             mode = Action.RANDOM;
+        }
 
         Action a = getAction();
 
 //        System.out.printf("Action is %s\n", a.toString());
         if (mode == Action.RANDOM) {
-            
-            setStatus("Mode is %s, next action is %s",mode.toString(),a.toString());
-            
+
+            setStatus("Mode is %s, next action is %s", mode.toString(), a.toString());
+
 //            System.out.printf("Action: %s\n", a.toString());
             Integer rc = doTrade1(a);
             if (rc != null) {
-                setStatus("Action %s success full, ret %d",a.toString(),rc);
+                setStatus("Action %s successfull, ret %d", a.toString(), rc);
                 return rc;
             }
 
-            
             rc = doTrade1(Action.BUY);
             if (rc != null) {
-                setStatus("BuyAction %s successfull, ret %d",a.toString(),rc);
-
+                setStatus("BuyAction %s successfull, ret %d", a.toString(), rc);
                 return rc;
             }
+
             rc = doTrade1(Action.SELL);
             if (rc != null) {
-                setStatus("SellAction %s successfull, ret %d",a.toString(),rc);
+                setStatus("SellAction %s successfull, ret %d", a.toString(), rc);
                 return rc;
             }
-            
+
             setStatus("No trade possible, returning 5000");
-//            System.out.printf("All ha s failed\n");
+            //System.out.printf("All ha s failed\n");
             return 5000;
         }
 
-       
-        setStatus("Current mode is %s",mode.toString());
+        setStatus("Current mode is %s", mode.toString());
         return waitAfterOrder();
     }
 
@@ -379,23 +380,28 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
         double limit;
         limit = lp + getRandomAmmount(lp, buy_limit);
-        
-        System.out.printf("Creating Buy Order from lp: %f, %f\n",lp,limit);
 
+        //System.out.printf("Creating Buy Order from lp: %f, %f\n",lp,limit);
         double volume = money / limit;
 
         //    System.out.printf("Volume : %f", volume);
         limit = se.roundMoney(limit);
         volume = se.roundShares(volume);
 
-        if (volume <= 0 || money <= 0) {
+        //    if (volume <= 0 || money <= 0) {
+        //        System.out.printf("Buy failed %f, %f / %f (%f)\n", volume,money,limit,ad.getMoney());
 //            System.out.printf("Buy Order wont work\n");
+        //        return false;
+        //    }
+        long rc = se.createOrder(account_id, type, volume, limit);
+
+        if (rc == -1) {
+
+//            System.out.printf("Buy failed %f, %f / %f (%f)\n", volume, money, limit, ad.getMoney());
             return false;
         }
+        //System.out.printf("Creating Sell Order from lp: %f, %f\n",lp,limit);
 
-        se.createOrder(account_id, type, volume, limit);
-        System.out.printf("Creating Sell Order from lp: %f, %f\n",lp,limit);
-        
         return true;
 
     }
@@ -421,13 +427,18 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         limit = lp + getRandomAmmount(lp, sell_limit);
         se.roundMoney(limit);
 
-        if (volume <= 0 || limit <= 0) {
+        //    if (volume <= 0 || limit <= 0) {
+        //                    System.out.printf("Sell failed %f, %f (%f)\n", volume,limit,ad.getMoney());
 //            System.out.printf("Sell wont work\n");
+        //        return false;
+        //    }
+//        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
+        long rc = se.createOrder(account_id, type, volume, limit);
+        if (rc == -1) {
+            //System.out.printf("Sell failed %f, %f (%f)\n", volume, limit, ad.getMoney());
+
             return false;
         }
-//        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
-        se.createOrder(account_id, type, volume, limit);
-
         return true;
 
     }

@@ -378,8 +378,11 @@ public class Exchange {
     public TreeSet<Quote> quoteHistory; // = new TreeSet<>();
 
     final void initExchange() {
+        buy_orders = 0;
+        sell_orders = 0;
         timer = new Scheduler();         //  timer = new Scheduler();
-        random = new Random(12);
+        //       random = new Random(12);
+        random = new Random();
 
         quoteHistory = new TreeSet();
         accounts = new ConcurrentHashMap<>();
@@ -413,6 +416,16 @@ public class Exchange {
 
         public long trades;
         public long orders;
+
+        void reset() {
+            trades = 0;
+
+        }
+
+        Statistics() {
+
+        }
+
     };
 
     Statistics statistics;
@@ -516,7 +529,7 @@ public class Exchange {
     }
 
     public Double getBestPrice() {
-System.out.printf("Get BP\n");
+        System.out.printf("Get BP\n");
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -538,14 +551,14 @@ System.out.printf("Get BP\n");
         // there is bid and ask
         if (a != null && b != null) {
             Quote q = new Quote();
-System.out.printf("aaaaa bbbbb %f %f \n",a.limit,b.limit);
+            System.out.printf("aaaaa bbbbb %f %f \n", a.limit, b.limit);
             // if there is no last quote calculate from bid and ask
             //if (lq == null) {
-                double rc =(bid.first().limit + ask.first().limit) / 2.0;
-                System.out.printf("RCRC2.0: %f\n",rc);
-                return rc;
+            double rc = (bid.first().limit + ask.first().limit) / 2.0;
+            System.out.printf("RCRC2.0: %f\n", rc);
+            return rc;
 
-           // }
+            // }
 /*
             if (lq.price < b.limit) {
                 return b.limit;
@@ -556,7 +569,7 @@ System.out.printf("aaaaa bbbbb %f %f \n",a.limit,b.limit);
 
             }
             return lq.price;
-*/           
+             */
         }
 
         if (a != null) {
@@ -620,12 +633,12 @@ System.out.printf("aaaaa bbbbb %f %f \n",a.limit,b.limit);
                 Quote q = new Quote();
 
                 // if there is no last quote calculate from bid and ask
-          //      if (lq == null) {
-                    q.price = (bid.first().limit + ask.first().limit) / 2.0;
-                    return q;
-          //      }
+                     if (lq == null) {
+                q.price = (bid.first().limit + ask.first().limit) / 2.0;
+                return q;
+                      }
 
-          /*      if (lq.price < b.limit) {
+                 if (lq.price < b.limit) {
                     q.price = b.limit;
                     return q;
                 }
@@ -634,8 +647,7 @@ System.out.printf("aaaaa bbbbb %f %f \n",a.limit,b.limit);
                     return q;
                 }
                 return lq;
-          */
-            }
+                             }
 
             if (a != null) {
                 Quote q = new Quote();
@@ -1025,9 +1037,32 @@ System.out.printf("aaaaa bbbbb %f %f \n",a.limit,b.limit);
 
     }
 
+    long buy_orders = 0;
+    long sell_orders = 0;
+
     private void addOrderToBook(Order o) {
         order_books.get(o.type).add(o);
+        switch (o.type) {
+            case BUY:
+            case BUYLIMIT:
+                buy_orders++;
+                break;
+            case SELL:
+            case SELLLIMIT:
+                sell_orders++;
+                break;
 
+        }
+//        System.out.printf("B/S  %d/%d Failed B/S: %d/%d\n", buy_orders, sell_orders,buy_failed,sell_failed);
+    }
+
+    long buy_failed = 0;
+    long sell_failed = 0;
+    
+    
+    public void ua(Account a){
+            //.money=1000.0;
+           // a.shares=100;        
     }
 
     /**
@@ -1044,9 +1079,25 @@ System.out.printf("aaaaa bbbbb %f %f \n",a.limit,b.limit);
         if (a == null) {
             return -1;
         }
+        
+
 
         Order o = new Order(a, type, volume, limit);
         if (o.volume <= 0 || o.limit <= 0) {
+
+            switch (o.type) {
+                case SELL:
+                case SELLLIMIT:
+                    sell_failed++;
+                    break;
+                case BUY:
+                case BUYLIMIT:
+                    buy_failed++;
+                    break;
+            }
+            
+        
+
             return -1;
         }
 
@@ -1089,6 +1140,24 @@ System.out.printf("aaaaa bbbbb %f %f \n",a.limit,b.limit);
     public Account getAccount(double account_id) {
         return accounts.get(account_id);
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     /*public AccountData getAccountData(double account_id) {
         tradelock.lock();

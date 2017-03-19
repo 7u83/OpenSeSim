@@ -338,7 +338,7 @@ public class Scheduler extends Thread {
             Object rc = event_queue.remove(t);
 
             if (s.size() > 1) {
-                System.out.printf("Events in a row: %d\n", s.size());
+                //System.out.printf("Events in a row: %d\n", s.size());
             }
 
             Iterator<TimerTaskDef> it = s.iterator();
