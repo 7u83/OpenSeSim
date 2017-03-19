@@ -210,7 +210,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 480));
 
-        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/toolbarButtonGraphics/general/Stop24.gif"))); // NOI18N
+        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/stop.gif"))); // NOI18N
         stopButton.setText("Stop");
         stopButton.setFocusable(false);
         stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -222,7 +222,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
 
         runButton.setFont(runButton.getFont());
-        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run.gif"))); // NOI18N
+        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/run.gif"))); // NOI18N
         runButton.setText("Run sim!");
         runButton.setToolTipText("Run the simmulation");
         runButton.setFocusable(false);
@@ -234,7 +234,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pause.gif"))); // NOI18N
         jButton2.setText("Pause");
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

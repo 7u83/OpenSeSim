@@ -43,25 +43,23 @@ import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class AutoTraderLoader {
 
-    
     /**
      * Check if a given class can instaciated as AutoTrader.
+     *
      * @param cls Class to check
      * @return true if it is an AutoTrader, otherwise false
      */
-    public boolean isAutoTrader(Class<?> cls){
-        if (Modifier.isAbstract(cls.getModifiers()))
+    public boolean isAutoTrader(Class<?> cls) {
+        if (Modifier.isAbstract(cls.getModifiers())) {
             return false;
-        
+        }
+
         do {
             for (Class<?> i : cls.getInterfaces()) {
                 if (i.equals(AutoTraderInterface.class)) {
@@ -69,10 +67,9 @@ public class AutoTraderLoader {
                 }
             }
 
-        }while ((cls=cls.getSuperclass())!=null);
+        } while ((cls = cls.getSuperclass()) != null);
         return false;
     }
-
 
     Class<AutoTraderInterface> loadAutoTraderClass(String filename, String classname) {
 
@@ -93,10 +90,10 @@ public class AutoTraderLoader {
 
         try {
             Class<?> cls = cl.loadClass(clnam);
-            System.out.printf("Check Class: %s\n",cls.getCanonicalName());
-            if (isAutoTrader(cls)){
+            System.out.printf("Check Class: %s\n", cls.getCanonicalName());
+            if (isAutoTrader(cls)) {
                 return (Class<AutoTraderInterface>) cls;
-                
+
             }
         } catch (ClassNotFoundException ex) {
             // something wnet wrong, but we ignore it
@@ -105,12 +102,11 @@ public class AutoTraderLoader {
 
     }
 
+    ArrayList<Class<AutoTraderInterface>> traders_cache = null;
 
-    ArrayList<Class<AutoTraderInterface>> traders_cache=null;
-    
     public ArrayList<Class<AutoTraderInterface>> getTraders() {
-        
-        if (traders_cache!=null){
+
+        if (traders_cache != null) {
             return traders_cache;
         }
 
@@ -141,8 +137,7 @@ public class AutoTraderLoader {
                             while ((entry = is.getNextJarEntry()) != null) {
                                 if (entry.getName().endsWith(".class")) {
 
-                              //      System.out.printf("Entry: %s\n", entry.getDisplayName());
-
+                                    //      System.out.printf("Entry: %s\n", entry.getDisplayName());
                                 }
                             }
                         } catch (IOException ex) {
@@ -169,7 +164,7 @@ public class AutoTraderLoader {
             }
 
         }
-        traders_cache=traders;
+        traders_cache = traders;
         return traders;
 
     }
@@ -182,9 +177,9 @@ public class AutoTraderLoader {
 
         for (int i = 0; i < trclasses.size(); i++) {
             try {
-                
+
                 AutoTraderInterface ac = trclasses.get(i).newInstance();
-                if (ac.getDevelStatus() && devel==false){
+                if (ac.getDevelStatus() && devel == false) {
                     continue;
                 }
                 ret.add(ac.getClass().getCanonicalName());
@@ -197,7 +192,7 @@ public class AutoTraderLoader {
 
         return ret;
     }
-    
+
     public ArrayList<String> getDefaultStrategyNames() {
         return this.getDefaultStrategyNames(true);
     }
@@ -208,13 +203,13 @@ public class AutoTraderLoader {
             try {
                 AutoTraderInterface ac = traders.get(i).newInstance();
 
-                System.out.printf("Looking for in %s == %s\n", ac.getClass().getCanonicalName(),name);
-                
-                if (ac.getClass().getCanonicalName().equals(name)){
+                System.out.printf("Looking for in %s == %s\n", ac.getClass().getCanonicalName(), name);
+
+                if (ac.getClass().getCanonicalName().equals(name)) {
                     return ac;
-                
-               // if (ac.getDisplayName().equals(name)) {
-               //     return ac;}
+
+                    // if (ac.getDisplayName().equals(name)) {
+                    //     return ac;}
                 }
             } catch (Exception ex) {
             }
