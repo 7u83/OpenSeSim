@@ -93,7 +93,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             JSONObject rowobj = traders.getJSONObject(row);
             for (int col = 0; col < list.getColumnCount(); col++) {
                 String h = this.getColumnHeader(col);
-               // System.out.printf("Doing stuff for %s\n", h);
+                // System.out.printf("Doing stuff for %s\n", h);
 
                 String val = null;
                 try {
@@ -131,6 +131,24 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
     }
 
+    DefaultTableModel model;
+
+    private double getFairValue() {
+        Double money = 0.0;
+        Double shares = 0.0;
+
+        for (int r = 0; r < model.getRowCount(); r++) {
+            Boolean e = (Boolean) list.getValueAt(r, list.getColumn("Enabled").getModelIndex());
+            if (!e) {
+                continue;
+            }
+            money += (Double) list.getValueAt(r, list.getColumn("Money").getModelIndex());
+            shares += (Double) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
+            System.out.printf("Row: %d %f %f\n", r, money, shares);
+        }
+        return money / shares;
+    }
+
     /**
      * Creates new form NewJPanel
      */
@@ -147,7 +165,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
         Globals.getStrategiesIntoComboBox(comboBox);
 
-        DefaultTableModel model = (DefaultTableModel) list.getModel();
+        model = (DefaultTableModel) list.getModel();
         list.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
         // list.getColumnModel().getColumn(2).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer());
         //  model.setRowCount(3);
@@ -155,22 +173,10 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         list.setRowHeight(30);
 
         list.getModel().addTableModelListener((TableModelEvent e) -> {
-            System.out.printf("Table has changed\n", "");
-//            if (summary==null)
-            //      return;
+            this.summary.setText(String.format("Fair Value: %.5f", this.getFairValue()));
 
-            Double money = 0.0;
-            Double shares = 0.0;
-
-            for (int r = 0; r < model.getRowCount(); r++) {
-//                money += (Double) list.getValueAt(r, list.getColumn("Money").getModelIndex());
-//                shares += (Double) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
-                System.out.printf("Row: %d %f %f\n", r, money, shares);
-            }
-
-            this.summary.setText(String.format("Fair Value: %.5f", money / shares));
         });
-
+        this.summary.setText(String.format("Fair Value: %.5f", this.getFairValue()));
     }
 
     void add() {
@@ -178,8 +184,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         model.setRowCount(model.getRowCount() + 1);
     }
 
-    JLabel summary = null;
-
+    // JLabel summary = null;
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -191,6 +196,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         list = new javax.swing.JTable();
+        summary = new javax.swing.JLabel();
 
         list.setAutoCreateRowSorter(true);
         list.setModel(new javax.swing.table.DefaultTableModel(
@@ -212,21 +218,29 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(list);
 
+        summary.setText("jLabel1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(summary, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(summary)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -234,5 +248,6 @@ public class EditAutoTraderList extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable list;
+    private javax.swing.JLabel summary;
     // End of variables declaration//GEN-END:variables
 }

@@ -39,7 +39,7 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
         initComponents();
         this.setTitle("Edit Auto Traders");
         this.setLocationRelativeTo(this.getParent());
-        this.editAutoTraderList1.summary=this.jLabelSummary;
+    //    this.editAutoTraderList1.summary=this.jLabelSummary;
         //this.setLocationRelativeTo(MainWin.instance);
     }
 
@@ -52,11 +52,10 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        editAutoTraderList1 = new gui.EditAutoTraderList();
         jButton1 = new javax.swing.JButton();
         jOkButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jLabelSummary = new javax.swing.JLabel();
+        editAutoTraderList1 = new gui.EditAutoTraderList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -90,26 +89,27 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabelSummary, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jOkButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(editAutoTraderList1, javax.swing.GroupLayout.DEFAULT_SIZE, 529, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jOkButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)))
                 .addContainerGap())
-            .addComponent(editAutoTraderList1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(editAutoTraderList1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(editAutoTraderList1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jOkButton)
-                    .addComponent(jButton2)
-                    .addComponent(jLabelSummary))
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -176,7 +176,6 @@ public class EditAutoTraderListDialog extends javax.swing.JDialog {
     private gui.EditAutoTraderList editAutoTraderList1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabelSummary;
     private javax.swing.JButton jOkButton;
     // End of variables declaration//GEN-END:variables
 }
