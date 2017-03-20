@@ -60,9 +60,13 @@ public class AutoTraderLoader {
             return false;
         }
 
+        System.out.printf("Trav. modifiers\n");
         do {
             for (Class<?> i : cls.getInterfaces()) {
+
+                System.out.printf("Interface: %s\n", i.getCanonicalName());
                 if (i.equals(AutoTraderInterface.class)) {
+                    System.out.printf("Yea! An autotrader\n");
                     return true;
                 }
             }
@@ -72,6 +76,14 @@ public class AutoTraderLoader {
     }
 
     Class<AutoTraderInterface> loadAutoTraderClass(String filename, String classname) {
+
+        System.out.printf("Comming in width %s %s\n", filename, classname);
+        if (classname == null) {
+            System.out.printf("Calssname is null\n");
+
+            return null;
+
+        }
 
         String clnam = classname.substring(1, classname.length() - 6).replace('/', '.');
         File f = new File(filename);
@@ -97,6 +109,7 @@ public class AutoTraderLoader {
             }
         } catch (ClassNotFoundException ex) {
             // something wnet wrong, but we ignore it
+            System.out.printf("Class not found\n");
         }
         return null;
 
@@ -115,44 +128,55 @@ public class AutoTraderLoader {
         ArrayList<Class<AutoTraderInterface>> traders;
         traders = new ArrayList<>();
 
+        String cp = System.getProperty("java.class.path");
+        System.out.printf("Calss Pass: %s\n", cp);
+
         for (String classpathEntry : System.getProperty("java.class.path").split(System.getProperty("path.separator"))) {
 
-            Consumer<? super Path> pf = new Consumer() {
-                @Override
-                public void accept(Object t) {
-                    String fn = ((Path) t).toString();
-                    if (fn.toLowerCase().endsWith(".class")) {
-                        Class<AutoTraderInterface> cls = loadAutoTraderClass(fn, fn.substring(classpathEntry.length()));
-                        if (cls == null) {
-                            return;
-                        }
-                        traders.add(cls);
-                    }
-                    if (fn.toLowerCase().endsWith(".jar")) {
-                        JarInputStream is = null;
-                        try {
-                            File jar = new File(fn);
-                            is = new JarInputStream(new FileInputStream(jar));
-                            JarEntry entry;
-                            while ((entry = is.getNextJarEntry()) != null) {
-                                if (entry.getName().endsWith(".class")) {
+            Consumer<? super Path> pf = (Object t) -> {
 
-                                    //      System.out.printf("Entry: %s\n", entry.getDisplayName());
+                String fn = ((Path) t).toString();
+                System.out.printf("Checking out file %s\n", fn);
+
+                if (fn.toLowerCase().endsWith(".class")) {
+                    String cl = fn.substring(classpathEntry.length());
+                    System.out.printf("The CL: %s\n", cl);
+
+                    Class<AutoTraderInterface> cls = loadAutoTraderClass(fn, cl);
+                    if (cls == null) {
+                        return;
+                    }
+                    traders.add(cls);
+                }
+                if (fn.toLowerCase().endsWith(".jar")) {
+                    System.out.printf("Its a jar!\n");
+                    JarInputStream is = null;
+                    try {
+                        File jar = new File(fn);
+                        is = new JarInputStream(new FileInputStream(jar));
+                        JarEntry entry;
+                        while ((entry = is.getNextJarEntry()) != null) {
+                            if (entry.getName().endsWith(".class")) {
+
+                                System.out.printf("Entry: %s\n", entry.getName());
+                                String fn0 = entry.getName();
+                                Class<AutoTraderInterface> cls = loadAutoTraderClass(fn, "/" + entry.getName());
+                                if (cls != null) {
+                                    traders.add(cls);
                                 }
+
                             }
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        try {
+                            is.close();
                         } catch (IOException ex) {
                             Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
-                        } finally {
-                            try {
-                                is.close();
-                            } catch (IOException ex) {
-                                Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
-                            }
                         }
                     }
-
                 }
-
             };
 
             try {
