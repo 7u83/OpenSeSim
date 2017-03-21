@@ -40,7 +40,7 @@ public class TraderListDialog extends javax.swing.JDialog {
     public TraderListDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.setLocationRelativeTo(MainWin.instance);
+     //   this.setLocationRelativeTo(MainWin.instance);
     }
 
     /**

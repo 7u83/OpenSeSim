@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -46,49 +47,48 @@ import sesim.AutoTraderLoader;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Globals {
-    
-    public interface CfgListener{
+
+    public interface CfgListener {
+
         void cfgChanged();
     }
-    
-    static ArrayList <CfgListener> cfg_listeners = new ArrayList<>();
-    public static void notifyCfgListeners(){
-        for (CfgListener l : cfg_listeners){
+
+    static ArrayList<CfgListener> cfg_listeners = new ArrayList<>();
+
+    public static void notifyCfgListeners() {
+        for (CfgListener l : cfg_listeners) {
             l.cfgChanged();
         }
     }
-    
-    public static void addCfgListener(CfgListener l){
+
+    public static void addCfgListener(CfgListener l) {
         cfg_listeners.add(l);
     }
-    
+
     public static JFrame frame;
 
     static final String STRATEGYPREFS = "Strategies";
     static final String TRADERPREFS = "Traders";
-    
+
     static final String DEVELSTATUS = "devel_status";
     public static final String GODMODE = "godmode";
 
     static public sesim.Exchange se;
 
     static public Preferences prefs;
-    
-    
-    public static class CfgStrings{
-        public static final String GODMODE = "godmode";        
+
+    public static class CfgStrings {
+
+        public static final String GODMODE = "godmode";
     }
-    
-    
-    public static String DEFAULT_EXCHANGE_CFG = 
-              "{"
+
+    public static String DEFAULT_EXCHANGE_CFG
+            = "{"
             + "  money_decimals: 2,"
             + "  shares_decimals: 0"
             + "}";
-    
-    //CfgStrings 
-    
 
+    //CfgStrings 
     static void setLookAndFeel(String selected) {
 
         try {
@@ -113,9 +113,26 @@ public class Globals {
         }
     }
 
-    static AutoTraderLoader tloader = new AutoTraderLoader();
+    static AutoTraderLoader tloader;
 
-    static final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
+    static void initGlobals() {
+        String[] a = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
+        ArrayList pathlist = new ArrayList<>(Arrays.asList(a));
+        System.out.printf("Init tloader\n");
+
+        pathlist = new ArrayList<>();
+        String dp = new java.io.File(NewMDIApplication.class.getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .getPath()).toString();
+
+        pathlist.add(dp);
+        LOGGER.info(String.format("Path %s",dp));
+        tloader = new AutoTraderLoader(pathlist);
+
+    }
+
+    static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
 
     static public final JSONArray getTraders() {
         String traders_json = Globals.prefs.get(TRADERPREFS, "[]");

@@ -37,11 +37,11 @@ import static java.lang.Thread.sleep;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OrderBookPanel extends javax.swing.JPanel {
+public class OrderBookPanel_old extends javax.swing.JPanel {
 
     sesim.Exchange se;
 
-    public OrderBookPanel() {
+    public OrderBookPanel_old() {
         this.se = Globals.se;
 
         initComponents();

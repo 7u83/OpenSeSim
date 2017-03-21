@@ -68,7 +68,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }
 
     AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
-   
+
         String base = cfg.getString("base");
         AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
         if (ac == null) {
@@ -127,10 +127,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         Globals.se.fairValue = moneyTotal / sharesTotal;
 
-      //  Globals.se.fairValue = 1.0;
-      System.out.printf("Failr Value is %f\n", Globals.se.fairValue);
-      
-      
+        //  Globals.se.fairValue = 1.0;
+        System.out.printf("Failr Value is %f\n", Globals.se.fairValue);
+
         for (int i = 0; i < Globals.se.traders.size(); i++) {
             Globals.se.traders.get(i).start();
         }
@@ -739,9 +738,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
 
-        sesim.AutoTraderLoader tl = new sesim.AutoTraderLoader();
-        tl.getTraders();
-
+        Globals.initGlobals();
         //System.exit(0);
         Globals.se = new Exchange();
 
@@ -753,6 +750,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
+                String x = new java.io.File(NewMDIApplication.class.getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .getPath()).toString(); //.getName();
+
                 new NewMDIApplication().setVisible(true);
             }
         });

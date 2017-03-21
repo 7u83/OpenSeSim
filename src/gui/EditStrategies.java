@@ -25,6 +25,7 @@
  */
 package gui;
 
+import static gui.Globals.LOGGER;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,9 +73,21 @@ public final class EditStrategies extends javax.swing.JDialog {
     public EditStrategies(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+     
+              String dp = new java.io.File(NewMDIApplication.class.getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .getPath()).toString();
+
+        LOGGER.info(String.format("Path %s",dp));
+        
+        
         this.setLocationRelativeTo(this.getParent());
 
         initComboBox();
+        
+        
 
     }
 
