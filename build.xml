@@ -109,7 +109,7 @@
     -->
     
     
- <target name="package-for-store" depends="jar">
+ <target name="single-jar" depends="jar">
     <property name="store.jar.name" value="SeSim"/>
     <property name="store.dir" value="store"/>
     <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>

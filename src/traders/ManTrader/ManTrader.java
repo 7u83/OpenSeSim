@@ -34,6 +34,7 @@ import sesim.AutoTraderBase;
 import sesim.AutoTraderConfigBase;
 import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
+import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Exchange.AccountListener;
 import sesim.Exchange.OrderStatus;
@@ -42,7 +43,7 @@ import sesim.Exchange.OrderStatus;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ManTrader extends AutoTraderBase implements AccountListener {
+public class ManTrader extends AutoTraderBase implements AccountListener, AutoTraderInterface{
 
     public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
         //  super(se, id, name, money, shares, null);

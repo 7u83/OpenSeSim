@@ -284,7 +284,7 @@ public final class EditStrategies extends javax.swing.JDialog {
 
         }
 
-        System.out.printf("Base %s\n", base);
+        Globals.LOGGER.info(String.format("Base %s\n", base));
 
         ac = Globals.tloader.getStrategyBase(base);
         if (ac == null) {
