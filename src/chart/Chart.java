@@ -148,7 +148,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     class XLegendDef {
 
         //  double unit_width = 1.5;
-        int big_tick = 8;
+        int big_tick = 10;
         long start;
 
         XLegendDef() {
@@ -191,6 +191,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         int n;
         double x;
 
+        
+        System.out.printf("ClipBounds w: %d\n",clip_bounds.width);
+        
+        
+        
         for (n = 0, x = 0; x < dim.width; x += em_size * x_unit_width) {
 
             if (n % xld.big_tick == 0) {
@@ -208,14 +213,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
                 g.drawString(text, (int) x - swidth / 2, y + em_height * 2);
             }
 
-            OHLCDataItem d;
-            try {
-                d = data.data.get(n);
-            } catch (Exception e) {
-                d = null;
-            }
-
-            n++;
+            n+=1;
 
         }
     }
@@ -571,8 +569,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         compMenu.setText("Compression");
         ctxMenu.add(compMenu);
 
+        jCheckBoxMenuItem1.setMnemonic('l');
         jCheckBoxMenuItem1.setSelected(true);
-        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+        jCheckBoxMenuItem1.setText("Log Scale");
+        jCheckBoxMenuItem1.setToolTipText("");
         ctxMenu.add(jCheckBoxMenuItem1);
 
         setBackground(java.awt.Color.white);
