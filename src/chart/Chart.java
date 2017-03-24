@@ -194,23 +194,37 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         
         System.out.printf("ClipBounds w: %d\n",clip_bounds.width);
         
+        long big_tick = 1;
+
+        double btl,xxx;
+        do {
+            big_tick++;
+            btl=em_size*big_tick*x_unit_width;
+            xxx = 7*em_size;
+            System.out.printf("NT: %f %f\n",  btl,xxx);
+        }while (btl<xxx);
+        
+//        long nt = (long) (clip_bounds.width/btl);
+        
+        
         
         
         for (n = 0, x = 0; x < dim.width; x += em_size * x_unit_width) {
 
-            if (n % xld.big_tick == 0) {
+            if (n % big_tick == 0) {
                 g.drawLine((int) x, y, (int) x, y + em_size);
-            } else {
-                g.drawLine((int) x, y, (int) x, y + em_size / 2);
-            }
-
-            if (n % xld.big_tick == 0) {
                 String text;
                 text = xld.getAt(n);
 
                 int swidth = g.getFontMetrics().stringWidth(text);
 
-                g.drawString(text, (int) x - swidth / 2, y + em_height * 2);
+                g.drawString(text, (int) x - swidth / 2, y + em_height * 2);                
+            } else {
+                g.drawLine((int) x, y, (int) x, y + em_size / 2);
+            }
+
+            if (n % big_tick == 0) {
+
             }
 
             n+=1;
