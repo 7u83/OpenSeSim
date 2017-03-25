@@ -190,9 +190,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         int n;
         double x;
-
-        
-        System.out.printf("ClipBounds w: %d\n",clip_bounds.width);
         
         long big_tick = 1;
 
@@ -201,17 +198,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             big_tick++;
             btl=em_size*big_tick*x_unit_width;
             xxx = 7*em_size;
-            System.out.printf("NT: %f %f\n",  btl,xxx);
+
         }while (btl<xxx);
-        
-//        long nt = (long) (clip_bounds.width/btl);
-        
         
         
         
         for (n = 0, x = 0; x < dim.width; x += em_size * x_unit_width) {
 
-            if (n % big_tick == 0) {
+            if (n % big_tick == 1) {
                 g.drawLine((int) x, y, (int) x, y + em_size);
                 String text;
                 text = xld.getAt(n);
@@ -251,29 +245,70 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }
 
     boolean logs = false;
+    
+    double toLog(double val){
+        if (!logs)
+            return val;
+        return Math.log(val);
+    }
 
     float getY(float y) {
-
-        if (logs) {
-
-            float m = c_mm.max / c_mm.min;
+        
+        float ys = c_rect.height / c_mm.getDiff();
+        //        ys = c_rect.height / c_mm.getDiff();
+                
+        if (c_mm.isLog()) {
+            
+           // c_mm.setLog(true);
+            
+        //     ys = c_rect.height / c_mm.getDiff();
+            
+            return (c_rect.height - (((float)Math.log(y) - c_mm.getMin()) * ys)) + c_rect.y;
+            
+          /*  float m = c_mm.getMax() / c_mm.getMin();
 
             float fac = (float) c_rect.height / (float) Math.log(m);
 
-            float fmin = c_rect.height - ((float) Math.log((y / c_mm.min)) * fac);
+            float fmin = c_rect.height - ((float) Math.log((y / c_mm.getMin())) * fac);
 
-            //System.out.printf("Fac: %f fmin: %f\n", fac, fmin);
+
             return fmin;
+            */
+            
 
-            //return c_rect.height - ((float) Math.log((y - c_mm.min) * c_yscaling) * fac);
+            //return c_rect.height - ((float) Math.log((y - c_mm.getMin()) * c_yscaling) * fac);
         }
 
-        return (c_rect.height - ((y - c_mm.min) * c_yscaling)) + c_rect.y;
+        return (c_rect.height - ((y - c_mm.getMin()) * c_yscaling)) + c_rect.y;
 
-//        return c_rect.height - ((y - c_mm.min) * c_yscaling);
+//        return c_rect.height - ((y - c_mm.getMin()) * c_yscaling);
     }
+    
+    double getValAtY(float y){
+        float val=0;
+        
+      //  y = (c_rect.height - ((val - c_mm.getMin()) * c_yscaling)) + c_rect.y;
+        // y-c_rect.y = c_rect.height - ((val - c_mm.getMin()) * c_yscaling)
+        // y-c_rect.y-c_rect.height = - ((val - c_mm.getMin()) * c_yscaling)
+        // -(y-c_rect.y-c_rect.heigh) = (val - c_mm.getMin()) * c_yscaling
+   
+        // (-(y-c_rect.y-c_rect.heigh))/c_yscaling = (val - c_mm.getMin())
+        
+        if (logs){
+            return (-(Math.exp(y)-c_rect.y-c_rect.height))/c_yscaling+Math.exp(c_mm.getMin());
+        }
+        
+        
+        return (-(y-c_rect.y-c_rect.height))/c_yscaling+c_mm.getMin();
+        
+       // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
+        
+        
+        
+    }
+    
 
-    private void drawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
+    private void rawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
 
         if (prev == null) {
             prev = item;
@@ -304,7 +339,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             float w = ctx.iwidth;
             float h = (int) (ctx.getYc(i.open) - ctx.getYc(i.close));
 
-            //   System.out.printf("CLO: %f %f \n", w, h);
             g.setColor(Color.GREEN);
             g.fillRect((int) (x), (int) ctx.getYc(i.close), (int) w, (int) h);
             g.setColor(Color.BLACK);
@@ -362,33 +396,50 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         Graphics2D g = ctx.g;
 
-        //   g.setClip(null);
-//        System.out.printf("Drawing legend\n");
-        //Dimension dim0 = this.getSize();
         Rectangle dim;
         dim = this.clip_bounds;
 
         Dimension rv = this.getSize();
-        //System.out.printf("W: %d,%d\n", rv.width, rv.height);
 
         int yw = (int) (this.y_legend_width * this.em_size);
 
-        //   g.setColor(Color.BLUE);
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
-        // g.setColor(Color.YELLOW);
-        //System.out.printf("Dim: %d %d %d %d\n", dim.x, dim.y, dim.width, dim.height);
+        
+       
+        float y1 = getY(c_mm.getMin(false));
+        float y2 = getY(c_mm.getMax(false));
+        float ydiff = y1-y2;
+        System.out.printf("%s y1: %f, y2: %f, diff %f\n",Boolean.toString(c_mm.isLog()),y1,y2,ydiff);
+        
+       for (int yp=(int) y2; yp<y1; yp+=em_size*2) {
+          g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_size , yp);     
+          double v1 = getValAtY(y1);
+           g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_size * 1.5f, yp + c_font_height / 3);          
+       }
+        
+ 
+       // c_yscaling = c_rect.height / c_mm.getDiff();
+       
+       
+//System.out.printf("Step: %f\n",step);
 
-        c_yscaling = c_rect.height / c_mm.getDiff();
 
-//        System.out.printf("yscale %f\n", c_yscaling);
-        for (float y = c_mm.min; y < c_mm.max; y += c_mm.getDiff() / 10.0) {
 
-            int my = (int) getY(y); //c_rect.height - (int) ((y - c_mm.min) * c_yscaling);
+double v1,v2;
+v1 = getValAtY(y1);
+v2 = getValAtY(y2);
+System.out.printf("v1 %f, v2 %f\n",v1,v2);
+
+
+      /*  for (float y = c_mm.getMin(); y < c_mm.getMax(); y += step) {
+
+            int my = (int) getY(y); //c_rect.height - (int) ((y - c_mm.getMin()) * c_yscaling);
 
             g.drawLine(dim.width + dim.x - yw, my, dim.width + dim.x - yw + em_size, my);
 
             g.drawString(String.format("%.2f", y), dim.width + dim.x - yw + em_size * 1.5f, my + c_font_height / 3);
         }
+*/
 
     }
 
@@ -444,8 +495,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             return;
         }
 
-        c_mm.min /= 1; //-= c_mm.min/ 2.0f;
-        c_mm.max *= 1; //+= c_mm.max / 10.0f;
+//        c_mm.min/= 1; //-= c_mm.getMin()/ 2.0f;
+//       c_mm.max *= 1; //+= c_mm.getMax() / 10.0f;
 
         em_height = g.getFontMetrics().getHeight();
         em_width = g.getFontMetrics().stringWidth("M");
@@ -467,8 +518,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
         JViewport vp = (JViewport) this.getParent();
         Point pp = vp.getViewPosition();
-        //  System.out.printf("View Pos: %d %d\n", pp.x,pp.y);
-        //  System.out.printf("Calc Pos: %d pw:%d\n", p0,pwidth);        
         Point cp = vp.getViewPosition();
 
         if (autoScroll && this.lastvpos != cp.x) {
@@ -504,12 +553,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         this.ct = ChartType.CANDLESTICK;
         logs=true;
+        
+        c_mm.setLog(true);
         drawChart(ctx);
 
         c_mm = data.getVolMinMax(first_bar, last_bar);
 
-        //System.out.printf("Volminmax: %f %f\n", c_mm.min, c_mm.max);
-        c_mm.min = 0f;
+//        c_mm.min = 0f;
+        c_mm.setMin(0);
 
         int h1 = h + em_width;
         h = (int) (cheight * 0.2);
@@ -527,6 +578,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
 
         logs=false;
+        c_mm.setLog(false);
         this.ct = ChartType.VOL;
         drawChart(ctx);
 
@@ -553,17 +605,13 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //this.clip_bounds=g.getClipBounds();
         this.clip_bounds = vp.getViewRect();
 
-//        vp.setViewPosition(new Point(0,0));
-//        System.out.printf("X:%d %d\n",gdim.width,gdim.height);
         first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.em_size));
         last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.x_unit_width * this.em_size));
 
-//        int vpwidth=(int) ((last_bar-first_bar)*x_unit_width*em_size);
         num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_size))+5;
 
         c_font_height = g.getFontMetrics().getHeight();
 
-        //  System.out.printf("First %d, last %d\n", first_bar, last_bar);
         draw((Graphics2D) g);
     }
 
@@ -618,7 +666,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        System.out.printf("Mouse ohlc was pressed\n");
         if (!evt.isPopupTrigger()) {
             return;
         };
@@ -634,11 +681,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
-        //System.out.printf("Wheel  %f\n", evt.getPreciseWheelRotation());
 
         double n = evt.getPreciseWheelRotation() * (-1.0);
 
-        //System.out.printf("My n %f\n", n);
         if (n < 0) {
             if (this.x_unit_width > 0.3) {
                 this.x_unit_width += 0.1 * n;

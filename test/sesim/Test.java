@@ -150,13 +150,14 @@ public class Test {
      */
     public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
 
-        Random r;
-        r = new Random(10);
-
-        for (int i = 0; i < 100; i++) {
-            int e = r.nextInt(50);
-            System.out.printf("Zufallszahl: %d\n", e);
-        }
+        double val = Math.log(12);
+        double rval = Math.exp(val);
+        
+        
+        System.out.printf("Result: %f, %f\n", val,rval);
+        
+        
+      
     }
 
 }
