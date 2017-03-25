@@ -263,8 +263,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             
         //     ys = c_rect.height / c_mm.getDiff();
             
-            return (c_rect.height - (((float)Math.log(y) - c_mm.getMin()) * ys)) + c_rect.y;
-            
+       //     return (c_rect.height - (((float)Math.log(y) - c_mm.getMin()) * ys)) + c_rect.y;
+            return c_rect.height + c_rect.y - ((float)Math.log(y) - c_mm.getMin()) * ys;
+       
+       
           /*  float m = c_mm.getMax() / c_mm.getMin();
 
             float fac = (float) c_rect.height / (float) Math.log(m);
@@ -293,9 +295,21 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         // -(y-c_rect.y-c_rect.heigh) = (val - c_mm.getMin()) * c_yscaling
    
         // (-(y-c_rect.y-c_rect.heigh))/c_yscaling = (val - c_mm.getMin())
-        
-        if (logs){
-            return (-(Math.exp(y)-c_rect.y-c_rect.height))/c_yscaling+Math.exp(c_mm.getMin());
+
+        if (c_mm.isLog()){
+                float ys = c_rect.height / c_mm.getDiff();
+                
+            
+            //val = return c_rect.height + c_rect.y - ((float)Math.log(y) - c_mm.getMin()) * ys;            
+            // ((float)Math.log(y) - c_mm.getMin()) * ys = c_rect.height + c_rect.y
+            // ((float)Math.log(y) - c_mm.getMin()) = (c_rect.height + c_rect.y)/ys
+            // ((float)Math.log(y) = (c_rect.height + c_rect.y)/ys + c_mm.getMin()) 
+            
+            //return (-(Math.exp(y)-c_rect.y-c_rect.height))/ys+c_mm.getMin();      
+            
+            
+            return Math.exp( (c_rect.height + c_rect.y)/ys + c_mm.getMin() );
+            
         }
         
         
@@ -413,7 +427,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         
        for (int yp=(int) y2; yp<y1; yp+=em_size*2) {
           g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_size , yp);     
-          double v1 = getValAtY(y1);
+          double v1 = getValAtY(yp);
            g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_size * 1.5f, yp + c_font_height / 3);          
        }
         
@@ -552,9 +566,8 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
 
         this.ct = ChartType.CANDLESTICK;
-        logs=true;
-        
-        c_mm.setLog(true);
+        logs=false;
+        c_mm.setLog(false);
         drawChart(ctx);
 
         c_mm = data.getVolMinMax(first_bar, last_bar);

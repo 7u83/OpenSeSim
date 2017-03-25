@@ -48,6 +48,11 @@ public class MinMax {
         return !log ? max - min : max_log - min_log;
     }
 
+    public float getDiff(boolean plog) {
+        return !plog ? max - min : max_log - min_log;
+    }
+
+    
     public float getMin() {
         return !log ? min : min_log;
     }
