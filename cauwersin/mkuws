@@ -1,4 +1,0 @@
-#!/bin/sh
-cp ../store/SeSim.jar ./uSeSim.jar
-scp -oPort=8022 uSeSim.jar root@blog.cauwersin.com:/usr/local/www/wp7u83/sesim/uSeSim.jar
-

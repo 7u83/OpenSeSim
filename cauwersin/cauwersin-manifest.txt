@@ -1,3 +1,0 @@
-Permissions: all-permissions
-Codebase: https://blog.cauwersin.com/sesim/sesim
-Application-Name: SeSim
