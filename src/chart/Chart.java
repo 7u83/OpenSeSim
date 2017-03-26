@@ -301,14 +301,13 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
                 
             
             //val = return c_rect.height + c_rect.y - ((float)Math.log(y) - c_mm.getMin()) * ys;            
-            // ((float)Math.log(y) - c_mm.getMin()) * ys = c_rect.height + c_rect.y
-            // ((float)Math.log(y) - c_mm.getMin()) = (c_rect.height + c_rect.y)/ys
-            // ((float)Math.log(y) = (c_rect.height + c_rect.y)/ys + c_mm.getMin()) 
+            // val + ((float)Math.log(y) - c_mm.getMin()) * ys = c_rect.height + c_rect.y
+            // val/ys + ((float)Math.log(y) - c_mm.getMin()) = (c_rect.height + c_rect.y)/ys
+            // val/ys  + ((float)Math.log(y) = (c_rect.height + c_rect.y)/ys + c_mm.getMin()) 
             
             //return (-(Math.exp(y)-c_rect.y-c_rect.height))/ys+c_mm.getMin();      
-            
-            
-            return Math.exp( (c_rect.height + c_rect.y)/ys + c_mm.getMin() );
+           
+            return Math.exp( (c_rect.height + c_rect.y)/ys + c_mm.getMin() - y/ys);
             
         }
         
@@ -566,8 +565,8 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
 
         this.ct = ChartType.CANDLESTICK;
-        logs=false;
-        c_mm.setLog(false);
+        logs=true;
+        c_mm.setLog(true);
         drawChart(ctx);
 
         c_mm = data.getVolMinMax(first_bar, last_bar);
