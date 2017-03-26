@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp codebase="https://blog.cauwersin.com/sesim" href="sesim.jnlp" spec="1.0+">
+    <information>
+        <title>SeSim</title>
+        <vendor>Cauwersin</vendor>
+        <homepage href="https://blog.cauwersin.com"/>
+        <description>SeSim - Stock Exchange Simulator</description>
+        <description kind="short">SeSim</description>
+    </information>
+    <update check="always"/>
+    <security>
+	<all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.8+"/>
+        <jar href="SeSim.jar" main="true"/>
+    </resources>
+    <application-desc main-class="gui.NewMDIApplication">
+    </application-desc>
+</jnlp>

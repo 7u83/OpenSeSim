@@ -1,0 +1,13 @@
+#!/bin/sh
+
+CODEBASE=/home/tube/NetbeanProjects/SeSim/cauwersin
+
+ant -f ../build.xml single-jar
+cp ../store/SeSim.jar .
+jar ufm  SeSim.jar  cauwersin-manifest.txt 
+jarsigner -keystore /home/tube/SparkleShare/sfiles/keystore SeSim.jar Cauwersin
+keytool -export -keystore /home/tube/SparkleShare/sfiles/keystore  -alias Cauwersin -file cauwersinca.crt
+
+scp -oPort=8022 sesim.jnlp root@blog.cauwersin.com:/usr/local/www/wp7u83/sesim/sesim.jnlp
+scp -oPort=8022 cauwersinca.crt root@blog.cauwersin.com:/usr/local/www/wp7u83/sesim/cauwersinca.crt
+scp -oPort=8022 SeSim.jar root@blog.cauwersin.com:/usr/local/www/wp7u83/sesim/SeSim.jar
