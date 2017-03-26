@@ -30,20 +30,11 @@ import sesim.Scheduler;
  */
 public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
 
-    class ChartDef {
-
-    }
-
+ 
     protected int em_size = 1;
     protected double x_unit_width = 1.0;
 
-    protected float bar_width = 0.9f * 2.0f;
-
-    public void setBarWidth(float bw) {
-        bar_width = bw;
-    }
-
-    //protected float bar_width_em = 1;
+    
     protected float y_legend_width = 10;
 
     protected int num_bars = 4000;
@@ -164,10 +155,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
-    void drawOHLC(Graphics2D g, int x, OHLCDataItem di) {
-
-    }
-
     /**
      * Draw the one and only one X legend
      *
@@ -224,10 +211,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             n+=1;
 
         }
-    }
-
-    private void getData() {
-
     }
 
     class RenderCtx {
@@ -383,7 +366,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Rectangle r = ctx.rect;
     }
 
-    enum ChartType {
+    /**
+     * Char types
+     */
+    protected enum ChartType {
         CANDLESTICK,
         BAR,
         VOL,
