@@ -139,6 +139,9 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
         for (int r = 0; r < model.getRowCount(); r++) {
             Boolean e = (Boolean) list.getValueAt(r, list.getColumn("Enabled").getModelIndex());
+            if (e==null){
+                continue;
+            }
             if (!e) {
                 continue;
             }

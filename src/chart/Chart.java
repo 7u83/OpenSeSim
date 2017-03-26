@@ -503,6 +503,8 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
             return;
         }
 
+        num_bars = data.size();
+        
         c_mm = data.getMinMax(first_bar, last_bar);
         if (c_mm == null) {
             return;
@@ -603,6 +605,9 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         if (Globals.se==null){
             return;
         }
+        
+     
+        
         super.paintComponent(g);
 
         // Calculate the number of pixels for 1 em
@@ -620,7 +625,9 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.em_size));
         last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.x_unit_width * this.em_size));
 
-        num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_size))+5;
+//        num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_size))+5;
+        
+//        num_bars=1;
 
         c_font_height = g.getFontMetrics().getHeight();
 
@@ -663,6 +670,9 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 formMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                formMouseReleased(evt);
+            }
         });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -678,9 +688,14 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        if (!evt.isPopupTrigger()) {
+        System.out.printf("There was a mosue event\n");
+        
+        
+        
+        if (!evt.isPopupTrigger() || true) {
+            System.out.printf("But there was no pupe trigger\n");
             return;
-        };
+        }
 
         //    this.invalidate();
         this.ctxMenu.setVisible(true);
@@ -707,6 +722,27 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         this.invalidate();
         this.repaint();
     }//GEN-LAST:event_formMouseWheelMoved
+
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+
+        System.out.printf("There was a mosue event released\n");
+        
+        
+        
+        if (!evt.isPopupTrigger()) {
+            System.out.printf("But there was no pupe trigger\n");
+            return;
+        }
+
+        //    this.invalidate();
+        this.ctxMenu.setVisible(true);
+        this.ctxMenu.show(this, evt.getX(), evt.getY());
+
+        this.invalidate();
+        this.repaint();
+        
+        
+    }//GEN-LAST:event_formMouseReleased
 
     void setCompression(int timeFrame) {
         javax.swing.SwingUtilities.invokeLater(() -> {

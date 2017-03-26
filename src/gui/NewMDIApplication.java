@@ -62,9 +62,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public NewMDIApplication() {
         initComponents();
-        Globals.frame = this;
-        this.setLocationRelativeTo(this);
-        this.setTitle("SeSim - Stock Exchange Simmulator");
+//        Globals.frame = this;
+ //       this.setLocationRelativeTo(this);
+        System.out.printf("Set title\n");
+        setTitle("SeSim - Stock Exchange Simmulator");
     }
 
     AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
@@ -738,6 +739,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
 
+        System.out.printf("Main called\n");
+        
         Globals.initGlobals();
         //System.exit(0);
         Globals.se = new Exchange();
@@ -750,11 +753,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
+                System.out.printf("In run method now\n");
+                
                 String x = new java.io.File(NewMDIApplication.class.getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
                 .getPath()).toString(); //.getName();
 
+                System.out.printf("Creating Application\n");
                 new NewMDIApplication().setVisible(true);
             }
         });
