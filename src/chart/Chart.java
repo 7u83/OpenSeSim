@@ -30,11 +30,16 @@ import sesim.Scheduler;
  */
 public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
 
- 
-    protected int em_size = 1;
-    protected double x_unit_width = 1.0;
+
+    private int em_height;
+    private int em_width;
 
     
+    protected double x_unit_width = 1.0;
+
+    /**
+     * width of y legend in em
+     */
     protected float y_legend_width = 10;
 
     protected int num_bars = 4000;
@@ -164,9 +169,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
         
-        g = (Graphics2D) g.create();
+        //g = (Graphics2D) g.create();
 
-        int yw = (int) (this.y_legend_width * this.em_size);
+        int yw = (int) (this.y_legend_width * this.em_width);
 
         g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);        
 
@@ -183,17 +188,17 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         double btl,xxx;
         do {
             big_tick++;
-            btl=em_size*big_tick*x_unit_width;
-            xxx = 7*em_size;
+            btl=em_width*big_tick*x_unit_width;
+            xxx = 7*em_width;
 
         }while (btl<xxx);
         
         
         
-        for (n = 0, x = 0; x < dim.width; x += em_size * x_unit_width) {
+        for (n = 0, x = 0; x < dim.width; x += em_width * x_unit_width) {
 
             if (n % big_tick == 1) {
-                g.drawLine((int) x, y, (int) x, y + em_size);
+                g.drawLine((int) x, y, (int) x, y + em_width);
                 String text;
                 text = xld.getAt(n);
 
@@ -201,7 +206,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
                 g.drawString(text, (int) x - swidth / 2, y + em_height * 2);                
             } else {
-                g.drawLine((int) x, y, (int) x, y + em_size / 2);
+                g.drawLine((int) x, y, (int) x, y + em_width / 2);
             }
 
             if (n % big_tick == 0) {
@@ -229,11 +234,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     boolean logs = false;
     
-    double toLog(double val){
-        if (!logs)
-            return val;
-        return Math.log(val);
-    }
+ 
 
     float getY(float y) {
         
@@ -304,7 +305,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }
     
 
-    private void rawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
+   /* private void rawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
 
         if (prev == null) {
             prev = item;
@@ -315,7 +316,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         g.drawLine(prevx, (int) ctx.getYc(prev.close), x, (int) ctx.getYc(item.close));
         g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
     }
-
+*/
+    
     private void drawCandleItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
         if (prev == null) {
@@ -400,7 +402,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         Dimension rv = this.getSize();
 
-        int yw = (int) (this.y_legend_width * this.em_size);
+        int yw = (int) (this.y_legend_width * this.em_width);
 
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
         
@@ -410,10 +412,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         float ydiff = y1-y2;
         System.out.printf("%s y1: %f, y2: %f, diff %f\n",Boolean.toString(c_mm.isLog()),y1,y2,ydiff);
         
-       for (int yp=(int) y2; yp<y1; yp+=em_size*2) {
-          g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_size , yp);     
+       for (int yp=(int) y2; yp<y1; yp+=em_width*2) {
+          g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_width , yp);     
           double v1 = getValAtY(yp);
-           g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_size * 1.5f, yp + c_font_height / 3);          
+           g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_width * 1.5f, yp + c_font_height / 3);          
        }
         
  
@@ -434,9 +436,9 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
 
             int my = (int) getY(y); //c_rect.height - (int) ((y - c_mm.getMin()) * c_yscaling);
 
-            g.drawLine(dim.width + dim.x - yw, my, dim.width + dim.x - yw + em_size, my);
+            g.drawLine(dim.width + dim.x - yw, my, dim.width + dim.x - yw + em_width, my);
 
-            g.drawString(String.format("%.2f", y), dim.width + dim.x - yw + em_size * 1.5f, my + c_font_height / 3);
+            g.drawString(String.format("%.2f", y), dim.width + dim.x - yw + em_width * 1.5f, my + c_font_height / 3);
         }
 */
 
@@ -445,8 +447,6 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
     private MinMax c_mm = null;
     private Rectangle c_rect;
 
-    private int em_height;
-    private int em_width;
 
     void drawChart(RenderCtx ctx) {
 
@@ -459,7 +459,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         this.drawYLegend(ctx);
 
         ///  ctx.g.setColor(Color.ORANGE);
-        int yw = (int) (this.y_legend_width * this.em_size);
+        int yw = (int) (this.y_legend_width * this.em_width);
 
         ctx.g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);
         //       ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width-yw, ctx.rect.height);
@@ -467,7 +467,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         OHLCDataItem prev = null;
         for (int i = first_bar; i < last_bar && i < data.size(); i++) {
             OHLCDataItem di = data.get(i);
-            int x = (int) (i * em_size * x_unit_width); //em_width;
+            int x = (int) (i * em_width * x_unit_width); //em_width;
             this.drawItem(ctx, x - em_width, x, prev, di); //, ctx.scaling, data.getMin());
 
             //    myi++;
@@ -512,8 +512,8 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
         this.revalidate();
 
-        int bww = (int) (data.size() * (this.x_unit_width * this.em_size));
-        int p0 = pwidth - clip_bounds.width - (clip_bounds.width - (int) (13 * em_size));
+        int bww = (int) (data.size() * (this.x_unit_width * this.em_width));
+        int p0 = pwidth - clip_bounds.width - (clip_bounds.width - (int) (13 * em_width));
         if (p0 < 0) {
             p0 = 0;
         }
@@ -550,7 +550,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
         ctx.min = c_mm.getMin();
         ctx.g = g;
-        ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
+        ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
 
         this.ct = ChartType.CANDLESTICK;
         logs=true;
@@ -575,7 +575,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
         ctx.min = c_mm.getMin();
         ctx.g = g;
-        ctx.iwidth = (float) ((x_unit_width * em_size) * 0.9f);
+        ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
 
         logs=false;
         c_mm.setLog(false);
@@ -597,7 +597,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         super.paintComponent(g);
 
         // Calculate the number of pixels for 1 em
-        em_size = g.getFontMetrics().stringWidth("M");
+        em_width = g.getFontMetrics().stringWidth("M");
 
         this.gdim = this.getParent().getSize(gdim);
         this.getParent().setPreferredSize(gdim);
@@ -608,10 +608,10 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         //this.clip_bounds=g.getClipBounds();
         this.clip_bounds = vp.getViewRect();
 
-        first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.em_size));
-        last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_size)) / (this.x_unit_width * this.em_size));
+        first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.em_width));
+        last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_width)) / (this.x_unit_width * this.em_width));
 
-//        num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_size))+5;
+//        num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_width))+5;
         
 //        num_bars=1;
 
