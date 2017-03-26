@@ -43,6 +43,11 @@ public class OHLCData {
 
     }
 
+    /**
+     * Create an OHLCData object that stores OHLCDataItems
+     * 
+     * @param frame_size Time frame stored in one OHLCDataItem
+     */
     public OHLCData(int frame_size) {
 
         this.frame_size = frame_size;
@@ -60,10 +65,20 @@ public class OHLCData {
         return data.size();
     }
 
+    /**
+     * 
+     * @return Time frame of OHLCDataItem
+     */
     public int getFrameSize() {
         return this.frame_size;
     }
 
+    /**
+     * Get the minimum and maximum value between two OHLCDataItems
+     * @param first Position of first OHLCDataItem
+     * @param last Position of last OHCLDataItem
+     * @return MinMax object containing the calculated values
+     */
     public MinMax getMinMax(int first, int last) {
 
         if (first >= data.size()) {

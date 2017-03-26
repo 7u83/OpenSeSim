@@ -30,11 +30,11 @@ import sesim.Scheduler;
  */
 public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
 
-
     private int em_height;
     private int em_width;
 
-    
+    protected double x_legend_height = 3;
+
     protected double x_unit_width = 1.0;
 
     /**
@@ -106,12 +106,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         String cmd = evt.getActionCommand();
         for (int i = 0; i < this.ctxMenuCompressionText.length; i++) {
             if (this.ctxMenuCompressionText[i].equals(cmd)) {
-                
+
                 this.setCompression(this.ctxMenuCompressionValues[i]);
             }
         }
 
-        
     }
 
     OHLCData data;
@@ -168,12 +167,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      */
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
-        
         //g = (Graphics2D) g.create();
-
         int yw = (int) (this.y_legend_width * this.em_width);
 
-        g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);        
+        g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);
 
         Dimension dim = getSize();
         int y = dim.height - em_height * 3;
@@ -182,19 +179,17 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         int n;
         double x;
-        
+
         long big_tick = 1;
 
-        double btl,xxx;
+        double btl, xxx;
         do {
             big_tick++;
-            btl=em_width*big_tick*x_unit_width;
-            xxx = 7*em_width;
+            btl = em_width * big_tick * x_unit_width;
+            xxx = 7 * em_width;
 
-        }while (btl<xxx);
-        
-        
-        
+        } while (btl < xxx);
+
         for (n = 0, x = 0; x < dim.width; x += em_width * x_unit_width) {
 
             if (n % big_tick == 1) {
@@ -204,7 +199,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
                 int swidth = g.getFontMetrics().stringWidth(text);
 
-                g.drawString(text, (int) x - swidth / 2, y + em_height * 2);                
+                g.drawString(text, (int) x - swidth / 2, y + em_height * 2);
             } else {
                 g.drawLine((int) x, y, (int) x, y + em_width / 2);
             }
@@ -213,7 +208,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             }
 
-            n+=1;
+            n += 1;
 
         }
     }
@@ -233,25 +228,20 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }
 
     boolean logs = false;
-    
- 
 
     float getY(float y) {
-        
+
         float ys = c_rect.height / c_mm.getDiff();
         //        ys = c_rect.height / c_mm.getDiff();
-                
+
         if (c_mm.isLog()) {
-            
-           // c_mm.setLog(true);
-            
-        //     ys = c_rect.height / c_mm.getDiff();
-            
-       //     return (c_rect.height - (((float)Math.log(y) - c_mm.getMin()) * ys)) + c_rect.y;
-            return c_rect.height + c_rect.y - ((float)Math.log(y) - c_mm.getMin()) * ys;
-       
-       
-          /*  float m = c_mm.getMax() / c_mm.getMin();
+
+            // c_mm.setLog(true);
+            //     ys = c_rect.height / c_mm.getDiff();
+            //     return (c_rect.height - (((float)Math.log(y) - c_mm.getMin()) * ys)) + c_rect.y;
+            return c_rect.height + c_rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
+
+            /*  float m = c_mm.getMax() / c_mm.getMin();
 
             float fac = (float) c_rect.height / (float) Math.log(m);
 
@@ -259,9 +249,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
 
             return fmin;
-            */
-            
-
+             */
             //return c_rect.height - ((float) Math.log((y - c_mm.getMin()) * c_yscaling) * fac);
         }
 
@@ -269,43 +257,34 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
 //        return c_rect.height - ((y - c_mm.getMin()) * c_yscaling);
     }
-    
-    double getValAtY(float y){
-        float val=0;
-        
-      //  y = (c_rect.height - ((val - c_mm.getMin()) * c_yscaling)) + c_rect.y;
+
+    double getValAtY(float y) {
+        float val = 0;
+
+        //  y = (c_rect.height - ((val - c_mm.getMin()) * c_yscaling)) + c_rect.y;
         // y-c_rect.y = c_rect.height - ((val - c_mm.getMin()) * c_yscaling)
         // y-c_rect.y-c_rect.height = - ((val - c_mm.getMin()) * c_yscaling)
         // -(y-c_rect.y-c_rect.heigh) = (val - c_mm.getMin()) * c_yscaling
-   
         // (-(y-c_rect.y-c_rect.heigh))/c_yscaling = (val - c_mm.getMin())
+        if (c_mm.isLog()) {
+            float ys = c_rect.height / c_mm.getDiff();
 
-        if (c_mm.isLog()){
-                float ys = c_rect.height / c_mm.getDiff();
-                
-            
             //val = return c_rect.height + c_rect.y - ((float)Math.log(y) - c_mm.getMin()) * ys;            
             // val + ((float)Math.log(y) - c_mm.getMin()) * ys = c_rect.height + c_rect.y
             // val/ys + ((float)Math.log(y) - c_mm.getMin()) = (c_rect.height + c_rect.y)/ys
             // val/ys  + ((float)Math.log(y) = (c_rect.height + c_rect.y)/ys + c_mm.getMin()) 
-            
             //return (-(Math.exp(y)-c_rect.y-c_rect.height))/ys+c_mm.getMin();      
-           
-            return Math.exp( (c_rect.height + c_rect.y)/ys + c_mm.getMin() - y/ys);
-            
-        }
-        
-        
-        return (-(y-c_rect.y-c_rect.height))/c_yscaling+c_mm.getMin();
-        
-       // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
-        
-        
-        
-    }
-    
+            return Math.exp((c_rect.height + c_rect.y) / ys + c_mm.getMin() - y / ys);
 
-   /* private void rawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
+        }
+
+        return (-(y - c_rect.y - c_rect.height)) / c_yscaling + c_mm.getMin();
+
+        // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
+    }
+
+
+    /* private void rawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
 
         if (prev == null) {
             prev = item;
@@ -316,8 +295,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         g.drawLine(prevx, (int) ctx.getYc(prev.close), x, (int) ctx.getYc(item.close));
         g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
     }
-*/
-    
+     */
     private void drawCandleItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
         if (prev == null) {
@@ -405,34 +383,27 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         int yw = (int) (this.y_legend_width * this.em_width);
 
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
-        
-       
+
         float y1 = getY(c_mm.getMin(false));
         float y2 = getY(c_mm.getMax(false));
-        float ydiff = y1-y2;
-        System.out.printf("%s y1: %f, y2: %f, diff %f\n",Boolean.toString(c_mm.isLog()),y1,y2,ydiff);
-        
-       for (int yp=(int) y2; yp<y1; yp+=em_width*2) {
-          g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_width , yp);     
-          double v1 = getValAtY(yp);
-           g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_width * 1.5f, yp + c_font_height / 3);          
-       }
-        
- 
-       // c_yscaling = c_rect.height / c_mm.getDiff();
-       
-       
+        float ydiff = y1 - y2;
+        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
+
+        for (int yp = (int) y2; yp < y1; yp += em_width * 2) {
+            g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_width, yp);
+            double v1 = getValAtY(yp);
+            g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_width * 1.5f, yp + c_font_height / 3);
+        }
+
+        // c_yscaling = c_rect.height / c_mm.getDiff();
 //System.out.printf("Step: %f\n",step);
+        double v1, v2;
+        v1 = getValAtY(y1);
+        v2 = getValAtY(y2);
+        System.out.printf("v1 %f, v2 %f\n", v1, v2);
 
 
-
-double v1,v2;
-v1 = getValAtY(y1);
-v2 = getValAtY(y2);
-System.out.printf("v1 %f, v2 %f\n",v1,v2);
-
-
-      /*  for (float y = c_mm.getMin(); y < c_mm.getMax(); y += step) {
+        /*  for (float y = c_mm.getMin(); y < c_mm.getMax(); y += step) {
 
             int my = (int) getY(y); //c_rect.height - (int) ((y - c_mm.getMin()) * c_yscaling);
 
@@ -440,13 +411,11 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
 
             g.drawString(String.format("%.2f", y), dim.width + dim.x - yw + em_width * 1.5f, my + c_font_height / 3);
         }
-*/
-
+         */
     }
 
     private MinMax c_mm = null;
     private Rectangle c_rect;
-
 
     void drawChart(RenderCtx ctx) {
 
@@ -490,7 +459,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         }
 
         num_bars = data.size();
-        
+
         c_mm = data.getMinMax(first_bar, last_bar);
         if (c_mm == null) {
             return;
@@ -498,7 +467,6 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
 
 //        c_mm.min/= 1; //-= c_mm.getMin()/ 2.0f;
 //       c_mm.max *= 1; //+= c_mm.getMax() / 10.0f;
-
         em_height = g.getFontMetrics().getHeight();
         em_width = g.getFontMetrics().stringWidth("M");
 
@@ -553,7 +521,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
 
         this.ct = ChartType.CANDLESTICK;
-        logs=true;
+        logs = true;
         c_mm.setLog(true);
         drawChart(ctx);
 
@@ -577,7 +545,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         ctx.g = g;
         ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
 
-        logs=false;
+        logs = false;
         c_mm.setLog(false);
         this.ct = ChartType.VOL;
         drawChart(ctx);
@@ -588,12 +556,10 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
 
     @Override
     public final void paintComponent(Graphics g) {
-        if (Globals.se==null){
+        if (Globals.se == null) {
             return;
         }
-        
-     
-        
+
         super.paintComponent(g);
 
         // Calculate the number of pixels for 1 em
@@ -612,9 +578,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
         last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_width)) / (this.x_unit_width * this.em_width));
 
 //        num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_width))+5;
-        
 //        num_bars=1;
-
         c_font_height = g.getFontMetrics().getHeight();
 
         draw((Graphics2D) g);
@@ -675,9 +639,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         System.out.printf("There was a mosue event\n");
-        
-        
-        
+
         if (!evt.isPopupTrigger() || true) {
             System.out.printf("But there was no pupe trigger\n");
             return;
@@ -712,9 +674,7 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
 
         System.out.printf("There was a mosue event released\n");
-        
-        
-        
+
         if (!evt.isPopupTrigger()) {
             System.out.printf("But there was no pupe trigger\n");
             return;
@@ -726,8 +686,8 @@ System.out.printf("v1 %f, v2 %f\n",v1,v2);
 
         this.invalidate();
         this.repaint();
-        
-        
+
+
     }//GEN-LAST:event_formMouseReleased
 
     void setCompression(int timeFrame) {
