@@ -284,23 +284,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }
 
 
-    /* private void rawItem_l(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem item) {
-
-        if (prev == null) {
-            prev = item;
-        }
-        Graphics2D g = ctx.g;
-
-        Rectangle r = ctx.rect;
-        g.drawLine(prevx, (int) ctx.getYc(prev.close), x, (int) ctx.getYc(item.close));
-        g.drawLine(r.x, r.height + r.y, r.x + r.width, r.height + r.y);
-    }
-     */
+  
     private void drawCandleItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
-        if (prev == null) {
-            prev = i;
-        }
         Graphics2D g = ctx.g;
 
         Rectangle r = ctx.rect;
