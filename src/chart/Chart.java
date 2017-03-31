@@ -142,7 +142,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     class XLegendDef {
 
-        //  double unit_width = 1.5;
         int big_tick = 10;
         long start;
 
@@ -364,7 +363,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Rectangle dim;
         dim = this.clip_bounds;
 
-        Dimension rv = this.getSize();
+       // Dimension rv = this.getSize();
 
         int yw = (int) (this.y_legend_width * this.em_width);
 
@@ -375,7 +374,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         float ydiff = y1 - y2;
         System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
 
-        for (int yp = (int) y2; yp < y1; yp += em_width * 2) {
+        for (int yp = (int) y2; yp < y1; yp += em_width * 5) {
             g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_width, yp);
             double v1 = getValAtY(yp);
             g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_width * 1.5f, yp + c_font_height / 3);
