@@ -5,6 +5,7 @@
  */
 package gui;
 
+import java.awt.Color;
 import javax.swing.JMenuItem;
 
 /**
@@ -20,6 +21,9 @@ public class MainChart extends chart.Chart {
         initComponents();
 
         initCtxMenu();
+        
+        this.xl_bgcolor=Color.ORANGE;
+        this.xl_height=3;
     }
 
     private void showCtxMenu(java.awt.event.MouseEvent evt) {
