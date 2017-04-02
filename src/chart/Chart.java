@@ -157,6 +157,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
     }
+    
+    // height of xlegend in em
+    private int xlegend_height=9;
+    
+    protected void setXLegendHeight(int h){
+        this.x_legend_height=h;
+    }
+    
 
     /**
      * Draw the one and only one X legend
@@ -719,6 +727,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("Log Scale");
         jCheckBoxMenuItem1.setToolTipText("");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
         ctxMenu.add(jCheckBoxMenuItem1);
 
         setBackground(java.awt.Color.white);
@@ -726,19 +739,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(300, 300));
         setRequestFocusEnabled(false);
-        addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
-                formMouseWheelMoved(evt);
-            }
-        });
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                formMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                formMouseReleased(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -752,60 +752,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        System.out.printf("There was a mosue event\n");
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
-        if (!evt.isPopupTrigger() || true) {
-            System.out.printf("But there was no pupe trigger\n");
-            return;
-        }
-
-        //    this.invalidate();
-        this.ctxMenu.setVisible(true);
-        this.ctxMenu.show(this, evt.getX(), evt.getY());
-
-        this.invalidate();
-        this.repaint();
-
-
-    }//GEN-LAST:event_formMousePressed
-
-    private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
-
-        double n = evt.getPreciseWheelRotation() * (-1.0);
-
-        if (n < 0) {
-            if (this.x_unit_width > 0.3) {
-                this.x_unit_width += 0.1 * n;
-            }
-        } else {
-            this.x_unit_width += 0.1 * n;
-        }
-
-        this.invalidate();
-        this.repaint();
-    }//GEN-LAST:event_formMouseWheelMoved
-
-    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
-
-        System.out.printf("There was a mosue event released\n");
-
-        if (!evt.isPopupTrigger()) {
-            System.out.printf("But there was no pupe trigger\n");
-            return;
-        }
-
-        //    this.invalidate();
-        this.ctxMenu.setVisible(true);
-        this.ctxMenu.show(this, evt.getX(), evt.getY());
-
-        this.invalidate();
-        this.repaint();
-
-
-    }//GEN-LAST:event_formMouseReleased
-
-    void setCompression(int timeFrame) {
+    protected void setCompression(int timeFrame) {
         javax.swing.SwingUtilities.invokeLater(() -> {
             data = Globals.se.getOHLCdata(timeFrame);
             invalidate();

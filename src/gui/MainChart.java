@@ -5,6 +5,8 @@
  */
 package gui;
 
+import javax.swing.JMenuItem;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -16,6 +18,51 @@ public class MainChart extends chart.Chart {
      */
     public MainChart() {
         initComponents();
+
+        initCtxMenu();
+    }
+
+    private void showCtxMenu(java.awt.event.MouseEvent evt) {
+        //    this.invalidate();
+        this.ctxMenu.setVisible(true);
+        this.ctxMenu.show(this, evt.getX(), evt.getY());
+
+        invalidate();
+        repaint();
+    }
+    private final String[] ctxMenuCompressionText = {
+        "5 s", "10 s", "15 s", "30 s",
+        "1 m", "2 m", "5 m", "10 m", "15 m", "30 m",
+        "1 h", "2 h", "4 h",
+        "1 d", "2 d"
+    };
+    private final Integer[] ctxMenuCompressionValues = {
+        5 * 1000, 10 * 1000, 15 * 1000, 30 * 1000,
+        60 * 1000, 2 * 60 * 1000, 5 * 60 * 1000, 10 * 60 * 1000, 15 * 60 * 1000, 30 * 60 * 1000,
+        1 * 3600 * 1000, 2 * 3600 * 1000, 4 * 3600 * 1000,
+        1 * 24 * 3600 * 1000, 2 * 24 * 3600 * 1000
+    };
+
+    private void initCtxMenu() {
+        for (int i = 0; i < this.ctxMenuCompressionValues.length; i++) {
+            JMenuItem item = new JMenuItem(this.ctxMenuCompressionText[i]);
+
+            item.addActionListener((java.awt.event.ActionEvent evt) -> {
+                ctxMenuCompActionPerformed(evt);
+            });
+            this.compMenu.add(item);
+        }
+    }
+
+    private void ctxMenuCompActionPerformed(java.awt.event.ActionEvent evt) {
+        String cmd = evt.getActionCommand();
+        for (int i = 0; i < this.ctxMenuCompressionText.length; i++) {
+            if (this.ctxMenuCompressionText[i].equals(cmd)) {
+
+                setCompression(this.ctxMenuCompressionValues[i]);
+            }
+        }
+
     }
 
     /**
@@ -26,6 +73,33 @@ public class MainChart extends chart.Chart {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        ctxMenu = new javax.swing.JPopupMenu();
+        compMenu = new javax.swing.JMenu();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+
+        compMenu.setText("Compression");
+        ctxMenu.add(compMenu);
+
+        jCheckBoxMenuItem1.setMnemonic('l');
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("Log Scale");
+        jCheckBoxMenuItem1.setToolTipText("");
+        ctxMenu.add(jCheckBoxMenuItem1);
+
+        addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                formMouseWheelMoved(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                formMouseReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -39,7 +113,39 @@ public class MainChart extends chart.Chart {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
+        double n = evt.getPreciseWheelRotation() * (-1.0);
+
+        if (n < 0) {
+            if (this.x_unit_width > 0.3) {
+                this.x_unit_width += 0.1 * n;
+            }
+        } else {
+            this.x_unit_width += 0.1 * n;
+        }
+
+        this.invalidate();
+        this.repaint();
+    }//GEN-LAST:event_formMouseWheelMoved
+
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+        if (!evt.isPopupTrigger()) {
+            return;
+        }
+        showCtxMenu(evt);
+    }//GEN-LAST:event_formMouseReleased
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        if (!evt.isPopupTrigger()) {
+            return;
+        }
+        showCtxMenu(evt);
+    }//GEN-LAST:event_formMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu compMenu;
+    private javax.swing.JPopupMenu ctxMenu;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     // End of variables declaration//GEN-END:variables
 }
