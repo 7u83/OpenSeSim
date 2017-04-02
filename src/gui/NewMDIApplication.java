@@ -162,7 +162,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jSplitPane4 = new javax.swing.JSplitPane();
         orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
         jChartScrollPane = new javax.swing.JScrollPane();
-        chart = new chart.Chart();
+        chart = new gui.MainChart();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
@@ -295,20 +295,19 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
+        jSplitPane4.setDividerLocation(300);
         jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane4.setBottomComponent(orderBooksHorizontal1);
-
-        chart.setPreferredSize(new java.awt.Dimension(892, 410));
 
         javax.swing.GroupLayout chartLayout = new javax.swing.GroupLayout(chart);
         chart.setLayout(chartLayout);
         chartLayout.setHorizontalGroup(
             chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 892, Short.MAX_VALUE)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
         chartLayout.setVerticalGroup(
             chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 410, Short.MAX_VALUE)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
         jChartScrollPane.setViewportView(chart);
@@ -769,7 +768,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JSpinner accelSpinner;
-    private chart.Chart chart;
+    private gui.MainChart chart;
     private gui.Clock clock;
     private javax.swing.JMenuItem contentMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;

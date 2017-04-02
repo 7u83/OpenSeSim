@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -45,7 +46,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     protected int num_bars = 4000;
 
     protected Rectangle clip_bounds = new Rectangle();
-    protected Dimension gdim;
 
     private int first_bar, last_bar;
 
@@ -220,15 +220,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Graphics2D g;
         float iwidth;
 
-        float getYc(float y) {
-            return getY(y);
-            //return rect.height - ((y - min) * scaling);
+        float getY(float y) {
+
+            float ys = rect.height / c_mm.getDiff();
+            if (c_mm.isLog()) {
+                return rect.height + rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
+            }
+            return (rect.height - ((y - c_mm.getMin()) * c_yscaling)) + rect.y;
         }
     }
 
     boolean logs = false;
 
-    float getY(float y) {
+    float getY0(float y) {
 
         float ys = c_rect.height / c_mm.getDiff();
         //        ys = c_rect.height / c_mm.getDiff();
@@ -282,8 +286,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
     }
 
-
-  
     private void drawCandleItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
         Graphics2D g = ctx.g;
@@ -294,29 +296,29 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             int xl = (int) (x + ctx.iwidth / 2);
 
             g.setColor(Color.BLACK);
-            g.drawLine(xl, (int) ctx.getYc(i.close), xl, (int) ctx.getYc(i.high));
-            g.drawLine(xl, (int) ctx.getYc(i.low), xl, (int) ctx.getYc(i.open));
+            g.drawLine(xl, (int) ctx.getY(i.close), xl, (int) ctx.getY(i.high));
+            g.drawLine(xl, (int) ctx.getY(i.low), xl, (int) ctx.getY(i.open));
 
             float w = ctx.iwidth;
-            float h = (int) (ctx.getYc(i.open) - ctx.getYc(i.close));
+            float h = (int) (ctx.getY(i.open) - ctx.getY(i.close));
 
             g.setColor(Color.GREEN);
-            g.fillRect((int) (x), (int) ctx.getYc(i.close), (int) w, (int) h);
+            g.fillRect((int) (x), (int) ctx.getY(i.close), (int) w, (int) h);
             g.setColor(Color.BLACK);
-            g.drawRect((int) (x), (int) ctx.getYc(i.close), (int) w, (int) h);
+            g.drawRect((int) (x), (int) ctx.getY(i.close), (int) w, (int) h);
 
         } else {
             int xl = (int) (x + ctx.iwidth / 2);
             g.setColor(Color.RED);
-            g.drawLine(xl, (int) ctx.getYc(i.high), xl, (int) ctx.getYc(i.close));
-            g.drawLine(xl, (int) ctx.getYc(i.open), xl, (int) ctx.getYc(i.low));
+            g.drawLine(xl, (int) ctx.getY(i.high), xl, (int) ctx.getY(i.close));
+            g.drawLine(xl, (int) ctx.getY(i.open), xl, (int) ctx.getY(i.low));
 
             float w = ctx.iwidth;
-            float h = (int) (ctx.getYc(i.close) - ctx.getYc(i.open));
+            float h = (int) (ctx.getY(i.close) - ctx.getY(i.open));
 
-            g.fillRect((int) (x), (int) ctx.getYc(i.open), (int) w, (int) h);
+            g.fillRect((int) (x), (int) ctx.getY(i.open), (int) w, (int) h);
             g.setColor(Color.BLACK);
-            g.drawRect((int) (x), (int) ctx.getYc(i.open), (int) w, (int) h);
+            g.drawRect((int) (x), (int) ctx.getY(i.open), (int) w, (int) h);
 
         }
 
@@ -326,7 +328,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Graphics2D g = ctx.g;
         g.setColor(Color.BLACK);
 
-        g.drawLine(x, (int) ctx.getYc(0), x, (int) ctx.getYc(i.volume));
+        g.drawLine(x, (int) ctx.getY(0), x, (int) ctx.getY(i.volume));
 
         Rectangle r = ctx.rect;
     }
@@ -363,14 +365,13 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Rectangle dim;
         dim = this.clip_bounds;
 
-       // Dimension rv = this.getSize();
-
+        // Dimension rv = this.getSize();
         int yw = (int) (this.y_legend_width * this.em_width);
 
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
 
-        float y1 = getY(c_mm.getMin(false));
-        float y2 = getY(c_mm.getMax(false));
+        float y1 = ctx.getY(c_mm.getMin(false));
+        float y2 = ctx.getY(c_mm.getMax(false));
         float ydiff = y1 - y2;
         System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
 
@@ -405,6 +406,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     void drawChart(RenderCtx ctx) {
 
         c_yscaling = c_rect.height / c_mm.getDiff();
+        
+        
 
         ctx.g.setClip(null);
         // ctx.g.setColor(Color.ORANGE);
@@ -434,7 +437,137 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     boolean autoScroll = true;
     int lastvpos = 0;
 
+    class ChartDef {
+
+        float height;
+        ChartType type;
+        OHLCData data;
+        
+        Color bgcolor=null;
+        
+        
+
+    }
+
+    ArrayList<ChartDef> charts = new ArrayList<>();
+
+    void addChart(ChartDef d) {
+
+        charts.add(d);
+
+    }
+
+    void setupCharts() {
+        charts = new ArrayList<>();
+        ChartDef main = new ChartDef();
+        main.height = 0.8f;
+        main.type = ChartType.CANDLESTICK;
+        main.data = this.data;
+        //main.bgcolor =Color.WHITE;
+        addChart(main);
+
+        ChartDef vol = new ChartDef();
+        vol.height = 0.2f;
+        vol.type = ChartType.VOL;
+        vol.data = this.data;
+        vol.bgcolor=Color.GRAY;
+        addChart(vol);
+    }
+
+    void drawAll(Graphics2D g) {
+        int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
+        this.setPreferredSize(new Dimension(pwidth, gdim.height));
+        this.revalidate();
+
+        
+        
+        int h1 = 0;
+
+        int loops = 0;
+
+        for (ChartDef d : charts) {
+            
+            
+
+            switch (d.type) {
+                case VOL:
+                    c_mm = d.data.getVolMinMax(first_bar, last_bar);
+                    c_mm.setMin(0);
+                    break;
+                default:
+                    c_mm = d.data.getMinMax(first_bar, last_bar);
+
+            }
+
+            int cheight = gdim.height - 6 * em_width;
+
+            int h = (int) (cheight * d.height);
+
+            c_rect = new Rectangle(0, h1, pwidth, h);
+
+            System.out.printf("Nananan %d\n", loops++);
+
+            RenderCtx ctx = new RenderCtx();
+
+            ctx.rect = c_rect;
+            ctx.scaling = (float) c_rect.height / (c_mm.getMax() - c_mm.getMin());
+            ctx.min = c_mm.getMin();
+            ctx.g = g;
+            ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
+
+            this.ct = d.type;
+            logs = false;
+            c_mm.setLog(false);
+            
+            
+            if (d.bgcolor!=null){
+                Color cur=g.getColor();
+                ctx.g.setColor(d.bgcolor);
+                ctx.g.fillRect(ctx.rect.x,ctx.rect.y,ctx.rect.width,ctx.rect.height);
+                ctx.g.drawRect(ctx.rect.x,ctx.rect.y,ctx.rect.width,ctx.rect.height);
+                ctx.g.setColor(cur);
+            }
+            
+            
+            drawChart(ctx);
+
+            h1 = h + em_width;
+
+        }
+
+    }
+
     private void draw(Graphics2D g) {
+
+        if (data == null) {
+            return;
+        }
+        if (data.size() == 0) {
+            return;
+        }
+
+        this.setupCharts();
+
+        num_bars = data.size();
+
+    //    c_mm = data.getMinMax(first_bar, last_bar);
+    //    if (c_mm == null) {
+   //         return;
+//        }
+
+        em_height = g.getFontMetrics().getHeight();
+        em_width = g.getFontMetrics().stringWidth("M");
+
+        XLegendDef xld = new XLegendDef();
+        this.drawXLegend(g, xld);
+
+        drawAll(g);
+
+    }
+
+    Dimension gdim;
+
+    private void draw2(Graphics2D g) {
 
         if (data == null) {
             return;
@@ -450,8 +583,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             return;
         }
 
-//        c_mm.min/= 1; //-= c_mm.getMin()/ 2.0f;
-//       c_mm.max *= 1; //+= c_mm.getMax() / 10.0f;
         em_height = g.getFontMetrics().getHeight();
         em_width = g.getFontMetrics().stringWidth("M");
 
@@ -491,7 +622,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         int cheight = gdim.height - 6 * em_width;
 
         int h = (int) (cheight * 0.8);
-
         Rectangle r = new Rectangle(0, 0, pwidth, h);
         c_rect = r;
 
