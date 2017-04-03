@@ -41,7 +41,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     /**
      * width of y legend in em
      */
-    protected float y_legend_width = 10;
+    protected float yl_width = 10;
 
     protected int num_bars = 4000;
 
@@ -78,7 +78,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //     scrollPane.setViewportView(this);
     }
 
- 
     OHLCData data;
 
     @Override
@@ -149,39 +148,23 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      */
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
-        
-        int yw = (int) (this.y_legend_width * this.em_width);
+        // Caluclate with of y legend in pixels
+        int yl_width_p = (int) (yl_width * em_width);
 
-        //g.setColor(Color.BLUE);
-       
+        g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yl_width_p, clip_bounds.height);
 
-       // g.drawRect(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw-1, clip_bounds.height-1);
-        
-        
-        
-        g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);
-        
-   
-
-        Dimension dim = getSize();
-        
-        
-        System.out.printf("%d %d vs %d %d\n", dim.width,dim.height,clip_bounds.width,clip_bounds.height);
-        //System.exit(0);
-        
-        
         int y = clip_bounds.height - em_height * xl_height;
-
-      //  g.drawLine(0, y, dim.width, y);
 
         // Set background color
         if (this.xl_bgcolor != null) {
             Color cur = g.getColor();
             g.setColor(xl_bgcolor);
-            g.fillRect(0, y, dim.width, em_height * xl_height);
-            g.drawRect(0, y, dim.width, em_height * xl_height);
+            g.fillRect(clip_bounds.x, y, clip_bounds.width, em_height * xl_height);
+            g.drawRect(clip_bounds.y, y, clip_bounds.width, em_height * xl_height);
             g.setColor(cur);
         }
+
+        Dimension dim = getSize();
 
         int n;
         double x;
@@ -372,7 +355,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         dim = this.clip_bounds;
 
         // Dimension rv = this.getSize();
-        int yw = (int) (this.y_legend_width * this.em_width);
+        int yw = (int) (this.yl_width * this.em_width);
 
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
 
@@ -420,7 +403,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         this.drawYLegend(ctx);
 
         ///  ctx.g.setColor(Color.ORANGE);
-        int yw = (int) (this.y_legend_width * this.em_width);
+        int yw = (int) (this.yl_width * this.em_width);
 
         ctx.g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);
         //       ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width-yw, ctx.rect.height);
@@ -472,7 +455,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         vol.height = 0.2f;
         vol.type = ChartType.VOL;
         vol.data = this.data;
-       // vol.bgcolor = Color.GRAY;
+        // vol.bgcolor = Color.GRAY;
         addChart(vol);
     }
 
@@ -498,21 +481,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             }
 
             int cheight = gdim.height - (xl_height * 2) * em_width;
-            
-   cheight = clip_bounds.height - xl_height * em_width;
-   
-           int my = clip_bounds.height - em_height * xl_height;
-   
-   g.setColor(Color.RED);
-   g.drawRect(clip_bounds.x,clip_bounds.y,clip_bounds.width,my);
+
+            cheight = clip_bounds.height - xl_height * em_width;
+
+            int my = clip_bounds.height - em_height * xl_height;
+
+            g.setColor(Color.GREEN);
+            g.drawRect(clip_bounds.x, clip_bounds.y, clip_bounds.width, my);
 
             int h = (int) (my * d.height);
 
             c_rect = new Rectangle(0, h1, pwidth, h);
-            
+
             g.draw(c_rect);
-
-
 
             RenderCtx ctx = new RenderCtx();
 
@@ -536,7 +517,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             drawChart(ctx);
 
-            h1 = h1+h;
+            h1 = h1 + h;
 
         }
 
@@ -550,9 +531,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (data.size() == 0) {
             return;
         }
-     //       g.setColor(Color.RED);
-    //        g.drawRect(0,0,gdim.width,gdim.height);
-        
+        //       g.setColor(Color.RED);
+        //        g.drawRect(0,0,gdim.width,gdim.height);
+
         this.setupCharts();
 
         num_bars = data.size();
@@ -696,7 +677,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         this.clip_bounds = vp.getViewRect();
 
         first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.em_width));
-        last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.y_legend_width * em_width)) / (this.x_unit_width * this.em_width));
+        last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.yl_width * em_width)) / (this.x_unit_width * this.em_width));
 
 //        num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_width))+5;
 //        num_bars=1;
