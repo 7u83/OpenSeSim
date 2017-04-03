@@ -148,6 +148,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      */
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
+        Color cur = g.getColor(); // save current color
+
         // Caluclate with of y legend in pixels
         int yl_width_p = (int) (yl_width * em_width);
 
@@ -155,13 +157,17 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         int y = clip_bounds.height - em_height * xl_height;
 
-        // Set background color
+        // Draw background
         if (this.xl_bgcolor != null) {
-            Color cur = g.getColor();
+
             g.setColor(xl_bgcolor);
             g.fillRect(clip_bounds.x, y, clip_bounds.width, em_height * xl_height);
             g.drawRect(clip_bounds.y, y, clip_bounds.width, em_height * xl_height);
             g.setColor(cur);
+        }
+
+        if (xl_color != null) {
+            g.setColor(xl_color);
         }
 
         Dimension dim = getSize();
@@ -199,6 +205,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             n += 1;
         }
+
+        g.setColor(cur);
     }
 
     class RenderCtx {
@@ -217,11 +225,33 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             }
             return (rect.height - ((y - c_mm.getMin()) * c_yscaling)) + rect.y;
         }
+
+        double getValAtY(float y) {
+            float val = 0;
+
+            
+            if (c_mm.isLog()) {
+                float ys = rect.height / c_mm.getDiff();
+
+                //val = return c_rect.height + c_rect.y - ((float)Math.log(y) - c_mm.getMin()) * ys;            
+                // val + ((float)Math.log(y) - c_mm.getMin()) * ys = c_rect.height + c_rect.y
+                // val/ys + ((float)Math.log(y) - c_mm.getMin()) = (c_rect.height + c_rect.y)/ys
+                // val/ys  + ((float)Math.log(y) = (c_rect.height + c_rect.y)/ys + c_mm.getMin()) 
+                //return (-(Math.exp(y)-c_rect.y-c_rect.height))/ys+c_mm.getMin();      
+                return Math.exp((rect.height + rect.y) / ys + c_mm.getMin() - y / ys);
+
+            }
+
+            return (-(y - rect.y - rect.height)) / c_yscaling + c_mm.getMin();
+
+            // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
+        }
+
     }
 
     boolean logs = false;
 
-    float getY0(float y) {
+    /*   float getY0(float y) {
 
         float ys = c_rect.height / c_mm.getDiff();
         //        ys = c_rect.height / c_mm.getDiff();
@@ -233,23 +263,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             //     return (c_rect.height - (((float)Math.log(y) - c_mm.getMin()) * ys)) + c_rect.y;
             return c_rect.height + c_rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
 
-            /*  float m = c_mm.getMax() / c_mm.getMin();
-
-            float fac = (float) c_rect.height / (float) Math.log(m);
-
-            float fmin = c_rect.height - ((float) Math.log((y / c_mm.getMin())) * fac);
-
-
-            return fmin;
-             */
-            //return c_rect.height - ((float) Math.log((y - c_mm.getMin()) * c_yscaling) * fac);
         }
 
         return (c_rect.height - ((y - c_mm.getMin()) * c_yscaling)) + c_rect.y;
 
 //        return c_rect.height - ((y - c_mm.getMin()) * c_yscaling);
     }
+     */
 
+ /*
     double getValAtY(float y) {
         float val = 0;
 
@@ -274,7 +296,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
     }
-
+     */
     private void drawCandleItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
         Graphics2D g = ctx.g;
@@ -366,15 +388,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         for (int yp = (int) y2; yp < y1; yp += em_width * 5) {
             g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_width, yp);
-            double v1 = getValAtY(yp);
+            double v1 = ctx.getValAtY(yp);
             g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_width * 1.5f, yp + c_font_height / 3);
         }
 
         // c_yscaling = c_rect.height / c_mm.getDiff();
 //System.out.printf("Step: %f\n",step);
         double v1, v2;
-        v1 = getValAtY(y1);
-        v2 = getValAtY(y2);
+        v1 = ctx.getValAtY(y1);
+        v2 = ctx.getValAtY(y2);
 //        System.out.printf("v1 %f, v2 %f\n", v1, v2);
 
 
@@ -390,11 +412,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }
 
     private MinMax c_mm = null;
-    private Rectangle c_rect;
+//    private Rectangle c_rect;
 
     void drawChart(RenderCtx ctx) {
 
-        c_yscaling = c_rect.height / c_mm.getDiff();
+        c_yscaling = ctx.rect.height / c_mm.getDiff();
 
         ctx.g.setClip(null);
         // ctx.g.setColor(Color.ORANGE);
@@ -424,9 +446,25 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     boolean autoScroll = true;
     int lastvpos = 0;
 
-    class ChartDef {
+    /**
+     * definition for a sub-chart window
+     */
+    class SubChartDef {
 
+        /**
+         * Height of sub-chart in percent
+         */
         float height;
+
+        /**
+         * top padding in em_height
+         */
+        float padding_top = 0;
+        /**
+         * bottom padding in em_height
+         */
+        float padding_bottom = 0;
+
         ChartType type;
         OHLCData data;
 
@@ -434,9 +472,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
-    ArrayList<ChartDef> charts = new ArrayList<>();
+    ArrayList<SubChartDef> charts = new ArrayList<>();
 
-    void addChart(ChartDef d) {
+    void addChart(SubChartDef d) {
 
         charts.add(d);
 
@@ -444,14 +482,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     void setupCharts() {
         charts = new ArrayList<>();
-        ChartDef main = new ChartDef();
+        SubChartDef main = new SubChartDef();
         main.height = 0.8f;
         main.type = ChartType.CANDLESTICK;
         main.data = this.data;
-        //main.bgcolor =Color.WHITE;
+        main.bgcolor = Color.BLUE;
+        main.padding_top = 0.02f;
         addChart(main);
 
-        ChartDef vol = new ChartDef();
+        SubChartDef vol = new SubChartDef();
         vol.height = 0.2f;
         vol.type = ChartType.VOL;
         vol.data = this.data;
@@ -466,10 +505,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         int h1 = 0;
 
-        int loops = 0;
+        for (SubChartDef d : charts) {
 
-        for (ChartDef d : charts) {
-
+            // calclulate the min/max values
             switch (d.type) {
                 case VOL:
                     c_mm = d.data.getVolMinMax(first_bar, last_bar);
@@ -477,28 +515,31 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
                     break;
                 default:
                     c_mm = d.data.getMinMax(first_bar, last_bar);
-
             }
 
-            int cheight = gdim.height - (xl_height * 2) * em_width;
+            // Calculate the height for all sub-charts
+            // this is the height of out panel minus the height of x-legend
+            int chartwin_height = clip_bounds.height - xl_height * em_height;
 
-            cheight = clip_bounds.height - xl_height * em_width;
+            // Caclulate the height of our sub-chart 
+            int subchartwin_height = (int) (chartwin_height * d.height);
 
-            int my = clip_bounds.height - em_height * xl_height;
+            // Draw background
+            if (d.bgcolor != null) {
+                Color cur = g.getColor();
+                g.setColor(d.bgcolor);
+                g.fillRect(clip_bounds.x, h1, clip_bounds.width, subchartwin_height);
+                g.drawRect(clip_bounds.x, h1, clip_bounds.width, subchartwin_height);
+                g.setColor(cur);
+            }
 
-            g.setColor(Color.GREEN);
-            g.drawRect(clip_bounds.x, clip_bounds.y, clip_bounds.width, my);
-
-            int h = (int) (my * d.height);
-
-            c_rect = new Rectangle(0, h1, pwidth, h);
-
-            g.draw(c_rect);
+            // Caclulate the top padding 
+            int pad_top = (int) (subchartwin_height * d.padding_top);
 
             RenderCtx ctx = new RenderCtx();
 
-            ctx.rect = c_rect;
-            ctx.scaling = (float) c_rect.height / (c_mm.getMax() - c_mm.getMin());
+            ctx.rect = new Rectangle(0, h1 + pad_top, pwidth, subchartwin_height - pad_top);
+            ctx.scaling = (float) ctx.rect.height / (c_mm.getMax() - c_mm.getMin());
             ctx.min = c_mm.getMin();
             ctx.g = g;
             ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
@@ -507,17 +548,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             logs = false;
             c_mm.setLog(false);
 
-            if (d.bgcolor != null) {
-                Color cur = g.getColor();
-                ctx.g.setColor(d.bgcolor);
-                ctx.g.fillRect(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);
-                ctx.g.drawRect(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);
-                ctx.g.setColor(cur);
-            }
-
             drawChart(ctx);
 
-            h1 = h1 + h;
+            h1 = h1 + subchartwin_height;
 
         }
 
@@ -553,6 +586,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }
 
     Dimension gdim;
+
+    Rectangle c_rect0;
 
     private void draw2(Graphics2D g) {
 
@@ -610,13 +645,13 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         int h = (int) (cheight * 0.8);
         Rectangle r = new Rectangle(0, 0, pwidth, h);
-        c_rect = r;
+        c_rect0 = r;
 
         RenderCtx ctx = new RenderCtx();
         //   c_rect.x = 0;
         //  c_rect.y = 50;
         //  c_rect.height = ;
-        ctx.rect = c_rect;
+        ctx.rect = c_rect0;
         ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
         ctx.min = c_mm.getMin();
         ctx.g = g;
@@ -636,12 +671,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         h = (int) (cheight * 0.2);
 
         r = new Rectangle(0, h1, pwidth, h);
-        c_rect = r;
+        c_rect0 = r;
 
         //   c_rect.x = 0;
         //   c_rect.y = 250;
         //   c_rect.height = 50;
-        ctx.rect = c_rect;
+        ctx.rect = c_rect0;
         ctx.scaling = (float) r.height / (c_mm.getMax() - c_mm.getMin());
         ctx.min = c_mm.getMin();
         ctx.g = g;
