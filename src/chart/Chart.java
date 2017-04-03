@@ -78,41 +78,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //     scrollPane.setViewportView(this);
     }
 
-    /*   private String[] ctxMenuCompressionText = {
-        "5 s", "10 s", "15 s", "30 s",
-        "1 m", "2 m", "5 m", "10 m", "15 m", "30 m",
-        "1 h", "2 h", "4 h",
-        "1 d", "2 d"
-    };
-    private Integer[] ctxMenuCompressionValues = {
-        5 * 1000, 10 * 1000, 15 * 1000, 30 * 1000,
-        60 * 1000, 2 * 60 * 1000, 5 * 60 * 1000, 10 * 60 * 1000, 15 * 60 * 1000, 30 * 60 * 1000,
-        1 * 3600 * 1000, 2 * 3600 * 1000, 4 * 3600 * 1000,
-        1 * 24 * 3600 * 1000, 2 * 24 * 3600 * 1000
-    };
-
-    void initCtxMenu() {
-        for (int i = 0; i < this.ctxMenuCompressionValues.length; i++) {
-            JMenuItem item = new JMenuItem(this.ctxMenuCompressionText[i]);
-
-            item.addActionListener((java.awt.event.ActionEvent evt) -> {
-                ctxMenuCompActionPerformed(evt);
-            });
-            this.compMenu.add(item);
-        }
-    }
-
-    private void ctxMenuCompActionPerformed(java.awt.event.ActionEvent evt) {
-        String cmd = evt.getActionCommand();
-        for (int i = 0; i < this.ctxMenuCompressionText.length; i++) {
-            if (this.ctxMenuCompressionText[i].equals(cmd)) {
-
-                this.setCompression(this.ctxMenuCompressionValues[i]);
-            }
-        }
-
-    }
-     */
+ 
     OHLCData data;
 
     @Override
@@ -183,15 +149,24 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      */
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
-        //g = (Graphics2D) g.create();
+        
         int yw = (int) (this.y_legend_width * this.em_width);
 
+        //g.setColor(Color.BLUE);
+       
+
+       // g.drawRect(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw-1, clip_bounds.height-1);
+        
+        
+        
         g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);
+        
+       
 
         Dimension dim = getSize();
-        int y = dim.height - em_height * xl_height;
+        int y = clip_bounds.height - em_height * xl_height;
 
-        g.drawLine(0, y, dim.width, y);
+      //  g.drawLine(0, y, dim.width, y);
 
         // Set background color
         if (this.xl_bgcolor != null) {
@@ -493,7 +468,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         vol.height = 0.2f;
         vol.type = ChartType.VOL;
         vol.data = this.data;
-        vol.bgcolor = Color.GRAY;
+       // vol.bgcolor = Color.GRAY;
         addChart(vol);
     }
 
@@ -519,10 +494,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             }
 
             int cheight = gdim.height - (xl_height * 2) * em_width;
+            
+   cheight = clip_bounds.height - xl_height * em_width;
+   
+           int my = clip_bounds.height - em_height * xl_height;
+   
+   g.setColor(Color.RED);
+   g.drawRect(clip_bounds.x,clip_bounds.y,clip_bounds.width,my);
 
-            int h = (int) (cheight * d.height);
+            int h = (int) (my * d.height);
 
             c_rect = new Rectangle(0, h1, pwidth, h);
+            
+            g.draw(c_rect);
 
             System.out.printf("Nananan %d\n", loops++);
 
@@ -548,7 +532,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             drawChart(ctx);
 
-            h1 = h + em_width;
+            h1 = h1+h;
 
         }
 
@@ -562,7 +546,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (data.size() == 0) {
             return;
         }
-
+     //       g.setColor(Color.RED);
+    //        g.drawRect(0,0,gdim.width,gdim.height);
+        
         this.setupCharts();
 
         num_bars = data.size();
