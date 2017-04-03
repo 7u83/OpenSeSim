@@ -49,12 +49,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     private int first_bar, last_bar;
 
-    public final void initChart() {
-//        data = new OHLCData(60000*30);        
-        //data = new OHLCData(60000*30);        
-        //data = Globals.se.getOHLCdata(60000 * 30);
-        this.setCompression(10000);
-    }
 
     /**
      * Creates new form Chart
@@ -65,7 +59,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         initComponents();
-        initChart();
+        //initChart();
 //        initCtxMenu();
         //setCompression(60000);
         if (Globals.se == null) {
@@ -78,7 +72,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //     scrollPane.setViewportView(this);
     }
 
-    OHLCData data;
+
 
     @Override
     public Dimension getPreferredScrollableViewportSize() {
@@ -169,6 +163,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (xl_color != null) {
             g.setColor(xl_color);
         }
+        
+        g.drawLine(clip_bounds.x, y,clip_bounds.width,y);
 
         Dimension dim = getSize();
 
@@ -249,7 +245,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
-    boolean logs = false;
+    //boolean logs = false;
 
     /*   float getY0(float y) {
 
@@ -297,11 +293,23 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
     }
      */
+    
+      private void drawLineItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i){
+          Graphics2D g = ctx.g;
+          if (prev==null)
+              prev=i;
+          int y1 = (int)ctx.getY(prev.close);
+          int y2 = (int)ctx.getY(i.close);
+          Color cur = g.getColor();
+          g.setColor(Color.RED);
+          g.drawLine(prevx,y1,x,y2);
+          g.setColor(cur);
+      }
+    
+    
     private void drawCandleItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
         Graphics2D g = ctx.g;
-
-        Rectangle r = ctx.rect;
 
         if (i.open < i.close) {
             int xl = (int) (x + ctx.iwidth / 2);
@@ -349,6 +357,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      */
     protected enum ChartType {
         CANDLESTICK,
+        LINE,
         BAR,
         VOL,
     }
@@ -359,6 +368,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         switch (ct) {
             case CANDLESTICK:
                 this.drawCandleItem(ctx, prevx, x, prev, i);
+                break;
+            case LINE:
+                this.drawLineItem(ctx, prevx, x, prev, i);
                 break;
             case VOL:
                 this.drawBarItem(ctx, prevx, x, prev, i);
@@ -434,7 +446,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         for (int i = first_bar; i < last_bar && i < data.size(); i++) {
             OHLCDataItem di = data.get(i);
             int x = (int) (i * em_width * x_unit_width); //em_width;
-            this.drawItem(ctx, x - em_width, x, prev, di); //, ctx.scaling, data.getMin());
+            this.drawItem(ctx, (int) (x - em_width * x_unit_width), x, prev, di); //, ctx.scaling, data.getMin());
 
             //    myi++;
             prev = di;
@@ -449,54 +461,44 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     /**
      * definition for a sub-chart window
      */
-    class SubChartDef {
+    public class SubChartDef {
 
         /**
          * Height of sub-chart in percent
          */
-        float height;
+        public float height;
 
         /**
          * top padding in em_height
          */
-        float padding_top = 0;
+        public float padding_top = 0;
         /**
-         * bottom padding in em_height
+         * bottom padding in em_height (not implemented yet)
          */
-        float padding_bottom = 0;
+        public float padding_bottom = 0;
 
-        ChartType type;
-        OHLCData data;
+        public ChartType type;
+        public OHLCData data;
 
-        Color bgcolor = null;
+        public Color bgcolor = null;
+        
+        /**
+         * logarithmic scaling
+         */
+        public boolean log=false;
 
     }
 
+    protected OHLCData data;
+    
     ArrayList<SubChartDef> charts = new ArrayList<>();
 
-    void addChart(SubChartDef d) {
+    protected void addChart(SubChartDef d) {
 
         charts.add(d);
 
     }
 
-    void setupCharts() {
-        charts = new ArrayList<>();
-        SubChartDef main = new SubChartDef();
-        main.height = 0.8f;
-        main.type = ChartType.CANDLESTICK;
-        main.data = this.data;
-        main.bgcolor = Color.BLUE;
-        main.padding_top = 0.02f;
-        addChart(main);
-
-        SubChartDef vol = new SubChartDef();
-        vol.height = 0.2f;
-        vol.type = ChartType.VOL;
-        vol.data = this.data;
-        // vol.bgcolor = Color.GRAY;
-        addChart(vol);
-    }
 
     void drawAll(Graphics2D g) {
         int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
@@ -504,8 +506,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         this.revalidate();
 
         int h1 = 0;
+        
+
 
         for (SubChartDef d : charts) {
+            
+            if (d.data==null){
+                System.out.printf("Data is null\n");
+                    System.exit(0);
+            }
 
             // calclulate the min/max values
             switch (d.type) {
@@ -545,8 +554,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
 
             this.ct = d.type;
-            logs = false;
-            c_mm.setLog(false);
+//            logs = false;
+            c_mm.setLog(d.log);
 
             drawChart(ctx);
 
@@ -554,6 +563,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         }
 
+    }
+    
+    protected void setupSubCharts(){
+        
     }
 
     private void draw(Graphics2D g) {
@@ -567,7 +580,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //       g.setColor(Color.RED);
         //        g.drawRect(0,0,gdim.width,gdim.height);
 
-        this.setupCharts();
+        this.charts = new ArrayList<>();
+        setupSubCharts();
 
         num_bars = data.size();
 
@@ -658,7 +672,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
 
         this.ct = ChartType.CANDLESTICK;
-        logs = true;
+//        logs = true;
         c_mm.setLog(true);
         drawChart(ctx);
 
@@ -682,7 +696,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         ctx.g = g;
         ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);
 
-        logs = false;
+//        logs = false;
         c_mm.setLog(false);
         this.ct = ChartType.VOL;
         drawChart(ctx);
@@ -770,22 +784,24 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
-    protected void setCompression(int timeFrame) {
+  /*  protected void setCompression(int timeFrame) {
         javax.swing.SwingUtilities.invokeLater(() -> {
             data = Globals.se.getOHLCdata(timeFrame);
+            
+            System.out.printf("Getting ohls data \n");
+            if (data == null){
+                System.out.printf("it is null\n");
+            }
+            
             invalidate();
             repaint();
         });
 
     }
-
+*/
+    
     @Override
     public void UpdateQuote(Quote q) {
-        //    System.out.print("Quote Received\n");
-//        this.realTimeAdd(q.time, (float) q.price, (float)q.volume);
-
-//        data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
-        //    this.invalidate();
         this.repaint();
     }
 

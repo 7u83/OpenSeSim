@@ -5,25 +5,66 @@
  */
 package gui;
 
+import chart.Chart;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Objects;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
+import sesim.Exchange;
+import sesim.OHLCData;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class MainChart extends chart.Chart {
+    
+    ButtonGroup typeGroup=new ButtonGroup();
 
     /**
      * Creates new form MainChart
      */
     public MainChart() {
+        System.out.printf("This is the main chart constructor\n");
+
         initComponents();
 
         initCtxMenu();
+
+        setCompression();
         
-        this.xl_bgcolor=Color.ORANGE;
-        this.xl_height=3;
+        this.candleTypeMEnuItem.setSelected(true);
+
+      //xl_bgcolor = Color.ORANGE;
+      //  xl_color = Color.RED;
+        this.xl_height = 3;
+
+    }
+
+    //OHLCData data;
+    @Override
+    protected void setupSubCharts() {
+        //  charts = new ArrayList<>();
+        Chart.SubChartDef main = new Chart.SubChartDef();
+        main.height = 0.8f;
+        main.type = this.chart_type;
+        main.data = data;
+       // main.bgcolor = Color.BLUE;
+        main.padding_top = 0.02f;
+        main.log = logMenu.isSelected();
+        addChart(main);
+
+        Chart.SubChartDef vol = new Chart.SubChartDef();
+        vol.height = 0.2f;
+        vol.padding_top = 0.08f;
+        vol.type = ChartType.VOL;
+        vol.data = data;
+      //  vol.bgcolor = Color.GRAY;
+
+        addChart(vol);
     }
 
     private void showCtxMenu(java.awt.event.MouseEvent evt) {
@@ -47,9 +88,17 @@ public class MainChart extends chart.Chart {
         1 * 24 * 3600 * 1000, 2 * 24 * 3600 * 1000
     };
 
+    private final Integer default_cmopression = 60 * 1000;
+
     private void initCtxMenu() {
+        ButtonGroup group = new ButtonGroup();
         for (int i = 0; i < this.ctxMenuCompressionValues.length; i++) {
-            JMenuItem item = new JMenuItem(this.ctxMenuCompressionText[i]);
+            JRadioButtonMenuItem item = new JRadioButtonMenuItem(this.ctxMenuCompressionText[i]);
+
+            group.add(item);
+            if (Objects.equals(this.ctxMenuCompressionValues[i], this.default_cmopression)) {
+                item.setSelected(true);
+            }
 
             item.addActionListener((java.awt.event.ActionEvent evt) -> {
                 ctxMenuCompActionPerformed(evt);
@@ -58,12 +107,69 @@ public class MainChart extends chart.Chart {
         }
     }
 
+    protected final void setCompression0(int timeFrame) {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            data = Globals.se.getOHLCdata(timeFrame);
+            invalidate();
+            repaint();
+        });
+
+    }
+
+    void setCompression() {
+        for (int i = 0; i < this.ctxMenuCompressionText.length; i++) {
+            JRadioButtonMenuItem item = (JRadioButtonMenuItem) compMenu.getItem(i);
+            if (item.isSelected()) {
+                setCompression0(this.ctxMenuCompressionValues[i]);
+            }
+        }
+    }
+    
+    private ChartType chart_type=ChartType.CANDLESTICK;
+
+/*
+    void setType(){
+        for (int i = 0; i < this.typeMenu.getItemCount(); i++) {
+            JRadioButtonMenuItem item = (JRadioButtonMenuItem) compMenu.getItem(i);
+            if (item.isSelected()) {
+                if ("LINE".equals(item.getActionCommand())){
+                    chart_type=ChartType.LINE;
+                }
+                if ("CNADLESTICK".equals(item.getActionCommand())){
+                    chart_type=ChartType.CANDLESTICK;
+                }
+                        
+                
+            }
+        } 
+        doRedraw();
+    }
+    */
+
+   // boolean log = false;
+
+    protected void doRedraw() {
+    //    log = this.logMenu.isSelected();
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            invalidate();
+            repaint();
+        });
+        
+    }
+
+    public void initChart() {
+        setCompression();
+        doRedraw();
+        
+    }
+
     private void ctxMenuCompActionPerformed(java.awt.event.ActionEvent evt) {
+        setCompression();
         String cmd = evt.getActionCommand();
         for (int i = 0; i < this.ctxMenuCompressionText.length; i++) {
             if (this.ctxMenuCompressionText[i].equals(cmd)) {
 
-                setCompression(this.ctxMenuCompressionValues[i]);
+                setCompression0(this.ctxMenuCompressionValues[i]);
             }
         }
 
@@ -80,16 +186,57 @@ public class MainChart extends chart.Chart {
 
         ctxMenu = new javax.swing.JPopupMenu();
         compMenu = new javax.swing.JMenu();
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        typeMenu = new javax.swing.JMenu();
+        lineTypeItem = new javax.swing.JRadioButtonMenuItem();
+        candleTypeMEnuItem = new javax.swing.JRadioButtonMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        logMenu = new javax.swing.JCheckBoxMenuItem();
+        typeButtonGroup = new javax.swing.ButtonGroup();
 
         compMenu.setText("Compression");
         ctxMenu.add(compMenu);
 
-        jCheckBoxMenuItem1.setMnemonic('l');
-        jCheckBoxMenuItem1.setSelected(true);
-        jCheckBoxMenuItem1.setText("Log Scale");
-        jCheckBoxMenuItem1.setToolTipText("");
-        ctxMenu.add(jCheckBoxMenuItem1);
+        typeMenu.setText("Chart Type");
+
+        typeButtonGroup.add(lineTypeItem);
+        lineTypeItem.setMnemonic('l');
+        lineTypeItem.setText("Line");
+        lineTypeItem.setActionCommand("LINE");
+        lineTypeItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                lineTypeItemItemStateChanged(evt);
+            }
+        });
+        lineTypeItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lineTypeItemActionPerformed(evt);
+            }
+        });
+        typeMenu.add(lineTypeItem);
+
+        typeButtonGroup.add(candleTypeMEnuItem);
+        candleTypeMEnuItem.setMnemonic('c');
+        candleTypeMEnuItem.setText("Candle Stick");
+        candleTypeMEnuItem.setActionCommand("CNADLESTICK");
+        candleTypeMEnuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                candleTypeMEnuItemItemStateChanged(evt);
+            }
+        });
+        typeMenu.add(candleTypeMEnuItem);
+
+        ctxMenu.add(typeMenu);
+        ctxMenu.add(jSeparator1);
+
+        logMenu.setMnemonic('l');
+        logMenu.setText("Log Scale");
+        logMenu.setToolTipText("");
+        logMenu.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                logMenuItemStateChanged(evt);
+            }
+        });
+        ctxMenu.add(logMenu);
 
         addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
@@ -146,10 +293,39 @@ public class MainChart extends chart.Chart {
         showCtxMenu(evt);
     }//GEN-LAST:event_formMousePressed
 
+    private void logMenuItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_logMenuItemStateChanged
+        doRedraw();
+    }//GEN-LAST:event_logMenuItemStateChanged
+
+    private void lineTypeItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineTypeItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lineTypeItemActionPerformed
+
+    private void candleTypeMEnuItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_candleTypeMEnuItemItemStateChanged
+       if (this.candleTypeMEnuItem.isSelected()){
+            this.chart_type=ChartType.CANDLESTICK;
+            System.out.printf("Set Set Candlestick\n");
+        }
+       doRedraw();
+    }//GEN-LAST:event_candleTypeMEnuItemItemStateChanged
+
+    private void lineTypeItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lineTypeItemItemStateChanged
+       if (this.lineTypeItem.isSelected()){
+            this.chart_type=ChartType.LINE;
+            System.out.printf("Set LIne\n");
+        }
+       doRedraw();
+    }//GEN-LAST:event_lineTypeItemItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButtonMenuItem candleTypeMEnuItem;
     private javax.swing.JMenu compMenu;
     private javax.swing.JPopupMenu ctxMenu;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JRadioButtonMenuItem lineTypeItem;
+    private javax.swing.JCheckBoxMenuItem logMenu;
+    private javax.swing.ButtonGroup typeButtonGroup;
+    private javax.swing.JMenu typeMenu;
     // End of variables declaration//GEN-END:variables
 }
