@@ -128,7 +128,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }
 
     /**
-     * Color of X-legend
+     * Text Color of X-legend
      */
     protected Color xl_color = null;
 
@@ -161,9 +161,15 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         
         g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);
         
-       
+   
 
         Dimension dim = getSize();
+        
+        
+        System.out.printf("%d %d vs %d %d\n", dim.width,dim.height,clip_bounds.width,clip_bounds.height);
+        //System.exit(0);
+        
+        
         int y = clip_bounds.height - em_height * xl_height;
 
       //  g.drawLine(0, y, dim.width, y);
@@ -175,7 +181,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             g.fillRect(0, y, dim.width, em_height * xl_height);
             g.drawRect(0, y, dim.width, em_height * xl_height);
             g.setColor(cur);
-
         }
 
         int n;
@@ -210,7 +215,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             }
 
             n += 1;
-
         }
     }
 
@@ -375,7 +379,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         float y1 = ctx.getY(c_mm.getMin(false));
         float y2 = ctx.getY(c_mm.getMax(false));
         float ydiff = y1 - y2;
-        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
+//        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
 
         for (int yp = (int) y2; yp < y1; yp += em_width * 5) {
             g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_width, yp);
@@ -388,7 +392,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         double v1, v2;
         v1 = getValAtY(y1);
         v2 = getValAtY(y2);
-        System.out.printf("v1 %f, v2 %f\n", v1, v2);
+//        System.out.printf("v1 %f, v2 %f\n", v1, v2);
 
 
         /*  for (float y = c_mm.getMin(); y < c_mm.getMax(); y += step) {
@@ -508,7 +512,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             
             g.draw(c_rect);
 
-            System.out.printf("Nananan %d\n", loops++);
+
 
             RenderCtx ctx = new RenderCtx();
 
