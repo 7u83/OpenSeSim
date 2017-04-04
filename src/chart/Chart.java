@@ -579,6 +579,40 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
         //       g.setColor(Color.RED);
         //        g.drawRect(0,0,gdim.width,gdim.height);
+        
+         int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
+        //   int phight = 400;
+        //   phight=this.getVisibleRect().height;
+
+        this.setPreferredSize(new Dimension(pwidth, gdim.height));
+        this.revalidate();
+
+        int bww = (int) (data.size() * (this.x_unit_width * this.em_width));
+        int p0 = pwidth - clip_bounds.width - (clip_bounds.width - (int) (13 * em_width));
+        if (p0 < 0) {
+            p0 = 0;
+        }
+        JViewport vp = (JViewport) this.getParent();
+        Point pp = vp.getViewPosition();
+        Point cp = vp.getViewPosition();
+
+        if (autoScroll && this.lastvpos != cp.x) {
+            autoScroll = false;
+        }
+
+        if (!autoScroll && cp.x >= p0) {
+            autoScroll = true;
+        }
+
+        if (autoScroll) {
+            vp.setViewPosition(new Point(p0, 0));
+            lastvpos = p0;
+
+        }
+       
+        
+        
+        
 
         this.charts = new ArrayList<>();
         setupSubCharts();
@@ -744,24 +778,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        ctxMenu = new javax.swing.JPopupMenu();
-        compMenu = new javax.swing.JMenu();
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
-
-        compMenu.setText("Compression");
-        ctxMenu.add(compMenu);
-
-        jCheckBoxMenuItem1.setMnemonic('l');
-        jCheckBoxMenuItem1.setSelected(true);
-        jCheckBoxMenuItem1.setText("Log Scale");
-        jCheckBoxMenuItem1.setToolTipText("");
-        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxMenuItem1ActionPerformed(evt);
-            }
-        });
-        ctxMenu.add(jCheckBoxMenuItem1);
-
         setBackground(java.awt.Color.white);
         setBorder(null);
         setOpaque(false);
@@ -779,10 +795,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
   /*  protected void setCompression(int timeFrame) {
         javax.swing.SwingUtilities.invokeLater(() -> {
@@ -807,8 +819,5 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu compMenu;
-    private javax.swing.JPopupMenu ctxMenu;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     // End of variables declaration//GEN-END:variables
 }
