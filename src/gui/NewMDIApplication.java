@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
@@ -62,6 +63,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public NewMDIApplication() {
         initComponents();
+        
+        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
 //        Globals.frame = this;
  //       this.setLocationRelativeTo(this);
         System.out.printf("Set title\n");
@@ -161,7 +164,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
         orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
-        jChartScrollPane = new javax.swing.JScrollPane();
+        chartSrollPane = new javax.swing.JScrollPane();
         chart = new gui.MainChart();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
@@ -310,9 +313,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        jChartScrollPane.setViewportView(chart);
+        chartSrollPane.setViewportView(chart);
 
-        jSplitPane4.setLeftComponent(jChartScrollPane);
+        jSplitPane4.setLeftComponent(chartSrollPane);
 
         jSplitPane3.setRightComponent(jSplitPane4);
         jSplitPane3.setLeftComponent(quoteVertical1);
@@ -769,6 +772,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JSpinner accelSpinner;
     private gui.MainChart chart;
+    private javax.swing.JScrollPane chartSrollPane;
     private gui.Clock clock;
     private javax.swing.JMenuItem contentMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
@@ -779,7 +783,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton2;
-    private javax.swing.JScrollPane jChartScrollPane;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuItem jMenuItem1;
