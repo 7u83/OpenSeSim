@@ -52,17 +52,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         initComponents();
-        //initChart();
-//        initCtxMenu();
-        //setCompression(60000);
         if (Globals.se == null) {
             return;
         }
 
         Globals.se.addQuoteReceiver(this);
 
-//                scrollPane=new JScrollPane();
-        //     scrollPane.setViewportView(this);
     }
 
 
@@ -222,70 +217,17 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             if (c_mm.isLog()) {
                 float ys = rect.height / c_mm.getDiff();
 
-                //val = return c_rect.height + c_rect.y - ((float)Math.log(y) - c_mm.getMin()) * ys;            
-                // val + ((float)Math.log(y) - c_mm.getMin()) * ys = c_rect.height + c_rect.y
-                // val/ys + ((float)Math.log(y) - c_mm.getMin()) = (c_rect.height + c_rect.y)/ys
-                // val/ys  + ((float)Math.log(y) = (c_rect.height + c_rect.y)/ys + c_mm.getMin()) 
-                //return (-(Math.exp(y)-c_rect.y-c_rect.height))/ys+c_mm.getMin();      
                 return Math.exp((rect.height + rect.y) / ys + c_mm.getMin() - y / ys);
 
             }
 
             return (-(y - rect.y - rect.height)) / c_yscaling + c_mm.getMin();
 
-            // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
+ 
         }
 
     }
 
-    //boolean logs = false;
-
-    /*   float getY0(float y) {
-
-        float ys = c_rect.height / c_mm.getDiff();
-        //        ys = c_rect.height / c_mm.getDiff();
-
-        if (c_mm.isLog()) {
-
-            // c_mm.setLog(true);
-            //     ys = c_rect.height / c_mm.getDiff();
-            //     return (c_rect.height - (((float)Math.log(y) - c_mm.getMin()) * ys)) + c_rect.y;
-            return c_rect.height + c_rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
-
-        }
-
-        return (c_rect.height - ((y - c_mm.getMin()) * c_yscaling)) + c_rect.y;
-
-//        return c_rect.height - ((y - c_mm.getMin()) * c_yscaling);
-    }
-     */
-
- /*
-    double getValAtY(float y) {
-        float val = 0;
-
-        //  y = (c_rect.height - ((val - c_mm.getMin()) * c_yscaling)) + c_rect.y;
-        // y-c_rect.y = c_rect.height - ((val - c_mm.getMin()) * c_yscaling)
-        // y-c_rect.y-c_rect.height = - ((val - c_mm.getMin()) * c_yscaling)
-        // -(y-c_rect.y-c_rect.heigh) = (val - c_mm.getMin()) * c_yscaling
-        // (-(y-c_rect.y-c_rect.heigh))/c_yscaling = (val - c_mm.getMin())
-        if (c_mm.isLog()) {
-            float ys = c_rect.height / c_mm.getDiff();
-
-            //val = return c_rect.height + c_rect.y - ((float)Math.log(y) - c_mm.getMin()) * ys;            
-            // val + ((float)Math.log(y) - c_mm.getMin()) * ys = c_rect.height + c_rect.y
-            // val/ys + ((float)Math.log(y) - c_mm.getMin()) = (c_rect.height + c_rect.y)/ys
-            // val/ys  + ((float)Math.log(y) = (c_rect.height + c_rect.y)/ys + c_mm.getMin()) 
-            //return (-(Math.exp(y)-c_rect.y-c_rect.height))/ys+c_mm.getMin();      
-            return Math.exp((c_rect.height + c_rect.y) / ys + c_mm.getMin() - y / ys);
-
-        }
-
-        return (-(y - c_rect.y - c_rect.height)) / c_yscaling + c_mm.getMin();
-
-        // return (y+c_rect.y-c_rect.height)/c_yscaling+c_mm.getMin();
-    }
-     */
     
       private void drawLineItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i){
           Graphics2D g = ctx.g;
@@ -397,23 +339,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_width * 1.5f, yp + c_font_height / 3);
         }
 
-        // c_yscaling = c_rect.height / c_mm.getDiff();
-//System.out.printf("Step: %f\n",step);
         double v1, v2;
         v1 = ctx.getValAtY(y1);
         v2 = ctx.getValAtY(y2);
-//        System.out.printf("v1 %f, v2 %f\n", v1, v2);
 
-
-        /*  for (float y = c_mm.getMin(); y < c_mm.getMax(); y += step) {
-
-            int my = (int) getY(y); //c_rect.height - (int) ((y - c_mm.getMin()) * c_yscaling);
-
-            g.drawLine(dim.width + dim.x - yw, my, dim.width + dim.x - yw + em_width, my);
-
-            g.drawString(String.format("%.2f", y), dim.width + dim.x - yw + em_width * 1.5f, my + c_font_height / 3);
-        }
-         */
     }
 
     private MinMax c_mm = null;
@@ -570,12 +499,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (data.size() == 0) {
             return;
         }
-        //       g.setColor(Color.RED);
-        //        g.drawRect(0,0,gdim.width,gdim.height);
         
-         int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
-        //   int phight = 400;
-        //   phight=this.getVisibleRect().height;
+        int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
 
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
         this.revalidate();
@@ -612,10 +537,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         num_bars = data.size();
 
-        //    c_mm = data.getMinMax(first_bar, last_bar);
-        //    if (c_mm == null) {
-        //         return;
-//        }
         em_height = g.getFontMetrics().getHeight();
         em_width = g.getFontMetrics().stringWidth("M");
 
@@ -789,22 +710,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         );
     }// </editor-fold>//GEN-END:initComponents
 
-  /*  protected void setCompression(int timeFrame) {
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            data = Globals.se.getOHLCdata(timeFrame);
-            
-            System.out.printf("Getting ohls data \n");
-            if (data == null){
-                System.out.printf("it is null\n");
-            }
-            
-            invalidate();
-            repaint();
-        });
-
-    }
-*/
-    
     @Override
     public void UpdateQuote(Quote q) {
         this.repaint();
