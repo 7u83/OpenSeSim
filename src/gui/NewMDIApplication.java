@@ -27,6 +27,8 @@ package gui;
 
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -66,7 +68,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
 //        Globals.frame = this;
- //       this.setLocationRelativeTo(this);
+        //this.setLocationRelativeTo(null);
         System.out.printf("Set title\n");
         setTitle("SeSim - Stock Exchange Simmulator");
     }
@@ -742,6 +744,16 @@ public class NewMDIApplication extends javax.swing.JFrame {
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
 
         System.out.printf("Main called\n");
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        
+        GraphicsDevice[]gs = ge.getScreenDevices();
+        for (GraphicsDevice d:gs){
+            System.out.printf("ID %s\n",d.getIDstring());
+        
+        }
+        
+        //System.exit(0);
+        
         
         Globals.initGlobals();
         //System.exit(0);

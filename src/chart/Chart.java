@@ -658,6 +658,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (Globals.se == null) {
             return;
         }
+        
+  
 
         super.paintComponent(g);
 
