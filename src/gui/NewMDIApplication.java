@@ -68,7 +68,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
 //        Globals.frame = this;
-        //this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
         System.out.printf("Set title\n");
         setTitle("SeSim - Stock Exchange Simmulator");
     }
@@ -194,11 +194,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jMenuItem5 = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
-        viewClock = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
-        contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         jTextArea1.setColumns(20);
@@ -474,22 +471,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         viewMenu.add(viewTraderListCheckBox);
 
-        viewClock.setText("Clock");
-        viewClock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewClockActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewClock);
-
-        jMenuItem3.setText("LogWindow");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
-            }
-        });
-        viewMenu.add(jMenuItem3);
-
         jCheckBoxMenuItem1.setText("Orderbook");
         jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -502,10 +483,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
-
-        contentMenuItem.setMnemonic('c');
-        contentMenuItem.setText("Contents");
-        helpMenu.add(contentMenuItem);
 
         aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText("About");
@@ -615,12 +592,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     private final LoggerDialog log_d = new LoggerDialog(this, false);
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        log_d.setVisible(!log_d.isShowing());
-
-
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
-
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
 
     }//GEN-LAST:event_openMenuItemActionPerformed
@@ -660,12 +631,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         //  System.out.printf("EDRET: %d\n",rc);
 
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
-
-    private void viewClockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewClockActionPerformed
-        ClockDialog cd = new ClockDialog(this, true);
-        cd.setVisible(rootPaneCheckingEnabled);
-
-    }//GEN-LAST:event_viewClockActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
@@ -711,7 +676,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     TraderListDialog tld = null;
     private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
-        System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
+
+javax.swing.SwingUtilities.invokeLater(()->{
+
+    System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
         if (this.viewTraderListCheckBox.getState()) {
             if (tld == null) {
                 tld = new TraderListDialog(this, false);
@@ -725,11 +693,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 });
 
             }
+            
             tld.setVisible(true);
         } else if (tld != null) {
             System.out.printf("Set visible = false\n");
             tld.setVisible(false);
         }
+});
+
     }//GEN-LAST:event_viewTraderListCheckBoxActionPerformed
 
     private void accelSpinnerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_accelSpinnerPropertyChange
@@ -763,6 +734,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         Globals.prefs = Preferences.userNodeForPackage(c);
 
         Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
+        
+        JDialog.setDefaultLookAndFeelDecorated(true);
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -786,7 +759,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private gui.MainChart chart;
     private javax.swing.JScrollPane chartSrollPane;
     private gui.Clock clock;
-    private javax.swing.JMenuItem contentMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JMenuItem editExchangeMenuItem;
     private javax.swing.JMenu editMenu;
@@ -798,7 +770,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel2;
@@ -827,7 +798,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem simMenuStop;
     private gui.Statistics statistics1;
     private javax.swing.JButton stopButton;
-    private javax.swing.JMenuItem viewClock;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JCheckBoxMenuItem viewTraderListCheckBox;
     // End of variables declaration//GEN-END:variables
