@@ -1058,12 +1058,7 @@ public class Exchange {
 
     long buy_failed = 0;
     long sell_failed = 0;
-    
-    
-    public void ua(Account a){
-            //.money=1000.0;
-           // a.shares=100;        
-    }
+ 
 
     /**
      *
