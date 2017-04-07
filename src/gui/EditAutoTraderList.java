@@ -147,7 +147,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             }
             money += (Double) list.getValueAt(r, list.getColumn("Money").getModelIndex());
             shares += (Double) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
-            System.out.printf("Row: %d %f %f\n", r, money, shares);
+//            System.out.printf("Row: %d %f %f\n", r, money, shares);
         }
         return money / shares;
     }

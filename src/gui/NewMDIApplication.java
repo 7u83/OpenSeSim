@@ -65,12 +65,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public NewMDIApplication() {
         initComponents();
-        
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
-//        Globals.frame = this;
         this.setLocationRelativeTo(null);
-        System.out.printf("Set title\n");
-        setTitle("SeSim - Stock Exchange Simmulator");
     }
 
     AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
@@ -210,6 +206,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jSplitPane1.setTopComponent(jSplitPane2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("SeSim - Stock Exchange Simmulator");
         setMinimumSize(new java.awt.Dimension(640, 480));
 
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/stop.gif"))); // NOI18N

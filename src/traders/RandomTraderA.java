@@ -73,16 +73,13 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         a.setListener(this);
 
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-        setStatus("Inital delay: %d\n", delay);
+        setStatus("Inital delay: %d", delay);
         timerTask = se.timer.startTimerTask(this, delay);
     }
 
     @Override
     public long timerTask() {
-//        System.out.printf("Enter TimerTask for %d / %d\n", System.identityHashCode(this), Thread.currentThread().getId());
         sesim.Exchange.Account a = se.getAccount(account_id);
-//        System.out.printf("Have Account %d\n", Thread.currentThread().getId());
-//        Globals.se.ua(a);
         long rc = this.doTrade();
         setStatus("Sleeping for %d ms", rc);
         return rc;
@@ -117,8 +114,8 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     }
 
     void setStatus(String format, Object... arguments) {
-        //     String s = String.format(format, arguments);
-//       System.out.printf("%s: %s\n", this.getName(), s);
+        String s = String.format(format, arguments);
+        System.out.printf("%s: %s\n", this.getName(), s);
     }
 
     private Float[] to_float(JSONArray a) {
