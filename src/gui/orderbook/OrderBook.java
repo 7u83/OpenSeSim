@@ -31,6 +31,7 @@ import gui.tools.NummericCellRenderer;
 import java.awt.Component;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -121,7 +122,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
         model = (DefaultTableModel) this.list.getModel();
         trader_column = list.getColumnModel().getColumn(0);
         list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
-        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));        
+        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));
         cfgChanged();
 //        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
         Globals.addCfgListener(this);
@@ -129,6 +130,8 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
 
     boolean oupdate = false;
     boolean new_oupdate = false;
+
+    long ouctr = 0;
 
     void oupdater() {
         ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
@@ -141,24 +144,33 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
             row++;
         }
 
-        oupdate = false;
+        synchronized (this) {
+            oupdate = new_oupdate;
+            new_oupdate = false;
+        }
+        if (oupdate) {
+            SwingUtilities.invokeLater(() -> {
+                oupdater();
+            });
+
+        }
 
     }
 
     @Override
-    public synchronized void UpdateOrderBook() {
+    public void UpdateOrderBook() {
 
-        if (oupdate) {
-            new_oupdate=true;
-            return;
+        synchronized (this) {
+            if (oupdate) {
+                new_oupdate = true;
+                return;
+            }
+            oupdate = true;
         }
-
-        oupdate = true;
 
         SwingUtilities.invokeLater(() -> {
             oupdater();
         });
-        
 
     }
 
