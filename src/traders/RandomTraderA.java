@@ -82,7 +82,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 //        System.out.printf("Enter TimerTask for %d / %d\n", System.identityHashCode(this), Thread.currentThread().getId());
         sesim.Exchange.Account a = se.getAccount(account_id);
 //        System.out.printf("Have Account %d\n", Thread.currentThread().getId());
-        Globals.se.ua(a);
+//        Globals.se.ua(a);
         long rc = this.doTrade();
         setStatus("Sleeping for %d ms", rc);
         return rc;
