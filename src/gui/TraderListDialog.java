@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Dialog;
+
 /*
  * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
@@ -40,7 +42,7 @@ public class TraderListDialog extends javax.swing.JDialog {
     public TraderListDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-     //   this.setLocationRelativeTo(MainWin.instance);
+        setLocationRelativeTo(parent);
     }
 
     /**
@@ -61,7 +63,7 @@ public class TraderListDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(traderListPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, 922, Short.MAX_VALUE)
+            .addComponent(traderListPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
