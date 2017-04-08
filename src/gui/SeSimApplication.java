@@ -45,6 +45,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -595,38 +596,75 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     private final LoggerDialog log_d = new LoggerDialog(this, false);
 
+
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
-
-    }//GEN-LAST:event_openMenuItemActionPerformed
-
-    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
         JFileChooser fc = new JFileChooser();
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("SeSim Files", "sesim");
         fc.setFileFilter(filter);
 
-        if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+        if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }
 
-        File f = fc.getSelectedFile();
+    }//GEN-LAST:event_openMenuItemActionPerformed
 
-        String[] e = ((FileNameExtensionFilter) fc.getFileFilter()).getExtensions();
+    // initialize a JFileChose with  worging directory and extension
+    private JFileChooser getFileChooser() {
+        JFileChooser fc = new JFileChooser();
 
-        String fn = f.getAbsolutePath();
+        String workdir = Globals.prefs.get(Globals.PrefKeys.WORKDIR, "");
+        fc.setCurrentDirectory(new File(workdir));
 
-        if (!f.getAbsolutePath().endsWith(e[0])) {
-            f = new File(f.getAbsolutePath() + "." + e[0]);
-        }
+        FileNameExtensionFilter sesim_filter = new FileNameExtensionFilter("SeSim Files", Globals.FileStrings.SESIM_EXTENSION);
+        fc.setFileFilter(sesim_filter);
+        return fc;
+    }
 
-        try{
-            Globals.saveFile(f);
-        }
-        catch (Exception ex){
+
+    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+        JFileChooser fc = getFileChooser();
+        FileFilter sesim_filter = fc.getFileFilter();
+
+        boolean done = false;
+        while (!done) {
+            if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
+            File f = fc.getSelectedFile();
+            String workdir = fc.getCurrentDirectory().getAbsolutePath();
+            Globals.prefs.put(Globals.PrefKeys.WORKDIR, workdir);
+            String fn = f.getAbsolutePath();
             
-            JOptionPane.showMessageDialog(this, "Can't save file "+ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-            
+            if (f.exists()) {
+                String s = String.format ("File %s already exists. Do you want to overwrite?",fn);
+                int dialogResult = JOptionPane.showConfirmDialog(null, s, "Warning", JOptionPane.YES_NO_OPTION);
+                if (dialogResult != JOptionPane.YES_OPTION) {
+                    continue;
+                }
+
+            }
+
+            FileFilter selected_filter = fc.getFileFilter();
+            if (selected_filter == sesim_filter) {
+                System.out.printf("Filter", selected_filter.toString());
+                if (!fn.toLowerCase().endsWith("sesim")) {
+                    f = new File(fn + "." + "sesim");
+                }
+            }
+
+            try {
+                Globals.saveFile(f);
+                return;
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(this, "Can't save file " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+
         }
+
 
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
@@ -682,29 +720,29 @@ public class SeSimApplication extends javax.swing.JFrame {
     TraderListDialog tld = null;
     private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
 
-javax.swing.SwingUtilities.invokeLater(()->{
+        javax.swing.SwingUtilities.invokeLater(() -> {
 
-    System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
-        if (this.viewTraderListCheckBox.getState()) {
-            if (tld == null) {
-                tld = new TraderListDialog(this, false);
-                tld.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        super.windowClosing(e);
-                        viewTraderListCheckBox.setState(false);
-                        System.out.printf("Set menu false\n");
-                    }
-                });
+            System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
+            if (this.viewTraderListCheckBox.getState()) {
+                if (tld == null) {
+                    tld = new TraderListDialog(this, false);
+                    tld.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            super.windowClosing(e);
+                            viewTraderListCheckBox.setState(false);
+                            System.out.printf("Set menu false\n");
+                        }
+                    });
 
+                }
+
+                tld.setVisible(true);
+            } else if (tld != null) {
+                System.out.printf("Set visible = false\n");
+                tld.setVisible(false);
             }
-            
-            tld.setVisible(true);
-        } else if (tld != null) {
-            System.out.printf("Set visible = false\n");
-            tld.setVisible(false);
-        }
-});
+        });
 
     }//GEN-LAST:event_viewTraderListCheckBoxActionPerformed
 
@@ -725,16 +763,14 @@ javax.swing.SwingUtilities.invokeLater(()->{
 
         System.out.printf("Main called\n");
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        
-        GraphicsDevice[]gs = ge.getScreenDevices();
-        for (GraphicsDevice d:gs){
-            System.out.printf("ID %s\n",d.getIDstring());
-        
+
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        for (GraphicsDevice d : gs) {
+            System.out.printf("ID %s\n", d.getIDstring());
+
         }
-        
+
         //System.exit(0);
-        
-        
         Globals.initGlobals();
         //System.exit(0);
         Globals.se = new Exchange();
@@ -743,18 +779,18 @@ javax.swing.SwingUtilities.invokeLater(()->{
         Globals.prefs = Preferences.userNodeForPackage(c);
 
         Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
-        
+
         JDialog.setDefaultLookAndFeelDecorated(true);
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 System.out.printf("In run method now\n");
-                
+
                 String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .getPath()).toString(); //.getName();
+                        .getCodeSource()
+                        .getLocation()
+                        .getPath()).toString(); //.getName();
 
                 System.out.printf("Creating Application\n");
                 new SeSimApplication().setVisible(true);

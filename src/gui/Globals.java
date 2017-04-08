@@ -75,6 +75,13 @@ public class Globals {
 
     static public sesim.Exchange se;
 
+    /**
+     * Defines keys for preferences
+     */
+    public static final class PrefKeys{
+        public static String WORKDIR = "workdir";
+    }
+    
     static public Preferences prefs;
 
     public static class CfgStrings {
@@ -185,6 +192,7 @@ public class Globals {
         public static final String SESIMVERSION = "sesim_version";
         public static final String STRATEGIES = "strategies";
         public static final String TRADERS = "traders";
+        public static final String SESIM_EXTENSION = "sesim";
     }
 
     static void saveFile(File f) throws FileNotFoundException {
