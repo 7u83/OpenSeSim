@@ -75,7 +75,7 @@ public final class EditStrategies extends javax.swing.JDialog {
         initComponents();
         
      
-              String dp = new java.io.File(NewMDIApplication.class.getProtectionDomain()
+              String dp = new java.io.File(SeSimApplication.class.getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
                 .getPath()).toString();

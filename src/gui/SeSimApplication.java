@@ -58,12 +58,12 @@ import traders.RandomTraderConfig;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class NewMDIApplication extends javax.swing.JFrame {
+public class SeSimApplication extends javax.swing.JFrame {
 
     /**
      * Creates new form NewMDIApplication
      */
-    public NewMDIApplication() {
+    public SeSimApplication() {
         initComponents();
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         this.setLocationRelativeTo(null);
@@ -739,13 +739,13 @@ javax.swing.SwingUtilities.invokeLater(()->{
             public void run() {
                 System.out.printf("In run method now\n");
                 
-                String x = new java.io.File(NewMDIApplication.class.getProtectionDomain()
+                String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
                 .getPath()).toString(); //.getName();
 
                 System.out.printf("Creating Application\n");
-                new NewMDIApplication().setVisible(true);
+                new SeSimApplication().setVisible(true);
             }
         });
     }
