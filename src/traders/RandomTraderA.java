@@ -114,8 +114,8 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     }
 
     void setStatus(String format, Object... arguments) {
-        String s = String.format(format, arguments);
-        System.out.printf("%s: %s\n", this.getName(), s);
+    //    String s = String.format(format, arguments);
+     //   System.out.printf("%s: %s\n", this.getName(), s);
     }
 
     private Float[] to_float(JSONArray a) {
@@ -191,20 +191,19 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
-//        System.out.printf("Order what %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
+        //System.out.printf("Order updated %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
         if (o.getOrderStatus() == OrderStatus.CLOSED) {
 
 //            System.out.printf("Enteter canel timer %d\n", Thread.currentThread().getId());
-            //    se.timer.cancelTimerTask(this);
 //System.out.printf("back from canel timer %d\n", System.identityHashCode(this));
 //System.exit(0);
+          //  setStatus("Order closed, %s", o.getType().toString());
             Long w = waitAfterOrder();
 
-            setStatus("Order closed, %s", o.getType().toString());
-
 //            System.out.printf("We have now to wait for %d\n", w);
-            //timerTask = se.timer.startTimerTask(this, w);
-            //  se.timer.XXXrescheduleTimerTask(timerTask, w);
+//        se.timer.cancelTimerTask(this);
+          //  timerTask = se.timer.startTimerTask(this, w);
+              se.timer.rescheduleTimerTask(timerTask, w);
         }
 //        System.out.printf("Updatetd Account\n", "");
 
