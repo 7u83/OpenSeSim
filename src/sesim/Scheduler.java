@@ -232,8 +232,9 @@ public class Scheduler extends Thread {
         return task;
     }
 
-    public void XXXrescheduleTimerTask(TimerTaskDef task, long time) {
+    public void rescheduleTimerTask(TimerTaskDef task, long time) {
         long evtime = time + currentTimeMillis();
+        task.newevtime=evtime;
         set_tasks.add(task);
 
         synchronized (this) {
