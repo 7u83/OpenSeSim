@@ -50,12 +50,12 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     public Float[] sell_volume = {100f, 100f};
     public Float[] sell_limit = {-2f, 2f};
     public Long[] sell_wait = {10000L, 50000L};
-    public Long[] wait_after_sell = {1000L, 30000L};
+    public Long[] wait_after_sell = {0L, 0L};
 
     public Float[] buy_volume = {100f, 100f};
     public Float[] buy_limit = {-2f, 2f};
     public Long[] buy_wait = {10000L, 50000L};
-    public Long[] wait_after_buy = {10L, 30L};
+    public Long[] wait_after_buy = {0L, 0L};
 
     final String INITIAL_DELAY = "initla_delay";
     final String SELL_VOLUME = "sell_volume";

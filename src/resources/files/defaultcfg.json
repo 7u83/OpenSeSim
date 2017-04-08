@@ -1,101 +1,60 @@
 {
     "traders": [
         {
-            "Money": "100.0",
-            "Strategy": "Tube",
+            "Money": "1000000.0",
+            "Strategy": "SimpleRandom",
             "Enabled": "true",
-            "Count": "10000",
-            "Shares": "100.0",
-            "Name": "Mond"
+            "Count": "1",
+            "Shares": "10000.0",
+            "Name": "Alice"
         },
         {
-            "Money": "1000.0",
-            "Strategy": "NasenTrading",
+            "Money": "10000.0",
+            "Strategy": "SimpleRandom",
             "Enabled": "true",
-            "Count": "100",
-            "Shares": "10.0",
-            "Name": "Nase"
+            "Count": "1",
+            "Shares": "100.0",
+            "Name": "Bob"
         }
     ],
-    "strategies": {
-        "Tube": {
-            "sell_wait": [
-                10000,
-                50000
-            ],
-            "initla_delay": [
-                0,
-                5
-            ],
-            "sell_limit": [
-                -2,
-                2
-            ],
-            "sell_wait_after": [
-                1000,
-                30000
-            ],
-            "buy_wait": [
-                10000,
-                50000
-            ],
-            "sell_volume": [
-                100,
-                100
-            ],
-            "buy_wait_after": [
-                10,
-                30
-            ],
-            "buy_volume": [
-                100,
-                100
-            ],
-            "buy_limit": [
-                -2,
-                2
-            ],
-            "base": "traders.RandomTraderA"
-        },
-        "NasenTrading": {
-            "sell_wait": [
-                10000,
-                50000
-            ],
-            "initla_delay": [
-                0,
-                111
-            ],
-            "sell_limit": [
-                -2,
-                9
-            ],
-            "sell_wait_after": [
-                1000,
-                30000
-            ],
-            "buy_wait": [
-                10000,
-                50000
-            ],
-            "sell_volume": [
-                100,
-                100
-            ],
-            "buy_wait_after": [
-                10,
-                30
-            ],
-            "buy_volume": [
-                100,
-                100
-            ],
-            "buy_limit": [
-                -2,
-                9
-            ],
-            "base": "traders.RandomTraderA"
-        }
-    },
+    "strategies": {"SimpleRandom": {
+        "sell_wait": [
+            10000,
+            50000
+        ],
+        "initla_delay": [
+            0,
+            5
+        ],
+        "sell_limit": [
+            -2,
+            2
+        ],
+        "sell_wait_after": [
+            0,
+            0
+        ],
+        "buy_wait": [
+            10000,
+            50000
+        ],
+        "sell_volume": [
+            100,
+            100
+        ],
+        "buy_wait_after": [
+            0,
+            0
+        ],
+        "buy_volume": [
+            100,
+            100
+        ],
+        "buy_limit": [
+            -2,
+            2
+        ],
+        "base": "traders.RandomTraderA"
+    }},
     "version": 0.1
 }

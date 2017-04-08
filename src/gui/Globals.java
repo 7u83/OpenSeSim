@@ -219,6 +219,7 @@ public class Globals {
     }
 
     
+    
     public static void saveFile(File f) throws FileNotFoundException {
 
         JSONObject sobj = new JSONObject();
@@ -237,12 +238,7 @@ public class Globals {
 
     }
     
-    public static void loadFile(File f) throws IOException {
-        
-        f.getAbsoluteFile();
-        
-        String s;
-        s = new String(Files.readAllBytes(f.toPath()));
+    public static void loadString(String s) throws IOException{
         JSONObject sobj = new JSONObject(s);
         
         Double version = sobj.getDouble(PrefKeys.SESIMVERSION);
@@ -255,6 +251,16 @@ public class Globals {
         
         putStrategies(strategies);
         putTraders(traders);
+        
+    }
+    
+    public static void loadFile(File f) throws IOException {
+        
+        f.getAbsoluteFile();
+        String s;
+        s = new String(Files.readAllBytes(f.toPath()));
+        
+        loadString(s);
         
     }
 

@@ -34,8 +34,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.TimerTask;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -56,7 +58,6 @@ import sesim.AutoTraderConfig;
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Scheduler;
-import traders.RandomTraderConfig;
 
 /**
  *
@@ -70,6 +71,11 @@ public class SeSimApplication extends javax.swing.JFrame {
     public SeSimApplication() {
         initComponents();
         setTitle("");
+        boolean init = Globals.prefs.getBoolean("initilized", false);
+        if (!init){
+            resetToDefaults();
+            Globals.prefs.putBoolean("initilized", true);
+        }
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         this.setLocationRelativeTo(null);
     }
@@ -174,12 +180,13 @@ public class SeSimApplication extends javax.swing.JFrame {
         statistics1 = new gui.Statistics();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        resetMenuItem = new javax.swing.JMenuItem();
-        jSeparator5 = new javax.swing.JPopupMenu.Separator();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         closeMenuItem = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        resetToDefaultsMenuItem = new javax.swing.JMenuItem();
+        clearMenuItem = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
@@ -193,9 +200,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         simMenuStart = new javax.swing.JMenuItem();
         simMenuPause = new javax.swing.JMenuItem();
         simMenuStop = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
@@ -334,16 +338,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
-        resetMenuItem.setMnemonic('r');
-        resetMenuItem.setText("Reset");
-        resetMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(resetMenuItem);
-        fileMenu.add(jSeparator5);
-
         openMenuItem.setMnemonic('o');
         openMenuItem.setText("Open");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -380,6 +374,26 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
         });
         fileMenu.add(closeMenuItem);
+        fileMenu.add(jSeparator5);
+
+        resetToDefaultsMenuItem.setMnemonic('r');
+        resetToDefaultsMenuItem.setText("Reset to defaults");
+        resetToDefaultsMenuItem.setToolTipText("");
+        resetToDefaultsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetToDefaultsMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(resetToDefaultsMenuItem);
+
+        clearMenuItem.setMnemonic('c');
+        clearMenuItem.setText("Clear All");
+        clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(clearMenuItem);
         fileMenu.add(jSeparator4);
 
         exitMenuItem.setMnemonic('x');
@@ -465,18 +479,6 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
         });
         simMenu.add(simMenuStop);
-        simMenu.add(jSeparator3);
-
-        jMenuItem4.setText("Point Zero");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
-            }
-        });
-        simMenu.add(jMenuItem4);
-
-        jMenuItem5.setText("jMenuItem5");
-        simMenu.add(jMenuItem5);
 
         menuBar.add(simMenu);
 
@@ -737,9 +739,29 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
 
-    private void resetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetMenuItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_resetMenuItemActionPerformed
+    private void resetToDefaults(){
+        InputStream is = getClass().getResourceAsStream("/resources/files/defaultcfg.json");
+        String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
+
+        try {
+            Globals.loadString(df);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+        }
+        
+    }
+    
+    private void resetToDefaultsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetToDefaultsMenuItemActionPerformed
+
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        this.resetToDefaults();
+
+    }//GEN-LAST:event_resetToDefaultsMenuItemActionPerformed
 
     private void simMenuStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simMenuStartActionPerformed
         startSim();
@@ -774,10 +796,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         JDialog jd = new gui.orderbook.OrderBookDialog(this, false);
         jd.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
-
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        Globals.se.pointZero();
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     TraderListDialog tld = null;
     private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
@@ -821,6 +839,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
         setTitle("");
     }//GEN-LAST:event_closeMenuItemActionPerformed
+
+    private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_clearMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -872,6 +894,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JSpinner accelSpinner;
     private gui.MainChart chart;
     private javax.swing.JScrollPane chartSrollPane;
+    private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;
     private javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
@@ -884,13 +907,10 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JSplitPane jSplitPane1;
@@ -905,7 +925,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
     private javax.swing.JMenuItem pasteMenuItem;
     private gui.orderbook.QuoteVertical quoteVertical1;
-    private javax.swing.JMenuItem resetMenuItem;
+    private javax.swing.JMenuItem resetToDefaultsMenuItem;
     private javax.swing.JButton runButton;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
