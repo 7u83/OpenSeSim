@@ -49,13 +49,11 @@ public class OpenOrdersList extends javax.swing.JPanel {
     DefaultTableModel model;
 
     public final void updateModel() {
-        System.out.printf("Update Model\n");
         if (null == account) {
-
             return;
         }
 
-        System.out.printf("Now updateing\n");
+
 
         int row = 0;
 
