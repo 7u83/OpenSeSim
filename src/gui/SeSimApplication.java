@@ -67,6 +67,7 @@ public class SeSimApplication extends javax.swing.JFrame {
      */
     public SeSimApplication() {
         initComponents();
+        setTitle("");
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         this.setLocationRelativeTo(null);
     }
@@ -171,10 +172,13 @@ public class SeSimApplication extends javax.swing.JFrame {
         statistics1 = new gui.Statistics();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        resetMenuItem = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
+        closeMenuItem = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         editExchangeMenuItem = new javax.swing.JMenuItem();
@@ -328,14 +332,15 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
-        jMenuItem1.setMnemonic('n');
-        jMenuItem1.setText("New");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        resetMenuItem.setMnemonic('r');
+        resetMenuItem.setText("Reset");
+        resetMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                resetMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(jMenuItem1);
+        fileMenu.add(resetMenuItem);
+        fileMenu.add(jSeparator5);
 
         openMenuItem.setMnemonic('o');
         openMenuItem.setText("Open");
@@ -364,6 +369,16 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
         });
         fileMenu.add(saveAsMenuItem);
+
+        closeMenuItem.setMnemonic('c');
+        closeMenuItem.setText("Close");
+        closeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(closeMenuItem);
+        fileMenu.add(jSeparator4);
 
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
@@ -598,11 +613,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
-        JFileChooser fc = new JFileChooser();
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("SeSim Files", "sesim");
-        fc.setFileFilter(filter);
-
+        JFileChooser fc = getFileChooser();
         if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }
@@ -616,28 +627,54 @@ public class SeSimApplication extends javax.swing.JFrame {
         String workdir = Globals.prefs.get(Globals.PrefKeys.WORKDIR, "");
         fc.setCurrentDirectory(new File(workdir));
 
-        FileNameExtensionFilter sesim_filter = new FileNameExtensionFilter("SeSim Files", Globals.FileStrings.SESIM_EXTENSION);
+        FileNameExtensionFilter sesim_filter = new FileNameExtensionFilter("SeSim Files", Globals.SESIM_FILEEXTENSION);
         fc.setFileFilter(sesim_filter);
         return fc;
     }
 
+    @Override
+    public final void setTitle(String filename) {
+        String name;
+        name = Globals.SESIM_APPTITLE;
+        if (!"".equals(filename)) {
+            name += " (" + filename + ")";
+        }
+        super.setTitle(name);
+    }
 
-    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+    private void saveFile(boolean saveAs) {
         JFileChooser fc = getFileChooser();
         FileFilter sesim_filter = fc.getFileFilter();
 
-        boolean done = false;
-        while (!done) {
-            if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
-                return;
+        while (true) {
+            String current_file = Globals.prefs.get(Globals.PrefKeys.CURRENTFILE, "");
+            File fobj;
+
+            if (saveAs || "".equals(current_file)) {
+
+                if (!"".equals(current_file)) {
+                    fobj = new File(current_file);
+                    fc.setSelectedFile(fobj);
+                    fc.setCurrentDirectory(fobj);
+                }
+
+                saveAs = true;
+                if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+                    return;
+                }
+            } else {
+                fobj = new File(current_file);
+                fc.setSelectedFile(fobj);
+                fc.setCurrentDirectory(fobj);
             }
+
             File f = fc.getSelectedFile();
             String workdir = fc.getCurrentDirectory().getAbsolutePath();
             Globals.prefs.put(Globals.PrefKeys.WORKDIR, workdir);
             String fn = f.getAbsolutePath();
-            
-            if (f.exists()) {
-                String s = String.format ("File %s already exists. Do you want to overwrite?",fn);
+
+            if (f.exists() && saveAs) {
+                String s = String.format("File %s already exists. Do you want to overwrite?", fn);
                 int dialogResult = JOptionPane.showConfirmDialog(null, s, "Warning", JOptionPane.YES_NO_OPTION);
                 if (dialogResult != JOptionPane.YES_OPTION) {
                     continue;
@@ -648,13 +685,15 @@ public class SeSimApplication extends javax.swing.JFrame {
             FileFilter selected_filter = fc.getFileFilter();
             if (selected_filter == sesim_filter) {
                 System.out.printf("Filter", selected_filter.toString());
-                if (!fn.toLowerCase().endsWith("sesim")) {
-                    f = new File(fn + "." + "sesim");
+                if (!fn.toLowerCase().endsWith("." + Globals.SESIM_FILEEXTENSION)) {
+                    f = new File(fn + "." + Globals.SESIM_FILEEXTENSION);
                 }
             }
 
             try {
                 Globals.saveFile(f);
+                Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, fn);
+                setTitle(f.getName());
                 return;
 
             } catch (Exception ex) {
@@ -665,7 +704,12 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         }
 
+    }
 
+
+    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+
+        this.saveFile(true);
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
     private void editExchangeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExchangeMenuItemActionPerformed
@@ -675,9 +719,9 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void resetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetMenuItemActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_resetMenuItemActionPerformed
 
     private void simMenuStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simMenuStartActionPerformed
         startSim();
@@ -747,12 +791,18 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_viewTraderListCheckBoxActionPerformed
 
     private void accelSpinnerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_accelSpinnerPropertyChange
-        System.out.printf("Accel Spinner PRop Change\n");
+//        System.out.printf("Accel Spinner PRop Change\n");
     }//GEN-LAST:event_accelSpinnerPropertyChange
 
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
-        // TODO add your handling code here:
+        saveFile(false);
+
     }//GEN-LAST:event_saveMenuItemActionPerformed
+
+    private void closeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeMenuItemActionPerformed
+        Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
+        setTitle("");
+    }//GEN-LAST:event_closeMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -777,6 +827,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         Class<?> c = sesim.Exchange.class;
         Globals.prefs = Preferences.userNodeForPackage(c);
+        Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
 
         Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
 
@@ -804,6 +855,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private gui.MainChart chart;
     private javax.swing.JScrollPane chartSrollPane;
     private gui.Clock clock;
+    private javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JMenuItem editExchangeMenuItem;
     private javax.swing.JMenu editMenu;
@@ -814,7 +866,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel2;
@@ -822,6 +873,8 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
@@ -834,6 +887,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
     private javax.swing.JMenuItem pasteMenuItem;
     private gui.orderbook.QuoteVertical quoteVertical1;
+    private javax.swing.JMenuItem resetMenuItem;
     private javax.swing.JButton runButton;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;

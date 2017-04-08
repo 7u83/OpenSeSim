@@ -27,7 +27,9 @@ package gui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -47,6 +49,10 @@ import sesim.AutoTraderLoader;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Globals {
+    
+    public static final String SESIM_FILEEXTENSION = "sesim";
+    public static final String SESIM_APPTITLE = "SeSim - Stock Exchange Simulator";
+    
 
     public interface CfgListener {
 
@@ -80,6 +86,7 @@ public class Globals {
      */
     public static final class PrefKeys{
         public static String WORKDIR = "workdir";
+        public static final String CURRENTFILE = "currentfile";
     }
     
     static public Preferences prefs;
@@ -192,10 +199,11 @@ public class Globals {
         public static final String SESIMVERSION = "sesim_version";
         public static final String STRATEGIES = "strategies";
         public static final String TRADERS = "traders";
-        public static final String SESIM_EXTENSION = "sesim";
+    
     }
 
-    static void saveFile(File f) throws FileNotFoundException {
+    
+    public static void saveFile(File f) throws FileNotFoundException {
 
         JSONObject sobj = new JSONObject();
 
@@ -211,6 +219,12 @@ public class Globals {
         out.print(sobj.toString(4));
         out.close();
 
+    }
+    
+    public static void loadFile(File f) throws IOException {
+        String s = new String(Files.readAllBytes(f.toPath()));
+        JSONObject sobj = new JSONObject(s);
+        
     }
 
 }
