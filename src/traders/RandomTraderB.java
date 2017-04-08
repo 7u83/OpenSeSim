@@ -158,7 +158,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     @Override
     public boolean getDevelStatus() {
-        return false;
+        return true;
     }
 
     public long cancelOrders() {

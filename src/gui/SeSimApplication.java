@@ -33,10 +33,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -614,10 +616,26 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
         JFileChooser fc = getFileChooser();
-        if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
 
+        while (true) {
+            if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
+
+            try {
+                File f = fc.getSelectedFile();
+                Globals.loadFile(f);
+                String workdir = fc.getCurrentDirectory().getAbsolutePath();
+                Globals.prefs.put(Globals.PrefKeys.WORKDIR, workdir);
+                Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, f.getAbsolutePath());
+                setTitle(f.getName());
+                return;
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
     }//GEN-LAST:event_openMenuItemActionPerformed
 
     // initialize a JFileChose with  worging directory and extension
@@ -675,7 +693,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             if (f.exists() && saveAs) {
                 String s = String.format("File %s already exists. Do you want to overwrite?", fn);
-                int dialogResult = JOptionPane.showConfirmDialog(null, s, "Warning", JOptionPane.YES_NO_OPTION);
+                int dialogResult = JOptionPane.showConfirmDialog(this, s, "Warning", JOptionPane.YES_NO_OPTION);
                 if (dialogResult != JOptionPane.YES_OPTION) {
                     continue;
                 }
@@ -698,7 +716,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             } catch (Exception ex) {
 
-                JOptionPane.showMessageDialog(this, "Can't save file " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Can't save file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
             }
 

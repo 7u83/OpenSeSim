@@ -93,7 +93,7 @@ public final class EditStrategies extends javax.swing.JDialog {
 
 
     
-    final String STRATEGYPREFS = "Strategies";
+    //final String STRATEGYPREFS = "Strategies";
 
     void reloadStrategyConfigs() {
 
@@ -261,7 +261,7 @@ public final class EditStrategies extends javax.swing.JDialog {
 
     private void jComboBoxStrategySelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxStrategySelectorActionPerformed
 
-        String cfglist = Globals.prefs.get(STRATEGYPREFS, "{}");
+        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
         JSONObject cfgs = new JSONObject(cfglist);
         String item = (String) this.jComboBoxStrategySelector.getSelectedItem();
 
@@ -354,12 +354,12 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
             item = item + " - " + d.getName();
         }
 
-        String cfglist = Globals.prefs.get(STRATEGYPREFS, "{}");
+        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
         JSONObject cfgs = new JSONObject(cfglist);
         
         cfgs.put(item, o);
         
-        Globals.prefs.put(STRATEGYPREFS, cfgs.toString());
+        Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
 
         //this.reloadStrategyConfigs();
         this.initComboBox();
@@ -381,14 +381,14 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
         String selected = (String) this.jComboBoxStrategySelector.getSelectedItem();
         System.out.printf("Selected: %s\n", selected);
 
-        String cfglist = Globals.prefs.get(STRATEGYPREFS, "{}");
+        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
         JSONObject cfgs = new JSONObject(cfglist);
 
         //System.out.printf("CFG vorher: %s\n", cfgs.toString(3));
         cfgs.remove(selected);
         
        // System.out.printf("Neue nachher: %s\n", cfgs.toString(3));
-        Globals.prefs.put(STRATEGYPREFS, cfgs.toString());
+        Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
 
         this.initComboBox();
         
