@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -346,6 +347,11 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         saveMenuItem.setMnemonic('s');
         saveMenuItem.setText("Save");
+        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveMenuItem);
 
         saveAsMenuItem.setMnemonic('a');
@@ -607,18 +613,20 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         String[] e = ((FileNameExtensionFilter) fc.getFileFilter()).getExtensions();
 
-        System.out.printf("Abs: %s\n", f.getAbsoluteFile());
-
         String fn = f.getAbsolutePath();
 
         if (!f.getAbsolutePath().endsWith(e[0])) {
             f = new File(f.getAbsolutePath() + "." + e[0]);
         }
 
-        Globals.saveFile(f);
-
-        System.out.printf("Sel File: %s \n", f.getAbsolutePath());
-
+        try{
+            Globals.saveFile(f);
+        }
+        catch (Exception ex){
+            
+            JOptionPane.showMessageDialog(this, "Can't save file "+ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            
+        }
 
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
@@ -703,6 +711,10 @@ javax.swing.SwingUtilities.invokeLater(()->{
     private void accelSpinnerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_accelSpinnerPropertyChange
         System.out.printf("Accel Spinner PRop Change\n");
     }//GEN-LAST:event_accelSpinnerPropertyChange
+
+    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_saveMenuItemActionPerformed
 
     /**
      * @param args the command line arguments

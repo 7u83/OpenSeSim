@@ -127,7 +127,7 @@ public class Globals {
                 .getPath()).toString();
 
         pathlist.add(dp);
-        LOGGER.info(String.format("Path %s",dp));
+        LOGGER.info(String.format("Path %s", dp));
         tloader = new AutoTraderLoader(pathlist);
 
     }
@@ -180,20 +180,28 @@ public class Globals {
         prefs.put(STRATEGYPREFS, cfgs.toString());
     }
 
-    static void saveFile(File f) {
+    public static class FileStrings {
+
+        public static final String SESIMVERSION = "sesim_version";
+        public static final String STRATEGIES = "strategies";
+        public static final String TRADERS = "traders";
+    }
+
+    static void saveFile(File f) throws FileNotFoundException {
 
         JSONObject sobj = new JSONObject();
+
         JSONArray traders = getTraders();
         JSONObject strategies = getStrategies();
-        sobj.put("strategies", strategies);
-        sobj.put("traders", traders);
-        try {
-            PrintWriter out = new PrintWriter(f.getAbsolutePath());
-            out.print(sobj.toString(4));
-            out.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Globals.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        sobj.put(FileStrings.SESIMVERSION, "0.1");
+        sobj.put(FileStrings.STRATEGIES, strategies);
+        sobj.put(FileStrings.TRADERS, traders);
+
+        PrintWriter out;
+        out = new PrintWriter(f.getAbsolutePath());
+        out.print(sobj.toString(4));
+        out.close();
 
     }
 
