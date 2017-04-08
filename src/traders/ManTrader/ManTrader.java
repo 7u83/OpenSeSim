@@ -115,9 +115,9 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     @Override
     public void accountUpdated(Exchange.Account a, Exchange.Order o) {
         //this.consoleDialog.cons
-        System.out.printf("AccountListener called\n");
+        //System.out.printf("AccountListener called\n");
 
-        System.out.printf("%d %s\n", o.getID(), o.getOrderStatus().toString());
+        //System.out.printf("%d %s\n", o.getID(), o.getOrderStatus().toString());
 
         if (o.getOrderStatus()==OrderStatus.CLOSED){
             o.getAccount().getOrders().put(o.getID(), o);

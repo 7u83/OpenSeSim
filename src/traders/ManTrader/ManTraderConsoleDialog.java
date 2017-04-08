@@ -36,12 +36,16 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form ManTraderConsole
+     * @param parent
+     * @param modal
+     * @param account
      */
     public ManTraderConsoleDialog(java.awt.Frame parent, boolean modal, Account account) {
         super(parent, modal);
         initComponents();
         this.ordersList.initOrderList(account);
         this.setTitle(account.getOwner().getName()+" - Trading Console");
+        this.setLocationRelativeTo(parent);
     }
     
     public gui.OpenOrdersList getOrderList(){
