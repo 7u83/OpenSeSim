@@ -29,7 +29,7 @@ import javax.swing.JDialog;
 import org.json.JSONObject;
 
 /**
- *
+ * Interface for auto traders
  * @author 7u83 <7u83@mail.ru>
  */
 public interface AutoTraderInterface {
@@ -38,16 +38,42 @@ public interface AutoTraderInterface {
 
     public abstract String getDisplayName();
 
+    /**
+     * Get a graphical user interface to configure the auto trader.
+     * @return an AutoTraderGui object or null if there is no graphical
+     * user interface available.
+     */
     public abstract AutoTraderGui getGui();
 
     public abstract JDialog getGuiConsole();
 
+    /**
+     * Get current configuration of the auto trader as JSON object.
+     * @return JSONObject containing the configuration
+     */
     public abstract JSONObject getConfig();
 
+    /**
+     * Set the configuration for auto trader by a JSON object.
+     * @param cfg the configuration
+     */
     public abstract void putConfig(JSONObject cfg);
 
+    /**
+     * Return the name of the auto trader.
+     * @return name
+     */
     public abstract String getName();
 
+    /**
+     * Initialize the auto trader
+     * @param se Exechange to trade on
+     * @param id 
+     * @param name Name of auto trader
+     * @param money Money 
+     * @param shares Number of shares
+     * @param cfg 
+     */
     public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg);
 
     public Exchange.Account getAccount();

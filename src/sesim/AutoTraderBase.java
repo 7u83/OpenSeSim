@@ -65,7 +65,8 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
         return name;
     }
 
-    //  @Override
+   
+    @Override
     public long getID() {
         return id;
     }
@@ -75,6 +76,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
         return se.getAccount(account_id);
     }
 
+    @Override
     public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
         this.account_id = se.createAccount(money, shares);
         se.getAccount(account_id).owner = this;

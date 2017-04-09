@@ -55,6 +55,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     }
 
+    @Override
     public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
         super.init(se, id, name, money, shares, cfg);
         getAccount().setListener(this);
