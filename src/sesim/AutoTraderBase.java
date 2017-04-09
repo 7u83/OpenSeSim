@@ -29,18 +29,18 @@ import org.json.JSONObject;
 import sesim.Scheduler.TimerTaskRunner;
 
 /**
- *
+ * 
  * @author 7u83 <7u83@mail.ru>
  */
 public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRunner {
 
     protected double account_id;
     protected Exchange se;
-    protected AutoTraderConfig config;
+   // protected AutoTraderConfig config;
 
     protected String name;
 
-    public AutoTraderBase(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
+/*    public AutoTraderBase(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
         Exchange.Account a = se.getAccount(account_id);
 
@@ -51,7 +51,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
         this.id = id;
 
     }
-
+*/
     public AutoTraderBase() {
         se = null;
         id = 0;

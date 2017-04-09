@@ -31,8 +31,8 @@ import javax.swing.JDialog;
 import org.json.JSONObject;
 
 import sesim.AutoTraderBase;
-import sesim.AutoTraderConfigBase;
-import sesim.AutoTraderConfig;
+
+//import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
@@ -45,10 +45,10 @@ import sesim.Exchange.OrderStatus;
  */
 public class ManTrader extends AutoTraderBase implements AccountListener, AutoTraderInterface{
 
-    public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
-        //  super(se, id, name, money, shares, null);
-        super();
-    }
+//    public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
+//        //  super(se, id, name, money, shares, null);
+//        super();
+//    }
 
     public ManTrader() {
         super();

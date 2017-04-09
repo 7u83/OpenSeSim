@@ -41,7 +41,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sesim.AutoTraderConfig;
+//import sesim.AutoTraderConfig;
 
 /**
  *
@@ -139,7 +139,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
         for (int r = 0; r < model.getRowCount(); r++) {
             Boolean e = (Boolean) list.getValueAt(r, list.getColumn("Enabled").getModelIndex());
-            if (e==null){
+            if (e == null) {
                 continue;
             }
             if (!e) {

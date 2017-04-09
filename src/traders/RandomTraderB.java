@@ -37,7 +37,7 @@ import org.json.JSONObject;
 //import sesim.AccountData;
 
 import sesim.AutoTraderBase;
-import sesim.AutoTraderConfig;
+
 import sesim.AutoTraderGui;
 import sesim.Exchange;
 import sesim.Exchange.Account;

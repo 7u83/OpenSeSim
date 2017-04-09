@@ -54,7 +54,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import sesim.AutoTraderConfig;
+
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Scheduler;
