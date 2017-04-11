@@ -44,26 +44,21 @@ public class Statistics extends javax.swing.JPanel {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.printf("Statistics comming\n");
                 Exchange.Statistics s = Globals.se.getStatistics();
-                
+
                 tradesLabel.setText(String.format("%d", s.trades));
-                
-                
-                if (s.heigh == null){
+
+                if (s.heigh == null) {
                     labelHigh.setText("--");
-                }
-                else {
+                } else {
                     labelHigh.setText(Globals.se.getMoneyFormatter().format(s.heigh));
                 }
 
-                if (s.low == null){
+                if (s.low == null) {
                     labelLow.setText("--");
-                }
-                else {
+                } else {
                     labelLow.setText(Globals.se.getMoneyFormatter().format(s.low));
                 }
-                
 
             }
         }, 1000, 1000);

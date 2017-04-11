@@ -1136,6 +1136,7 @@ public class Exchange {
 
         Account a = accounts.get(account_id);
         if (a == null) {
+            System.out.printf("Order not places account\n");
             return -1;
         }
         
@@ -1154,7 +1155,7 @@ public class Exchange {
                     buy_failed++;
                     break;
             }
-            
+            System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
         
 
             return -1;

@@ -31,6 +31,8 @@ import gui.tools.NummericCellRenderer;
 import java.awt.Component;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -126,6 +128,15 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
         cfgChanged();
 //        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
         Globals.addCfgListener(this);
+        
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+               // System.out.printf("Update order book\n");
+               // UpdateOrderBook();
+            }
+        }, 1000, 1000);
+        
     }
 
     boolean oupdate = false;
