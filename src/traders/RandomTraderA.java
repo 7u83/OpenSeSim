@@ -37,6 +37,7 @@ import sesim.Exchange;
 import sesim.Exchange.Account;
 import sesim.Exchange.AccountListener;
 import sesim.Exchange.OrderStatus;
+import sesim.Exchange.OrderType;
 import sesim.Quote;
 
 /**
@@ -77,15 +78,20 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         timerTask = se.timer.startTimerTask(this, delay);
     }
 
-    boolean intask=false;
+    boolean intask = false;
+
     @Override
     public long timerTask() {
-intask=true;
+        intask = true;
+        owait = null;
         sesim.Exchange.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
         setStatus("Sleeping for %d ms", rc);
-intask =false;
-setStatus("Return fromtask %d", rc);
+        intask = false;
+        setStatus("Return fromtask %d", rc);
+        
+        if (owait != null)
+            return owait;
         return rc;
 
     }
@@ -118,8 +124,8 @@ setStatus("Return fromtask %d", rc);
     }
 
     void setStatus(String format, Object... arguments) {
-    String s = String.format(format, arguments);
-        System.out.printf("%s: %s\n", this.getName(), s);
+    //    String s = String.format(format, arguments);
+//        System.out.printf("%s: %s\n", this.getName(), s);
     }
 
     private Float[] to_float(JSONArray a) {
@@ -140,6 +146,8 @@ setStatus("Return fromtask %d", rc);
         return ret;
 
     }
+
+    Long owait = null;
 
     @Override
     public void putConfig(JSONObject cfg) {
@@ -195,21 +203,19 @@ setStatus("Return fromtask %d", rc);
 
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
-        setStatus("Account update -%s ",o.getOrderStatus().toString());
+        setStatus("Account update -%s ", o.getOrderStatus().toString());
+        setStatus("In Task: %s", Boolean.toString(this.intask));
         //System.out.printf("Order updated %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
         if (o.getOrderStatus() == OrderStatus.CLOSED) {
 
-//            System.out.printf("Enteter canel timer %d\n", Thread.currentThread().getId());
-//System.out.printf("back from canel timer %d\n", System.identityHashCode(this));
-//System.exit(0);
-          //  setStatus("Order closed, %s", o.getType().toString());
-            Long w = waitAfterOrder();
+            if (!intask) {
+                Long w = waitAfterOrder();
+                setStatus("Reschedule %d", w);
+                se.timer.rescheduleTimerTask(timerTask, w);
+            } else {
+                owait = waitAfterOrder();
+            }
 
-//            System.out.printf("We have now to wait for %d\n", w);
-//        se.timer.cancelTimerTask(this);
-          //  timerTask = se.timer.startTimerTask(this, w);
-          setStatus("Reschedule %d",w);
-              se.timer.rescheduleTimerTask(timerTask, w);
         }
 //        System.out.printf("Updatetd Account\n", "");
 
@@ -231,7 +237,7 @@ setStatus("Return fromtask %d", rc);
     Action mode = Action.RANDOM;
 
     Integer doTrade1(Action a) {
-        setStatus("doTrade1 with action %s",a.toString());
+        setStatus("doTrade1 with action %s", a.toString());
         switch (a) {
             case BUY: {
                 boolean rc = doBuy();

@@ -29,6 +29,7 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -46,6 +47,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.UIManager;
@@ -69,7 +71,28 @@ public class SeSimApplication extends javax.swing.JFrame {
      * Creates new form NewMDIApplication
      */
     public SeSimApplication() {
+
         initComponents();
+        
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] screens = ge.getScreenDevices();
+        
+            Window w = screens[1].getFullScreenWindow();
+            
+            JFrame dummy = new JFrame(screens[1].getDefaultConfiguration());
+            
+            setLocationRelativeTo(dummy);
+            dummy.dispose();
+        
+        for (GraphicsDevice gd:screens){
+            //Window w = gd.getFullScreenWindow();
+
+            
+            
+        }
+        
+        
+        
         setTitle("");
         boolean init = Globals.prefs.getBoolean("initilized", false);
         if (!init){
@@ -77,7 +100,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             Globals.prefs.putBoolean("initilized", true);
         }
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
-        this.setLocationRelativeTo(null);
+        //this.setLocationRelativeTo(null);
     }
 
     AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
@@ -859,6 +882,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             System.out.printf("ID %s\n", d.getIDstring());
 
         }
+        //System.exit(0);
 
         //System.exit(0);
         Globals.initGlobals();
@@ -884,6 +908,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                         .getPath()).toString(); //.getName();
 
                 System.out.printf("Creating Application\n");
+                
                 new SeSimApplication().setVisible(true);
             }
         });
