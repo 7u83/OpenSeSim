@@ -213,10 +213,6 @@ public class Globals {
         prefs.put(PrefKeys.STRATEGIES, cfgs.toString());
     }
 
-    public static class FileKeys {
-
-    
-    }
 
     
     
@@ -252,6 +248,12 @@ public class Globals {
         putStrategies(strategies);
         putTraders(traders);
         
+    }
+
+   
+    public static void clearAll(){
+        putStrategies(new JSONObject());
+        putTraders(new JSONArray());
     }
     
     public static void loadFile(File f) throws IOException {

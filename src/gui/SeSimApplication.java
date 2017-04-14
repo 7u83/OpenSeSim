@@ -76,13 +76,13 @@ public class SeSimApplication extends javax.swing.JFrame {
         
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] screens = ge.getScreenDevices();
-        
-            Window w = screens[1].getFullScreenWindow();
+
+        //Window w = screens[1].getFullScreenWindow();
             
-            JFrame dummy = new JFrame(screens[1].getDefaultConfiguration());
+//            JFrame dummy = new JFrame(screens[1].getDefaultConfiguration());
             
-            setLocationRelativeTo(dummy);
-            dummy.dispose();
+  //          setLocationRelativeTo(dummy);
+  //          dummy.dispose();
         
         for (GraphicsDevice gd:screens){
             //Window w = gd.getFullScreenWindow();
@@ -864,7 +864,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_closeMenuItemActionPerformed
 
     private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
-        // TODO add your handling code here:
+        Globals.clearAll();
     }//GEN-LAST:event_clearMenuItemActionPerformed
 
     /**
