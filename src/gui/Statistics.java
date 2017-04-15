@@ -25,6 +25,10 @@
  */
 package gui;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import sesim.Exchange;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -36,6 +40,29 @@ public class Statistics extends javax.swing.JPanel {
      */
     public Statistics() {
         initComponents();
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Exchange.Statistics s = Globals.se.getStatistics();
+
+                tradesLabel.setText(String.format("%d", s.trades));
+
+                if (s.heigh == null) {
+                    labelHigh.setText("--");
+                } else {
+                    labelHigh.setText(Globals.se.getMoneyFormatter().format(s.heigh));
+                }
+
+                if (s.low == null) {
+                    labelLow.setText("--");
+                } else {
+                    labelLow.setText(Globals.se.getMoneyFormatter().format(s.low));
+                }
+
+            }
+        }, 1000, 1000);
+
     }
 
     /**
@@ -47,21 +74,74 @@ public class Statistics extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        labelHigh = new javax.swing.JLabel();
+        labelLow = new javax.swing.JLabel();
+        tradesLabel = new javax.swing.JLabel();
+
+        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel1.setText("Trades:");
+
+        jLabel2.setText("Heigh:");
+
+        jLabel3.setText("Low:");
+
+        labelHigh.setText("100.00");
+
+        labelLow.setText("50.00");
+
+        tradesLabel.setText("0");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 380, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelHigh))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelLow))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tradesLabel)))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 280, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(labelHigh))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(labelLow))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(tradesLabel))
+                .addContainerGap(235, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel labelHigh;
+    private javax.swing.JLabel labelLow;
+    private javax.swing.JLabel tradesLabel;
     // End of variables declaration//GEN-END:variables
 }

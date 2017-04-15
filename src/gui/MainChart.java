@@ -88,7 +88,7 @@ public class MainChart extends chart.Chart {
         1 * 24 * 3600 * 1000, 2 * 24 * 3600 * 1000
     };
 
-    private final Integer default_cmopression = 60 * 1000;
+    private final Integer default_cmopression = 60 * 60 * 1000;
 
     private void initCtxMenu() {
         ButtonGroup group = new ButtonGroup();

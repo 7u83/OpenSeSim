@@ -37,6 +37,7 @@ import sesim.Exchange;
 import sesim.Exchange.Account;
 import sesim.Exchange.AccountListener;
 import sesim.Exchange.OrderStatus;
+import sesim.Exchange.OrderType;
 import sesim.Quote;
 
 /**
@@ -50,12 +51,12 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     public Float[] sell_volume = {100f, 100f};
     public Float[] sell_limit = {-2f, 2f};
     public Long[] sell_wait = {10000L, 50000L};
-    public Long[] wait_after_sell = {1000L, 30000L};
+    public Long[] wait_after_sell = {0L, 0L};
 
     public Float[] buy_volume = {100f, 100f};
     public Float[] buy_limit = {-2f, 2f};
     public Long[] buy_wait = {10000L, 50000L};
-    public Long[] wait_after_buy = {10L, 30L};
+    public Long[] wait_after_buy = {0L, 0L};
 
     final String INITIAL_DELAY = "initla_delay";
     final String SELL_VOLUME = "sell_volume";
@@ -73,18 +74,24 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         a.setListener(this);
 
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-        setStatus("Inital delay: %d\n", delay);
+        setStatus("Inital delay: %d", delay);
         timerTask = se.timer.startTimerTask(this, delay);
     }
 
+    boolean intask = false;
+
     @Override
     public long timerTask() {
-//        System.out.printf("Enter TimerTask for %d / %d\n", System.identityHashCode(this), Thread.currentThread().getId());
+        intask = true;
+        owait = null;
         sesim.Exchange.Account a = se.getAccount(account_id);
-//        System.out.printf("Have Account %d\n", Thread.currentThread().getId());
-        Globals.se.ua(a);
         long rc = this.doTrade();
         setStatus("Sleeping for %d ms", rc);
+        intask = false;
+        setStatus("Return fromtask %d", rc);
+        
+        if (owait != null)
+            return owait;
         return rc;
 
     }
@@ -117,8 +124,8 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     }
 
     void setStatus(String format, Object... arguments) {
-        //     String s = String.format(format, arguments);
-//       System.out.printf("%s: %s\n", this.getName(), s);
+    //    String s = String.format(format, arguments);
+//        System.out.printf("%s: %s\n", this.getName(), s);
     }
 
     private Float[] to_float(JSONArray a) {
@@ -139,6 +146,8 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         return ret;
 
     }
+
+    Long owait = null;
 
     @Override
     public void putConfig(JSONObject cfg) {
@@ -194,20 +203,19 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
-//        System.out.printf("Order what %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
+        setStatus("Account update -%s ", o.getOrderStatus().toString());
+        setStatus("In Task: %s", Boolean.toString(this.intask));
+        //System.out.printf("Order updated %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
         if (o.getOrderStatus() == OrderStatus.CLOSED) {
 
-//            System.out.printf("Enteter canel timer %d\n", Thread.currentThread().getId());
-            //    se.timer.cancelTimerTask(this);
-//System.out.printf("back from canel timer %d\n", System.identityHashCode(this));
-//System.exit(0);
-            Long w = waitAfterOrder();
+            if (!intask) {
+                Long w = waitAfterOrder();
+                setStatus("Reschedule %d", w);
+                se.timer.rescheduleTimerTask(timerTask, w);
+            } else {
+                owait = waitAfterOrder();
+            }
 
-            setStatus("Order closed, %s", o.getType().toString());
-
-//            System.out.printf("We have now to wait for %d\n", w);
-            //timerTask = se.timer.startTimerTask(this, w);
-            //  se.timer.XXXrescheduleTimerTask(timerTask, w);
         }
 //        System.out.printf("Updatetd Account\n", "");
 
@@ -229,11 +237,12 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     Action mode = Action.RANDOM;
 
     Integer doTrade1(Action a) {
-
+        setStatus("doTrade1 with action %s", a.toString());
         switch (a) {
             case BUY: {
                 boolean rc = doBuy();
                 if (rc) {
+                    setStatus("dobuy");
                     mode = Action.BUY;
                     return getRandom(buy_wait);
                 }
@@ -244,6 +253,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
             case SELL: {
                 boolean rc = doSell();
                 if (rc) {
+                    setStatus("dosell");
                     mode = Action.SELL;
                     return getRandom(sell_wait);
 
@@ -314,7 +324,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
             setStatus("No trade possible, returning 5000");
             //System.out.printf("All ha s failed\n");
-            return 5000;
+            return 5007;
         }
 
         setStatus("Current mode is %s", mode.toString());
@@ -434,12 +444,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         //    }
 //        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
         long rc = se.createOrder(account_id, type, volume, limit);
-        if (rc == -1) {
-            //System.out.printf("Sell failed %f, %f (%f)\n", volume, limit, ad.getMoney());
-
-            return false;
-        }
-        return true;
+        return rc != -1;
 
     }
 

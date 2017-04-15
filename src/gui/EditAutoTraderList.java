@@ -41,7 +41,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sesim.AutoTraderConfig;
+//import sesim.AutoTraderConfig;
 
 /**
  *
@@ -79,7 +79,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             ja.put(jo);
         }
 
-        Globals.prefs.put("Traders", ja.toString());
+        Globals.prefs.put(Globals.PrefKeys.TRADERS, ja.toString());
 
     }
 
@@ -139,7 +139,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
         for (int r = 0; r < model.getRowCount(); r++) {
             Boolean e = (Boolean) list.getValueAt(r, list.getColumn("Enabled").getModelIndex());
-            if (e==null){
+            if (e == null) {
                 continue;
             }
             if (!e) {
@@ -147,7 +147,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             }
             money += (Double) list.getValueAt(r, list.getColumn("Money").getModelIndex());
             shares += (Double) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
-            System.out.printf("Row: %d %f %f\n", r, money, shares);
+//            System.out.printf("Row: %d %f %f\n", r, money, shares);
         }
         return money / shares;
     }

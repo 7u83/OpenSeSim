@@ -194,7 +194,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
 
     void resetUI() {
         for (Window w : Window.getWindows()) {
-            System.out.print("Setting frame\n");
+
             SwingUtilities.updateComponentTreeUI(w);
             w.pack();
         }

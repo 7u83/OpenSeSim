@@ -26,23 +26,18 @@
 package traders;
 
 import gui.Globals;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import javax.swing.JDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 //import sesim.AccountData;
 
 import sesim.AutoTraderBase;
-import sesim.AutoTraderConfig;
+
 import sesim.AutoTraderGui;
 import sesim.Exchange;
 import sesim.Exchange.Account;
-import sesim.Exchange.Order;
-import sesim.OrderData;
 import sesim.Quote;
 
 /**
@@ -158,7 +153,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     @Override
     public boolean getDevelStatus() {
-        return false;
+        return true;
     }
 
     public long cancelOrders() {

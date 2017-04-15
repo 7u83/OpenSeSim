@@ -24,7 +24,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="traderListPanel22" alignment="0" pref="922" max="32767" attributes="0"/>
+          <Component id="traderListPanel22" alignment="0" pref="714" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">

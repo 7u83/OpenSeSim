@@ -1,5 +1,6 @@
 package sesim;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +20,9 @@ public class Exchange {
     ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
     private double money_df = 10000;
-
+    private int money_decimals=2;
+    DecimalFormat money_formatter;
+    
     /**
      * Set the number of decimals used with money
      *
@@ -27,9 +30,13 @@ public class Exchange {
      */
     public void setMoneyDecimals(int n) {
         money_df = Math.pow(10, n);
+        money_decimals=n;
+        money_formatter=getFormatter(n);
     }
 
     private double shares_df = 1;
+    private double shares_decimals=0;
+    private DecimalFormat shares_formatter;
 
     /**
      * Set the number of decimals for shares
@@ -38,6 +45,8 @@ public class Exchange {
      */
     public void setSharesDecimals(int n) {
         shares_df = Math.pow(10, n);
+        shares_decimals=n;
+        shares_formatter = getFormatter(n);
     }
 
     public double roundToDecimals(double val, double f) {
@@ -51,6 +60,28 @@ public class Exchange {
     public double roundMoney(double money) {
         return roundToDecimals(money, money_df);
     }
+    
+    public DecimalFormat getFormatter(int n){
+        DecimalFormat formatter;
+        String s = "#0.";
+        if (n == 0) {
+            s = "#";
+        } else {
+            for (int i = 0; i < n; i++) {
+                s = s + "0";
+            }
+        }
+        return new DecimalFormat(s);        
+    }
+    
+    public DecimalFormat getMoneyFormatter(){
+        return money_formatter;
+    }
+    
+    public DecimalFormat getSharesFormatter(){
+        return shares_formatter;
+    }
+    
 
     /**
      * Definition of order types
@@ -389,7 +420,8 @@ public class Exchange {
 
         traders = new ArrayList();
 
-        num_trades = 0;
+        statistics = new Statistics(); 
+        //num_trades = 0;
 
         this.ohlc_data = new HashMap();
 
@@ -416,28 +448,34 @@ public class Exchange {
 
         public long trades;
         public long orders;
+        public Double heigh;
+        public Double low;
 
-        void reset() {
+        public final void reset() {
             trades = 0;
+            heigh=null;
+            low=null;
 
         }
 
         Statistics() {
-
+            reset();
         }
 
     };
 
     Statistics statistics;
 
-    long num_trades = 0;
-    long num_orders = 0;
+//    long num_trades = 0;
+//    long num_orders = 0;
 
     public Statistics getStatistics() {
-        Statistics s = new Statistics();
+        return statistics;
+/*        Statistics s = new Statistics();
         s.trades = num_trades;
         s.orders = num_orders;
         return s;
+*/        
 
     }
 
@@ -759,8 +797,8 @@ public class Exchange {
     // long time = 0;
     //double theprice = 12.9;
 //    long orderid = 1;
-    double lastprice = 100.0;
-    long lastsvolume;
+    //double lastprice = 100.0;
+  //  long lastsvolume;
 
     // private final Locker tradelock = new Locker();
     public ArrayList<Order> getOrderBook(OrderType type, int depth) {
@@ -935,6 +973,29 @@ public class Exchange {
         removeOrderIfExecuted(b);
     }
 
+
+    
+    
+    void addQuoteToHistory(Quote q){
+        if (statistics.heigh==null){
+            statistics.heigh=q.price;
+        }
+        else if (statistics.heigh<q.price){
+            statistics.heigh=q.price;
+        }
+        if (statistics.low==null){
+            statistics.low=q.price;
+        }
+        else if(statistics.low>q.price){
+            statistics.low=q.price;
+        }
+        
+        quoteHistory.add(q);
+        updateOHLCData(q);
+        updateQuoteReceivers(q);
+    }
+    
+    
     /**
      *
      */
@@ -1016,7 +1077,8 @@ public class Exchange {
             volume_total += volume;
             money_total += price * volume;
 
-            num_trades++;
+//            num_trades++;
+            statistics.trades++;
 
             this.checkSLOrders(price);
 
@@ -1030,10 +1092,12 @@ public class Exchange {
         q.volume = volume_total;
         q.time = timer.currentTimeMillis();
 
-        this.quoteHistory.add(q);
-        this.updateOHLCData(q);
-
-        this.updateQuoteReceivers(q);
+        
+        addQuoteToHistory(q);
+        
+        //this.quoteHistory.add(q);
+        //this.updateOHLCData(q);
+        //this.updateQuoteReceivers(q);
 
     }
 
@@ -1058,12 +1122,7 @@ public class Exchange {
 
     long buy_failed = 0;
     long sell_failed = 0;
-    
-    
-    public void ua(Account a){
-            //.money=1000.0;
-           // a.shares=100;        
-    }
+ 
 
     /**
      *
@@ -1077,6 +1136,7 @@ public class Exchange {
 
         Account a = accounts.get(account_id);
         if (a == null) {
+            System.out.printf("Order not places account\n");
             return -1;
         }
         
@@ -1095,7 +1155,7 @@ public class Exchange {
                     buy_failed++;
                     break;
             }
-            
+            System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
         
 
             return -1;
@@ -1104,7 +1164,9 @@ public class Exchange {
 //        System.out.printf("Getting executor in create Order\n", Thread.currentThread().getId());
         synchronized (executor) {
 
-            num_orders++;
+            //num_orders++;
+            statistics.orders++;
+            
             addOrderToBook(o);
             a.orders.put(o.id, o);
             a.update(o);
@@ -1197,7 +1259,7 @@ public class Exchange {
         return ad;
     }
      */
-    public ArrayList<OrderData> getOpenOrders(double account_id) {
+ /*   public ArrayList<OrderData> getOpenOrders(double account_id) {
 
         Account a = accounts.get(account_id);
         if (a == null) {
@@ -1219,5 +1281,6 @@ public class Exchange {
 
         return al;
     }
-
+*/
+    
 }

@@ -31,8 +31,8 @@ import javax.swing.JDialog;
 import org.json.JSONObject;
 
 import sesim.AutoTraderBase;
-import sesim.AutoTraderConfigBase;
-import sesim.AutoTraderConfig;
+
+//import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
@@ -45,16 +45,17 @@ import sesim.Exchange.OrderStatus;
  */
 public class ManTrader extends AutoTraderBase implements AccountListener, AutoTraderInterface{
 
-    public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
-        //  super(se, id, name, money, shares, null);
-        super();
-    }
+//    public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
+//        //  super(se, id, name, money, shares, null);
+//        super();
+//    }
 
     public ManTrader() {
         super();
 
     }
 
+    @Override
     public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
         super.init(se, id, name, money, shares, cfg);
         getAccount().setListener(this);
@@ -115,9 +116,9 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     @Override
     public void accountUpdated(Exchange.Account a, Exchange.Order o) {
         //this.consoleDialog.cons
-        System.out.printf("AccountListener called\n");
+        //System.out.printf("AccountListener called\n");
 
-        System.out.printf("%d %s\n", o.getID(), o.getOrderStatus().toString());
+        //System.out.printf("%d %s\n", o.getID(), o.getOrderStatus().toString());
 
         if (o.getOrderStatus()==OrderStatus.CLOSED){
             o.getAccount().getOrders().put(o.getID(), o);

@@ -232,8 +232,9 @@ public class Scheduler extends Thread {
         return task;
     }
 
-    public void XXXrescheduleTimerTask(TimerTaskDef task, long time) {
+    public void rescheduleTimerTask(TimerTaskDef task, long time) {
         long evtime = time + currentTimeMillis();
+        task.newevtime=evtime;
         set_tasks.add(task);
 
         synchronized (this) {
@@ -267,6 +268,7 @@ public class Scheduler extends Thread {
     //  HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
     private boolean addTimerTask(TimerTaskDef e) {
 
+       // System.out.printf("Add TimerTask %d %d\n",e.curevtime,e.newevtime);
         //   long evtime = time + currentTimeMillis();
         SortedSet<TimerTaskDef> s = event_queue.get(e.newevtime);
         if (s == null) {
@@ -292,9 +294,10 @@ public class Scheduler extends Thread {
 //        if (evtime == null) {
 //            return;
 //        }
+        System.out.printf("Cancel my %d\n", e.id);
         SortedSet<TimerTaskDef> s = event_queue.get(e.curevtime);
         if (s == null) {
-
+            System.out.printf("My not found\n");    
             return;
         }
 
@@ -388,6 +391,8 @@ public class Scheduler extends Thread {
 
             while (!set_tasks.isEmpty()) {
                 TimerTaskDef td = set_tasks.poll();
+                System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
+                
                 this.cancelMy(td);
                 this.addTimerTask(td);
 

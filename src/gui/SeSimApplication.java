@@ -29,17 +29,42 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+<<<<<<< HEAD:src/gui/NewMDIApplication.java
+=======
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.TimerTask;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+>>>>>>> a106593383445fdec94759a19d1b57426816c20d:src/gui/SeSimApplication.java
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
+<<<<<<< HEAD:src/gui/NewMDIApplication.java
+=======
+import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
+>>>>>>> a106593383445fdec94759a19d1b57426816c20d:src/gui/SeSimApplication.java
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+<<<<<<< HEAD:src/gui/NewMDIApplication.java
+=======
+
+>>>>>>> a106593383445fdec94759a19d1b57426816c20d:src/gui/SeSimApplication.java
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Scheduler;
@@ -48,19 +73,42 @@ import sesim.Scheduler;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class NewMDIApplication extends javax.swing.JFrame {
+public class SeSimApplication extends javax.swing.JFrame {
 
     /**
      * Creates new form NewMDIApplication
      */
-    public NewMDIApplication() {
+    public SeSimApplication() {
+
         initComponents();
         
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] screens = ge.getScreenDevices();
+
+        //Window w = screens[1].getFullScreenWindow();
+            
+//            JFrame dummy = new JFrame(screens[1].getDefaultConfiguration());
+            
+  //          setLocationRelativeTo(dummy);
+  //          dummy.dispose();
+        
+        for (GraphicsDevice gd:screens){
+            //Window w = gd.getFullScreenWindow();
+
+            
+            
+        }
+        
+        
+        
+        setTitle("");
+        boolean init = Globals.prefs.getBoolean("initilized", false);
+        if (!init){
+            resetToDefaults();
+            Globals.prefs.putBoolean("initilized", true);
+        }
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
-//        Globals.frame = this;
         //this.setLocationRelativeTo(null);
-        System.out.printf("Set title\n");
-        setTitle("SeSim - Stock Exchange Simmulator");
     }
 
     AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
@@ -163,10 +211,14 @@ public class NewMDIApplication extends javax.swing.JFrame {
         statistics1 = new gui.Statistics();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
+        closeMenuItem = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        resetToDefaultsMenuItem = new javax.swing.JMenuItem();
+        clearMenuItem = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         editExchangeMenuItem = new javax.swing.JMenuItem();
@@ -179,16 +231,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
         simMenuStart = new javax.swing.JMenuItem();
         simMenuPause = new javax.swing.JMenuItem();
         simMenuStop = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
-        viewClock = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
-        contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         jTextArea1.setColumns(20);
@@ -203,6 +249,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jSplitPane1.setTopComponent(jSplitPane2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("SeSim - Stock Exchange Simmulator");
         setMinimumSize(new java.awt.Dimension(640, 480));
 
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/stop.gif"))); // NOI18N
@@ -322,15 +369,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
-        jMenuItem1.setMnemonic('n');
-        jMenuItem1.setText("New");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        fileMenu.add(jMenuItem1);
-
         openMenuItem.setMnemonic('o');
         openMenuItem.setText("Open");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -342,6 +380,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         saveMenuItem.setMnemonic('s');
         saveMenuItem.setText("Save");
+        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveMenuItem);
 
         saveAsMenuItem.setMnemonic('a');
@@ -353,6 +396,36 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
         });
         fileMenu.add(saveAsMenuItem);
+
+        closeMenuItem.setMnemonic('c');
+        closeMenuItem.setText("Close");
+        closeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(closeMenuItem);
+        fileMenu.add(jSeparator5);
+
+        resetToDefaultsMenuItem.setMnemonic('r');
+        resetToDefaultsMenuItem.setText("Reset to defaults");
+        resetToDefaultsMenuItem.setToolTipText("");
+        resetToDefaultsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetToDefaultsMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(resetToDefaultsMenuItem);
+
+        clearMenuItem.setMnemonic('c');
+        clearMenuItem.setText("Clear All");
+        clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(clearMenuItem);
+        fileMenu.add(jSeparator4);
 
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
@@ -437,18 +510,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
         });
         simMenu.add(simMenuStop);
-        simMenu.add(jSeparator3);
-
-        jMenuItem4.setText("Point Zero");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
-            }
-        });
-        simMenu.add(jMenuItem4);
-
-        jMenuItem5.setText("jMenuItem5");
-        simMenu.add(jMenuItem5);
 
         menuBar.add(simMenu);
 
@@ -464,22 +525,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         viewMenu.add(viewTraderListCheckBox);
 
-        viewClock.setText("Clock");
-        viewClock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewClockActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewClock);
-
-        jMenuItem3.setText("LogWindow");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
-            }
-        });
-        viewMenu.add(jMenuItem3);
-
         jCheckBoxMenuItem1.setText("Orderbook");
         jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -492,10 +537,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
-
-        contentMenuItem.setMnemonic('c');
-        contentMenuItem.setText("Contents");
-        helpMenu.add(contentMenuItem);
 
         aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText("About");
@@ -605,43 +646,121 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     private final LoggerDialog log_d = new LoggerDialog(this, false);
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        log_d.setVisible(!log_d.isShowing());
-
-
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+        JFileChooser fc = getFileChooser();
 
+        while (true) {
+            if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
+
+            try {
+                File f = fc.getSelectedFile();
+                Globals.loadFile(f);
+                String workdir = fc.getCurrentDirectory().getAbsolutePath();
+                Globals.prefs.put(Globals.PrefKeys.WORKDIR, workdir);
+                Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, f.getAbsolutePath());
+                setTitle(f.getName());
+                return;
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
     }//GEN-LAST:event_openMenuItemActionPerformed
 
-    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+    // initialize a JFileChose with  worging directory and extension
+    private JFileChooser getFileChooser() {
         JFileChooser fc = new JFileChooser();
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("SeSim Files", "sesim");
-        fc.setFileFilter(filter);
+        String workdir = Globals.prefs.get(Globals.PrefKeys.WORKDIR, "");
+        fc.setCurrentDirectory(new File(workdir));
 
-        if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
-            return;
+        FileNameExtensionFilter sesim_filter = new FileNameExtensionFilter("SeSim Files", Globals.SESIM_FILEEXTENSION);
+        fc.setFileFilter(sesim_filter);
+        return fc;
+    }
+
+    @Override
+    public final void setTitle(String filename) {
+        String name;
+        name = Globals.SESIM_APPTITLE;
+        if (!"".equals(filename)) {
+            name += " (" + filename + ")";
+        }
+        super.setTitle(name);
+    }
+
+    private void saveFile(boolean saveAs) {
+        JFileChooser fc = getFileChooser();
+        FileFilter sesim_filter = fc.getFileFilter();
+
+        while (true) {
+            String current_file = Globals.prefs.get(Globals.PrefKeys.CURRENTFILE, "");
+            File fobj;
+
+            if (saveAs || "".equals(current_file)) {
+
+                if (!"".equals(current_file)) {
+                    fobj = new File(current_file);
+                    fc.setSelectedFile(fobj);
+                    fc.setCurrentDirectory(fobj);
+                }
+
+                saveAs = true;
+                if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+                    return;
+                }
+            } else {
+                fobj = new File(current_file);
+                fc.setSelectedFile(fobj);
+                fc.setCurrentDirectory(fobj);
+            }
+
+            File f = fc.getSelectedFile();
+            String workdir = fc.getCurrentDirectory().getAbsolutePath();
+            Globals.prefs.put(Globals.PrefKeys.WORKDIR, workdir);
+            String fn = f.getAbsolutePath();
+
+            if (f.exists() && saveAs) {
+                String s = String.format("File %s already exists. Do you want to overwrite?", fn);
+                int dialogResult = JOptionPane.showConfirmDialog(this, s, "Warning", JOptionPane.YES_NO_OPTION);
+                if (dialogResult != JOptionPane.YES_OPTION) {
+                    continue;
+                }
+
+            }
+
+            FileFilter selected_filter = fc.getFileFilter();
+            if (selected_filter == sesim_filter) {
+                System.out.printf("Filter", selected_filter.toString());
+                if (!fn.toLowerCase().endsWith("." + Globals.SESIM_FILEEXTENSION)) {
+                    f = new File(fn + "." + Globals.SESIM_FILEEXTENSION);
+                }
+            }
+
+            try {
+                Globals.saveFile(f);
+                Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, fn);
+                setTitle(f.getName());
+                return;
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(this, "Can't save file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+
         }
 
-        File f = fc.getSelectedFile();
-
-        String[] e = ((FileNameExtensionFilter) fc.getFileFilter()).getExtensions();
-
-        System.out.printf("Abs: %s\n", f.getAbsoluteFile());
-
-        String fn = f.getAbsolutePath();
-
-        if (!f.getAbsolutePath().endsWith(e[0])) {
-            f = new File(f.getAbsolutePath() + "." + e[0]);
-        }
-
-        Globals.saveFile(f);
-
-        System.out.printf("Sel File: %s \n", f.getAbsolutePath());
+    }
 
 
+    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+
+        this.saveFile(true);
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
     private void editExchangeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExchangeMenuItemActionPerformed
@@ -651,15 +770,29 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
 
-    private void viewClockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewClockActionPerformed
-        ClockDialog cd = new ClockDialog(this, true);
-        cd.setVisible(rootPaneCheckingEnabled);
+    private void resetToDefaults(){
+        InputStream is = getClass().getResourceAsStream("/resources/files/defaultcfg.json");
+        String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
 
-    }//GEN-LAST:event_viewClockActionPerformed
+        try {
+            Globals.loadString(df);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+        }
+        
+    }
+    
+    private void resetToDefaultsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetToDefaultsMenuItemActionPerformed
+
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        this.resetToDefaults();
+
+    }//GEN-LAST:event_resetToDefaultsMenuItemActionPerformed
 
     private void simMenuStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simMenuStartActionPerformed
         startSim();
@@ -695,36 +828,57 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jd.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        Globals.se.pointZero();
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
-
     TraderListDialog tld = null;
     private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
-        System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
-        if (this.viewTraderListCheckBox.getState()) {
-            if (tld == null) {
-                tld = new TraderListDialog(this, false);
-                tld.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        super.windowClosing(e);
-                        viewTraderListCheckBox.setState(false);
-                        System.out.printf("Set menu false\n");
-                    }
-                });
 
+        javax.swing.SwingUtilities.invokeLater(() -> {
+
+            System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
+            if (this.viewTraderListCheckBox.getState()) {
+                if (tld == null) {
+                    tld = new TraderListDialog(this, false);
+                    tld.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            super.windowClosing(e);
+                            viewTraderListCheckBox.setState(false);
+                            System.out.printf("Set menu false\n");
+                        }
+                    });
+
+                }
+
+                tld.setVisible(true);
+            } else if (tld != null) {
+                System.out.printf("Set visible = false\n");
+                tld.setVisible(false);
             }
-            tld.setVisible(true);
-        } else if (tld != null) {
-            System.out.printf("Set visible = false\n");
-            tld.setVisible(false);
-        }
+        });
+
     }//GEN-LAST:event_viewTraderListCheckBoxActionPerformed
 
     private void accelSpinnerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_accelSpinnerPropertyChange
-        System.out.printf("Accel Spinner PRop Change\n");
+//        System.out.printf("Accel Spinner PRop Change\n");
     }//GEN-LAST:event_accelSpinnerPropertyChange
+
+    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+        saveFile(false);
+
+    }//GEN-LAST:event_saveMenuItemActionPerformed
+
+    private void closeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeMenuItemActionPerformed
+        Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
+        setTitle("");
+    }//GEN-LAST:event_closeMenuItemActionPerformed
+
+    private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
+
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult != JOptionPane.YES_OPTION) {
+            return;
+        }
+        Globals.clearAll();
+    }//GEN-LAST:event_clearMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -735,37 +889,40 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         System.out.printf("Main called\n");
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        
-        GraphicsDevice[]gs = ge.getScreenDevices();
-        for (GraphicsDevice d:gs){
-            System.out.printf("ID %s\n",d.getIDstring());
-        
+
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        for (GraphicsDevice d : gs) {
+            System.out.printf("ID %s\n", d.getIDstring());
+
         }
-        
         //System.exit(0);
-        
-        
+
+        //System.exit(0);
         Globals.initGlobals();
         //System.exit(0);
         Globals.se = new Exchange();
 
         Class<?> c = sesim.Exchange.class;
         Globals.prefs = Preferences.userNodeForPackage(c);
+        Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
 
         Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
+
+        JDialog.setDefaultLookAndFeelDecorated(true);
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 System.out.printf("In run method now\n");
-                
-                String x = new java.io.File(NewMDIApplication.class.getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .getPath()).toString(); //.getName();
+
+                String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
+                        .getCodeSource()
+                        .getLocation()
+                        .getPath()).toString(); //.getName();
 
                 System.out.printf("Creating Application\n");
-                new NewMDIApplication().setVisible(true);
+                
+                new SeSimApplication().setVisible(true);
             }
         });
     }
@@ -775,8 +932,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JSpinner accelSpinner;
     private gui.MainChart chart;
     private javax.swing.JScrollPane chartSrollPane;
+    private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;
-    private javax.swing.JMenuItem contentMenuItem;
+    private javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JMenuItem editExchangeMenuItem;
     private javax.swing.JMenu editMenu;
@@ -787,15 +945,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
@@ -808,6 +963,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
     private javax.swing.JMenuItem pasteMenuItem;
     private gui.orderbook.QuoteVertical quoteVertical1;
+    private javax.swing.JMenuItem resetToDefaultsMenuItem;
     private javax.swing.JButton runButton;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
@@ -817,7 +973,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem simMenuStop;
     private gui.Statistics statistics1;
     private javax.swing.JButton stopButton;
-    private javax.swing.JMenuItem viewClock;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JCheckBoxMenuItem viewTraderListCheckBox;
     // End of variables declaration//GEN-END:variables
