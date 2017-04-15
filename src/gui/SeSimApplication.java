@@ -864,6 +864,11 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_closeMenuItemActionPerformed
 
     private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
+
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult != JOptionPane.YES_OPTION) {
+            return;
+        }
         Globals.clearAll();
     }//GEN-LAST:event_clearMenuItemActionPerformed
 
