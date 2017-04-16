@@ -307,37 +307,36 @@ public class AutoTraderLoader {
         return this.getDefaultStrategyNames(true);
     }
 
-    public AutoTraderInterface getStrategyBase(String name) {
+    public AutoTraderInterface getAutoTraderInterface(String name) {
         ArrayList<Class<AutoTraderInterface>> traders = this.getInstalledTraders();
-        
-        System.out.printf("Installed traders %d\n", traders.size());
-   //     System.exit(0);
-        
-        
         for (int i = 0; i < traders.size(); i++) {
             try {
                 
-                traders.get(i).getCanonicalName();
+                if (!name.equals(traders.get(i).getCanonicalName())){
+            //     System.out.printf("Contnue trader\n");
+                    continue;
+                }
       //          System.out.printf("Canon name %s\n", traders.get(i).getCanonicalName());
       //          System.exit(0);
                 
-                Globals.LOGGER.info(String.format("Making lll instance of %s", traders.get(i).getCanonicalName()));
+        //        Globals.LOGGER.info(String.format("Making lll instance of %s", traders.get(i).getCanonicalName()));
                 
-                if (traders.get(i)==null){
-                    Globals.LOGGER.info("We have null");
-                }
+           //     if (traders.get(i)==null){
+           //         Globals.LOGGER.info("We have null");
+           //     }
                 
 //                AutoTraderInterface ac = traders.get(i).newInstance();
-                AutoTraderInterface ac = this.MakeInstance(traders.get(i));
+                AutoTraderInterface ac = MakeInstance(traders.get(i));
 
-                System.out.printf("Looking for in %s == %s\n", ac.getClass().getCanonicalName(), name);
+                return ac;
+         //       System.out.printf("Looking for in %s == %s\n", ac.getClass().getCanonicalName(), name);
 
-                if (ac.getClass().getCanonicalName().equals(name)) {
-                    return ac;
+           //     if (ac.getClass().getCanonicalName().equals(name)) {
+           //         return ac;
 
                     // if (ac.getDisplayName().equals(name)) {
                     //     return ac;}
-                }
+             //   }
             } catch (Exception ex) {
                 Globals.LOGGER.info(String.format("Instance failed %s", ex.getMessage()));
             }

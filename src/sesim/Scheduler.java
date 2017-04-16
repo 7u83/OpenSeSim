@@ -294,10 +294,10 @@ public class Scheduler extends Thread {
 //        if (evtime == null) {
 //            return;
 //        }
-        System.out.printf("Cancel my %d\n", e.id);
+    
         SortedSet<TimerTaskDef> s = event_queue.get(e.curevtime);
         if (s == null) {
-            System.out.printf("My not found\n");    
+         //   System.out.printf("My not found\n");    
             return;
         }
 
@@ -391,7 +391,7 @@ public class Scheduler extends Thread {
 
             while (!set_tasks.isEmpty()) {
                 TimerTaskDef td = set_tasks.poll();
-                System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
+             //   System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
                 
                 this.cancelMy(td);
                 this.addTimerTask(td);

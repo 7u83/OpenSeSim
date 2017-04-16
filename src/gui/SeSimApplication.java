@@ -93,10 +93,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         //this.setLocationRelativeTo(null);
     }
 
-    AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
+    AutoTraderInterface createTrader(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
 
         String base = cfg.getString("base");
-        AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
+        AutoTraderInterface ac = Globals.tloader.getAutoTraderInterface(base);
         if (ac == null) {
             return null;
         }
@@ -122,7 +122,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             String strategy_name = t.getString("Strategy");
             JSONObject strategy = Globals.getStrategy(strategy_name);
             String base = strategy.getString("base");
-            AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
+            AutoTraderInterface ac = Globals.tloader.getAutoTraderInterface(base);
 
             System.out.printf("Load Strat: %s\n", strategy_name);
             System.out.printf("Base %s\n", base);
@@ -140,7 +140,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
 
-                trader = this.createTraderNew(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
+                trader = this.createTrader(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
 
                 Globals.se.traders.add(trader);
 

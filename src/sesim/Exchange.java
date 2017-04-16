@@ -1155,7 +1155,7 @@ public class Exchange {
                     buy_failed++;
                     break;
             }
-            System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
+      //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
         
 
             return -1;
