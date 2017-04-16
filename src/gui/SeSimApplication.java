@@ -33,8 +33,7 @@ import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-<<<<<<< HEAD:src/gui/NewMDIApplication.java
-=======
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;
@@ -45,26 +44,19 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
->>>>>>> a106593383445fdec94759a19d1b57426816c20d:src/gui/SeSimApplication.java
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
-<<<<<<< HEAD:src/gui/NewMDIApplication.java
-=======
+
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
->>>>>>> a106593383445fdec94759a19d1b57426816c20d:src/gui/SeSimApplication.java
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-<<<<<<< HEAD:src/gui/NewMDIApplication.java
-=======
-
->>>>>>> a106593383445fdec94759a19d1b57426816c20d:src/gui/SeSimApplication.java
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Scheduler;
