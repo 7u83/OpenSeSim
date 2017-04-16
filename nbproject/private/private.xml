@@ -5,10 +5,9 @@
         <group>
             <file>file:/home/tobias/NetBeansProjects/SeSim/src/sesim/AutoTraderGui.java</file>
             <file>file:/home/tobias/NetBeansProjects/SeSim/src/sesim/AutoTraderLoader.java</file>
-            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/Globals.java</file>
             <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/LoggerDialog.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/Globals.java</file>
             <file>file:/home/tobias/NetBeansProjects/SeSim/src/chart/Chart.java</file>
-            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/NewMDIApplication.java</file>
         </group>
     </open-files>
 </project-private>
