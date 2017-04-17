@@ -4,10 +4,21 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/tobias/NetBeansProjects/SeSim/src/sesim/AutoTraderGui.java</file>
-            <file>file:/home/tobias/NetBeansProjects/SeSim/src/sesim/AutoTraderLoader.java</file>
-            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/LoggerDialog.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/EditAutoTraderListDialog.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/sesim/Scheduler.java</file>
             <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/Globals.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/LoggerDialog.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/OrderBookPanel_old.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/OrderBook.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/Clock.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/sesim/AutoTraderLoader.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/BidBook.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/SeSimApplication.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/sesim/Exchange.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/build.xml</file>
             <file>file:/home/tobias/NetBeansProjects/SeSim/src/chart/Chart.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/Statistics.java</file>
+            <file>file:/home/tobias/NetBeansProjects/SeSim/src/gui/EditAutoTraderList.java</file>
         </group>
     </open-files>
 </project-private>
