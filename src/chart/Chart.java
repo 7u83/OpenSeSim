@@ -500,6 +500,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             return;
         }
         
+//        Point m = MouseInfo.getPointerInfo().getLocation() ;
+//        g.drawLine(0, m.y, 1000, m.y);
+        
         int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
 
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
@@ -699,6 +702,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(300, 300));
         setRequestFocusEnabled(false);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -711,6 +719,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        
+    }//GEN-LAST:event_formMouseMoved
 
     @Override
     public void UpdateQuote(Quote q) {

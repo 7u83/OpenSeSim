@@ -7,6 +7,7 @@ package gui;
 
 import chart.Chart;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.util.ArrayList;
 import java.util.Objects;
 import javax.swing.ButtonGroup;
@@ -22,6 +23,14 @@ import sesim.OHLCData;
  */
 public class MainChart extends chart.Chart {
     
+    class MyCursor extends Cursor{
+        
+        public MyCursor(int type) {
+            super(type);
+        }
+        
+    }
+    
     ButtonGroup typeGroup=new ButtonGroup();
 
     /**
@@ -31,6 +40,10 @@ public class MainChart extends chart.Chart {
         System.out.printf("This is the main chart constructor\n");
 
         initComponents();
+        
+//
+//setCursor(new Cursor(Cursor.HAND_CURSOR));
+setCursor(new MyCursor(Cursor.CROSSHAIR_CURSOR));
 
         initCtxMenu();
 
@@ -62,7 +75,7 @@ public class MainChart extends chart.Chart {
         vol.padding_top = 0.08f;
         vol.type = ChartType.VOL;
         vol.data = data;
-      //  vol.bgcolor = Color.GRAY;
+        vol.bgcolor = new Color(230,230,235);
 
         addChart(vol);
     }
@@ -238,6 +251,11 @@ public class MainChart extends chart.Chart {
         });
         ctxMenu.add(logMenu);
 
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
         addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 formMouseWheelMoved(evt);
@@ -249,6 +267,12 @@ public class MainChart extends chart.Chart {
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 formMouseReleased(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                formMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
             }
         });
 
@@ -316,6 +340,20 @@ public class MainChart extends chart.Chart {
         }
        doRedraw();
     }//GEN-LAST:event_lineTypeItemItemStateChanged
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        System.out.printf("Mouse moved %d\n", evt.getLocationOnScreen().x);
+        this.doRedraw();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        
+       
+    }//GEN-LAST:event_formMouseEntered
+
+    private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formMouseExited
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
