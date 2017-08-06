@@ -140,27 +140,6 @@ setCursor(new MyCursor(Cursor.CROSSHAIR_CURSOR));
     
     private ChartType chart_type=ChartType.CANDLESTICK;
 
-/*
-    void setType(){
-        for (int i = 0; i < this.typeMenu.getItemCount(); i++) {
-            JRadioButtonMenuItem item = (JRadioButtonMenuItem) compMenu.getItem(i);
-            if (item.isSelected()) {
-                if ("LINE".equals(item.getActionCommand())){
-                    chart_type=ChartType.LINE;
-                }
-                if ("CNADLESTICK".equals(item.getActionCommand())){
-                    chart_type=ChartType.CANDLESTICK;
-                }
-                        
-                
-            }
-        } 
-        doRedraw();
-    }
-    */
-
-   // boolean log = false;
-
     protected void doRedraw() {
     //    log = this.logMenu.isSelected();
         javax.swing.SwingUtilities.invokeLater(() -> {
@@ -342,7 +321,7 @@ setCursor(new MyCursor(Cursor.CROSSHAIR_CURSOR));
     }//GEN-LAST:event_lineTypeItemItemStateChanged
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        System.out.printf("Mouse moved %d\n", evt.getLocationOnScreen().x);
+   //     System.out.printf("Mouse moved %d\n", evt.getLocationOnScreen().x);
         this.doRedraw();
     }//GEN-LAST:event_formMouseMoved
 
