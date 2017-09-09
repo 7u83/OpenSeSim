@@ -23,22 +23,14 @@
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/MainChart.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/Chart.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCData.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/resources/files/defaultcfg.json</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/MinMax.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/build.xml</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Exchange.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderGui.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/jp99.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/orderbook/OrderBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/TraderListDialog.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCDataItem.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/AboutDialog.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/OpenOrdersList.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/BidBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/EditAutoTraderList.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Scheduler.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/AskBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/TraderListPanel.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/nbproject/jnlp-impl.xml</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/Chart1.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/README.md</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/TestChartdialog.java</file>
         </group>
     </open-files>
 </project-private>

@@ -42,7 +42,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     private int first_bar, last_bar;
 
-
     /**
      * Creates new form Chart
      */
@@ -59,8 +58,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Globals.se.addQuoteReceiver(this);
 
     }
-
-
 
     @Override
     public Dimension getPreferredScrollableViewportSize() {
@@ -151,8 +148,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (xl_color != null) {
             g.setColor(xl_color);
         }
-        
-        g.drawLine(clip_bounds.x, y,clip_bounds.width,y);
+
+        g.drawLine(clip_bounds.x, y, clip_bounds.width, y);
 
         Dimension dim = getSize();
 
@@ -213,7 +210,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         double getValAtY(float y) {
             float val = 0;
 
-            
             if (c_mm.isLog()) {
                 float ys = rect.height / c_mm.getDiff();
 
@@ -223,25 +219,23 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             return (-(y - rect.y - rect.height)) / c_yscaling + c_mm.getMin();
 
- 
         }
 
     }
 
-    
-      private void drawLineItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i){
-          Graphics2D g = ctx.g;
-          if (prev==null)
-              prev=i;
-          int y1 = (int)ctx.getY(prev.close);
-          int y2 = (int)ctx.getY(i.close);
-          Color cur = g.getColor();
-          g.setColor(Color.RED);
-          g.drawLine(prevx,y1,x,y2);
-          g.setColor(cur);
-      }
-    
-    
+    private void drawLineItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+        Graphics2D g = ctx.g;
+        if (prev == null) {
+            prev = i;
+        }
+        int y1 = (int) ctx.getY(prev.close);
+        int y2 = (int) ctx.getY(i.close);
+        Color cur = g.getColor();
+        g.setColor(Color.RED);
+        g.drawLine(prevx, y1, x, y2);
+        g.setColor(cur);
+    }
+
     private void drawCandleItem(RenderCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
         Graphics2D g = ctx.g;
@@ -403,16 +397,16 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         public OHLCData data;
 
         public Color bgcolor = null;
-        
+
         /**
          * logarithmic scaling
          */
-        public boolean log=false;
+        public boolean log = false;
 
     }
 
     protected OHLCData data;
-    
+
     ArrayList<SubChartDef> charts = new ArrayList<>();
 
     protected void addChart(SubChartDef d) {
@@ -421,21 +415,18 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
-
     void drawAll(Graphics2D g) {
         int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
         this.revalidate();
 
         int h1 = 0;
-        
-
 
         for (SubChartDef d : charts) {
-            
-            if (d.data==null){
+
+            if (d.data == null) {
                 System.out.printf("Data is null\n");
-                    System.exit(0);
+                System.exit(0);
             }
 
             // calclulate the min/max values
@@ -486,9 +477,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
     }
-    
-    protected void setupSubCharts(){
-        
+
+    protected void setupSubCharts() {
+
     }
 
     private void draw(Graphics2D g) {
@@ -499,10 +490,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (data.size() == 0) {
             return;
         }
-        
+
 //        Point m = MouseInfo.getPointerInfo().getLocation() ;
 //        g.drawLine(0, m.y, 1000, m.y);
-        
         int pwidth = (int) (em_width * x_unit_width * (num_bars + 1)) + clip_bounds.width;
 
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
@@ -530,10 +520,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             lastvpos = p0;
 
         }
-       
-        
-        
-        
 
         this.charts = new ArrayList<>();
         setupSubCharts();
@@ -554,7 +540,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     Rectangle c_rect0;
 
-    private void draw2(Graphics2D g) {
+    /*private void draw2(Graphics2D g) {
 
         if (data == null) {
             return;
@@ -653,7 +639,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         drawChart(ctx);
 
     }
-
+*/
     private float c_font_height;
 
     @Override
@@ -661,8 +647,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (Globals.se == null) {
             return;
         }
-        
-  
 
         super.paintComponent(g);
 
@@ -721,7 +705,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        
+
     }//GEN-LAST:event_formMouseMoved
 
     @Override

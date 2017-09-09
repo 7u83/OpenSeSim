@@ -1,14 +1,17 @@
 
 package chart;
 
+import gui.Globals;
 import java.awt.Cursor;
 import java.awt.Graphics;
+import sesim.Exchange.QuoteReceiver;
+import sesim.Quote;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Chart1 extends javax.swing.JPanel {
+public class Chart1 extends javax.swing.JPanel implements QuoteReceiver{
 
     /**
      * Creates new form Chart1
@@ -17,14 +20,26 @@ public class Chart1 extends javax.swing.JPanel {
         initComponents();
                 System.out.printf("Now cursor\n");
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-
+        
+        if (Globals.se == null)
+            return;
+        
+        Globals.se.addQuoteReceiver(this);
     }
     
-    
+
+    private int em_width;
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); 
+        
+        
+        // Calculate the number of pixels for 1 em
+        em_width = g.getFontMetrics().stringWidth("M");
+
+        
+        
         g.drawLine(0, 0, 10, 10);
     }
 
@@ -49,6 +64,11 @@ public class Chart1 extends javax.swing.JPanel {
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    @Override
+    public void UpdateQuote(Quote q) {
+        System.out.printf("%s\n",q.price);
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

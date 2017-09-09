@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2017, 7u83
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
