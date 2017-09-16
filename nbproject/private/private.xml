@@ -8,9 +8,11 @@
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/StatisticsPanel.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/tools/NummericCellRenderer.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderInterface.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/ChartTestDialog.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/traders/ManTrader/ManTraderConsoleDialog.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderLoader.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/traders/ManTrader/ManTrader.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/NewPanel.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/SeSimApplication.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/Globals.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/traders/RandomTraderB.java</file>
@@ -22,10 +24,16 @@
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/EditStrategies.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/MainChart.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/Chart.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Clock.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCData.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/IDGenerator.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/MinMax.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderGui.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Exchange.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/jp99.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Locker.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/orderbook/OrderBook.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/ChartPanal.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCDataItem.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/AboutDialog.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/Chart1.java</file>

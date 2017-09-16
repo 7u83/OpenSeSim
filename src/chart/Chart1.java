@@ -1,48 +1,77 @@
-
 package chart;
 
 import gui.Globals;
+import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import javax.swing.Scrollable;
 import sesim.Exchange.QuoteReceiver;
+import sesim.OHLCData;
+import sesim.OHLCDataItem;
 import sesim.Quote;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Chart1 extends javax.swing.JPanel implements QuoteReceiver{
+public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
 
     /**
      * Creates new form Chart1
      */
     public Chart1() {
         initComponents();
-                System.out.printf("Now cursor\n");
+        System.out.printf("Now cursor\n");
+
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-        
-        if (Globals.se == null)
+
+        if (Globals.se == null) {
             return;
-        
+        }
+
         Globals.se.addQuoteReceiver(this);
     }
-    
 
     private int em_width;
 
+    private void drawChart(Graphics2D g) {
+
+        OHLCData data = Globals.se.getOHLCdata(5000);
+
+        int first_bar = 0;
+        int last_bar = data.size();
+
+        OHLCDataItem prev = null;
+      
+        for (int i = first_bar; i < last_bar; i++) {
+            OHLCDataItem di = data.get(i);
+
+            int x_unit_width = 1;
+            int x = (int) (i * em_width * x_unit_width); 
+            
+            g.setColor(Color.red);
+            g.drawLine(x, 0, x, 10);
+
+//em_width;
+            //this.drawItem(ctx, (int) (x - em_width * x_unit_width), x, prev, di); //, ctx.scaling, data.getMin());
+            //    myi++;
+            prev = di;
+
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); 
-        
-        
+        super.paintComponent(g);
+
         // Calculate the number of pixels for 1 em
         em_width = g.getFontMetrics().stringWidth("M");
 
-        
-        
-        g.drawLine(0, 0, 10, 10);
+        drawChart((Graphics2D)g);
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -67,7 +96,32 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver{
 
     @Override
     public void UpdateQuote(Quote q) {
-        System.out.printf("%s\n",q.price);
+        repaint();
+    }
+
+    @Override
+    public Dimension getPreferredScrollableViewportSize() {
+        return this.getPreferredSize();
+    }
+
+    @Override
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 1;
+    }
+
+    @Override
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 1;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return true;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        return true;
     }
 
 
