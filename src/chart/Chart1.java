@@ -39,6 +39,9 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
 
     private void drawChart(Graphics2D g) {
 
+        if (Globals.se==null)
+            return;
+      
         OHLCData data = Globals.se.getOHLCdata(5000);
 
         int first_bar = 0;
