@@ -78,7 +78,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         // Set Application title (no file is currently opened)
         setTitleWithFileName("");
         
-        // check if are runing the very first time, 
+        // check if we are runing the very first time, 
         // and if: Load a default configuration from our resources
                 boolean init = Globals.prefs.getBoolean("initilized", false);
         if (!init){
