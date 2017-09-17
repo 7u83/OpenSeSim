@@ -32,6 +32,7 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
             return;
         }
 
+        setSize(new Dimension(9000,500));
         Globals.se.addQuoteReceiver(this);
     }
 
@@ -42,7 +43,21 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
         if (Globals.se==null)
             return;
       
-        OHLCData data = Globals.se.getOHLCdata(5000);
+        g.setColor(Color.red);
+        g.drawLine(0, 0, 7000, 610);
+        
+        Dimension d = new Dimension(8000,200);
+        setPreferredSize(d);
+        
+        revalidate();
+        
+        
+        System.out.printf("Setting pref size\n" );
+       
+       
+       
+       
+        OHLCData data = Globals.se.getOHLCdata(60000);
 
         int first_bar = 0;
         int last_bar = data.size();
@@ -73,6 +88,8 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
         // Calculate the number of pixels for 1 em
         em_width = g.getFontMetrics().stringWidth("M");
 
+        
+        
         drawChart((Graphics2D)g);
     }
 
@@ -89,11 +106,11 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 498, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 341, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
