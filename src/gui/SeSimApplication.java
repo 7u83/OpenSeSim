@@ -66,29 +66,27 @@ public class SeSimApplication extends javax.swing.JFrame {
     public SeSimApplication() {
 
         initComponents();
-        
+
         // Get default screen and place our window
         // to the center of this screen
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice d = ge.getDefaultScreenDevice();
         Window w = d.getFullScreenWindow();
         setLocationRelativeTo(w);
-                
-        
+
         // Set Application title (no file is currently opened)
         setTitleWithFileName("");
-        
+
         // check if we are runing the very first time, 
-        // and if: Load a default configuration from our resources
-                boolean init = Globals.prefs.getBoolean("initilized", false);
-        if (!init){
+        // and if so: Load a default configuration from our resources
+        boolean init = Globals.prefs.getBoolean("initilized", false);
+        if (!init) {
             resetToDefaults();
             Globals.prefs.putBoolean("initilized", true);
         }
-        
+
         this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
-        
-        
+
     }
 
     AutoTraderInterface createTrader(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
@@ -685,7 +683,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         return fc;
     }
 
-    
     public final void setTitleWithFileName(String filename) {
         String name;
         name = Globals.SESIM_APPTITLE;
@@ -772,20 +769,20 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
 
-    private void resetToDefaults(){
+    private void resetToDefaults() {
         InputStream is = getClass().getResourceAsStream("/resources/files/defaultcfg.json");
         String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
 
         try {
             Globals.loadString(df);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, 
+            JOptionPane.showMessageDialog(this,
                     "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         }
-        
+
     }
-    
+
     private void resetToDefaultsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetToDefaultsMenuItemActionPerformed
 
         int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
@@ -884,9 +881,9 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_clearMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        ChartTestDialog d  = new ChartTestDialog(this,false);
+        ChartTestDialog d = new ChartTestDialog(this, false);
         d.setVisible(true);
-        
+
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
@@ -924,13 +921,12 @@ public class SeSimApplication extends javax.swing.JFrame {
             public void run() {
 
 
-  /*              String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
+                /*              String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
                         .getCodeSource()
                         .getLocation()
                         .getPath()).toString(); //.getName();
-*/
+                 */
 //                System.out.printf("Creating Application\n");
-                
                 new SeSimApplication().setVisible(true);
             }
         });
