@@ -7,6 +7,11 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.geom.AffineTransform;
+import javax.swing.JScrollBar;
+import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import sesim.Exchange.QuoteReceiver;
 import sesim.OHLCData;
@@ -17,8 +22,10 @@ import sesim.Quote;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
+public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, AdjustmentListener {
 
+    public JScrollBar xbar;
+    
     /**
      * Creates new form Chart1
      */
@@ -27,11 +34,15 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
         System.out.printf("Now cursor\n");
 
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        
+  
 
         if (Globals.se == null) {
             return;
         }
 
+              
+        
         setSize(new Dimension(9000,500));
         Globals.se.addQuoteReceiver(this);
     }
@@ -40,14 +51,27 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
 
     private void drawChart(Graphics2D g) {
 
+  
+        
+        JViewport vp = new JViewport();
+        
+       
+        
+ //       if (Globals.se==null)
+//            return;
+
+        Dimension d = new Dimension(200,200);
+        setPreferredSize(d);
+
+
+        g.setClip(10,10,800,200);        
+        g.setColor(Color.red);
+        g.drawLine(0, 0, 8000, 610);
+        
         if (Globals.se==null)
             return;
-      
-        g.setColor(Color.red);
-        g.drawLine(0, 0, 7000, 610);
         
-        Dimension d = new Dimension(8000,200);
-        setPreferredSize(d);
+ 
         
         revalidate();
         
@@ -58,7 +82,7 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
        
        
         OHLCData data = Globals.se.getOHLCdata(60000);
-
+/*
         int first_bar = 0;
         int last_bar = data.size();
 
@@ -79,6 +103,7 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
             prev = di;
 
         }
+        */
     }
 
     @Override
@@ -88,6 +113,7 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
         // Calculate the number of pixels for 1 em
         em_width = g.getFontMetrics().stringWidth("M");
 
+        this.xbar.setMaximum(994000);
         
         
         drawChart((Graphics2D)g);
@@ -120,29 +146,12 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Scrolla
     }
 
     @Override
-    public Dimension getPreferredScrollableViewportSize() {
-        return this.getPreferredSize();
+    public void adjustmentValueChanged(AdjustmentEvent e) {
+        System.out.printf("Adjustemntlistener called %d\n",xbar.getValue());
+        
     }
 
-    @Override
-    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return 1;
-    }
-
-    @Override
-    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return 1;
-    }
-
-    @Override
-    public boolean getScrollableTracksViewportWidth() {
-        return true;
-    }
-
-    @Override
-    public boolean getScrollableTracksViewportHeight() {
-        return true;
-    }
+  
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

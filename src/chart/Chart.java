@@ -504,7 +504,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             p0 = 0;
         }
         JViewport vp = (JViewport) this.getParent();
-        Point pp = vp.getViewPosition();
+   //     Point pp = vp.getViewPosition();
         Point cp = vp.getViewPosition();
 
         if (autoScroll && this.lastvpos != cp.x) {
