@@ -25,6 +25,8 @@
  */
 package chart;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.swing.JScrollBar;
 
@@ -36,16 +38,18 @@ public class ChartPainter {
 
     int em_width;
 
-    final void init(Graphics2D g) {
+    protected final void init(Graphics2D g) {
         
         // Calculate the number of pixels for 1 em
         em_width = g.getFontMetrics().stringWidth("M");
         
     }
 
-    public void drawChart(Graphics2D g, JScrollBar sb) {
+    public void drawChart(Graphics2D g, JScrollBar sb, Dimension size) {
         init (g);
-        
+        g.setColor(Color.MAGENTA);
+        g.drawLine(0, 0, size.width, 100);
+        g.setBackground(Color.yellow);
         
     }
 

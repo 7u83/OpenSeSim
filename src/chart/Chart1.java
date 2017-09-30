@@ -115,8 +115,11 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
 
         this.xbar.setMaximum(994000);
         
+        ChartPainter p = new ChartPainter();
+        p.drawChart((Graphics2D)g, xbar, getSize());
         
-        drawChart((Graphics2D)g);
+        
+        //drawChart((Graphics2D)g);
     }
 
     /**
@@ -148,7 +151,7 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
     @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
         System.out.printf("Adjustemntlistener called %d\n",xbar.getValue());
-        
+        this.repaint();
     }
 
   
