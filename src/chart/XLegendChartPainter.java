@@ -36,23 +36,53 @@ import sesim.OHLCData;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-abstract public class ChartPainter {
+public class XLegendChartPainter extends ChartPainter {
 
-    int em_width;
+    private String getTimeStrAt(OHLCData data, int unit) {
 
-    protected final void init(Graphics2D g) {
-
-        // Calculate the number of pixels for 1 em
-        em_width = g.getFontMetrics().stringWidth("M");
+        int fs = data.getFrameSize();
+        return sesim.Scheduler.formatTimeMillis(0 + unit * fs);
 
     }
 
-    int big_tick = 10;
-    int y = 0;
+    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, JPanel p, ChartDef def)
+    {
+        init(g);
+        g.setColor(Color.black);
+        Dimension size = p.getSize();
+        //g.drawLine(0, 0, size.width, 100);
 
+        System.out.printf("SIZE %d %d\n", size.width, size.height);
 
-    
-    
-    abstract public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, JPanel p, ChartDef def);
+        int bars = (int) (size.width / (def.x_unit_width * em_width));
+        System.out.printf("Units = %d\n", bars);
+
+        int first_bar = def.x_scrollbar.getValue();
+        //if (first_bar<0)
+        //   first_bar=0;
+
+        int n;
+        int x;
+        for (n = first_bar, x = 0; x < size.width; x += em_width * def.x_unit_width) {
+            if (n % big_tick == 1) {
+                g.drawLine((int) x, y, (int) x, y + em_width);
+                String text;
+                text = getTimeStrAt(data, n);
+
+                int swidth = g.getFontMetrics().stringWidth(text);
+                g.drawString(text, (int) x - swidth / 2, y + em_width * 2);
+
+            } else {
+                g.drawLine((int) x, y, (int) x, y + em_width / 2);
+            }
+
+            if (n % big_tick == 0) {
+
+            }
+
+            n += 1;
+        }
+
+    }
 
 }

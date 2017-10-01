@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 import javax.swing.JScrollBar;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
@@ -42,8 +43,17 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
         setSize(new Dimension(9000, 500));
         Globals.se.addQuoteReceiver(this);
     }
-
-    private int em_width;
+    
+    
+    ArrayList <ChartPainter> chartPainters = new ArrayList<>();
+    
+    /**
+     * 
+     * @param p 
+     */
+    public void addChartPainter(ChartPainter p){
+        chartPainters.add(p);
+    }
 
     private void drawChart(Graphics2D g) {
 
@@ -95,17 +105,26 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+        if (Globals.se==null)
+            return;
 
-        // Calculate the number of pixels for 1 em
-        em_width = g.getFontMetrics().stringWidth("M");
 
         //this.xbar.setMaximum(994000);
 
-        ChartPainter p = new ChartPainter();
+        XLegendChartPainter p = new XLegendChartPainter();
         data = Globals.se.getOHLCdata(60000);
-        p.drawChart((Graphics2D) g, xbar, data, this);
+        
+        ChartDef def = new ChartDef();
+        def.x_unit_width = 1.0;
+        def.x_scrollbar=xbar;
+        
+        
+        for (ChartPainter painter: chartPainters){
+            painter.drawChart((Graphics2D)g, xbar, data, this, def);
+        }
+        
 
-        //drawChart((Graphics2D)g);
     }
 
     /**
@@ -134,7 +153,7 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
         
         int s = data.size();
         System.out.printf("Data size %d",s);
-        xbar.setMaximum(data.size());
+//        xbar.setMaximum(data.size());
         repaint();
     }
 

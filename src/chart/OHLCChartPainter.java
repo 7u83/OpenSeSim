@@ -25,7 +25,6 @@
  */
 package chart;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
@@ -36,23 +35,18 @@ import sesim.OHLCData;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-abstract public class ChartPainter {
+public class OHLCChartPainter extends ChartPainter {
 
-    int em_width;
-
-    protected final void init(Graphics2D g) {
-
-        // Calculate the number of pixels for 1 em
-        em_width = g.getFontMetrics().stringWidth("M");
-
+    @Override
+    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, JPanel p, ChartDef def) {
+        init(g);
+        int first_bar = def.x_scrollbar.getValue();
+        Dimension size = p.getSize();
+        int bars = (int) (size.width / (def.x_unit_width * em_width));
+        for (int b=0; b<bars; b++){
+            
+            
+        }
     }
-
-    int big_tick = 10;
-    int y = 0;
-
-
     
-    
-    abstract public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, JPanel p, ChartDef def);
-
 }
