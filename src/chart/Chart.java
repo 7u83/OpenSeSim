@@ -193,7 +193,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     class RenderCtx {
 
         Rectangle rect;
-        float scaling;
+        //float scaling;
         float min;
         Graphics2D g;
         float iwidth;
@@ -461,7 +461,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             RenderCtx ctx = new RenderCtx();
 
             ctx.rect = new Rectangle(0, h1 + pad_top, pwidth, subchartwin_height - pad_top);
-            ctx.scaling = (float) ctx.rect.height / (c_mm.getMax() - c_mm.getMin());
+//            ctx.scaling = (float) ctx.rect.height / (c_mm.getMax() - c_mm.getMin());
             ctx.min = c_mm.getMin();
             ctx.g = g;
             ctx.iwidth = (float) ((x_unit_width * em_width) * 0.9f);

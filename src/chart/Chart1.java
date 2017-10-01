@@ -25,7 +25,7 @@ import sesim.Quote;
 public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, AdjustmentListener {
 
     public JScrollBar xbar;
-    
+
     /**
      * Creates new form Chart1
      */
@@ -34,16 +34,12 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
         System.out.printf("Now cursor\n");
 
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-        
-  
 
         if (Globals.se == null) {
             return;
         }
 
-              
-        
-        setSize(new Dimension(9000,500));
+        setSize(new Dimension(9000, 500));
         Globals.se.addQuoteReceiver(this);
     }
 
@@ -51,38 +47,27 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
 
     private void drawChart(Graphics2D g) {
 
-  
-        
         JViewport vp = new JViewport();
-        
-       
-        
- //       if (Globals.se==null)
-//            return;
 
-        Dimension d = new Dimension(200,200);
+        //       if (Globals.se==null)
+//            return;
+        Dimension d = new Dimension(200, 200);
         setPreferredSize(d);
 
-
-        g.setClip(10,10,800,200);        
+        g.setClip(10, 10, 800, 200);
         g.setColor(Color.red);
         g.drawLine(0, 0, 8000, 610);
-        
-        if (Globals.se==null)
+
+        if (Globals.se == null) {
             return;
-        
- 
-        
+        }
+
         revalidate();
-        
-        
-        System.out.printf("Setting pref size\n" );
-       
-       
-       
-       
+
+        System.out.printf("Setting pref size\n");
+
         OHLCData data = Globals.se.getOHLCdata(60000);
-/*
+        /*
         int first_bar = 0;
         int last_bar = data.size();
 
@@ -103,8 +88,9 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
             prev = di;
 
         }
-        */
+         */
     }
+    OHLCData data;
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -113,12 +99,12 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
         // Calculate the number of pixels for 1 em
         em_width = g.getFontMetrics().stringWidth("M");
 
-        this.xbar.setMaximum(994000);
-        
+        //this.xbar.setMaximum(994000);
+
         ChartPainter p = new ChartPainter();
-        p.drawChart((Graphics2D)g, xbar, getSize());
-        
-        
+        data = Globals.se.getOHLCdata(60000);
+        p.drawChart((Graphics2D) g, xbar, data, this);
+
         //drawChart((Graphics2D)g);
     }
 
@@ -145,16 +131,19 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
 
     @Override
     public void UpdateQuote(Quote q) {
+        
+        int s = data.size();
+        System.out.printf("Data size %d",s);
+        xbar.setMaximum(data.size());
         repaint();
     }
 
     @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
-        System.out.printf("Adjustemntlistener called %d\n",xbar.getValue());
+        System.out.printf("Adjustemntlistener called %d\n", xbar.getValue());
+
         this.repaint();
     }
-
-  
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -25,69 +25,13 @@
  */
 package chart;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
 import javax.swing.JScrollBar;
-import sesim.OHLCData;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartPainter {
-
-    int em_width;
-
-    protected final void init(Graphics2D g) {
-
-        // Calculate the number of pixels for 1 em
-        em_width = g.getFontMetrics().stringWidth("M");
-
-    }
-
-    int big_tick = 10;
-    int y = 0;
-
-    String getAt(OHLCData data, int unit) {
-
-        int fs = data.getFrameSize();
-        return sesim.Scheduler.formatTimeMillis(0 + unit * fs);
-
-    }
-
-    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, Chart1 p) {
-        init(g);
-        g.setColor(Color.MAGENTA);
-        Dimension size = p.getSize();
-        //g.drawLine(0, 0, size.width, 100);
-        
-        System.out.printf("SIZE %d %d\n",size.width,size.height);
-        
-
-
-        int n;
-        int x;
-        for (n = 0, x = 0; x < size.width; x += em_width * 1.0) {
-            if (n % big_tick == 1) {
-                g.drawLine((int) x, y, (int) x, y + em_width);
-                String text;
-                text = getAt(data,n);
-
-                int swidth = g.getFontMetrics().stringWidth(text);
-                g.drawString(text, (int) x - swidth / 2, y + em_width * 2);
-                
-            } else {
-                g.drawLine((int) x, y, (int) x, y + em_width / 2);
-            }
-
-            if (n % big_tick == 0) {
-
-            }
-
-            n += 1;
-        }
-
-    }
-
+public class ChartDef {
+    JScrollBar scrollbar;
+    
 }
