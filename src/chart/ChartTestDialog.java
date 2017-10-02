@@ -182,7 +182,7 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
 
     @Override
     public void UpdateQuote(Quote q) {
-        OHLCData data = Globals.se.getOHLCdata(60000);
+        OHLCData data = Globals.se.getOHLCdata(60000*60*4);
         this.jScrollBar1.setMaximum(data.size());
         repaint();
         System.out.printf("SETMAXIMUM: %d", data.size());

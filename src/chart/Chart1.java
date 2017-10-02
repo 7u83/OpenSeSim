@@ -113,7 +113,7 @@ public class Chart1 extends javax.swing.JPanel implements QuoteReceiver, Adjustm
         //this.xbar.setMaximum(994000);
 
         XLegendChartPainter p = new XLegendChartPainter();
-        data = Globals.se.getOHLCdata(60000);
+        data = Globals.se.getOHLCdata(60000*60);
         
         ChartDef def = new ChartDef();
         def.x_unit_width = 1.0;
