@@ -49,6 +49,15 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
         ChartPainter p = new XLegendChartPainter();
          chart12.addChartPainter(p);
          Globals.se.addQuoteReceiver(this);
+         
+
+        this.chart11.xbar=this.jScrollBar1;
+        this.jScrollBar1.addAdjustmentListener(chart11);
+         p = new OHLCChartPainter();
+        this.chart11.addChartPainter(p);
+
+         
+         
     }
 
     /**

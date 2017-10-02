@@ -81,6 +81,9 @@ public class OHLCData {
      */
     public MinMax getMinMax(int first, int last) {
 
+        if (data.isEmpty())
+            return new MinMax(0,0);
+        
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
             return new MinMax(di.low, di.high);
