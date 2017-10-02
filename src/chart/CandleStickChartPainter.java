@@ -25,22 +25,48 @@
  */
 package chart;
 
-import javax.swing.JScrollBar;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import sesim.OHLCDataItem;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartDef {
-    JScrollBar x_scrollbar=null;
-    
-    /**
-     * width of an x unit in em
-     */
-    double x_unit_width=4.0;
-    
-    ChartDef(){
-        
+public class CandleStickChartPainter extends OHLCChartPainter {
+
+    @Override
+    protected void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+
+        if (i.open < i.close) {
+            int xl = (int) (x + iwidth / 2);
+
+            g.setColor(Color.BLACK);
+            g.drawLine(xl, (int) getY(i.close), xl, (int) getY(i.high));
+            g.drawLine(xl, (int) getY(i.low), xl, (int) getY(i.open));
+
+            float w = iwidth;
+            float h = (int) (getY(i.open) - getY(i.close));
+
+            g.setColor(Color.GREEN);
+            g.fillRect((int) (x), (int) getY(i.close), (int) w, (int) h);
+            g.setColor(Color.BLACK);
+            g.drawRect((int) (x), (int) getY(i.close), (int) w, (int) h);
+
+        } else {
+            int xl = (int) (x + iwidth / 2);
+            g.setColor(Color.RED);
+            g.drawLine(xl, (int) getY(i.high), xl, (int) getY(i.close));
+            g.drawLine(xl, (int) getY(i.open), xl, (int) getY(i.low));
+
+            float w = iwidth;
+            float h = (int) (getY(i.close) - getY(i.open));
+
+            g.fillRect((int) (x), (int) getY(i.open), (int) w, (int) h);
+            g.setColor(Color.BLACK);
+            g.drawRect((int) (x), (int) getY(i.open), (int) w, (int) h);
+        }
     }
-    
+
+ 
 }

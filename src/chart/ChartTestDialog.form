@@ -59,7 +59,7 @@
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
     </Component>
-    <Container class="chart.Chart1" name="chart12">
+    <Container class="chart.ChartPanel" name="chart12">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -74,7 +74,7 @@
         </DimensionLayout>
       </Layout>
     </Container>
-    <Container class="chart.Chart1" name="chart11">
+    <Container class="chart.ChartPanel" name="chart11">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">

@@ -1,7 +1,7 @@
 package chart;
 
 import gui.Globals;
-import java.awt.Color;
+
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -108,14 +108,13 @@ public class ChartPanel extends javax.swing.JPanel implements QuoteReceiver, Adj
     public void UpdateQuote(Quote q) {
         
         int s = data.size();
-        System.out.printf("Data size %d",s);
+//        System.out.printf("Data size %d",s);
 //        xbar.setMaximum(data.size());
         repaint();
     }
 
     @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
-        System.out.printf("Adjustemntlistener called %d\n", xbar.getValue());
 
         this.repaint();
     }

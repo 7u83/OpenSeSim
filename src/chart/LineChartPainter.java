@@ -25,22 +25,29 @@
  */
 package chart;
 
-import javax.swing.JScrollBar;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import sesim.OHLCDataItem;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartDef {
-    JScrollBar x_scrollbar=null;
-    
-    /**
-     * width of an x unit in em
-     */
-    double x_unit_width=4.0;
-    
-    ChartDef(){
+public class LineChartPainter extends OHLCChartPainter{
+
+    @Override
+    void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+
+        if (prev == null) {
+            prev = i;
+        }
+        int y1 = (int) getY(prev.close);
+        int y2 = (int) getY(i.close);
+        Color cur = g.getColor();
+        g.setColor(Color.RED);
         
+        g.drawLine(prevx, y1, x, y2);
+        g.setColor(cur);
     }
     
 }

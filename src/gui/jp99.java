@@ -28,7 +28,7 @@ public class jp99 extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        chart11 = new chart.Chart1();
+        chart11 = new chart.ChartPanel();
 
         javax.swing.GroupLayout chart11Layout = new javax.swing.GroupLayout(chart11);
         chart11.setLayout(chart11Layout);
@@ -63,7 +63,7 @@ public class jp99 extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private chart.Chart1 chart11;
+    private chart.ChartPanel chart11;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

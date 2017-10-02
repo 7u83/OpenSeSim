@@ -34,7 +34,7 @@ import sesim.Quote;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceiver{
+public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceiver {
 
     /**
      * Creates new form ChartTestDialog
@@ -43,21 +43,23 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(parent);
-        this.chart12.xbar=this.jScrollBar1;
+        this.chart12.xbar = this.jScrollBar1;
         this.jScrollBar1.addAdjustmentListener(chart12);
 
         ChartPainter p = new XLegendChartPainter();
-         chart12.addChartPainter(p);
-         Globals.se.addQuoteReceiver(this);
-         
+        chart12.addChartPainter(p);
+        Globals.se.addQuoteReceiver(this);
 
-        this.chart11.xbar=this.jScrollBar1;
+        this.chart11.xbar = this.jScrollBar1;
         this.jScrollBar1.addAdjustmentListener(chart11);
-         p = new OHLCChartPainter();
+
+        p = new CandleStickChartPainter();
         this.chart11.addChartPainter(p);
 
-         
-         
+        p = new LineChartPainter();
+        this.chart11.addChartPainter(p);
+        
+
     }
 
     /**
@@ -70,8 +72,8 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
     private void initComponents() {
 
         jScrollBar1 = new javax.swing.JScrollBar();
-        chart12 = new chart.Chart1();
-        chart11 = new chart.Chart1();
+        chart12 = new chart.ChartPanel();
+        chart11 = new chart.ChartPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(800, 600));
@@ -175,14 +177,14 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private chart.Chart1 chart11;
-    private chart.Chart1 chart12;
+    private chart.ChartPanel chart11;
+    private chart.ChartPanel chart12;
     private javax.swing.JScrollBar jScrollBar1;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void UpdateQuote(Quote q) {
-        OHLCData data = Globals.se.getOHLCdata(60000*60*4);
+        OHLCData data = Globals.se.getOHLCdata(60000 * 60 * 4);
         this.jScrollBar1.setMaximum(data.size());
         repaint();
         System.out.printf("SETMAXIMUM: %d", data.size());
