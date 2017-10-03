@@ -24,9 +24,9 @@ import sesim.Quote;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartPanel extends javax.swing.JPanel /*implements AdjustmentListener*/ {
+public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener {
 
-    public JScrollBar xbar;
+    public JScrollBar x_scrollbar=null;
 
     /**
      * Creates new form Chart1
@@ -36,6 +36,14 @@ public class ChartPanel extends javax.swing.JPanel /*implements AdjustmentListen
 
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 
+    }
+    
+    public void setXSCrollBar(JScrollBar x_scrollbar){
+        if (this.x_scrollbar!=null)
+            this.x_scrollbar.removeAdjustmentListener(this);
+        this.x_scrollbar=x_scrollbar;
+        if (this.x_scrollbar!=null)
+            this.x_scrollbar.addAdjustmentListener(this);
     }
 
     private ArrayList<ChartPainter> chartPainters = new ArrayList<>();
@@ -58,16 +66,16 @@ public class ChartPanel extends javax.swing.JPanel /*implements AdjustmentListen
             return;
         }
 
-        //this.xbar.setMaximum(994000);
+        //this.x_scrollbar.setMaximum(994000);
         XLegendChartPainter p = new XLegendChartPainter();
         data = Globals.se.getOHLCdata(60000 * 60);
 
         ChartDef def = new ChartDef();
         def.x_unit_width = 1.0;
-        def.x_scrollbar = xbar;
+//        def.x_scrollbar = x_scrollbar;
 
         for (ChartPainter painter : chartPainters) {
-            painter.drawChart((Graphics2D) g, xbar, data, this, def);
+            painter.drawChart((Graphics2D) g, this, def);
         }
 
     }

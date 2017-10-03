@@ -39,6 +39,30 @@ import sesim.OHLCData;
 abstract public class ChartPainter {
 
     int em_size;
+    //OHLCData data=null;
+    
+    public abstract interface DataProvider {
+        abstract OHLCData get();
+    }
+
+    DataProvider dataProvider=null;
+    
+   public void setDataProvider(DataProvider dataProvider){
+        this.dataProvider = dataProvider;
+    }
+   
+   protected OHLCData getData(){
+       if (dataProvider==null)
+           return null;
+       return dataProvider.get();
+   }
+
+    protected int getFirstBar(ChartPanel p) {
+        if (p.x_scrollbar != null) {
+            return p.x_scrollbar.getValue();
+        }
+        return 0;
+    }
 
     protected final void init(Graphics2D g) {
 
@@ -50,6 +74,6 @@ abstract public class ChartPainter {
     int big_tick = 10;
     int y = 0;
 
-    abstract public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, ChartPanel p, ChartDef def);
+    abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
 
 }

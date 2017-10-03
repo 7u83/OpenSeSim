@@ -44,25 +44,23 @@ public class XLegendChartPainter extends ChartPainter {
         return sesim.Scheduler.formatTimeMillis(0 + unit * fs);
 
     }
-
-    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, ChartPanel p, ChartDef def)
+    
+ 
+    @Override
+    public void drawChart(Graphics2D g,  ChartPanel p, ChartDef def)
     {
+        OHLCData data = getData();
+        if (data ==null)
+            return;
+        
         init(g);
         
         g.setColor(Color.black);
         Dimension size = p.getSize();
-        //g.drawLine(0, 0, size.width, 100);
-
-        System.out.printf("SIZE %d %d\n", size.width, size.height);
 
         int bars = (int) (size.width / (def.x_unit_width * em_size));
-        System.out.printf("Units = %d\n", bars);
 
-        int first_bar;
-        if (def.x_scrollbar!=null) 
-            first_bar = def.x_scrollbar.getValue();
-        else
-            first_bar=0;
+        int first_bar = getFirstBar(p);
         
         int n;
         int x;

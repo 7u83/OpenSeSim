@@ -61,12 +61,18 @@ public abstract class OHLCChartPainter extends ChartPainter {
 
 
     @Override
-    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, ChartPanel p, ChartDef def) {
+    public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
+        OHLCData data = getData();
+        if (data==null)
+            return;
+        
         init(g);
 
         iwidth = (float) ((def.x_unit_width * em_size) * 0.9f);
 
-        int first_bar = def.x_scrollbar.getValue();
+        int first_bar = getFirstBar(p); 
+        
+        
         dim = p.getSize();
         int bars = (int) (dim.width / (def.x_unit_width * em_size));
 
@@ -79,11 +85,13 @@ public abstract class OHLCChartPainter extends ChartPainter {
         OHLCDataItem prevd = null;
         int prevx;
 
+System.out.printf("Firstbar %d - %d",first_bar,last_bar);        
+        
         if (data.size() > 0 && first_bar < data.size()) {
             prevd = data.get(first_bar);
         }
         
-        prevd=null;
+ 
 
         for (int b = first_bar, n = 0; b < last_bar && b < data.size(); b++, n++) {
             OHLCDataItem d = data.get(b);

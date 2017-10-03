@@ -52,4 +52,5 @@ public class LineChartPainter extends OHLCChartPainter{
         g.setColor(cur);
     }
     
+    
 }

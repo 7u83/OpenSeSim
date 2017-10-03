@@ -34,30 +34,44 @@ import sesim.Quote;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class MasterChart extends javax.swing.JPanel implements QuoteReceiver{
+public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, ChartPainter.DataProvider {
 
-    OHLCData data;
-    
+    //OHLCData data;
+
     /**
      * Creates new form MasterChart
      */
     public MasterChart() {
         initComponents();
-        
+
         ChartDef def = new ChartDef();
-        def.x_unit_width=1.0;
-        def.x_scrollbar=xScrollBar;
-        
-        if (Globals.se==null)
+        def.x_unit_width = 1.0;
+ 
+
+        if (Globals.se == null) {
             return;
-        
-        data = Globals.se.getOHLCdata(60000);
-        
-       ChartPainter p = new CandleStickChartPainter();
+        }
+
+    //    data = Globals.se.getOHLCdata(60000*60);
+        Globals.se.addQuoteReceiver(this);
+
+        ChartPainter p = new CandleStickChartPainter();
         //this.chart.addChartPainter(p);
 
+        this.xScrollBar.setMaximum(0);
+        
         p = new XLegendChartPainter();
+        p.setDataProvider(this);
+       
         xLegend.addChartPainter(p);
+        xLegend.setXSCrollBar(xScrollBar);
+
+        p = new CandleStickChartPainter();
+        p.setDataProvider(this);
+        
+                
+        chart.addChartPainter(p);
+        chart.setXSCrollBar(xScrollBar);
         
         p = new ChartCrossPainter();
         this.chart.addChartPainter(p);
@@ -169,6 +183,15 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver{
 
     @Override
     public void UpdateQuote(Quote q) {
+        OHLCData data = this.get();
+        int s = data.size();
+        this.xScrollBar.setMaximum(s);
         repaint();
+    }
+
+    @Override
+    public OHLCData get() {
+        return Globals.se.getOHLCdata(60000*60);
+
     }
 }
