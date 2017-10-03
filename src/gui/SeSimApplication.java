@@ -187,7 +187,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
-        chartPanal1 = new chart.ChartPanal();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -340,7 +339,6 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane5.setTopComponent(statistics1);
-        jSplitPane5.setRightComponent(chartPanal1);
 
         jSplitPane3.setLeftComponent(jSplitPane5);
 
@@ -924,7 +922,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JSpinner accelSpinner;
     private gui.MainChart chart;
-    private chart.ChartPanal chartPanal1;
     private javax.swing.JScrollPane chartSrollPane;
     private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;

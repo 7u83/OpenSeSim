@@ -50,9 +50,6 @@ abstract public class ChartPainter {
     int big_tick = 10;
     int y = 0;
 
-
-    
-    
-    abstract public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, JPanel p, ChartDef def);
+    abstract public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, ChartPanel p, ChartDef def);
 
 }

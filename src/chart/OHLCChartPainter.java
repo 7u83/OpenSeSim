@@ -61,7 +61,7 @@ public abstract class OHLCChartPainter extends ChartPainter {
 
 
     @Override
-    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, JPanel p, ChartDef def) {
+    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, ChartPanel p, ChartDef def) {
         init(g);
 
         iwidth = (float) ((def.x_unit_width * em_width) * 0.9f);

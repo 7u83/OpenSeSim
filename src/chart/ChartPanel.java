@@ -6,6 +6,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -42,6 +43,7 @@ public class ChartPanel extends javax.swing.JPanel implements QuoteReceiver, Adj
 
         setSize(new Dimension(9000, 500));
         Globals.se.addQuoteReceiver(this);
+        repaint();
     }
     
     
@@ -65,6 +67,7 @@ public class ChartPanel extends javax.swing.JPanel implements QuoteReceiver, Adj
         if (Globals.se==null)
             return;
 
+        
 
         //this.xbar.setMaximum(994000);
 
@@ -92,6 +95,12 @@ public class ChartPanel extends javax.swing.JPanel implements QuoteReceiver, Adj
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -104,6 +113,18 @@ public class ChartPanel extends javax.swing.JPanel implements QuoteReceiver, Adj
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    Point mouse=null;
+    
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        // TODO add your handling code here:
+        Point p = evt.getPoint();
+        mouse = p;
+        System.out.printf("Point %d %d\n",p.x,p.y);
+        repaint();
+        
+    }//GEN-LAST:event_formMouseMoved
+
+    
     @Override
     public void UpdateQuote(Quote q) {
         

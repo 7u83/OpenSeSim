@@ -59,6 +59,10 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
         p = new LineChartPainter();
         this.chart11.addChartPainter(p);
         
+        p = new ChartCrossPainter();
+        this.chart11.addChartPainter(p);
+
+        
 
     }
 
@@ -74,9 +78,9 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
         jScrollBar1 = new javax.swing.JScrollBar();
         chart12 = new chart.ChartPanel();
         chart11 = new chart.ChartPanel();
+        chartPanel1 = new chart.ChartPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(100, 100));
 
         jScrollBar1.setMaximum(0);
@@ -91,7 +95,7 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
         );
         chart12Layout.setVerticalGroup(
             chart12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 52, Short.MAX_VALUE)
+            .addGap(0, 58, Short.MAX_VALUE)
         );
 
         chart11.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
@@ -100,11 +104,24 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
         chart11.setLayout(chart11Layout);
         chart11Layout.setHorizontalGroup(
             chart11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 546, Short.MAX_VALUE)
         );
         chart11Layout.setVerticalGroup(
             chart11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 252, Short.MAX_VALUE)
+            .addGap(0, 231, Short.MAX_VALUE)
+        );
+
+        chartPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 153, 153)));
+
+        javax.swing.GroupLayout chartPanel1Layout = new javax.swing.GroupLayout(chartPanel1);
+        chartPanel1.setLayout(chartPanel1Layout);
+        chartPanel1Layout.setHorizontalGroup(
+            chartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 83, Short.MAX_VALUE)
+        );
+        chartPanel1Layout.setVerticalGroup(
+            chartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -114,17 +131,24 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
-                    .addComponent(chart12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(chart11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(chart11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chart12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chartPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(chart11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chart11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(chartPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chart12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -179,6 +203,7 @@ public class ChartTestDialog extends javax.swing.JDialog implements QuoteReceive
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private chart.ChartPanel chart11;
     private chart.ChartPanel chart12;
+    private chart.ChartPanel chartPanel1;
     private javax.swing.JScrollBar jScrollBar1;
     // End of variables declaration//GEN-END:variables
 

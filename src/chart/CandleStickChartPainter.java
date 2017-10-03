@@ -27,6 +27,8 @@ package chart;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import javax.swing.JScrollBar;
+import sesim.OHLCData;
 import sesim.OHLCDataItem;
 
 /**
@@ -67,6 +69,8 @@ public class CandleStickChartPainter extends OHLCChartPainter {
             g.drawRect((int) (x), (int) getY(i.open), (int) w, (int) h);
         }
     }
+
+
 
  
 }

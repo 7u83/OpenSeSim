@@ -45,7 +45,7 @@ public class XLegendChartPainter extends ChartPainter {
 
     }
 
-    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, JPanel p, ChartDef def)
+    public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, ChartPanel p, ChartDef def)
     {
         init(g);
         g.setColor(Color.black);
