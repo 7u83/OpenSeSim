@@ -36,8 +36,6 @@ import sesim.Quote;
  */
 public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, ChartPainter.DataProvider {
 
-    //OHLCData data;
-
     /**
      * Creates new form MasterChart
      */
@@ -46,33 +44,28 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
 
         ChartDef def = new ChartDef();
         def.x_unit_width = 1.0;
- 
 
         if (Globals.se == null) {
             return;
         }
 
-    //    data = Globals.se.getOHLCdata(60000*60);
         Globals.se.addQuoteReceiver(this);
 
         ChartPainter p = new CandleStickChartPainter();
-        //this.chart.addChartPainter(p);
-
         this.xScrollBar.setMaximum(0);
-        
+
         p = new XLegendChartPainter();
         p.setDataProvider(this);
-       
+
         xLegend.addChartPainter(p);
         xLegend.setXSCrollBar(xScrollBar);
 
         p = new CandleStickChartPainter();
         p.setDataProvider(this);
-        
-                
+
         chart.addChartPainter(p);
         chart.setXSCrollBar(xScrollBar);
-        
+
         p = new ChartCrossPainter();
         this.chart.addChartPainter(p);
 
@@ -170,7 +163,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
     }// </editor-fold>//GEN-END:initComponents
 
     private void chartMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chartMouseMoved
-        System.out.printf("Chart Mouse Moved\n");
+        
     }//GEN-LAST:event_chartMouseMoved
 
 
@@ -191,7 +184,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
 
     @Override
     public OHLCData get() {
-        return Globals.se.getOHLCdata(60000*60);
+        return Globals.se.getOHLCdata(60000 * 60);
 
     }
 }
