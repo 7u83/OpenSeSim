@@ -24,7 +24,7 @@ import sesim.Quote;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartPanel extends javax.swing.JPanel implements QuoteReceiver, AdjustmentListener {
+public class ChartPanel extends javax.swing.JPanel /*implements AdjustmentListener*/ {
 
     public JScrollBar xbar;
 
@@ -33,56 +33,42 @@ public class ChartPanel extends javax.swing.JPanel implements QuoteReceiver, Adj
      */
     public ChartPanel() {
         initComponents();
-        System.out.printf("Now cursor\n");
 
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 
-        if (Globals.se == null) {
-            return;
-        }
-
-        setSize(new Dimension(9000, 500));
-        Globals.se.addQuoteReceiver(this);
-        repaint();
     }
-    
-    
-    private ArrayList <ChartPainter> chartPainters = new ArrayList<>();
-    
+
+    private ArrayList<ChartPainter> chartPainters = new ArrayList<>();
+
     /**
-     * 
-     * @param p 
+     *
+     * @param p
      */
-    public void addChartPainter(ChartPainter p){
+    public void addChartPainter(ChartPainter p) {
         chartPainters.add(p);
     }
-
 
     OHLCData data;
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
-        if (Globals.se==null)
-            return;
 
-        
+        if (Globals.se == null) {
+            return;
+        }
 
         //this.xbar.setMaximum(994000);
-
         XLegendChartPainter p = new XLegendChartPainter();
-        data = Globals.se.getOHLCdata(60000*60);
-        
+        data = Globals.se.getOHLCdata(60000 * 60);
+
         ChartDef def = new ChartDef();
         def.x_unit_width = 1.0;
-        def.x_scrollbar=xbar;
-        
-        
-        for (ChartPainter painter: chartPainters){
-            painter.drawChart((Graphics2D)g, xbar, data, this, def);
+        def.x_scrollbar = xbar;
+
+        for (ChartPainter painter : chartPainters) {
+            painter.drawChart((Graphics2D) g, xbar, data, this, def);
         }
-        
 
     }
 
@@ -113,28 +99,17 @@ public class ChartPanel extends javax.swing.JPanel implements QuoteReceiver, Adj
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    Point mouse=null;
-    
+    Point mouse = null;
+
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        // TODO add your handling code here:
+
         Point p = evt.getPoint();
         mouse = p;
-        System.out.printf("Point %d %d\n",p.x,p.y);
         repaint();
-        
+
     }//GEN-LAST:event_formMouseMoved
 
-    
-    @Override
-    public void UpdateQuote(Quote q) {
-        
-        int s = data.size();
-//        System.out.printf("Data size %d",s);
-//        xbar.setMaximum(data.size());
-        repaint();
-    }
-
-    @Override
+    //   @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
 
         this.repaint();

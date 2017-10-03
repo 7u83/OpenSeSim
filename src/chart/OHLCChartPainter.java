@@ -64,11 +64,11 @@ public abstract class OHLCChartPainter extends ChartPainter {
     public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, ChartPanel p, ChartDef def) {
         init(g);
 
-        iwidth = (float) ((def.x_unit_width * em_width) * 0.9f);
+        iwidth = (float) ((def.x_unit_width * em_size) * 0.9f);
 
         int first_bar = def.x_scrollbar.getValue();
         dim = p.getSize();
-        int bars = (int) (dim.width / (def.x_unit_width * em_width));
+        int bars = (int) (dim.width / (def.x_unit_width * em_size));
 
         int last_bar = first_bar + bars+1;
 
@@ -88,11 +88,11 @@ public abstract class OHLCChartPainter extends ChartPainter {
         for (int b = first_bar, n = 0; b < last_bar && b < data.size(); b++, n++) {
             OHLCDataItem d = data.get(b);
 
-            int x = (int) (n * em_width * def.x_unit_width); //em_width;
-            drawItem(g, (int) (x - em_width * def.x_unit_width), x, prevd, d);
+            int x = (int) (n * em_size * def.x_unit_width); //em_width;
+            drawItem(g, (int) (x - em_size * def.x_unit_width), x, prevd, d);
             prevd = d;
 
-            //this.drawCandleItem(g, (int)((n-1)*def.x_unit_width*em_width), (int)(n*def.x_unit_width*em_width), prevd, d);
+            //this.drawCandleItem(g, (int)((n-1)*def.x_unit_width*em_size), (int)(n*def.x_unit_width*em_size), prevd, d);
         }
     }
 

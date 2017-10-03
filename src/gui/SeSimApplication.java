@@ -26,6 +26,7 @@
 package gui;
 
 import chart.ChartTestDialog;
+import chart.SuperDlg;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
@@ -867,7 +868,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_clearMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        ChartTestDialog d = new ChartTestDialog(this, false);
+        SuperDlg d = new SuperDlg(this, false);
         d.setVisible(true);
 
     }//GEN-LAST:event_jMenuItem1ActionPerformed

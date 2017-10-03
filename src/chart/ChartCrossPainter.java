@@ -40,7 +40,8 @@ public class ChartCrossPainter extends ChartPainter{
     @Override
     public void drawChart(Graphics2D g, JScrollBar sb, OHLCData data, ChartPanel p, ChartDef def) {
         Point mp = p.mouse;
-        
+        if (mp==null)
+            return;
         
         g.drawLine(0, p.mouse.y-1, p.getSize().width, p.mouse.y-1);
         g.drawLine(p.mouse.x-1, 0, p.mouse.x-1, p.getSize().height);        

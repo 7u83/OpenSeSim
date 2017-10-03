@@ -38,12 +38,12 @@ import sesim.OHLCData;
  */
 abstract public class ChartPainter {
 
-    int em_width;
+    int em_size;
 
     protected final void init(Graphics2D g) {
 
         // Calculate the number of pixels for 1 em
-        em_width = g.getFontMetrics().stringWidth("M");
+        em_size = g.getFontMetrics().stringWidth("M");
 
     }
 

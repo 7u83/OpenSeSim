@@ -35,6 +35,8 @@ import sesim.OHLCDataItem;
  */
 public class LineChartPainter extends OHLCChartPainter{
 
+    
+    
     @Override
     void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
@@ -45,7 +47,7 @@ public class LineChartPainter extends OHLCChartPainter{
         int y2 = (int) getY(i.close);
         Color cur = g.getColor();
         g.setColor(Color.RED);
-        
+    
         g.drawLine(prevx, y1, x, y2);
         g.setColor(cur);
     }

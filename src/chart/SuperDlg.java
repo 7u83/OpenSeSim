@@ -25,25 +25,19 @@
  */
 package chart;
 
-import gui.Globals;
-import sesim.Exchange.QuoteReceiver;
-import sesim.OHLCData;
-import sesim.Quote;
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartTestDialog extends javax.swing.JDialog  {
+public class SuperDlg extends javax.swing.JDialog {
 
     /**
-     * Creates new form ChartTestDialog
+     * Creates new form SuperDlg
      */
-    public ChartTestDialog(java.awt.Frame parent, boolean modal) {
+    public SuperDlg(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-    //    setLocationRelativeTo(parent);
-    //    masterChart.repaint();
+        setLocationRelativeTo(parent);
     }
 
     /**
@@ -55,24 +49,23 @@ public class ChartTestDialog extends javax.swing.JDialog  {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        masterChart = new chart.MasterChart();
+        masterChart1 = new chart.MasterChart();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(100, 100));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(masterChart, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(masterChart1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(masterChart, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(masterChart1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -96,20 +89,20 @@ public class ChartTestDialog extends javax.swing.JDialog  {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ChartTestDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SuperDlg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ChartTestDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SuperDlg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ChartTestDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SuperDlg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ChartTestDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SuperDlg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ChartTestDialog dialog = new ChartTestDialog(new javax.swing.JFrame(), true);
+                SuperDlg dialog = new SuperDlg(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -122,8 +115,6 @@ public class ChartTestDialog extends javax.swing.JDialog  {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private chart.MasterChart masterChart;
+    private chart.MasterChart masterChart1;
     // End of variables declaration//GEN-END:variables
-
-
 }
