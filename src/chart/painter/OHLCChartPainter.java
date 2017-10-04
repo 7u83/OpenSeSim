@@ -23,8 +23,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package chart.painter;
 
+import chart.ChartDef;
+import chart.ChartPanel;
+import chart.painter.ChartPainter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;

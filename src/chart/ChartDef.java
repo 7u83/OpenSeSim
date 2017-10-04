@@ -37,7 +37,7 @@ public class ChartDef {
     /**
      * width of an x unit in em
      */
-    double x_unit_width=4.0;
+    public double x_unit_width=4.0;
     
     ChartDef(){
         

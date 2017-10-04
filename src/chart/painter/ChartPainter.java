@@ -23,8 +23,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package chart.painter;
 
+import chart.ChartDef;
+import chart.ChartPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -36,54 +38,44 @@ import sesim.OHLCData;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class XLegendChartPainter extends ChartPainter {
+abstract public class ChartPainter {
 
-    private String getTimeStrAt(OHLCData data, int unit) {
-
-        int fs = data.getFrameSize();
-        return sesim.Scheduler.formatTimeMillis(0 + unit * fs);
-
-    }
+    int em_size;
+    //OHLCData data=null;
     
- 
-    @Override
-    public void drawChart(Graphics2D g,  ChartPanel p, ChartDef def)
-    {
-        OHLCData data = getData();
-        if (data ==null)
-            return;
-        
-        init(g);
-        
-        g.setColor(Color.black);
-        Dimension size = p.getSize();
+    public abstract interface DataProvider {
+        abstract OHLCData get();
+    }
 
-        int bars = (int) (size.width / (def.x_unit_width * em_size));
+    DataProvider dataProvider=null;
+    
+   public void setDataProvider(DataProvider dataProvider){
+        this.dataProvider = dataProvider;
+    }
+   
+   protected OHLCData getData(){
+       if (dataProvider==null)
+           return null;
+       return dataProvider.get();
+   }
 
-        int first_bar = getFirstBar(p);
-        
-        int n;
-        int x;
-        for (n = first_bar, x = 0; x < size.width; x += em_size * def.x_unit_width) {
-            if (n % big_tick == 1) {
-                g.drawLine((int) x, y, (int) x, y + em_size);
-                String text;
-                text = getTimeStrAt(data, n);
-
-                int swidth = g.getFontMetrics().stringWidth(text);
-                g.drawString(text, (int) x - swidth / 2, y + em_size * 2);
-
-            } else {
-                g.drawLine((int) x, y, (int) x, y + em_size / 2);
-            }
-
-            if (n % big_tick == 0) {
-
-            }
-
-            n += 1;
+    protected int getFirstBar(ChartPanel p) {
+        if (p.x_scrollbar != null) {
+            return p.x_scrollbar.getValue();
         }
+        return 0;
+    }
+
+    protected final void init(Graphics2D g) {
+
+        // Calculate the number of pixels for 1 em
+        em_size = g.getFontMetrics().stringWidth("M");
 
     }
+
+    int big_tick = 10;
+    int y = 0;
+
+    abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
 
 }

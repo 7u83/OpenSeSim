@@ -23,8 +23,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package chart.painter;
 
+import chart.painter.OHLCChartPainter;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import javax.swing.JScrollBar;

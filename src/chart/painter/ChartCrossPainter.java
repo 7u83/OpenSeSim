@@ -23,33 +23,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package chart.painter;
 
-import java.awt.Color;
+import chart.ChartDef;
+import chart.ChartPanel;
 import java.awt.Graphics2D;
-import sesim.OHLCDataItem;
+import java.awt.Point;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import sesim.OHLCData;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class LineChartPainter extends OHLCChartPainter{
+public class ChartCrossPainter extends ChartPainter{
 
-    
-    
     @Override
-    void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
-
-        if (prev == null) {
-            prev = i;
-        }
-        int y1 = (int) getY(prev.close);
-        int y2 = (int) getY(i.close);
-        Color cur = g.getColor();
-        g.setColor(Color.RED);
-    
-        g.drawLine(prevx, y1, x, y2);
-        g.setColor(cur);
+    public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
+        Point mp = p.mouse;
+        if (mp==null)
+            return;
+        
+        g.drawLine(0, p.mouse.y-1, p.getSize().width, p.mouse.y-1);
+        g.drawLine(p.mouse.x-1, 0, p.mouse.x-1, p.getSize().height);        
+        
     }
     
     

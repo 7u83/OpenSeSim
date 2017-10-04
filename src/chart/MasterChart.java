@@ -25,6 +25,10 @@
  */
 package chart;
 
+import chart.painter.CandleStickChartPainter;
+import chart.painter.ChartPainter;
+import chart.painter.XLegendChartPainter;
+import chart.painter.ChartCrossPainter;
 import gui.Globals;
 import sesim.Exchange.QuoteReceiver;
 import sesim.OHLCData;

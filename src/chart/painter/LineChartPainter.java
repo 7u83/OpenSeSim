@@ -23,57 +23,35 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package chart.painter;
 
+import chart.painter.OHLCChartPainter;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import sesim.OHLCData;
+import sesim.OHLCDataItem;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-abstract public class ChartPainter {
+public class LineChartPainter extends OHLCChartPainter{
 
-    int em_size;
-    //OHLCData data=null;
     
-    public abstract interface DataProvider {
-        abstract OHLCData get();
-    }
-
-    DataProvider dataProvider=null;
     
-   public void setDataProvider(DataProvider dataProvider){
-        this.dataProvider = dataProvider;
-    }
-   
-   protected OHLCData getData(){
-       if (dataProvider==null)
-           return null;
-       return dataProvider.get();
-   }
+    @Override
+    void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
-    protected int getFirstBar(ChartPanel p) {
-        if (p.x_scrollbar != null) {
-            return p.x_scrollbar.getValue();
+        if (prev == null) {
+            prev = i;
         }
-        return 0;
+        int y1 = (int) getY(prev.close);
+        int y2 = (int) getY(i.close);
+        Color cur = g.getColor();
+        g.setColor(Color.RED);
+    
+        g.drawLine(prevx, y1, x, y2);
+        g.setColor(cur);
     }
-
-    protected final void init(Graphics2D g) {
-
-        // Calculate the number of pixels for 1 em
-        em_size = g.getFontMetrics().stringWidth("M");
-
-    }
-
-    int big_tick = 10;
-    int y = 0;
-
-    abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
-
+    
+    
 }

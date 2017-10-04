@@ -23,10 +23,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package chart.painter;
 
+import chart.ChartDef;
+import chart.ChartPanel;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import sesim.OHLCData;
@@ -35,18 +38,54 @@ import sesim.OHLCData;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartCrossPainter extends ChartPainter{
+public class XLegendChartPainter extends ChartPainter {
 
-    @Override
-    public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
-        Point mp = p.mouse;
-        if (mp==null)
-            return;
-        
-        g.drawLine(0, p.mouse.y-1, p.getSize().width, p.mouse.y-1);
-        g.drawLine(p.mouse.x-1, 0, p.mouse.x-1, p.getSize().height);        
-        
+    private String getTimeStrAt(OHLCData data, int unit) {
+
+        int fs = data.getFrameSize();
+        return sesim.Scheduler.formatTimeMillis(0 + unit * fs);
+
     }
     
-    
+ 
+    @Override
+    public void drawChart(Graphics2D g,  ChartPanel p, ChartDef def)
+    {
+        OHLCData data = getData();
+        if (data ==null)
+            return;
+        
+        init(g);
+        
+        g.setColor(Color.black);
+        Dimension size = p.getSize();
+
+        int bars = (int) (size.width / (def.x_unit_width * em_size));
+
+        int first_bar = getFirstBar(p);
+        
+        int n;
+        int x;
+        for (n = first_bar, x = 0; x < size.width; x += em_size * def.x_unit_width) {
+            if (n % big_tick == 1) {
+                g.drawLine((int) x, y, (int) x, y + em_size);
+                String text;
+                text = getTimeStrAt(data, n);
+
+                int swidth = g.getFontMetrics().stringWidth(text);
+                g.drawString(text, (int) x - swidth / 2, y + em_size * 2);
+
+            } else {
+                g.drawLine((int) x, y, (int) x, y + em_size / 2);
+            }
+
+            if (n % big_tick == 0) {
+
+            }
+
+            n += 1;
+        }
+
+    }
+
 }

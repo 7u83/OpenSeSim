@@ -1,5 +1,7 @@
 package chart;
 
+import chart.painter.ChartPainter;
+import chart.painter.XLegendChartPainter;
 import gui.Globals;
 
 import java.awt.Cursor;
@@ -107,7 +109,7 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    Point mouse = null;
+    public Point mouse = null;
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
 
