@@ -27,11 +27,7 @@ package chart.painter;
 
 import chart.ChartDef;
 import chart.ChartPanel;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import sesim.OHLCData;
 
 /**
@@ -66,15 +62,16 @@ abstract public class ChartPainter {
         return 0;
     }
 
+    /**
+     * Init method scould be called before painting the chart 
+     * @param g Graphics context
+     */
     protected final void init(Graphics2D g) {
 
         // Calculate the number of pixels for 1 em
         em_size = g.getFontMetrics().stringWidth("M");
 
     }
-
-    int big_tick = 10;
-    int y = 0;
 
     abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
 
