@@ -29,9 +29,7 @@ import chart.ChartDef;
 import chart.ChartPanel;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import sesim.OHLCData;
+
 
 /**
  *
@@ -45,8 +43,8 @@ public class ChartCrossPainter extends ChartPainter{
         if (mp==null)
             return;
         
-        g.drawLine(0, p.mouse.y-1, p.getSize().width, p.mouse.y-1);
-        g.drawLine(p.mouse.x-1, 0, p.mouse.x-1, p.getSize().height);        
+        g.drawLine(0, p.mouse.y, p.getSize().width, p.mouse.y);
+        g.drawLine(p.mouse.x, 0, p.mouse.x, p.getSize().height);        
         
     }
     
