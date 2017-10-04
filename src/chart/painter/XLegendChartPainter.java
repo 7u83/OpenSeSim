@@ -47,7 +47,8 @@ public class XLegendChartPainter extends ChartPainter {
 
     }
     
- 
+    int big_tick = 10;
+    int y = 0;
     @Override
     public void drawChart(Graphics2D g,  ChartPanel p, ChartDef def)
     {
