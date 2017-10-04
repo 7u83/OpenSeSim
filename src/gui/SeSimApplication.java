@@ -25,7 +25,6 @@
  */
 package gui;
 
-import chart.ChartTestDialog;
 import chart.SuperDlg;
 import java.awt.Dialog;
 import java.awt.Frame;
