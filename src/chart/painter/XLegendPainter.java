@@ -38,7 +38,7 @@ import sesim.OHLCData;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class XLegendChartPainter extends ChartPainter {
+public class XLegendPainter extends ChartPainter {
 
     private String getTimeStrAt(OHLCData data, int unit) {
 

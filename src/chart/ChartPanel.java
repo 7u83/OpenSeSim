@@ -1,7 +1,7 @@
 package chart;
 
 import chart.painter.ChartPainter;
-import chart.painter.XLegendChartPainter;
+import chart.painter.XLegendPainter;
 import gui.Globals;
 
 import java.awt.Cursor;
@@ -69,7 +69,7 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         }
 
         //this.x_scrollbar.setMaximum(994000);
-        XLegendChartPainter p = new XLegendChartPainter();
+        XLegendPainter p = new XLegendPainter();
         data = Globals.se.getOHLCdata(60000 * 60);
 
         ChartDef def = new ChartDef();

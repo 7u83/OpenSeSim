@@ -25,7 +25,6 @@
  */
 package chart.painter;
 
-import chart.painter.OHLCChartPainter;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import sesim.OHLCDataItem;
