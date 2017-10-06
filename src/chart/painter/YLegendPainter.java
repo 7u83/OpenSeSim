@@ -25,60 +25,61 @@
  */
 package chart.painter;
 
+import chart.Chart;
 import chart.ChartDef;
 import chart.ChartPanel;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import sesim.OHLCData;
+import java.awt.Rectangle;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-abstract public class ChartPainter {
-
-    int em_size;
-    //OHLCData data=null;
+public class YLegendPainter extends ChartPainter {
     
-    public abstract interface DataProvider {
-        abstract OHLCData get();
+    ChartPanel master;
+    
+    public YLegendPainter (ChartPanel master){
+        this.master=master;
     }
 
-    DataProvider dataProvider=null;
-    
-   public void setDataProvider(DataProvider dataProvider){
-        this.dataProvider = dataProvider;
-    }
-   
-   protected OHLCData getData(){
-       if (dataProvider==null)
-           return null;
-       return dataProvider.get();
-   }
+    @Override
+    public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
+        init(g);
+        
+        Dimension dim = master.getSize();
+        int first_bar = getFirstBar(master);
+        int bars = getBars(master,def);
 
-    protected int getFirstBar(ChartPanel p) {
-        if (p.x_scrollbar != null) {
-            return p.x_scrollbar.getValue();
+        //Rectangle dim;
+       // dim = p.getSize();
+  //      dim = this.clip_bounds;
+
+        // Dimension rv = this.getSize();
+//        int yw = (int) (this.yl_width * em_size);
+
+//        g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
+
+/*
+        float y1 = ctx.getY(mm.getMin(false));
+        float y2 = ctx.getY(c_mm.getMax(false));
+        float ydiff = y1 - y2;
+//        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
+
+        for (int yp = (int) y2; yp < y1; yp += em_width * 5) {
+            g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_width, yp);
+            double v1 = ctx.getValAtY(yp);
+            g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_width * 1.5f, yp + c_font_height / 3);
         }
-        return 0;
+
+        double v1, v2;
+        v1 = ctx.getValAtY(y1);
+        v2 = ctx.getValAtY(y2);
+*/
+
     }
+        
+
     
-    protected int getBars(ChartPanel p, ChartDef def){
-        Dimension  dim = p.getSize();
-        return (int) (dim.width / (def.x_unit_width * em_size));
-    }
-
-    /**
-     * Init method scould be called before painting the chart 
-     * @param g Graphics context
-     */
-    protected final void init(Graphics2D g) {
-
-        // Calculate the number of pixels for 1 em
-        em_size = g.getFontMetrics().stringWidth("M");
-
-    }
-
-    abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
-
 }

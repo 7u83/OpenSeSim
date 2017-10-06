@@ -29,6 +29,7 @@ import chart.painter.CandleStickChartPainter;
 import chart.painter.ChartPainter;
 import chart.painter.XLegendPainter;
 import chart.painter.ChartCrossPainter;
+import chart.painter.YLegendPainter;
 import gui.Globals;
 import sesim.Exchange.QuoteReceiver;
 import sesim.OHLCData;
@@ -64,14 +65,19 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         xLegend.addChartPainter(p);
         xLegend.setXSCrollBar(xScrollBar);
 
-        p = new CandleStickChartPainter();
-        p.setDataProvider(this);
+        ChartPainter pc = new CandleStickChartPainter();
+        pc.setDataProvider(this);
 
-        chart.addChartPainter(p);
+        chart.addChartPainter(pc);
         chart.setXSCrollBar(xScrollBar);
 
-        p = new ChartCrossPainter();
-        this.chart.addChartPainter(p);
+        ChartPainter yp = new YLegendPainter(chart);
+        yp.setDataProvider(this);
+        
+        this.chart.addChartPainter(yp);
+        
+        this.yLegend.addChartPainter(p);
+       this.yLegend.addChartPainter(pc);
 
     }
 

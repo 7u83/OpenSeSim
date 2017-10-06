@@ -27,7 +27,6 @@ package chart.painter;
 
 import chart.ChartDef;
 import chart.ChartPanel;
-import chart.painter.ChartPainter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -36,7 +35,7 @@ import javax.swing.JScrollBar;
 import sesim.MinMax;
 import sesim.OHLCData;
 import sesim.OHLCDataItem;
-import static sun.awt.geom.Curve.prev;
+
 
 /**
  *
