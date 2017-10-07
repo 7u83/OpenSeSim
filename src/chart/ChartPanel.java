@@ -5,19 +5,17 @@ import chart.painter.XLegendPainter;
 import gui.Globals;
 
 import java.awt.Cursor;
-import java.awt.Dimension;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
+
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.geom.AffineTransform;
+
 import java.util.ArrayList;
 import javax.swing.JScrollBar;
-import javax.swing.JViewport;
-import javax.swing.Scrollable;
-import sesim.Exchange.QuoteReceiver;
+
 import sesim.OHLCData;
 import sesim.OHLCDataItem;
 import sesim.Quote;
@@ -29,6 +27,8 @@ import sesim.Quote;
 public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener {
 
     public JScrollBar x_scrollbar=null;
+    ChartDef chartDef;
+    
 
     /**
      * Creates new form Chart1
@@ -39,13 +39,21 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 
     }
-    
+
+    /**
+     * Add a horizontal scrollbar
+     * @param x_scrollbar 
+     */
     public void setXSCrollBar(JScrollBar x_scrollbar){
         if (this.x_scrollbar!=null)
             this.x_scrollbar.removeAdjustmentListener(this);
         this.x_scrollbar=x_scrollbar;
         if (this.x_scrollbar!=null)
             this.x_scrollbar.addAdjustmentListener(this);
+    }
+    
+    public void setChartDef(ChartDef def){
+        chartDef = def;
     }
 
     private ArrayList<ChartPainter> chartPainters = new ArrayList<>();
@@ -72,12 +80,12 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         XLegendPainter p = new XLegendPainter();
         data = Globals.se.getOHLCdata(60000 * 60);
 
-        ChartDef def = new ChartDef();
-        def.x_unit_width = 1.0;
+//        ChartDef def = new ChartDef();
+//        def.x_unit_width = 1.0;
 //        def.x_scrollbar = x_scrollbar;
 
         for (ChartPainter painter : chartPainters) {
-            painter.drawChart((Graphics2D) g, this, def);
+            painter.drawChart((Graphics2D) g, this, chartDef);
         }
 
     }
@@ -119,7 +127,7 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
 
     }//GEN-LAST:event_formMouseMoved
 
-    //   @Override
+    @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
 
         this.repaint();

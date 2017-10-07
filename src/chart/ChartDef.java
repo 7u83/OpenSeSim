@@ -32,12 +32,12 @@ import javax.swing.JScrollBar;
  * @author 7u83 <7u83@mail.ru>
  */
 public class ChartDef {
-  //  JScrollBar x_scrollbar=null;
+  
     
     /**
      * width of an x unit in em
      */
-    public double x_unit_width=4.0;
+    public double x_unit_width=1.0;
     
     ChartDef(){
         

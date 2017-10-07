@@ -41,20 +41,27 @@ import sesim.Quote;
  */
 public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, ChartPainter.DataProvider {
 
+    private ChartDef chartDef;
+    
     /**
      * Creates new form MasterChart
      */
     public MasterChart() {
         initComponents();
 
-        ChartDef def = new ChartDef();
-        def.x_unit_width = 1.0;
+        chartDef = new ChartDef();
+        chartDef.x_unit_width = 3.0;
 
         if (Globals.se == null) {
             return;
         }
 
         Globals.se.addQuoteReceiver(this);
+        
+        
+        this.chart.setChartDef(chartDef);
+        this.xLegend.setChartDef(chartDef);
+        this.yLegend.setChartDef(chartDef);
 
         ChartPainter p = new CandleStickChartPainter();
         this.xScrollBar.setMaximum(0);
@@ -96,7 +103,13 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         xLegend = new chart.ChartPanel();
         xScrollBar = new javax.swing.JScrollBar();
 
-        chart.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 0, 153), 1, true));
+        addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                formMouseWheelMoved(evt);
+            }
+        });
+
+        chart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         chart.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 chartMouseMoved(evt);
@@ -114,33 +127,38 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        yLegend.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        yLegend.setBorder(null);
 
         javax.swing.GroupLayout yLegendLayout = new javax.swing.GroupLayout(yLegend);
         yLegend.setLayout(yLegendLayout);
         yLegendLayout.setHorizontalGroup(
             yLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 95, Short.MAX_VALUE)
+            .addGap(0, 83, Short.MAX_VALUE)
         );
         yLegendLayout.setVerticalGroup(
             yLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 253, Short.MAX_VALUE)
+            .addGap(0, 326, Short.MAX_VALUE)
         );
 
-        xLegend.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        xLegend.setBorder(null);
 
         javax.swing.GroupLayout xLegendLayout = new javax.swing.GroupLayout(xLegend);
         xLegend.setLayout(xLegendLayout);
         xLegendLayout.setHorizontalGroup(
             xLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 520, Short.MAX_VALUE)
+            .addGap(0, 576, Short.MAX_VALUE)
         );
         xLegendLayout.setVerticalGroup(
             xLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 73, Short.MAX_VALUE)
+            .addGap(0, 61, Short.MAX_VALUE)
         );
 
         xScrollBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
+        xScrollBar.addAdjustmentListener(new java.awt.event.AdjustmentListener() {
+            public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
+                xScrollBarAdjustmentValueChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -176,6 +194,25 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
     private void chartMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chartMouseMoved
         
     }//GEN-LAST:event_chartMouseMoved
+
+    private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
+        double n = evt.getPreciseWheelRotation() * (-1.0);
+
+        if (n < 0) {
+            if (chartDef.x_unit_width > 0.3) {
+                chartDef.x_unit_width += 0.1 * n;
+            }
+        } else {
+            chartDef.x_unit_width += 0.1 * n;
+        }
+
+        this.invalidate();
+        this.repaint();        
+    }//GEN-LAST:event_formMouseWheelMoved
+
+    private void xScrollBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_xScrollBarAdjustmentValueChanged
+        repaint();
+    }//GEN-LAST:event_xScrollBarAdjustmentValueChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
