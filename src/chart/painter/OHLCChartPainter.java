@@ -44,23 +44,13 @@ import sesim.OHLCDataItem;
 public abstract class OHLCChartPainter extends ChartPainter {
 
     protected float iwidth;
-    private MinMax mm;
-    private Dimension dim;
-    private float y_scaling;
 
-    float getY(float y) {
-//c_yscaling = ctx.rect.height / c_mm.getDiff();
-//               float ys = dim.height / mm.getDiff();
-        if (mm.isLog()) {
-//            return rect.height + rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
-        }
-        return (dim.height - ((y - mm.getMin()) * y_scaling));
-
-    }
+ 
 
     abstract void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i);
     
 
+    
 
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
@@ -75,19 +65,25 @@ public abstract class OHLCChartPainter extends ChartPainter {
         int first_bar = getFirstBar(p); 
         
         
-        dim = p.getSize();
-        int bars = (int) (dim.width / (def.x_unit_width * em_size));
-
+        Dimension dim = p.getSize();
+        //int bars = (int) (dim.width / (def.x_unit_width * em_size));
+        int bars = this.getBars(p, def);
+        
+        
         int last_bar = first_bar + bars+1;
 
-        mm = data.getMinMax(first_bar, last_bar);
-
-        y_scaling = dim.height / mm.getDiff();
+        MinMax minmax = data.getMinMax(first_bar, last_bar);
+    
+        this.initGetY(minmax, dim);
+        
+       // y_scaling = dim.height / minmax.getDiff();
+        
+        
 
         OHLCDataItem prevd = null;
         int prevx;
 
-System.out.printf("Firstbar %d - %d",first_bar,last_bar);        
+   
         
         if (data.size() > 0 && first_bar < data.size()) {
             prevd = data.get(first_bar);

@@ -31,6 +31,8 @@ import chart.ChartPanel;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import sesim.MinMax;
+import sesim.OHLCDataItem;
 
 /**
  *
@@ -50,7 +52,11 @@ public class YLegendPainter extends ChartPainter {
         
         Dimension dim = master.getSize();
         int first_bar = getFirstBar(master);
-        int bars = getBars(master,def);
+        int last_bar = first_bar + getBars(master,def);
+        MinMax minmax = this.getData().getMinMax(first_bar, last_bar);
+        
+        this.initGetY(minmax, dim);
+
 
         //Rectangle dim;
        // dim = p.getSize();
@@ -61,25 +67,27 @@ public class YLegendPainter extends ChartPainter {
 
 //        g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
 
-/*
-        float y1 = ctx.getY(mm.getMin(false));
-        float y2 = ctx.getY(c_mm.getMax(false));
+
+        float y1 = getY(minmax.getMin(false));
+        float y2 = getY(minmax.getMax(false));
         float ydiff = y1 - y2;
 //        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
-
-        for (int yp = (int) y2; yp < y1; yp += em_width * 5) {
-            g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + em_width, yp);
-            double v1 = ctx.getValAtY(yp);
-            g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + em_width * 1.5f, yp + c_font_height / 3);
+        int c_font_height = g.getFontMetrics().getHeight();
+        
+        for (int yp = (int) y2; yp < y1; yp += em_size * 3) {
+            g.drawLine(0, yp, em_size, yp);
+            double v1 = getValAtY(yp);
+            g.drawString(String.format("%.2f", v1), em_size * 1.5f, yp + c_font_height / 3);
         }
 
         double v1, v2;
-        v1 = ctx.getValAtY(y1);
-        v2 = ctx.getValAtY(y2);
-*/
+//        v1 = ctx.getValAtY(y1);
+//        v2 = ctx.getValAtY(y2);
+
 
     }
-        
+
+ 
 
     
 }

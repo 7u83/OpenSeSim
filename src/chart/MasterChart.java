@@ -70,14 +70,15 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
 
         chart.addChartPainter(pc);
         chart.setXSCrollBar(xScrollBar);
+        chart.addChartPainter(new ChartCrossPainter());
 
         ChartPainter yp = new YLegendPainter(chart);
         yp.setDataProvider(this);
         
-        this.chart.addChartPainter(yp);
+        this.yLegend.addChartPainter(yp);
         
-        this.yLegend.addChartPainter(p);
-       this.yLegend.addChartPainter(pc);
+      //  this.yLegend.addChartPainter(p);
+       //this.yLegend.addChartPainter(pc);
 
     }
 

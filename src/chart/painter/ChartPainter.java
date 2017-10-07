@@ -29,6 +29,7 @@ import chart.ChartDef;
 import chart.ChartPanel;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import sesim.MinMax;
 import sesim.OHLCData;
 
 /**
@@ -37,24 +38,25 @@ import sesim.OHLCData;
  */
 abstract public class ChartPainter {
 
-    int em_size;
-    //OHLCData data=null;
-    
+    protected int em_size;
+
     public abstract interface DataProvider {
+
         abstract OHLCData get();
     }
 
-    DataProvider dataProvider=null;
-    
-   public void setDataProvider(DataProvider dataProvider){
+    DataProvider dataProvider = null;
+
+    public void setDataProvider(DataProvider dataProvider) {
         this.dataProvider = dataProvider;
     }
-   
-   protected OHLCData getData(){
-       if (dataProvider==null)
-           return null;
-       return dataProvider.get();
-   }
+
+    protected OHLCData getData() {
+        if (dataProvider == null) {
+            return null;
+        }
+        return dataProvider.get();
+    }
 
     protected int getFirstBar(ChartPanel p) {
         if (p.x_scrollbar != null) {
@@ -62,14 +64,15 @@ abstract public class ChartPainter {
         }
         return 0;
     }
-    
-    protected int getBars(ChartPanel p, ChartDef def){
-        Dimension  dim = p.getSize();
+
+    protected int getBars(ChartPanel p, ChartDef def) {
+        Dimension dim = p.getSize();
         return (int) (dim.width / (def.x_unit_width * em_size));
     }
 
     /**
-     * Init method scould be called before painting the chart 
+     * Init method scould be called before painting the chart
+     *
      * @param g Graphics context
      */
     protected final void init(Graphics2D g) {
@@ -77,6 +80,42 @@ abstract public class ChartPainter {
         // Calculate the number of pixels for 1 em
         em_size = g.getFontMetrics().stringWidth("M");
 
+    }
+
+    protected float y_scaling;
+    protected int y_height;
+    protected float y_min;
+
+    float getY(float y) {
+//c_yscaling = ctx.rect.height / c_mm.getDiff();
+//               float ys = dim.height / mm.getDiff();
+        /*  if (minmax.isLog()) {
+//            return rect.height + rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
+        }
+         */
+//        return (dim.height - ((y - minmax.getMin()) * y_scaling));
+        return (y_height - ((y - y_min) * y_scaling));
+
+    }
+
+    double getValAtY(float y) {
+        float val = 0;
+
+        /*            if (c_mm.isLog()) {
+                float ys = rect.height / c_mm.getDiff();
+
+                return Math.exp((rect.height + rect.y) / ys + c_mm.getMin() - y / ys);
+
+            }
+         */
+        return (-(y -  y_height)) / y_scaling + y_min;
+
+    }
+
+    void initGetY(MinMax minmax, Dimension dim) {
+        y_height = dim.height;
+        y_scaling = dim.height / minmax.getDiff();
+        y_min = minmax.getMin();
     }
 
     abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
