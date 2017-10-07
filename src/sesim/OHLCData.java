@@ -104,6 +104,12 @@ public class OHLCData {
         return minmax;
     }
 
+    /**
+     * Get minimum an maximum from volume
+     * @param first
+     * @param last
+     * @return MinMax found
+     */
     public MinMax getVolMinMax(int first, int last) {
 
         if (first >= data.size()) {
