@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import javax.swing.JScrollBar;
 
 import sesim.OHLCData;
-import sesim.OHLCDataItem;
-import sesim.Quote;
+
 
 /**
  *
@@ -28,6 +27,7 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
 
     public JScrollBar x_scrollbar=null;
     ChartDef chartDef;
+    public boolean mouseEntered=false;
     
 
     /**
@@ -56,7 +56,7 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         chartDef = def;
     }
 
-    private ArrayList<ChartPainter> chartPainters = new ArrayList<>();
+    private final ArrayList<ChartPainter> chartPainters = new ArrayList<>();
 
     /**
      *
@@ -104,6 +104,14 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
                 formMouseMoved(evt);
             }
         });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                formMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -126,6 +134,15 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         repaint();
 
     }//GEN-LAST:event_formMouseMoved
+
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        this.mouseEntered=true;
+        
+    }//GEN-LAST:event_formMouseEntered
+
+    private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
+        this.mouseEntered=false;
+    }//GEN-LAST:event_formMouseExited
 
     @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
