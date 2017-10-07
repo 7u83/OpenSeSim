@@ -85,7 +85,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             Globals.prefs.putBoolean("initilized", true);
         }
 
-        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
+//        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
 
     }
 
@@ -182,8 +182,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
         orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
-        chartSrollPane = new javax.swing.JScrollPane();
-        chart = new gui.MainChart();
+        chart = new chart.MasterChart();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
@@ -318,21 +317,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane4.setDividerLocation(300);
         jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane4.setBottomComponent(orderBooksHorizontal1);
-
-        javax.swing.GroupLayout chartLayout = new javax.swing.GroupLayout(chart);
-        chart.setLayout(chartLayout);
-        chartLayout.setHorizontalGroup(
-            chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        chartLayout.setVerticalGroup(
-            chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        chartSrollPane.setViewportView(chart);
-
-        jSplitPane4.setLeftComponent(chartSrollPane);
+        jSplitPane4.setLeftComponent(chart);
 
         jSplitPane3.setRightComponent(jSplitPane4);
         jSplitPane3.setLeftComponent(quoteVertical1);
@@ -599,7 +584,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     void resetSim() {
         Globals.se.terminate();
         Globals.se.reset();
-        chart.initChart();
+//        chart.initChart();
         chart.invalidate();
         chart.repaint();
 //       this.orderBookPanel.invalidate();
@@ -921,8 +906,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JSpinner accelSpinner;
-    private gui.MainChart chart;
-    private javax.swing.JScrollPane chartSrollPane;
+    private chart.MasterChart chart;
     private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;
     private javax.swing.JMenuItem closeMenuItem;
