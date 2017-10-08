@@ -351,7 +351,7 @@ public class Exchange {
 
     HashMap<OrderType, SortedSet<Order>> order_books;
 
-    IDGenerator order_id = new IDGenerator();
+    IDGenerator order_id_generator = new IDGenerator();
 
     public class Order {
 
@@ -369,7 +369,7 @@ public class Exchange {
         double cost;
 
         Order(Account account, OrderType type, double volume, double limit) {
-            id = order_id.getNext();
+            id = order_id_generator.getNext();
             this.account = account;
             this.type = type;
             this.limit = roundMoney(limit);
