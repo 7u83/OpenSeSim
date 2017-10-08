@@ -36,6 +36,7 @@ import java.awt.*;
 import java.text.DecimalFormat;
 import javax.swing.*;
 import javax.swing.table.*;
+import sesim.Order;
 
 /**
  *

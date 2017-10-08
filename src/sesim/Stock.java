@@ -30,5 +30,16 @@ package sesim;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Stock {
+    private String symbol;
+    private String name;
+    
+    String getSymbol(){
+        return symbol;
+    }
+    
+    String getName(){
+        return name;
+    }
+        
     
 }

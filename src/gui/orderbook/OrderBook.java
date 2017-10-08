@@ -41,7 +41,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import sesim.Exchange;
-import sesim.Exchange.Order;
+import sesim.Order;
 import sesim.Exchange.OrderType;
 
 /**

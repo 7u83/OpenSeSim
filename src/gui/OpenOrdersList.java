@@ -35,7 +35,7 @@ import java.util.function.BiConsumer;
 import javax.swing.table.DefaultTableModel;
 import sesim.Exchange;
 import sesim.Exchange.Account;
-import sesim.Exchange.Order;
+import sesim.Order;
 import sesim.Exchange.OrderType;
 import traders.ManTrader.CreateOrderDialog;
 

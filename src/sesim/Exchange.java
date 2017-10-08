@@ -353,81 +353,6 @@ public class Exchange {
 
     IDGenerator order_id_generator = new IDGenerator();
 
-    public class Order {
-
-        OrderStatus status;
-        OrderType type;
-        private double limit;
-        private double volume;
-
-        private final double initial_volume;
-        private final long id;
-        private final long created;
-
-        private final Account account;
-
-        double cost;
-
-        Order(Account account, OrderType type, double volume, double limit) {
-            id = order_id_generator.getNext();
-            this.account = account;
-            this.type = type;
-            this.limit = roundMoney(limit);
-            this.volume = roundShares(volume);
-            this.initial_volume = this.volume;
-            this.created = timer.currentTimeMillis();
-            this.status = OrderStatus.OPEN;
-            this.cost = 0;
-        }
-
-        public long getID() {
-            return id;
-        }
-
-        public double getVolume() {
-            return volume;
-        }
-
-        public double getLimit() {
-            return limit;
-        }
-
-        public OrderType getType() {
-            return type;
-        }
-
-        public double getExecuted() {
-            return initial_volume - volume;
-        }
-
-        public double getInitialVolume() {
-            return initial_volume;
-        }
-
-        public double getCost() {
-            return cost;
-        }
-
-        public double getAvaragePrice() {
-            double e = getExecuted();
-            if (e <= 0) {
-                return -1;
-            }
-            return cost / e;
-        }
-
-        public Account getAccount() {
-            return account;
-        }
-
-        public OrderStatus getOrderStatus() {
-            return status;
-        }
-
-        public long getCreated() {
-            return created;
-        }
-    }
 
     /**
      * Histrory of quotes
@@ -1168,7 +1093,9 @@ public class Exchange {
         
 
 
-        Order o = new Order(a, type, volume, limit);
+        Order o = new Order(order_id_generator.getNext(),
+                timer.currentTimeMillis(),
+                a, type, roundShares(volume), roundMoney(limit));
         if (o.volume <= 0 || o.limit <= 0) {
 
             switch (o.type) {

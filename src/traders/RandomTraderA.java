@@ -38,6 +38,7 @@ import sesim.Exchange.Account;
 import sesim.Exchange.AccountListener;
 import sesim.Exchange.OrderStatus;
 import sesim.Exchange.OrderType;
+import sesim.Order;
 import sesim.Quote;
 
 /**
@@ -202,7 +203,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     sesim.Scheduler.TimerTaskDef timerTask;
 
     @Override
-    public void accountUpdated(Account a, Exchange.Order o) {
+    public void accountUpdated(Account a, Order o) {
         setStatus("Account update -%s ", o.getOrderStatus().toString());
         setStatus("In Task: %s", Boolean.toString(this.intask));
         //System.out.printf("Order updated %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
