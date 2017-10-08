@@ -37,7 +37,7 @@ import sesim.AutoTraderGui;
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Exchange.AccountListener;
-import sesim.Exchange.OrderStatus;
+import sesim.Order.OrderStatus;
 import sesim.Order;
 
 /**

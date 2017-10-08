@@ -36,6 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sesim.Order.OrderStatus;
 
 /**
  * @desc Echchange class
@@ -294,12 +295,6 @@ public class Exchange {
         return a.id;
     }
 
-    public enum OrderStatus {
-        OPEN,
-        PARTIALLY_EXECUTED,
-        CLOSED,
-        CANCELED
-    }
 
     class OrderComparator implements Comparator<Order> {
 
