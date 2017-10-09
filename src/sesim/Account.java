@@ -40,6 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
         protected AutoTraderInterface owner;
 
         protected final ConcurrentHashMap<Long, Order> orders;
+        protected ConcurrentHashMap<String,Integer> sharesm;
 
         @Override
         public int compareTo(Object a) {
@@ -61,6 +62,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
         public double getShares() {
             return shares;
+        }
+        
+        public double getShares(String symbol){
+            return sharesm.get(symbol);
         }
 
         public double getMoney() {
