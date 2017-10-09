@@ -42,7 +42,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import sesim.Exchange;
 import sesim.Order;
-import sesim.Exchange.OrderType;
+import sesim.Order.OrderType;
 
 /**
  *

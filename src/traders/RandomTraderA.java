@@ -37,7 +37,7 @@ import sesim.Exchange;
 import sesim.Exchange.Account;
 import sesim.Exchange.AccountListener;
 
-import sesim.Exchange.OrderType;
+import sesim.Order.OrderType;
 import sesim.Order;
 import sesim.Order.OrderStatus;
 import sesim.Quote;
@@ -377,7 +377,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 //        AccountData ad = this.se.getAccountData(account_id);
         Account ad = se.getAccount(account_id);
 
-        Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
+        OrderType type = OrderType.BUYLIMIT;
 
         if (ad == null) {
             return false;
@@ -424,7 +424,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
         Account ad = se.getAccount(account_id);
 
-        Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
+        OrderType type = OrderType.SELLLIMIT;
 
         // how much shares we ant to sell?
         double volume = getRandomAmmount(ad.getShares(), sell_volume);

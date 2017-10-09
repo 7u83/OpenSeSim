@@ -38,6 +38,7 @@ import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
 import sesim.Exchange.Account;
+import sesim.Order.OrderType;
 import sesim.Quote;
 
 /**
@@ -269,7 +270,7 @@ public class RandomTraderB extends AutoTraderBase {
 
         Account ad = se.getAccount(account_id);
 
-        Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
+        OrderType type = OrderType.BUYLIMIT;
 
         if (ad == null) {
             return false;
@@ -309,7 +310,7 @@ public class RandomTraderB extends AutoTraderBase {
         
         Account ad = se.getAccount(account_id);
 
-        Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
+        OrderType type = OrderType.SELLLIMIT;
 
                
         // how much shares we ant to sell?

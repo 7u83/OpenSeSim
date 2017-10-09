@@ -25,18 +25,18 @@
  */
 package gui;
 
-import java.awt.Frame;
+
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
+
+
 import javax.swing.table.DefaultTableModel;
-import sesim.Exchange;
+
 import sesim.Exchange.Account;
 import sesim.Order;
-import sesim.Exchange.OrderType;
+import sesim.Order.OrderType;
 import traders.ManTrader.CreateOrderDialog;
 
 /**

@@ -26,7 +26,7 @@
 package gui;
 
 import java.util.ArrayList;
-import sesim.Exchange.OrderType;
+import sesim.Order.OrderType;
 import sesim.Order;
 
 

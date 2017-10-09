@@ -27,6 +27,7 @@ package gui.orderbook;
 
 import gui.Globals;
 import sesim.Exchange;
+import sesim.Order.OrderType;
 
 /**
  *
@@ -42,8 +43,8 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
         if (Globals.se==null)
             return;
         
-        bidBook.setType(Exchange.OrderType.BUYLIMIT);
-        askBook.setType(Exchange.OrderType.SELLLIMIT);
+        bidBook.setType(OrderType.BUYLIMIT);
+        askBook.setType(OrderType.SELLLIMIT);
     }
     
     public void setDepth(int depth){

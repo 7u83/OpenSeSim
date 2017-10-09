@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.Order.OrderStatus;
+import sesim.Order.OrderType;
 
 /**
  * @desc Echchange class
@@ -110,12 +111,6 @@ public class Exchange {
     }
     
 
-    /**
-     * Definition of order types
-     */
-    public enum OrderType {
-        BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
-    }
 
     IDGenerator account_id = new IDGenerator();
     //public static Timer timer = new Timer();

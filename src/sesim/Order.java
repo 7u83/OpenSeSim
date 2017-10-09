@@ -38,9 +38,16 @@ public class Order {
         CANCELED
     }
 
+    /**
+     * Definition of order types
+     */
+    public enum OrderType {
+        BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
+    }
+
     Stock stock;
     OrderStatus status;
-    Exchange.OrderType type;
+    OrderType type;
     protected double limit;
     protected double volume;
 
@@ -52,7 +59,7 @@ public class Order {
 
     double cost;
 
-    Order(long id, long created, Exchange.Account account, Exchange.OrderType type, double volume, double limit) {
+    Order(long id, long created, Exchange.Account account, OrderType type, double volume, double limit) {
         //id = order_id_generator.getNext();
         this.id = id;
         this.account = account;
@@ -77,7 +84,7 @@ public class Order {
         return limit;
     }
 
-    public Exchange.OrderType getType() {
+    public OrderType getType() {
         return type;
     }
 
