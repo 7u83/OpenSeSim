@@ -34,7 +34,7 @@ import org.json.JSONObject;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
-import sesim.Exchange.Account;
+import sesim.Account;
 import sesim.Exchange.AccountListener;
 
 import sesim.Order.OrderType;
@@ -86,7 +86,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     public long timerTask() {
         intask = true;
         owait = null;
-        sesim.Exchange.Account a = se.getAccount(account_id);
+        sesim.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
         setStatus("Sleeping for %d ms", rc);
         intask = false;

@@ -55,11 +55,11 @@ public class Order {
     protected final long id;
     protected final long created;
 
-    protected final Exchange.Account account;
+    protected final Account account;
 
     double cost;
 
-    Order(long id, long created, Exchange.Account account, OrderType type, double volume, double limit) {
+    Order(long id, long created, Account account, OrderType type, double volume, double limit) {
         //id = order_id_generator.getNext();
         this.id = id;
         this.account = account;
@@ -108,7 +108,7 @@ public class Order {
         return cost / e;
     }
 
-    public Exchange.Account getAccount() {
+    public Account getAccount() {
         return account;
     }
 

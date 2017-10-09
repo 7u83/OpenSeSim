@@ -40,7 +40,7 @@ import javax.swing.table.TableRowSorter;
 
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
-import sesim.Exchange.Account;
+import sesim.Account;
 
 /**
  *

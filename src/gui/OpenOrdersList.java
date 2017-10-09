@@ -34,7 +34,7 @@ import java.util.Map;
 
 import javax.swing.table.DefaultTableModel;
 
-import sesim.Exchange.Account;
+import sesim.Account;
 import sesim.Order;
 import sesim.Order.OrderType;
 import traders.ManTrader.CreateOrderDialog;

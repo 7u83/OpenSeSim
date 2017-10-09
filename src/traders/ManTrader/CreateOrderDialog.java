@@ -27,7 +27,7 @@ package traders.ManTrader;
 
 import gui.Globals;
 
-import sesim.Exchange.Account;
+import sesim.Account;
 import sesim.Order.OrderType;
 import sesim.Quote;
 

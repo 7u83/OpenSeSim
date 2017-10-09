@@ -39,6 +39,7 @@ import sesim.Exchange;
 import sesim.Exchange.AccountListener;
 import sesim.Order.OrderStatus;
 import sesim.Order;
+import sesim.Account;
 
 /**
  *
@@ -115,7 +116,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public void accountUpdated(Exchange.Account a, Order o) {
+    public void accountUpdated(Account a, Order o) {
         //this.consoleDialog.cons
         //System.out.printf("AccountListener called\n");
 

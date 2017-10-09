@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import sesim.Order.OrderStatus;
 import sesim.Order.OrderType;
 
+
 /**
  * @desc Echchange class
  * @author 7u83
@@ -209,65 +210,6 @@ public class Exchange {
         }
     }
 
-    /**
-     * Implements a trading account
-     */
-    public class Account implements Comparable {
-
-        private AccountListener listener = null;
-
-        private final double id;
-        private double shares;
-        private double money;
-        protected AutoTraderInterface owner;
-
-        private final ConcurrentHashMap<Long, Order> orders;
-
-        @Override
-        public int compareTo(Object a) {
-            Account account = (Account) a;
-            return this.id - account.id < 0 ? -1 : 1;
-        }
-
-        Account(double money, double shares) {
-            id = (random.nextDouble() + (account_id_generator.getNext()));
-            orders = new ConcurrentHashMap();
-            this.money = money;
-            this.shares = shares;
-        }
-
-        public double getID() {
-            return id;
-        }
-
-        public double getShares() {
-            return shares;
-        }
-
-        public double getMoney() {
-            return money;
-        }
-
-        public AutoTraderInterface getOwner() {
-            return owner;
-        }
-
-        public ConcurrentHashMap<Long, Order> getOrders() {
-            return orders;
-        }
-
-        public void setListener(AccountListener al) {
-            this.listener = al;
-        }
-
-        public void update(Order o) {
-            if (listener == null) {
-                return;
-            }
-            listener.accountUpdated(this, o);
-        }
-
-    }
 
     public void createTraders(JSONArray traderdefs) {
         for (int i = 0; i < traderdefs.length(); i++) {
@@ -285,7 +227,9 @@ public class Exchange {
 
     public double createAccount(double money, double shares) {
 
-        Account a = new Account(money, shares);
+        double id = (random.nextDouble() + (account_id_generator.getNext()));
+        
+        Account a = new Account(id, money, shares);
         accounts.put(a.id, a);
         return a.id;
     }

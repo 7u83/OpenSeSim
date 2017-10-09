@@ -35,7 +35,7 @@ import org.json.JSONObject;
 
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
-import sesim.Exchange.Account;
+import sesim.Account;
 import sesim.Order.OrderType;
 import sesim.Quote;
 
@@ -75,7 +75,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     @Override
     public long timerTask() {
-        sesim.Exchange.Account a = se.getAccount(account_id);
+        sesim.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
         return rc;
 

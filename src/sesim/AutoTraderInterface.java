@@ -76,7 +76,7 @@ public interface AutoTraderInterface {
      */
     public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg);
 
-    public Exchange.Account getAccount();
+    public Account getAccount();
 
     public void start();
 
