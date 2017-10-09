@@ -31,12 +31,10 @@ import java.util.Set;
 import javax.swing.JDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
-//import sesim.AccountData;
+
 
 import sesim.AutoTraderBase;
-
 import sesim.AutoTraderGui;
-import sesim.Exchange;
 import sesim.Exchange.Account;
 import sesim.Order.OrderType;
 import sesim.Quote;
@@ -266,7 +264,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     public boolean doBuy() {
 
-//        AccountData ad = this.se.getAccountData(account_id);
+//        AccountData ad = this.se.getAccountData(account_id_generator);
 
         Account ad = se.getAccount(account_id);
 
@@ -306,7 +304,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     public boolean doSell() {
         //   RandomTraderConfig myoldconfig = (RandomTraderConfig) this.oldconfig;
-        //AccountData ad = this.se.getAccountData(account_id);
+        //AccountData ad = this.se.getAccountData(account_id_generator);
         
         Account ad = se.getAccount(account_id);
 

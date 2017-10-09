@@ -374,7 +374,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     public boolean doBuy() {
 
-//        AccountData ad = this.se.getAccountData(account_id);
+//        AccountData ad = this.se.getAccountData(account_id_generator);
         Account ad = se.getAccount(account_id);
 
         OrderType type = OrderType.BUYLIMIT;
@@ -420,7 +420,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     public boolean doSell() {
         //   RandomTraderConfig myoldconfig = (RandomTraderConfig) this.oldconfig;
-        //AccountData ad = this.se.getAccountData(account_id);
+        //AccountData ad = this.se.getAccountData(account_id_generator);
 
         Account ad = se.getAccount(account_id);
 

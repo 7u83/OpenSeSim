@@ -112,7 +112,7 @@ public class Exchange {
     
 
 
-    IDGenerator account_id = new IDGenerator();
+    IDGenerator account_id_generator = new IDGenerator();
     //public static Timer timer = new Timer();
 
     public Scheduler timer; // = new Scheduler();
@@ -230,7 +230,7 @@ public class Exchange {
         }
 
         Account(double money, double shares) {
-            id = (random.nextDouble() + (account_id.getNext()));
+            id = (random.nextDouble() + (account_id_generator.getNext()));
             orders = new ConcurrentHashMap();
             this.money = money;
             this.shares = shares;
@@ -1164,16 +1164,16 @@ public class Exchange {
     
     
 
-    /*public AccountData getAccountData(double account_id) {
+    /*public AccountData getAccountData(double account_id_generator) {
         tradelock.lock();
-        Account a = accounts.get(account_id);
+        Account a = accounts.get(account_id_generator);
         tradelock.unlock();
         if (a == null) {
             return null;
         }
 
         AccountData ad = new AccountData();
-        ad.id = account_id;
+        ad.id = account_id_generator;
         ad.money = a.money;
         ad.shares = a.shares;
 
@@ -1202,9 +1202,9 @@ public class Exchange {
         return ad;
     }
      */
- /*   public ArrayList<OrderData> getOpenOrders(double account_id) {
+ /*   public ArrayList<OrderData> getOpenOrders(double account_id_generator) {
 
-        Account a = accounts.get(account_id);
+        Account a = accounts.get(account_id_generator);
         if (a == null) {
             return null;
         }
