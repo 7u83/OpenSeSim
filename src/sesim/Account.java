@@ -39,8 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
         protected double money;
         protected AutoTraderInterface owner;
 
-        protected final ConcurrentHashMap<Long, Order> orders;
-        protected ConcurrentHashMap<String,Integer> sharesm;
+        protected final ConcurrentHashMap<Long , Order> orders;
+        protected ConcurrentHashMap<String,Double> sharesm;
 
         @Override
         public int compareTo(Object a) {

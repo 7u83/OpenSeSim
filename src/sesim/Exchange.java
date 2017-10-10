@@ -23,7 +23,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package sesim;
 
 import java.text.DecimalFormat;
@@ -39,19 +38,24 @@ import org.json.JSONObject;
 import sesim.Order.OrderStatus;
 import sesim.Order.OrderType;
 
-
 /**
  * @desc Echchange class
  * @author 7u83
  */
 public class Exchange {
 
+    HashMap<String, Stock> stocks;
+
+    Stock getStock(String symbol) {
+        return stocks.get(symbol);
+    }
+
     ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
     private double money_df = 10000;
-    private int money_decimals=2;
+    private int money_decimals = 2;
     DecimalFormat money_formatter;
-    
+
     /**
      * Set the number of decimals used with money
      *
@@ -59,12 +63,12 @@ public class Exchange {
      */
     public void setMoneyDecimals(int n) {
         money_df = Math.pow(10, n);
-        money_decimals=n;
-        money_formatter=getFormatter(n);
+        money_decimals = n;
+        money_formatter = getFormatter(n);
     }
 
     private double shares_df = 1;
-    private double shares_decimals=0;
+    private double shares_decimals = 0;
     private DecimalFormat shares_formatter;
 
     /**
@@ -74,7 +78,7 @@ public class Exchange {
      */
     public void setSharesDecimals(int n) {
         shares_df = Math.pow(10, n);
-        shares_decimals=n;
+        shares_decimals = n;
         shares_formatter = getFormatter(n);
     }
 
@@ -89,8 +93,8 @@ public class Exchange {
     public double roundMoney(double money) {
         return roundToDecimals(money, money_df);
     }
-    
-    public DecimalFormat getFormatter(int n){
+
+    public DecimalFormat getFormatter(int n) {
         DecimalFormat formatter;
         String s = "#0.";
         if (n == 0) {
@@ -100,18 +104,16 @@ public class Exchange {
                 s = s + "0";
             }
         }
-        return new DecimalFormat(s);        
+        return new DecimalFormat(s);
     }
-    
-    public DecimalFormat getMoneyFormatter(){
+
+    public DecimalFormat getMoneyFormatter() {
         return money_formatter;
     }
-    
-    public DecimalFormat getSharesFormatter(){
+
+    public DecimalFormat getSharesFormatter() {
         return shares_formatter;
     }
-    
-
 
     IDGenerator account_id_generator = new IDGenerator();
     //public static Timer timer = new Timer();
@@ -210,7 +212,6 @@ public class Exchange {
         }
     }
 
-
     public void createTraders(JSONArray traderdefs) {
         for (int i = 0; i < traderdefs.length(); i++) {
             JSONObject o = traderdefs.getJSONObject(i);
@@ -228,12 +229,11 @@ public class Exchange {
     public double createAccount(double money, double shares) {
 
         double id = (random.nextDouble() + (account_id_generator.getNext()));
-        
+
         Account a = new Account(id, money, shares);
         accounts.put(a.id, a);
         return a.id;
     }
-
 
     class OrderComparator implements Comparator<Order> {
 
@@ -287,7 +287,6 @@ public class Exchange {
 
     IDGenerator order_id_generator = new IDGenerator();
 
-
     /**
      * Histrory of quotes
      */
@@ -305,7 +304,7 @@ public class Exchange {
 
         traders = new ArrayList();
 
-        statistics = new Statistics(); 
+        statistics = new Statistics();
         //num_trades = 0;
 
         this.ohlc_data = new HashMap();
@@ -338,8 +337,8 @@ public class Exchange {
 
         public final void reset() {
             trades = 0;
-            heigh=null;
-            low=null;
+            heigh = null;
+            low = null;
 
         }
 
@@ -353,14 +352,13 @@ public class Exchange {
 
 //    long num_trades = 0;
 //    long num_orders = 0;
-
     public Statistics getStatistics() {
         return statistics;
-/*        Statistics s = new Statistics();
+        /*        Statistics s = new Statistics();
         s.trades = num_trades;
         s.orders = num_orders;
         return s;
-*/        
+         */
 
     }
 
@@ -556,12 +554,12 @@ public class Exchange {
                 Quote q = new Quote();
 
                 // if there is no last quote calculate from bid and ask
-                     if (lq == null) {
-                q.price = (bid.first().limit + ask.first().limit) / 2.0;
-                return q;
-                      }
+                if (lq == null) {
+                    q.price = (bid.first().limit + ask.first().limit) / 2.0;
+                    return q;
+                }
 
-                 if (lq.price < b.limit) {
+                if (lq.price < b.limit) {
                     q.price = b.limit;
                     return q;
                 }
@@ -570,7 +568,7 @@ public class Exchange {
                     return q;
                 }
                 return lq;
-                             }
+            }
 
             if (a != null) {
                 Quote q = new Quote();
@@ -683,8 +681,7 @@ public class Exchange {
     //double theprice = 12.9;
 //    long orderid = 1;
     //double lastprice = 100.0;
-  //  long lastsvolume;
-
+    //  long lastsvolume;
     // private final Locker tradelock = new Locker();
     public ArrayList<Order> getOrderBook(OrderType type, int depth) {
 
@@ -858,29 +855,23 @@ public class Exchange {
         removeOrderIfExecuted(b);
     }
 
+    void addQuoteToHistory(Quote q) {
+        if (statistics.heigh == null) {
+            statistics.heigh = q.price;
+        } else if (statistics.heigh < q.price) {
+            statistics.heigh = q.price;
+        }
+        if (statistics.low == null) {
+            statistics.low = q.price;
+        } else if (statistics.low > q.price) {
+            statistics.low = q.price;
+        }
 
-    
-    
-    void addQuoteToHistory(Quote q){
-        if (statistics.heigh==null){
-            statistics.heigh=q.price;
-        }
-        else if (statistics.heigh<q.price){
-            statistics.heigh=q.price;
-        }
-        if (statistics.low==null){
-            statistics.low=q.price;
-        }
-        else if(statistics.low>q.price){
-            statistics.low=q.price;
-        }
-        
         quoteHistory.add(q);
         updateOHLCData(q);
         updateQuoteReceivers(q);
     }
-    
-    
+
     /**
      *
      */
@@ -977,13 +968,11 @@ public class Exchange {
         q.volume = volume_total;
         q.time = timer.currentTimeMillis();
 
-        
         addQuoteToHistory(q);
-        
+
         //this.quoteHistory.add(q);
         //this.updateOHLCData(q);
         //this.updateQuoteReceivers(q);
-
     }
 
     long buy_orders = 0;
@@ -1007,7 +996,6 @@ public class Exchange {
 
     long buy_failed = 0;
     long sell_failed = 0;
- 
 
     /**
      *
@@ -1015,7 +1003,7 @@ public class Exchange {
      * @param type
      * @param volume
      * @param limit
-     * @return
+     * @return order_id
      */
     public long createOrder(double account_id, OrderType type, double volume, double limit) {
 
@@ -1024,8 +1012,6 @@ public class Exchange {
             System.out.printf("Order not places account\n");
             return -1;
         }
-        
-
 
         Order o = new Order(order_id_generator.getNext(),
                 timer.currentTimeMillis(),
@@ -1042,8 +1028,7 @@ public class Exchange {
                     buy_failed++;
                     break;
             }
-      //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
-        
+            //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
 
             return -1;
         }
@@ -1053,7 +1038,7 @@ public class Exchange {
 
             //num_orders++;
             statistics.orders++;
-            
+
             addOrderToBook(o);
             a.orders.put(o.id, o);
             a.update(o);
@@ -1067,7 +1052,7 @@ public class Exchange {
 //            executor.notify();
         }
 //       a.update(o);
-        return o.id;
+        return o.getID();
     }
 
     public double getBestLimit(OrderType type) {
@@ -1089,24 +1074,6 @@ public class Exchange {
     public Account getAccount(double account_id) {
         return accounts.get(account_id);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     /*public AccountData getAccountData(double account_id_generator) {
         tradelock.lock();
@@ -1168,6 +1135,5 @@ public class Exchange {
 
         return al;
     }
-*/
-    
+     */
 }
