@@ -33,6 +33,7 @@ package sesim;
 public class IDGenerator {
 
     private long next_id;
+    private long start_id;
 
     /**
      * Initialize the ID generator
@@ -40,7 +41,8 @@ public class IDGenerator {
      * @param start ID value to start with
      */
     public IDGenerator(long start) {
-        next_id = start;
+        start_id=start;
+        reset();
     }
 
     /**
@@ -48,6 +50,13 @@ public class IDGenerator {
      */
     public IDGenerator() {
         this(0);
+    }
+    
+    /**
+     * Reset the ID generator
+     */
+    public final void reset(){
+        next_id = start_id;
     }
 
     /**
