@@ -31,12 +31,14 @@ import java.util.concurrent.ConcurrentHashMap;
      * Implements a trading account
      */
     public class Account implements Comparable {
+        
+        static String default_symbold = "DFLT"; 
 
         private Exchange.AccountListener listener = null;
 
         protected final double id;
-        protected double shares;
-        protected double money;
+        private double shares;
+        private double money;
         protected AutoTraderInterface owner;
 
         protected final ConcurrentHashMap<Long , Order> orders;
@@ -62,6 +64,31 @@ import java.util.concurrent.ConcurrentHashMap;
 
         public double getShares() {
             return shares;
+        }
+        
+        protected void setShares(double shares){
+            this.shares = shares;
+        }
+        
+        protected void addShares(double shares){
+            this.shares = this.shares+shares;
+        }
+        
+        protected void addShares(String symbol, double shares){
+            Double d = this.sharesm.get(symbol);
+            d+=shares;
+            this.sharesm.put(symbol, d);
+    //    (this.sharesm.get(symbol))+=shares;
+        
+        }
+        
+        
+        protected void addMoney(double money){
+            this.money+=money;
+        }
+        
+        protected void setMoney(double money){
+            this.money=money;
         }
         
         public double getShares(String symbol){

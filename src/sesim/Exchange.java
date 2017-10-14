@@ -159,7 +159,8 @@ public class Exchange {
             @Override
             public void accept(Object t, Object u) {
                 Account a = (Account) u;
-                a.money += 20000.0;
+                //  a.money += 20000.0;
+                a.addMoney(20000.0);
 
             }
 
@@ -172,7 +173,8 @@ public class Exchange {
             @Override
             public void accept(Object t, Object u) {
                 Account a = (Account) u;
-                a.money = 20000.0;
+                //   a.money = 20000.0;
+                a.setMoney(20000.0);
 
             }
 
@@ -719,10 +721,16 @@ public class Exchange {
     }
 
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
-        src.money -= money;
-        dst.money += money;
-        src.shares -= shares;
-        dst.shares += shares;
+//        src.money -= money;
+        src.addMoney(-money);
+
+        //      dst.money += money;
+        dst.addMoney(money);
+        //    src.shares -= shares;
+        src.addShares(-shares);
+        //    dst.shares += shares;
+
+        src.addShares(shares);
 
     }
 
