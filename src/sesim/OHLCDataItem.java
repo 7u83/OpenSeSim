@@ -60,5 +60,10 @@ public class OHLCDataItem {
         this.close = price;
         return ret;
     }
+    
+    public float getAverage(){
+        return (open+high+low+close)/4;
+    }
+    
 
 }
