@@ -183,7 +183,7 @@ public class Exchange {
     }
 
     public OHLCData getOHLCdata(Integer timeFrame) {
-        OHLCData data; //=new OHLCData(timeFrame);
+        OHLCData data; 
         data = ohlc_data.get(timeFrame);
         if (data == null) {
 
@@ -192,18 +192,7 @@ public class Exchange {
                 ohlc_data.put(timeFrame, data);
             }
         }
-
         return data;
-        /*        try {
-            data = ohlc_data.get(timeFrame);
-        } catch (Exception e) {
-            data = null;
-        }
-        if (data == null) {
-            data = buildOHLCData(timeFrame);
-        }
-         */
-
     }
 
     void updateOHLCData(Quote q) {
@@ -790,7 +779,7 @@ public class Exchange {
      *
      * @param o
      */
-    long nextQuoteId = 0;
+//    long nextQuoteId = 0;
 
     public double fairValue = 0;
 
