@@ -30,13 +30,41 @@ package sesim;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Indicator {
-    OHLCData parent;
+    private OHLCData parent;
 
     OHLCData indicator;
     
+    Indicator(OHLCData parent){
+        this.parent=parent;
+    }
+    
+    int len=10;
+    
+    float getAt(int pos){
+        int start = pos -len;
+        if(start<0)
+            start=0;
+        float sum=0;
+        for (int i=start; i<pos; i++){
+            sum += parent.get(i).close;
+            
+        }
+        if (pos-start==0){
+            return 0;
+        }
+        
+        return sum/(start-pos);
+    }
+    
+    
     OHLCData getData(int pos){
+        
+        
+        
         return null;
     }
+    
+    
     
     
 }
