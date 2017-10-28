@@ -194,6 +194,8 @@ public class Exchange {
         }
         return data;
     }
+    
+    
 
     void updateOHLCData(Quote q) {
         Iterator<OHLCData> it = ohlc_data.values().iterator();

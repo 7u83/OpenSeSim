@@ -29,6 +29,58 @@ package sesim;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface Indicator {
+public class SMAIndicator  implements Indicator {
+    private OHLCData parent;
+
+    OHLCData indicator;
+    
+    public SMAIndicator(OHLCData parent){
+        this.parent=parent;
+    }
+    
+    int len=10;
+    
+    float getAt(int pos){
+        if (parent.size()==0)
+            return 0;
+        
+        
+        int start = pos -len;
+        if(start<0)
+            start=0;
+        float sum=0;
+        for (int i=start; i<pos; i++){
+            sum += parent.get(i).getAverage();
+            
+        }
+        if (pos-start==0){
+            return 0;
+        }
+        
+        return sum/(start-pos);
+    }
+    
+    void update(){
+        
+        for (int i = indicator.size()-1;i<0;i++){
+            OHLCDataItem p = parent.get(i);
+            
+            float pr = this.getAt(i);
+            
+            OHLCDataItem it = new sesim.OHLCDataItem(p.time, pr, 0);
+            this.indicator.set(i, it);
+           
+            
+        }
+    }
+    
+    OHLCData getData(){
+        update();
+        return indicator;
+        
+        
+        
+    }
+ 
     
 }

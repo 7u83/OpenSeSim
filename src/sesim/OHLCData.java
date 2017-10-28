@@ -144,6 +144,10 @@ public class OHLCData {
     public OHLCDataItem get(int n) {
         return data.get(n);
     }
+    
+    public void set(int n, OHLCDataItem item){
+        data.set(n,item);
+    }
 
     private void updateMinMax(float price) {
         if (price > max) {

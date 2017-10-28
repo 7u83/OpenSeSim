@@ -33,8 +33,10 @@ import chart.painter.LineChartPainter;
 import chart.painter.YLegendPainter;
 import gui.Globals;
 import sesim.Exchange.QuoteReceiver;
+import sesim.Indicator;
 import sesim.OHLCData;
 import sesim.Quote;
+import sesim.SMAIndicator;
 
 /**
  *
@@ -58,6 +60,9 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         }
 
         Globals.se.addQuoteReceiver(this);
+        
+        
+        Indicator in = new SMAIndicator(get());
         
         
         this.chart.setChartDef(chartDef);
@@ -87,6 +92,12 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         yp.setDataProvider(this);
         
         this.yLegend.addChartPainter(yp);
+        
+        
+        
+        
+        
+        
         
       //  this.yLegend.addChartPainter(p);
        //this.yLegend.addChartPainter(pc);
