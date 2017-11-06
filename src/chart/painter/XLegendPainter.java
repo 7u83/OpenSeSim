@@ -58,7 +58,7 @@ public class XLegendPainter extends ChartPainter {
         
         init(g);
         
-        g.setColor(Color.black);
+ //       g.setColor(Color.black);
         Dimension size = p.getSize();
 
         //int bars = (int) (size.width / (def.x_unit_width * em_size));
