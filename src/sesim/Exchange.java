@@ -204,6 +204,13 @@ public class Exchange {
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
         }
     }
+    
+    ArrayList <Indicator> indicators;
+    void updateIndicators(Quote q){
+        
+    }
+    
+    
 
     public void createTraders(JSONArray traderdefs) {
         for (int i = 0; i < traderdefs.length(); i++) {
