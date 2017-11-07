@@ -107,8 +107,7 @@ public class Scheduler extends Thread {
     long last_time_millis = System.currentTimeMillis();
     double current_time_millis = 0.0;
 
-    Clock clock;
-
+    
     long last_nanos = System.nanoTime();
     double current_nanos = 0;
 
