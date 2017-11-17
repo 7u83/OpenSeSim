@@ -61,8 +61,10 @@ public class SMAIndicator  implements Indicator {
     }
     
     void update(){
+        if (parent.size()==0)
+            return;
         
-        for (int i = indicator.size()-1;i<0;i++){
+        for (int i = parent.size()-1;i<0;i++){
             OHLCDataItem p = parent.get(i);
             
             float pr = this.getAt(i);
@@ -74,7 +76,7 @@ public class SMAIndicator  implements Indicator {
         }
     }
     
-    OHLCData getData(){
+    public OHLCData getData(){
         update();
         return indicator;
         

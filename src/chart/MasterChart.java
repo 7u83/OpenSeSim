@@ -45,7 +45,7 @@ import sesim.SMAIndicator;
 public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, ChartPainter.DataProvider {
 
     private ChartDef chartDef;
-    
+
     /**
      * Creates new form MasterChart
      */
@@ -60,19 +60,28 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         }
 
         Globals.se.addQuoteReceiver(this);
-        
-        
-        Indicator in = new SMAIndicator(get());
-        
-        
+
         this.chart.setChartDef(chartDef);
         this.xLegend.setChartDef(chartDef);
         this.yLegend.setChartDef(chartDef);
 
-        ChartPainter p = new LineChartPainter();
-        p.setDataProvider(this);
-        chart.addChartPainter(p);
-        
+        class SMA implements ChartPainter.DataProvider {
+
+            SMAIndicator sma;
+            SMA(OHLCData data){
+                sma = new SMAIndicator(data);
+            }
+
+            @Override
+            public OHLCData get() {
+                return sma.getData();
+            
+            }
+
+        }
+
+        ChartPainter p;
+
         this.xScrollBar.setMaximum(0);
 
         p = new XLegendPainter();
@@ -88,20 +97,19 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         chart.setXSCrollBar(xScrollBar);
         chart.addChartPainter(new ChartCrossPainter());
 
+        SMAIndicator sma = new sesim.SMAIndicator(get());
+
+        p = new LineChartPainter();
+        p.setDataProvider(new SMA(get()));
+        chart.addChartPainter(p);
+
         ChartPainter yp = new YLegendPainter(chart);
         yp.setDataProvider(this);
-        
-        this.yLegend.addChartPainter(yp);
-        
-        
-        
-        
-        
-        
-        
-      //  this.yLegend.addChartPainter(p);
-       //this.yLegend.addChartPainter(pc);
 
+        this.yLegend.addChartPainter(yp);
+
+        //  this.yLegend.addChartPainter(p);
+        //this.yLegend.addChartPainter(pc);
     }
 
     /**
@@ -207,7 +215,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
     }// </editor-fold>//GEN-END:initComponents
 
     private void chartMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chartMouseMoved
-        
+
     }//GEN-LAST:event_chartMouseMoved
 
     private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
@@ -222,7 +230,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         }
 
         this.invalidate();
-        this.repaint();        
+        this.repaint();
     }//GEN-LAST:event_formMouseWheelMoved
 
     private void xScrollBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_xScrollBarAdjustmentValueChanged

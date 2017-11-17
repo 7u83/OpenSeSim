@@ -211,6 +211,11 @@ public class Exchange {
     }
     
     
+    public void addIndicator(Indicator i){
+        this.indicators.add(i);
+    }
+    
+    
 
     public void createTraders(JSONArray traderdefs) {
         for (int i = 0; i < traderdefs.length(); i++) {
