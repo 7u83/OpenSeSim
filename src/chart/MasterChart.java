@@ -255,7 +255,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
 
     @Override
     public OHLCData get() {
-        return Globals.se.getOHLCdata(60000 * 60);
+        return Globals.se.getOHLCdata(60000 * 10);
 
     }
 }

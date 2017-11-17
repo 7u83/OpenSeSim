@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import gui.Globals;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -36,9 +38,10 @@ public class SMAIndicator  implements Indicator {
     
     public SMAIndicator(OHLCData parent){
         this.parent=parent;
+        indicator = new OHLCData();
     }
     
-    int len=10;
+    int len=30;
     
     float getAt(int pos){
         if (parent.size()==0)
@@ -50,7 +53,8 @@ public class SMAIndicator  implements Indicator {
             start=0;
         float sum=0;
         for (int i=start; i<pos; i++){
-            sum += parent.get(i).getAverage();
+            //sum += parent.get(i).getAverage();
+           sum += parent.get(i).close;
             
         }
         if (pos-start==0){
@@ -61,16 +65,26 @@ public class SMAIndicator  implements Indicator {
     }
     
     void update(){
+        parent =  Globals.se.getOHLCdata(60000 * 10);
+        
         if (parent.size()==0)
             return;
         
-        for (int i = parent.size()-1;i<0;i++){
+  /*      if (parent.size()==indicator.size()){
+            int i=parent.size()-1;
             OHLCDataItem p = parent.get(i);
-            
             float pr = this.getAt(i);
-            
             OHLCDataItem it = new sesim.OHLCDataItem(p.time, pr, 0);
-            this.indicator.set(i, it);
+            return;
+        }
+    */    
+        for (int i = indicator.size();i<parent.size();i++){
+            OHLCDataItem p = parent.get(i);
+            float pr = this.getAt(i);
+            OHLCDataItem it = new sesim.OHLCDataItem(p.time, pr, 0);
+
+            this.indicator.add(it);
+            
            
             
         }
