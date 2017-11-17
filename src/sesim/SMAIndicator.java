@@ -31,72 +31,71 @@ import gui.Globals;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SMAIndicator  implements Indicator {
+public class SMAIndicator implements Indicator {
+
     private OHLCData parent;
 
     OHLCData indicator;
-    
-    public SMAIndicator(OHLCData parent){
-        this.parent=parent;
+
+    public SMAIndicator(OHLCData parent) {
+        this.parent = parent;
         indicator = new OHLCData();
     }
-    
-    int len=30;
-    
-    float getAt(int pos){
-        if (parent.size()==0)
+
+    int len = 38;
+
+    float getAt(int pos) {
+        if (parent.size() == 0) {
             return 0;
-        
-        
-        int start = pos -len;
-        if(start<0)
-            start=0;
-        float sum=0;
-        for (int i=start; i<pos; i++){
+        }
+
+        int start = pos - len;
+        if (start < 0) {
+            start = 0;
+        }
+        float sum = 0;
+        for (int i = start; i <= pos; i++) {
             //sum += parent.get(i).getAverage();
-           sum += parent.get(i).close;
-            
+            sum += parent.get(i).close;
+
         }
-        if (pos-start==0){
+        /*if (pos - start == 0) {
             return 0;
-        }
-        
-        return sum/(start-pos);
+        }*/
+
+        return sum / (pos - start + 1);
     }
-    
-    void update(){
-        parent =  Globals.se.getOHLCdata(60000 * 10);
-        
-        if (parent.size()==0)
+
+    void update() {
+        parent = Globals.se.getOHLCdata(60000 * 10);
+
+        if (parent.size() == 0) {
             return;
-        
-  /*      if (parent.size()==indicator.size()){
-            int i=parent.size()-1;
+        }
+
+        if (parent.size() == indicator.size()) {
+            int i = parent.size() - 1;
             OHLCDataItem p = parent.get(i);
             float pr = this.getAt(i);
             OHLCDataItem it = new sesim.OHLCDataItem(p.time, pr, 0);
+            this.indicator.set(i, it);
             return;
         }
-    */    
-        for (int i = indicator.size();i<parent.size();i++){
+
+        for (int i = indicator.size(); i < parent.size(); i++) {
             OHLCDataItem p = parent.get(i);
             float pr = this.getAt(i);
             OHLCDataItem it = new sesim.OHLCDataItem(p.time, pr, 0);
 
             this.indicator.add(it);
-            
-           
-            
+
         }
     }
-    
-    public OHLCData getData(){
+
+    public OHLCData getData() {
         update();
         return indicator;
-        
-        
-        
+
     }
- 
-    
+
 }
