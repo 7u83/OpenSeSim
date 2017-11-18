@@ -42,7 +42,7 @@ public class SMAIndicator implements Indicator {
         indicator = new OHLCData();
     }
 
-    int len = 38;
+    int len = 0;
 
     float getAt(int pos) {
         if (parent.size() == 0) {
@@ -66,7 +66,7 @@ public class SMAIndicator implements Indicator {
         return sum / (pos - start + 1);
     }
 
-    void update() {
+    public void update() {
         //parent = Globals.se.getOHLCdata(60000 * 10);
 
         System.out.printf("Data %d\n", parent.size());

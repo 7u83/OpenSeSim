@@ -32,6 +32,7 @@ import chart.painter.ChartCrossPainter;
 import chart.painter.LineChartPainter;
 import chart.painter.YLegendPainter;
 import gui.Globals;
+import java.util.ArrayList;
 import sesim.Exchange.QuoteReceiver;
 import sesim.Indicator;
 import sesim.MinMax;
@@ -47,6 +48,22 @@ import sesim.SMAIndicator;
 public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     private ChartDef chartDef;
+
+    SMAIndicator sma;
+
+    class MyOHLCData extends OHLCData {
+
+        @Override
+        public OHLCDataItem get(int n) {
+            return sma.getData().get(n);
+        }
+
+        @Override
+        public MinMax getMinMax(int first, int last) {
+            return mydata.getMinMax(first, last);
+        }
+
+    }
 
     /**
      * Creates new form MasterChart
@@ -70,7 +87,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         //  this.yLegend.addChartPainter(p);
         //this.yLegend.addChartPainter(pc);
     }
-    OHLCData data;
+    OHLCData mydata;
 
     public void reset() {
         this.chart.deleteAllChartPinters();
@@ -82,33 +99,33 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         this.yLegend.setChartDef(chartDef);
 
         ChartPainter p;
-        data = Globals.se.getOHLCdata(60000 * 10);
+        mydata = Globals.se.getOHLCdata(60000 * 60);
 
         this.xScrollBar.setMaximum(0);
 
         p = new XLegendPainter();
-        p.setOHLCData(data);
+        p.setOHLCData(mydata);
 
         xLegend.addChartPainter(p);
         xLegend.setXSCrollBar(xScrollBar);
 
         ChartPainter pc = new CandleStickChartPainter();
         //pc.setDataProvider(this);
-        pc.setOHLCData(data);
+        pc.setOHLCData(mydata);
 
         chart.addChartPainter(pc);
         chart.setXSCrollBar(xScrollBar);
         chart.addChartPainter(new ChartCrossPainter());
 
-//      SMAIndicator sma = new sesim.SMAIndicator(get());
+        sma = new sesim.SMAIndicator(mydata);
         p = new LineChartPainter();
-        p.setOHLCData(data);
+        p.setOHLCData(sma.getData());
         //p.setDataProvider(new SMA(get()));        
         chart.addChartPainter(p);
 
         ChartPainter yp = new YLegendPainter(chart);
 //        yp.setDataProvider(this);
-        yp.setOHLCData(data);
+        yp.setOHLCData(mydata);
 
         this.yLegend.addChartPainter(yp);
 
@@ -249,10 +266,12 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     @Override
     public void UpdateQuote(Quote q) {
-        int s = data.size();
+        if (sma != null) {
+            sma.update();
+        }
+        int s = mydata.size();
         this.xScrollBar.setMaximum(s);
         repaint();
     }
-
 
 }
