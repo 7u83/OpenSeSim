@@ -34,7 +34,9 @@ import chart.painter.YLegendPainter;
 import gui.Globals;
 import sesim.Exchange.QuoteReceiver;
 import sesim.Indicator;
+import sesim.MinMax;
 import sesim.OHLCData;
+import sesim.OHLCDataItem;
 import sesim.Quote;
 import sesim.SMAIndicator;
 
@@ -65,18 +67,39 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         this.xLegend.setChartDef(chartDef);
         this.yLegend.setChartDef(chartDef);
 
-        class SMA implements ChartPainter.DataProvider {
+        class SMA extends OHLCData implements ChartPainter.DataProvider {
 
             SMAIndicator sma;
-            SMA(OHLCData data){
+            OHLCData data;
+
+            SMA(OHLCData data) {
                 sma = new SMAIndicator(data);
+                this.data = data;
+            }
+
+            @Override
+            public MinMax getMinMax(int first, int last) {
+                return data.getMinMax(first, last);
+            }
+
+            @Override
+            public float getMax() {
+                return data.getMax();
             }
 
             @Override
             public OHLCData get() {
-                return sma.getData();
-            
+                return this; //sm
+                       //.getData();
+
             }
+            @Override
+            public OHLCDataItem get(int n) {
+                OHLCData d = sma.getData();
+                return d.get(n); //To change body of generated methods, choose Tools | Templates.
+            }
+
+
 
         }
 
