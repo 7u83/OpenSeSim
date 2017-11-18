@@ -23,9 +23,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package indicators;
 
-import gui.Globals;
+import sesim.Indicator;
+import sesim.OHLCData;
+import sesim.OHLCDataItem;
 
 /**
  *
@@ -59,18 +61,13 @@ public class SMAIndicator implements Indicator {
             sum += parent.get(i).close;
 
         }
-        /*if (pos - start == 0) {
-            return 0;
-        }*/
 
         return sum / (pos - start + 1);
     }
 
     public void update() {
-        //parent = Globals.se.getOHLCdata(60000 * 10);
-
-        System.out.printf("Data %d\n", parent.size());
-        
+ 
+             
         if (parent.size() == 0) {
             
             return;

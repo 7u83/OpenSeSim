@@ -39,7 +39,7 @@ import sesim.MinMax;
 import sesim.OHLCData;
 import sesim.OHLCDataItem;
 import sesim.Quote;
-import sesim.SMAIndicator;
+import indicators.SMAIndicator;
 
 /**
  *
@@ -124,7 +124,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         chart.setXSCrollBar(xScrollBar);
         chart.addChartPainter(new ChartCrossPainter());
 
-        sma = new sesim.SMAIndicator(mydata);
+        sma = new indicators.SMAIndicator(mydata);
         MyOHLCData mysma = new MyOHLCData();
         p = new LineChartPainter();
         p.setOHLCData(mysma);
