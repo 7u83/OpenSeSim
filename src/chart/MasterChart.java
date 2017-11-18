@@ -249,26 +249,10 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     @Override
     public void UpdateQuote(Quote q) {
-//      OHLCData data = this.get();
         int s = data.size();
         this.xScrollBar.setMaximum(s);
         repaint();
     }
 
-    OHLCData mydata = null;
 
-    /*
-    public OHLCData get() {
-        OHLCData re = Globals.se.getOHLCdata(60000 * 10);
-        if (re != mydata) {
-            System.out.printf("re != a\n");
-        }
-
-        if (mydata == null) {
-            mydata = Globals.se.getOHLCdata(60000 * 10);
-        }
-        return mydata;
-
-    }
-     */
 }

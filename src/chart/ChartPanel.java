@@ -1,7 +1,6 @@
 package chart;
 
 import chart.painter.ChartPainter;
-import chart.painter.XLegendPainter;
 import gui.Globals;
 
 import java.awt.Cursor;
@@ -16,19 +15,15 @@ import java.awt.event.AdjustmentListener;
 import java.util.ArrayList;
 import javax.swing.JScrollBar;
 
-import sesim.OHLCData;
-
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener {
 
-    public JScrollBar x_scrollbar=null;
+    public JScrollBar x_scrollbar = null;
     ChartDef chartDef;
-    public boolean mouseEntered=false;
-    
+    public boolean mouseEntered = false;
 
     /**
      * Creates new form Chart1
@@ -42,17 +37,20 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
 
     /**
      * Add a horizontal scrollbar
-     * @param x_scrollbar 
+     *
+     * @param x_scrollbar
      */
-    public void setXSCrollBar(JScrollBar x_scrollbar){
-        if (this.x_scrollbar!=null)
+    public void setXSCrollBar(JScrollBar x_scrollbar) {
+        if (this.x_scrollbar != null) {
             this.x_scrollbar.removeAdjustmentListener(this);
-        this.x_scrollbar=x_scrollbar;
-        if (this.x_scrollbar!=null)
+        }
+        this.x_scrollbar = x_scrollbar;
+        if (this.x_scrollbar != null) {
             this.x_scrollbar.addAdjustmentListener(this);
+        }
     }
-    
-    public void setChartDef(ChartDef def){
+
+    public void setChartDef(ChartDef def) {
         chartDef = def;
     }
 
@@ -65,16 +63,14 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
     public void addChartPainter(ChartPainter p) {
         chartPainters.add(p);
     }
-    
-    public void deleteAllChartPinters(){
+
+    public void deleteAllChartPinters() {
         chartPainters = new ArrayList<>();
     }
-    
-    public boolean delChartPainter(ChartPainter p){
+
+    public boolean delChartPainter(ChartPainter p) {
         return true;
     }
-
-//    OHLCData data;
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -83,14 +79,6 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         if (Globals.se == null) {
             return;
         }
-
-        //this.x_scrollbar.setMaximum(994000);
-       // XLegendPainter p = new XLegendPainter();
-        //data = Globals.se.getOHLCdata(60000 * 60);
-
-//        ChartDef def = new ChartDef();
-//        def.x_unit_width = 1.0;
-//        def.x_scrollbar = x_scrollbar;
 
         for (ChartPainter painter : chartPainters) {
             painter.drawChart((Graphics2D) g, this, chartDef);
@@ -144,12 +132,12 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
     }//GEN-LAST:event_formMouseMoved
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
-        this.mouseEntered=true;
-        
+        this.mouseEntered = true;
+
     }//GEN-LAST:event_formMouseEntered
 
     private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
-        this.mouseEntered=false;
+        this.mouseEntered = false;
     }//GEN-LAST:event_formMouseExited
 
     @Override
@@ -157,7 +145,6 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
 
         this.repaint();
     }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
