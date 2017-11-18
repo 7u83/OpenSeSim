@@ -42,7 +42,7 @@ public class SMAIndicator implements Indicator {
         indicator = new OHLCData();
     }
 
-    int len = 0;
+    int len = 20;
 
     float getAt(int pos) {
         if (parent.size() == 0) {

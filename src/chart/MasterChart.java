@@ -53,6 +53,13 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     class MyOHLCData extends OHLCData {
 
+        
+
+        @Override
+        public int size() {
+            return sma.getData().size();
+        }
+        
         @Override
         public OHLCDataItem get(int n) {
             return sma.getData().get(n);
@@ -99,7 +106,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         this.yLegend.setChartDef(chartDef);
 
         ChartPainter p;
-        mydata = Globals.se.getOHLCdata(60000 * 60);
+        mydata = Globals.se.getOHLCdata(60000 * 20);
 
         this.xScrollBar.setMaximum(0);
 
@@ -118,8 +125,9 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         chart.addChartPainter(new ChartCrossPainter());
 
         sma = new sesim.SMAIndicator(mydata);
+        MyOHLCData mysma = new MyOHLCData();
         p = new LineChartPainter();
-        p.setOHLCData(sma.getData());
+        p.setOHLCData(mysma);
         //p.setDataProvider(new SMA(get()));        
         chart.addChartPainter(p);
 
