@@ -56,7 +56,7 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         chartDef = def;
     }
 
-    private final ArrayList<ChartPainter> chartPainters = new ArrayList<>();
+    private ArrayList<ChartPainter> chartPainters = new ArrayList<>();
 
     /**
      *
@@ -65,8 +65,16 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
     public void addChartPainter(ChartPainter p) {
         chartPainters.add(p);
     }
+    
+    public void deleteAllChartPinters(){
+        chartPainters = new ArrayList<>();
+    }
+    
+    public boolean delChartPainter(ChartPainter p){
+        return true;
+    }
 
-    OHLCData data;
+//    OHLCData data;
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -77,8 +85,8 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         }
 
         //this.x_scrollbar.setMaximum(994000);
-        XLegendPainter p = new XLegendPainter();
-        data = Globals.se.getOHLCdata(60000 * 60);
+       // XLegendPainter p = new XLegendPainter();
+        //data = Globals.se.getOHLCdata(60000 * 60);
 
 //        ChartDef def = new ChartDef();
 //        def.x_unit_width = 1.0;

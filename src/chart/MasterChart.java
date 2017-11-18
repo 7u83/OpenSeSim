@@ -44,7 +44,7 @@ import sesim.SMAIndicator;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, ChartPainter.DataProvider {
+public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     private ChartDef chartDef;
 
@@ -67,80 +67,51 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
         this.xLegend.setChartDef(chartDef);
         this.yLegend.setChartDef(chartDef);
 
-        class SMA extends OHLCData implements ChartPainter.DataProvider {
+        //  this.yLegend.addChartPainter(p);
+        //this.yLegend.addChartPainter(pc);
+    }
+    OHLCData data;
 
-            SMAIndicator sma;
-            OHLCData data;
+    public void reset() {
+        this.chart.deleteAllChartPinters();
+        this.xLegend.deleteAllChartPinters();
+        this.yLegend.deleteAllChartPinters();
 
-            SMA(OHLCData data) {
-                sma = new SMAIndicator(data);
-                this.data = data;
-            }
-
-            @Override
-            public MinMax getMinMax(int first, int last) {
-                return data.getMinMax(first, last);
-            }
-
-            @Override
-            public float getMax() {
-                return data.getMax();
-            }
-
-            @Override
-            public OHLCData get() {
-                return this; //sm
-                       //.getData();
-
-            }
-            @Override
-            public OHLCDataItem get(int n) {
-                OHLCData d = sma.getData();
-                return d.get(n); //To change body of generated methods, choose Tools | Templates.
-            }
-
-                
-
-            @Override
-            public int size() {
-                int s = data.size();
-                return s;
-            }
-
-
-
-        }
+        this.chart.setChartDef(chartDef);
+        this.xLegend.setChartDef(chartDef);
+        this.yLegend.setChartDef(chartDef);
 
         ChartPainter p;
+        data = Globals.se.getOHLCdata(60000 * 10);
 
         this.xScrollBar.setMaximum(0);
 
         p = new XLegendPainter();
-        p.setDataProvider(this);
+        p.setOHLCData(data);
 
         xLegend.addChartPainter(p);
         xLegend.setXSCrollBar(xScrollBar);
 
         ChartPainter pc = new CandleStickChartPainter();
-        pc.setDataProvider(this);
+        //pc.setDataProvider(this);
+        pc.setOHLCData(data);
 
         chart.addChartPainter(pc);
         chart.setXSCrollBar(xScrollBar);
         chart.addChartPainter(new ChartCrossPainter());
 
-        SMAIndicator sma = new sesim.SMAIndicator(get());
-
+//      SMAIndicator sma = new sesim.SMAIndicator(get());
         p = new LineChartPainter();
-        p.setDataProvider(new SMA(get()));
+        p.setOHLCData(data);
+        //p.setDataProvider(new SMA(get()));        
         chart.addChartPainter(p);
 
         ChartPainter yp = new YLegendPainter(chart);
-        yp.setDataProvider(this);
+//        yp.setDataProvider(this);
+        yp.setOHLCData(data);
 
         this.yLegend.addChartPainter(yp);
 
-        //  this.yLegend.addChartPainter(p);
-        //this.yLegend.addChartPainter(pc);
     }
 
     /**
@@ -278,15 +249,26 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
 
     @Override
     public void UpdateQuote(Quote q) {
-        OHLCData data = this.get();
+//      OHLCData data = this.get();
         int s = data.size();
         this.xScrollBar.setMaximum(s);
         repaint();
     }
 
-    @Override
+    OHLCData mydata = null;
+
+    /*
     public OHLCData get() {
-        return Globals.se.getOHLCdata(60000 * 10);
+        OHLCData re = Globals.se.getOHLCdata(60000 * 10);
+        if (re != mydata) {
+            System.out.printf("re != a\n");
+        }
+
+        if (mydata == null) {
+            mydata = Globals.se.getOHLCdata(60000 * 10);
+        }
+        return mydata;
 
     }
+     */
 }

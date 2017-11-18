@@ -40,7 +40,14 @@ abstract public class ChartPainter {
 
     protected int em_size;
 
-    public abstract interface DataProvider {
+    
+    protected OHLCData data;
+    
+    public void setOHLCData(OHLCData data){
+        this.data = data;
+    }
+    
+/*    public abstract interface DataProvider {
 
         abstract OHLCData get();
     }
@@ -50,12 +57,14 @@ abstract public class ChartPainter {
     public void setDataProvider(DataProvider dataProvider) {
         this.dataProvider = dataProvider;
     }
-
+*/
     protected OHLCData getData() {
-        if (dataProvider == null) {
+        return this.data;
+        /*if (dataProvider == null) {
             return null;
         }
         return dataProvider.get();
+*/        
     }
 
     protected int getFirstBar(ChartPanel p) {

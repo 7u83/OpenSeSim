@@ -585,6 +585,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         Globals.se.terminate();
         Globals.se.reset();
 //        chart.initChart();
+        chart.reset();
         chart.invalidate();
         chart.repaint();
 //       this.orderBookPanel.invalidate();
