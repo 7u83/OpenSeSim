@@ -67,9 +67,12 @@ public class SMAIndicator implements Indicator {
     }
 
     void update() {
-        parent = Globals.se.getOHLCdata(60000 * 10);
+        //parent = Globals.se.getOHLCdata(60000 * 10);
 
+        System.out.printf("Data %d\n", parent.size());
+        
         if (parent.size() == 0) {
+            
             return;
         }
 

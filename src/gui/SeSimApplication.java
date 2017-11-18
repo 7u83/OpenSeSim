@@ -863,7 +863,7 @@ public class SeSimApplication extends javax.swing.JFrame {
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
-
+ 
         System.out.printf("Main called\n");
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 

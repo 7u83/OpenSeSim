@@ -99,6 +99,14 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver, Ch
                 return d.get(n); //To change body of generated methods, choose Tools | Templates.
             }
 
+                
+
+            @Override
+            public int size() {
+                int s = data.size();
+                return s;
+            }
+
 
 
         }
