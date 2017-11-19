@@ -53,7 +53,7 @@ public class AutoTraderLoader extends SeSimClassLoader {
 
     public AutoTraderLoader(ArrayList<String> pathlist) {
         super(pathlist);
-        // setPathList(pathlist);
+        // setDefaultPathList(pathlist);
     }
 
     /**

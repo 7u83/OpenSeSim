@@ -44,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.AutoTraderInterface;
 import sesim.AutoTraderLoader;
+import sesim.Indicator;
 import sesim.SeSimClassLoader;
 
 /**
@@ -145,9 +146,14 @@ public class Globals {
                 .getPath()).toString();
 
         pathlist.add(default_path);
+        System.out.printf("Default_path: %s\n",default_path);
         
         SeSimClassLoader cl = new SeSimClassLoader(pathlist);
-        cl.getInstalledClasses(AutoTraderInterface.class);
+        
+        ArrayList<String> plist = new ArrayList<>();
+        plist.add("/home/tube/sesim_lib");
+        
+    //    cl.getInstalledClasses(plist, Indicator.class);
         
         
         

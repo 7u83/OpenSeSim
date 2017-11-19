@@ -4,13 +4,20 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/MasterChart.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/ChartPainter.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCData.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/resources/files/defaultcfg.json</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderInterface.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/LineChartPainter.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderGui.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderLoader.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/Globals.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/ChartPainter.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/indicators/SMAIndicator.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/.git/config</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/OHLCChartPainter.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/LineChartPainter.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Indicator.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/indicators/EMAIndicator.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/SeSimClassLoader.java</file>
         </group>
     </open-files>
 </project-private>

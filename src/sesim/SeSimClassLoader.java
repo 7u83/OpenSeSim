@@ -28,6 +28,7 @@ package sesim;
 import gui.Globals;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
@@ -40,7 +41,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 /**
@@ -56,20 +60,37 @@ public class SeSimClassLoader {
      *
      * @param pathlist List of paths
      */
-    public final void setPathList(ArrayList<String> pathlist) {
+    public final void setDefaultPathList(ArrayList<String> pathlist) {
         this.pathlist = pathlist;
 
     }
-
-    public SeSimClassLoader(ArrayList<String> pathlist) {
-        setPathList(pathlist);
+    /**
+     * Create a SeSimClassLoader object with an empty default path
+     */
+    public SeSimClassLoader(){
+        this(new ArrayList<String>());
     }
 
+    /**
+     * Create a SeSimClassLoader object with fiven default path
+     * @param pathlist Default path to search classes for
+     */
+    public SeSimClassLoader(ArrayList<String> pathlist) {
+        setDefaultPathList(pathlist);
+    }
+    
+     
+    
+    /**
+     * Get a list of all files in a given directory and
+     * its sub-directories.
+     * @param path Directory to list
+     * @return List of files
+     */
     public ArrayList<File> listFiles(String path) {
 
         ArrayList<File> files = new ArrayList<>();
-
-        // get all the files from a directory
+        
         File[] fList = new File(path).listFiles();
         for (File file : fList) {
             if (file.isFile()) {
@@ -85,14 +106,12 @@ public class SeSimClassLoader {
         //      ClassLoader cur = Thread.currentThread().getContextClassLoader();
         //      Thread.currentThread().setContextClassLoader(cl);
 
-        
-
         try {
-             return cls.newInstance();
+            return cls.newInstance();
         } catch (InstantiationException | IllegalAccessException ex) {
 
-            System.out.printf("Error: %s\n",ex.getMessage());
-            
+            System.out.printf("Error: %s\n", ex.getMessage());
+
         }
         //      Thread.currentThread().setContextClassLoader(cur);
 
@@ -100,9 +119,8 @@ public class SeSimClassLoader {
     }
 
     /**
-     * Check if a given class provides an certain interface
-     * and also if the class is not abstract, so it could be
-     * instanciated.
+     * Check if a given class provides an certain interface and also if the
+     * class is not abstract, so it could be instanciated.
      *
      * @param cls Class to check
      * @param iface Interface which the class should provide
@@ -125,7 +143,7 @@ public class SeSimClassLoader {
         return false;
     }
 
-    Class<?> xloadClass(String filename, String classname) {
+    Class<?> localClass(String filename, String classname) {
 
         if (classname == null) {
             return null;
@@ -133,9 +151,39 @@ public class SeSimClassLoader {
 
         String clnam = classname.substring(1, classname.length() - 6).replace('/', '.');
 
+        File f = new File(filename);
+        URL url = null;
+
         try {
             
-            Class<?> cls = Class.forName(clnam);
+            url = f.toURI().toURL();
+
+          //  f = new File("/home/tube/sesim_lib/");
+            url = f.toURI().toURL();
+
+        } catch (MalformedURLException ex) {
+            return null;
+        }
+
+        System.out.printf("URL: %s\n", url);
+
+        //   Globals.LOGGER.info(String.format("URL: %s", url.toString()));
+        //   URL[] urls = new URL[]{url};
+        URL[] urls = new URL[]{url};
+
+        ClassLoader cl;
+        // Create a new class loader with the directory
+        cl = new URLClassLoader(urls);
+
+//      ClassLoader cur = Thread.currentThread().getContextClassLoader();
+        //      Thread.currentThread().setContextClassLoader(cl);
+        try {
+
+            Class<?> cls;
+            //cls = Class.forName(clnam);
+
+            cls = cl.loadClass(clnam);
+
             if (cls == null) {
                 System.out.printf("nullclass\n");
             }
@@ -151,40 +199,71 @@ public class SeSimClassLoader {
     }
 
     /**
-     * 
-     * @param iface 
+     *
+     * @param pathlist
+     * @param iface
      */
-    public void getInstalledClasses(Class<?> iface) {
-       
-        for (String classpathEntry : pathlist) {
-            System.out.printf("Classpath Entry: %s\n", classpathEntry);
+    public void getInstalledClasses(ArrayList<String> pathlist, Class<?> iface) {
 
-            ArrayList<File> files = listFiles(classpathEntry);
-            System.out.printf("Number of entries: %d\n", files.size());
+        for (String path : pathlist) {
+
+            ArrayList<File> files = listFiles(path);
+
             for (File file : files) {
-                //        System.out.printf("File: %s\n", file.toString());
 
                 String fn = file.toString();
                 if (fn.toLowerCase().endsWith(".class")) {
-                    String class_name = fn.substring(classpathEntry.length());
-
-                    Class<AutoTraderInterface> cls;
-                    Class<?> c = xloadClass(fn, class_name);
+                    String class_name = fn.substring(path.length());
+                    Class<?> c = localClass(fn, class_name);
 
                     if (this.isInstance(c, AutoTraderInterface.class)) {
                         System.out.printf("Her is an autotrader %s\n", class_name);
-                        
-                       
-                        AutoTraderInterface a = (AutoTraderInterface)MakeInstance(c);
-                        if (a==null)
+
+                        Object a = MakeInstance(c);
+                        if (a == null) {
+                            System.out.printf("Can't Instanciate: %s\n", class_name);
                             continue;
-                        System.out.printf("AutoName: %s\n", a.getConfig().toString());
+                        }
+
+                        System.out.printf("Hava na Instance of %s\n", class_name);
+                        //              System.out.printf("AutoName: %s\n", a.getConfig().toString());
                     }
 
                 }
 
+                /*                if (fn.toLowerCase().endsWith(".jar")) {
+                    JarInputStream jarstream = null;
+                    try {
+                        File jarfile = new File(fn);
+                        jarstream = new JarInputStream(new FileInputStream(jarfile));
+                        JarEntry jarentry;
+
+                        while ((jarentry = jarstream.getNextJarEntry()) != null) {
+                            if (jarentry.getName().endsWith(".class")) {
+
+                                Class<?> cls;
+
+                                cls = localClass(fn, "/" + jarentry.getName());
+                                if (cls != null) {
+
+                                }
+
+                            }
+                        }
+                    } catch (IOException ex) {
+
+                    } finally {
+                        try {
+                            jarstream.close();
+                        } catch (IOException ex) {
+                            java.util.logging.Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                }
+                 */
             }
-            //System.exit(0);
+      //      System.exit(0);
         }
     }
 
