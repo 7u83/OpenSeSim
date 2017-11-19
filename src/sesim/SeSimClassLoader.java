@@ -180,11 +180,7 @@ public class SeSimClassLoader {
                             continue;
                         System.out.printf("AutoName: %s\n", a.getConfig().toString());
                     }
-                    
-                   
 
-                    //c.getCanonicalName();
-                    //System.out.printf("Canon: %s\n", c.getCanonicalName());
                 }
 
             }
