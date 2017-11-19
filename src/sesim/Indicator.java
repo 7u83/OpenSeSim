@@ -29,7 +29,7 @@ package sesim;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface Indicator {
+public interface Indicator extends ConfigurableInterface{
     public String getName();
     public String getDescription();
 }

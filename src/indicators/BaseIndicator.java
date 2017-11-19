@@ -25,6 +25,7 @@
  */
 package indicators;
 
+import org.json.JSONObject;
 import sesim.Indicator;
 
 /**
@@ -42,4 +43,15 @@ public class BaseIndicator implements Indicator{
     public String getDescription() {
         return "";
     }
+
+    @Override
+    public JSONObject getConfig() {
+        return new JSONObject();
+    }
+
+    @Override
+    public void putConfig(JSONObject cfg) {
+    }
+    
+    
 }
