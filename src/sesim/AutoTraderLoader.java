@@ -180,78 +180,15 @@ public class AutoTraderLoader extends SeSimClassLoader {
             return traders_cache;
         }
 
-        ArrayList<Class<AutoTraderInterface>> traders;
-        traders = new ArrayList<>();
-
-        for (String classpathEntry : default_pathlist) {
-
-            Consumer<? super Path> pf;
-            pf = (Object t) -> {
-
-                String fn = ((Path) t).toString();
-
-                // handle a .class file 
-                if (fn.toLowerCase().endsWith(".class")) {
-                    String class_name = fn.substring(classpathEntry.length());
-
-                    Class<AutoTraderInterface> cls = loadAutoTraderClass(fn, class_name);
-                    if (cls == null) {
-                        return;
-                    }
-                    traders.add(cls);
-                }
-
-                // handle a .jar file
-                if (fn.toLowerCase().endsWith(".jar")) {
-                    JarInputStream is = null;
-                    try {
-                        File jar = new File(fn);
-                        is = new JarInputStream(new FileInputStream(jar));
-                        JarEntry entry;
-
-                        Globals.LOGGER.info("starting entries");
-                        while ((entry = is.getNextJarEntry()) != null) {
-                            Globals.LOGGER.info(String.format("Jar entry: %s", entry));
-
-                            if (entry.getName().endsWith(".class")) {
-
-                                //           System.out.printf("Entry: %s\n", entry.getName());
-//                                String fn0 = entry.getName();
-                                Class<AutoTraderInterface> cls = loadAutoTraderClass(fn, "/" + entry.getName());
-                                if (cls != null) {
-                                    traders.add(cls);
-                                }
-//Globals.LOGGER.info("clas was null");
-
-                            }
-                        }
-                    } catch (IOException ex) {
-                        Globals.LOGGER.info("ioeception");
-                        Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
-                    } finally {
-                        try {
-                            is.close();
-                        } catch (IOException ex) {
-
-                            Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            };
-
-            try {
-                Files.walk(Paths.get(classpathEntry))
-                        .filter(Files::isRegularFile)
-                        .forEach(pf);
-            } catch (IOException ex) {
-                Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+        ArrayList<Class<?>> trl;
+        ArrayList<Class<AutoTraderInterface>> result = new ArrayList<>();
+        trl = getInstalledClasses(new ArrayList(), AutoTraderInterface.class);
+        for (Class<?> c : trl) {
+            result.add((Class<AutoTraderInterface>) c);
         }
-        traders_cache = traders;
 
-        //       Globals.LOGGER.info(String.format("We have found %d traders", traders.size()));
-        return traders;
+        traders_cache = result;
+        return traders_cache;
 
     }
 
