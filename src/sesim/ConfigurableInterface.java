@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, tube
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,51 +25,26 @@
  */
 package sesim;
 
-import javax.swing.JDialog;
 import org.json.JSONObject;
 
 /**
- * Interface for auto traders
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tube
  */
-public interface AutoTraderInterface extends ConfigurableInterface {
-
-    public abstract boolean getDevelStatus();
-
-    public abstract String getDisplayName();
+public interface ConfigurableInterface {
 
     /**
-     * Get a graphical user interface to configure the auto trader.
+     * Get current configuration  as JSON object.
      *
-     * @return an AutoTraderGui object or null if there is no graphical user
-     * interface available.
+     * @return JSONObject containing the configuration
      */
-    public abstract AutoTraderGui getGui();
-
-    public abstract JDialog getGuiConsole();
+    public abstract JSONObject getConfig();
 
     /**
-     * Return the name of the auto trader.
+     * Set the configuration  by a JSON object.
      *
-     * @return name
+     * @param cfg the configuration
      */
-    public abstract String getName();
-
-    /**
-     * Initialize the auto trader
-     *
-     * @param se Exechange to trade on
-     * @param id
-     * @param name Name of auto trader
-     * @param money Money
-     * @param shares Number of shares
-     * @param cfg
-     */
-    public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg);
-
-    public Account getAccount();
-
-    public void start();
+    public abstract void putConfig(JSONObject cfg);
 
 }
