@@ -45,6 +45,7 @@ import org.json.JSONObject;
 import sesim.AutoTraderInterface;
 import sesim.AutoTraderLoader;
 import sesim.Indicator;
+import sesim.IndicatorLoader;
 import sesim.SeSimClassLoader;
 
 /**
@@ -147,6 +148,11 @@ public class Globals {
 
         default_pathlist.add(default_path);
         tloader = new AutoTraderLoader(default_pathlist);
+        
+        
+        IndicatorLoader<Indicator> il = new IndicatorLoader<Indicator>();
+        il.getInstalled();
+        
     }
 
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
