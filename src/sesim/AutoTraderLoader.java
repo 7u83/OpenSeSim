@@ -53,7 +53,7 @@ public class AutoTraderLoader extends SeSimClassLoader {
 
     public AutoTraderLoader(ArrayList<String> pathlist) {
         super(pathlist);
-        // setDefaultPathList(pathlist);
+        // setDefaultPathList(default_pathlist);
     }
 
     /**
@@ -80,7 +80,7 @@ public class AutoTraderLoader extends SeSimClassLoader {
 
     private ClassLoader cl;
 
-    public AutoTraderInterface MakeInstance(Class<?> cls) {
+    public AutoTraderInterface newInstance(Class<?> cls) {
         //      ClassLoader cur = Thread.currentThread().getContextClassLoader();
         //      Thread.currentThread().setContextClassLoader(cl);
 
@@ -183,7 +183,7 @@ public class AutoTraderLoader extends SeSimClassLoader {
         ArrayList<Class<AutoTraderInterface>> traders;
         traders = new ArrayList<>();
 
-        for (String classpathEntry : pathlist) {
+        for (String classpathEntry : default_pathlist) {
 
             Consumer<? super Path> pf;
             pf = (Object t) -> {
@@ -266,7 +266,7 @@ public class AutoTraderLoader extends SeSimClassLoader {
             try {
 
                 //AutoTraderInterface ac = trclasses.get(i).newInstance();
-                AutoTraderInterface ac = this.MakeInstance(trclasses.get(i));
+                AutoTraderInterface ac = this.newInstance(trclasses.get(i));
 
                 if (ac.getDevelStatus() && devel == false) {
                     continue;
@@ -303,7 +303,7 @@ public class AutoTraderLoader extends SeSimClassLoader {
                 //         Globals.LOGGER.info("We have null");
                 //     }
 //                AutoTraderInterface ac = traders.get(i).newInstance();
-                AutoTraderInterface ac = MakeInstance(traders.get(i));
+                AutoTraderInterface ac = newInstance(traders.get(i));
 
                 return ac;
                 //       System.out.printf("Looking for in %s == %s\n", ac.getClass().getCanonicalName(), name);

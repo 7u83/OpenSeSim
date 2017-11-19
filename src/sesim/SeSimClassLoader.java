@@ -53,7 +53,7 @@ import javax.swing.JPanel;
  */
 public class SeSimClassLoader {
 
-    protected ArrayList<String> pathlist;
+    protected ArrayList<String> default_pathlist;
 
     /**
      * Set the path list where to search for traders
@@ -61,37 +61,44 @@ public class SeSimClassLoader {
      * @param pathlist List of paths
      */
     public final void setDefaultPathList(ArrayList<String> pathlist) {
-        this.pathlist = pathlist;
+        this.default_pathlist = pathlist;
 
     }
+
     /**
      * Create a SeSimClassLoader object with an empty default path
      */
-    public SeSimClassLoader(){
+    public SeSimClassLoader() {
         this(new ArrayList<String>());
     }
 
     /**
      * Create a SeSimClassLoader object with fiven default path
+     *
      * @param pathlist Default path to search classes for
      */
     public SeSimClassLoader(ArrayList<String> pathlist) {
         setDefaultPathList(pathlist);
     }
-    
-     
-    
+
     /**
-     * Get a list of all files in a given directory and
-     * its sub-directories.
+     * Get a list of all files in a given directory and its sub-directories.
+     *
      * @param path Directory to list
      * @return List of files
      */
     public ArrayList<File> listFiles(String path) {
 
         ArrayList<File> files = new ArrayList<>();
-        
+
+        File fp = new File(path);
+        if (!fp.isDirectory()) {
+            files.add(fp);
+            return files;
+        }
+
         File[] fList = new File(path).listFiles();
+
         for (File file : fList) {
             if (file.isFile()) {
                 files.add(file);
@@ -102,20 +109,18 @@ public class SeSimClassLoader {
         return files;
     }
 
-    public Object MakeInstance(Class<?> cls) {
-        //      ClassLoader cur = Thread.currentThread().getContextClassLoader();
-        //      Thread.currentThread().setContextClassLoader(cl);
-
+    /**
+     * Create a new instance of specified class
+     * 
+     * @param cls Class to create an instance of
+     * @return the instance, null if not successfull
+     */
+    public Object newInstance(Class<?> cls) {
         try {
             return cls.newInstance();
         } catch (InstantiationException | IllegalAccessException ex) {
-
-            System.out.printf("Error: %s\n", ex.getMessage());
-
+            return null;
         }
-        //      Thread.currentThread().setContextClassLoader(cur);
-
-        return null;
     }
 
     /**
@@ -143,67 +148,62 @@ public class SeSimClassLoader {
         return false;
     }
 
-    Class<?> localClass(String filename, String classname) {
+    private Class<?> loadClass(String directory, String class_name, Class<?> iface) {
 
-        if (classname == null) {
+        if (class_name == null) {
             return null;
         }
 
-        String clnam = classname.substring(1, classname.length() - 6).replace('/', '.');
-
-        File f = new File(filename);
         URL url = null;
-
         try {
-            
-            url = f.toURI().toURL();
-
-          //  f = new File("/home/tube/sesim_lib/");
-            url = f.toURI().toURL();
+            url = new File(directory).toURI().toURL();
 
         } catch (MalformedURLException ex) {
             return null;
         }
-
-        System.out.printf("URL: %s\n", url);
-
-        //   Globals.LOGGER.info(String.format("URL: %s", url.toString()));
-        //   URL[] urls = new URL[]{url};
         URL[] urls = new URL[]{url};
 
         ClassLoader cl;
-        // Create a new class loader with the directory
         cl = new URLClassLoader(urls);
 
-//      ClassLoader cur = Thread.currentThread().getContextClassLoader();
-        //      Thread.currentThread().setContextClassLoader(cl);
         try {
-
             Class<?> cls;
-            //cls = Class.forName(clnam);
-
-            cls = cl.loadClass(clnam);
-
+            cls = cl.loadClass(class_name);
             if (cls == null) {
-                System.out.printf("nullclass\n");
+                return null;
             }
+
+            if (iface != null){
+                if (!isInstance(cls, iface)) {
+                    return null;
+                }
+            }
+            
+            if (newInstance(cls) == null) {
+                return null;
+            }
+
             return cls;
 
         } catch (ClassNotFoundException ex) {
-            // something wnet wrong, but we ignore it
-            System.out.printf("Class not found\n");
-
+            return null;
         }
-        return null;
 
     }
 
     /**
      *
-     * @param pathlist
+     * @param additional_pathlist
      * @param iface
+     * @return 
      */
-    public void getInstalledClasses(ArrayList<String> pathlist, Class<?> iface) {
+    public ArrayList<Class<?>> getInstalledClasses(ArrayList<String> additional_pathlist, Class<?> iface) {
+
+        ArrayList<Class<?>> result = new ArrayList<>();
+        
+        ArrayList<String> pathlist = new ArrayList<>();
+        pathlist.addAll(default_pathlist);
+        pathlist.addAll(additional_pathlist);
 
         for (String path : pathlist) {
 
@@ -212,26 +212,23 @@ public class SeSimClassLoader {
             for (File file : files) {
 
                 String fn = file.toString();
+
                 if (fn.toLowerCase().endsWith(".class")) {
-                    String class_name = fn.substring(path.length());
-                    Class<?> c = localClass(fn, class_name);
 
-                    if (this.isInstance(c, AutoTraderInterface.class)) {
-                        System.out.printf("Her is an autotrader %s\n", class_name);
+                    String class_name;
+                    class_name = fn.substring(path.length());
+                    class_name = class_name.substring(1, class_name.length() - 6).replace('/', '.');
 
-                        Object a = MakeInstance(c);
-                        if (a == null) {
-                            System.out.printf("Can't Instanciate: %s\n", class_name);
-                            continue;
-                        }
-
-                        System.out.printf("Hava na Instance of %s\n", class_name);
-                        //              System.out.printf("AutoName: %s\n", a.getConfig().toString());
+                    Class<?> c = loadClass(path, class_name, iface);
+                    if (null == c) {
+                        continue;
                     }
+                    result.add(c);
+                    //System.out.printf("Here is an instance for %s: %s\n", iface.getName(), class_name);
 
                 }
 
-                /*                if (fn.toLowerCase().endsWith(".jar")) {
+                if (fn.toLowerCase().endsWith(".jar")) {
                     JarInputStream jarstream = null;
                     try {
                         File jarfile = new File(fn);
@@ -239,14 +236,21 @@ public class SeSimClassLoader {
                         JarEntry jarentry;
 
                         while ((jarentry = jarstream.getNextJarEntry()) != null) {
-                            if (jarentry.getName().endsWith(".class")) {
 
-                                Class<?> cls;
+                            String class_name = jarentry.getName();
 
-                                cls = localClass(fn, "/" + jarentry.getName());
-                                if (cls != null) {
+                            System.out.printf("Looking into jar: %s - %s\n", path, class_name);
 
+                            if (class_name.endsWith(".class")) {
+
+                                class_name = class_name.substring(0, class_name.length() - 6).replace('/', '.');
+
+                                Class<?> c = loadClass(path, class_name, iface);
+                                if (null == c) {
+                                    continue;
                                 }
+                                result.add(c);
+                                //System.out.printf("Here is an instance for %s: %s\n", iface.getName(), class_name);
 
                             }
                         }
@@ -261,10 +265,11 @@ public class SeSimClassLoader {
                     }
 
                 }
-                 */
+
             }
-      //      System.exit(0);
+            //      System.exit(0);
         }
+        return result;
     }
 
 }

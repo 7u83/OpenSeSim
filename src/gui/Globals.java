@@ -139,25 +139,14 @@ public class Globals {
     static AutoTraderLoader tloader;
 
     static void initGlobals() {
-        ArrayList pathlist = new ArrayList<>();
+        ArrayList default_pathlist = new ArrayList<>();
         String default_path = new java.io.File(SeSimApplication.class.getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
                 .getPath()).toString();
 
-        pathlist.add(default_path);
-        System.out.printf("Default_path: %s\n",default_path);
-        
-        SeSimClassLoader cl = new SeSimClassLoader(pathlist);
-        
-        ArrayList<String> plist = new ArrayList<>();
-        plist.add("/home/tube/sesim_lib");
-        
-    //    cl.getInstalledClasses(plist, Indicator.class);
-        
-        
-        
-        tloader = new AutoTraderLoader(pathlist);
+        default_pathlist.add(default_path);
+        tloader = new AutoTraderLoader(default_pathlist);
     }
 
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
