@@ -23,30 +23,41 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart.painter;
+package sesim;
 
-import sesim.ChartDef;
-import sesim.ChartPanel;
-import java.awt.Graphics2D;
-import java.awt.Point;
-
+import java.util.ArrayList;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartCrossPainter extends ChartPainter{
+public class IndicatorLoader<T> extends SeSimClassLoader {
 
-    @Override
-    public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
-        Point mp = p.mouse;
-        if (mp==null)
-            return;
-        
-        g.drawLine(0, p.mouse.y, p.getSize().width, p.mouse.y);
-        g.drawLine(p.mouse.x, 0, p.mouse.x, p.getSize().height);        
-        
+    ArrayList<Class<T>> cache;
+
+    /**
+     * Get a list of all traders found in class path
+     *
+     * @return List of traders
+     */
+    public ArrayList<Class<T>> getInstalledIndicators() {
+
+        if (cache != null) {
+            return cache;
+        }
+
+        Class<?> tube = null;
+
+        ArrayList<Class<?>> trl;
+        ArrayList<Class<T>> result = new ArrayList<>();
+        trl = getInstalledClasses(new ArrayList(), tube);
+        for (Class<?> c : trl) {
+            result.add((Class<T>) c);
+        }
+
+        cache = result;
+        return cache;
+
     }
-    
-    
+
 }

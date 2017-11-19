@@ -38,7 +38,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Container class="chart.ChartPanel" name="chart11">
+        <Container class="sesim.ChartPanel" name="chart11">
 
           <Layout>
             <DimensionLayout dim="0">

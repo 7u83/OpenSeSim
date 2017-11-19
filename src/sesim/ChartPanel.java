@@ -1,4 +1,4 @@
-package chart;
+package sesim;
 
 import chart.painter.ChartPainter;
 import gui.Globals;

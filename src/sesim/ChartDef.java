@@ -23,30 +23,24 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart.painter;
+package sesim;
 
-import sesim.ChartDef;
-import sesim.ChartPanel;
-import java.awt.Graphics2D;
-import java.awt.Point;
-
+import javax.swing.JScrollBar;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartCrossPainter extends ChartPainter{
-
-    @Override
-    public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
-        Point mp = p.mouse;
-        if (mp==null)
-            return;
-        
-        g.drawLine(0, p.mouse.y, p.getSize().width, p.mouse.y);
-        g.drawLine(p.mouse.x, 0, p.mouse.x, p.getSize().height);        
+public class ChartDef {
+  
+    
+    /**
+     * width of an x unit in em
+     */
+    public double x_unit_width=1.0;
+    
+    public ChartDef(){
         
     }
-    
     
 }

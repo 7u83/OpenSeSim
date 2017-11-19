@@ -25,6 +25,7 @@
  */
 package chart;
 
+import sesim.ChartDef;
 import chart.painter.CandleStickChartPainter;
 import chart.painter.ChartPainter;
 import chart.painter.XLegendPainter;
@@ -148,9 +149,9 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        chart = new chart.ChartPanel();
-        yLegend = new chart.ChartPanel();
-        xLegend = new chart.ChartPanel();
+        chart = new sesim.ChartPanel();
+        yLegend = new sesim.ChartPanel();
+        xLegend = new sesim.ChartPanel();
         xScrollBar = new javax.swing.JScrollBar();
 
         addMouseWheelListener(new java.awt.event.MouseWheelListener() {
@@ -266,10 +267,10 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private chart.ChartPanel chart;
-    private chart.ChartPanel xLegend;
+    private sesim.ChartPanel chart;
+    private sesim.ChartPanel xLegend;
     private javax.swing.JScrollBar xScrollBar;
-    private chart.ChartPanel yLegend;
+    private sesim.ChartPanel yLegend;
     // End of variables declaration//GEN-END:variables
 
     @Override
