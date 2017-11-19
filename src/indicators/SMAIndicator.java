@@ -43,10 +43,14 @@ public class SMAIndicator implements Indicator {
         this.parent = parent;
         indicator = new OHLCData();
     }
+    
+    public void setParent(OHLCData parent){
+        
+    }
 
     int len = 20;
 
-    float getAt(int pos) {
+    private float getAt(int pos) {
         if (parent.size() == 0) {
             return 0;
         }
@@ -57,9 +61,7 @@ public class SMAIndicator implements Indicator {
         }
         float sum = 0;
         for (int i = start; i <= pos; i++) {
-            //sum += parent.get(i).getAverage();
             sum += parent.get(i).close;
-
         }
 
         return sum / (pos - start + 1);

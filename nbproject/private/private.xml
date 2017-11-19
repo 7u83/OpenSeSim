@@ -15,9 +15,10 @@
             <file>file:/home/tube/NetBeansProjects/SeSim/src/indicators/SMAIndicator.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/.git/config</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/OHLCChartPainter.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/indicators/RSIIndicator.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Indicator.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/indicators/EMAIndicator.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/SeSimClassLoader.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Order.java</file>
         </group>
     </open-files>
 </project-private>

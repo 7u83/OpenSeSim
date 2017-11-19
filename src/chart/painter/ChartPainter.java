@@ -25,10 +25,11 @@
  */
 package chart.painter;
 
-import chart.ChartDef;
-import chart.ChartPanel;
+import sesim.ChartDef;
+import sesim.ChartPanel;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import sesim.ChartPainterInterface;
 import sesim.MinMax;
 import sesim.OHLCData;
 
@@ -36,7 +37,7 @@ import sesim.OHLCData;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-abstract public class ChartPainter {
+abstract public class ChartPainter implements ChartPainterInterface{
 
     protected int em_size;
 

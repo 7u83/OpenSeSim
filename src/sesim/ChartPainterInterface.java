@@ -23,24 +23,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package chart;
+package sesim;
 
-import javax.swing.JScrollBar;
+import java.awt.Graphics2D;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartDef {
-  
-    
-    /**
-     * width of an x unit in em
-     */
-    public double x_unit_width=1.0;
-    
-    ChartDef(){
-        
-    }
-    
+public interface ChartPainterInterface {
+    abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
 }

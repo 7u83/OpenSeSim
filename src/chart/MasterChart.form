@@ -54,7 +54,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="chart.ChartPanel" name="chart">
+    <Container class="sesim.ChartPanel" name="chart">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -81,7 +81,7 @@
         </DimensionLayout>
       </Layout>
     </Container>
-    <Container class="chart.ChartPanel" name="yLegend">
+    <Container class="sesim.ChartPanel" name="yLegend">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -96,7 +96,7 @@
         </DimensionLayout>
       </Layout>
     </Container>
-    <Container class="chart.ChartPanel" name="xLegend">
+    <Container class="sesim.ChartPanel" name="xLegend">
 
       <Layout>
         <DimensionLayout dim="0">
