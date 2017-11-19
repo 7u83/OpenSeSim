@@ -42,7 +42,9 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sesim.AutoTraderInterface;
 import sesim.AutoTraderLoader;
+import sesim.SeSimClassLoader;
 
 /**
  *
@@ -143,6 +145,12 @@ public class Globals {
                 .getPath()).toString();
 
         pathlist.add(default_path);
+        
+        SeSimClassLoader cl = new SeSimClassLoader(pathlist);
+        cl.getInstalledClasses(AutoTraderInterface.class);
+        
+        
+        
         tloader = new AutoTraderLoader(pathlist);
     }
 

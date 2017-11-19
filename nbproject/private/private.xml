@@ -4,59 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/MasterChart.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Quote.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/tools/NummericCellRenderer.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderInterface.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Account.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/traders/ManTrader/ManTraderConsoleDialog.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/SeSimApplication.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/Globals.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/OHLCChartPainter.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/QuotePanel.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/MainChart.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/ChartDef.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCData.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/MinMax.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/XLegendPainter.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/LineChartPainter.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Exchange.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Stock.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Locker.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/ChartPanel.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCDataItem.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/AboutDialog.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/OpenOrdersList.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/YLegendPainter.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/AskBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/TestChartdialog.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/traders/RandomTraderA.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/test/sesim/Test.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/ChartCrossPainter.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/StatisticsPanel.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderLoader.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/traders/ManTrader/ManTrader.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/ChartPainter.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCDataProvider.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/traders/RandomTraderB.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Logger.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/EditPreferencesDialog.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/OHLCData.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/indicators/SMAIndicator.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/.git/config</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/OHLCChartPainter.java</file>
+            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/LineChartPainter.java</file>
             <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Indicator.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderBase.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/Statistics.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/EditStrategies.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/Chart.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/IDGenerator.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/AutoTraderGui.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/jp99.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/orderbook/OrderBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/OrderBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/painter/CandleStickChartPainter.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/gui/BidBook.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Scheduler.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/chart/SuperDlg.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/Order.java</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/README.md</file>
-            <file>file:/home/tube/NetBeansProjects/SeSim/src/sesim/SMAIndicator.java</file>
         </group>
     </open-files>
 </project-private>
