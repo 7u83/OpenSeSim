@@ -30,5 +30,6 @@ package sesim;
  * @author 7u83 <7u83@mail.ru>
  */
 public interface Indicator {
-    
+    public String getName();
+    public String getDescription();
 }
