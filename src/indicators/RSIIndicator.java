@@ -25,12 +25,11 @@
  */
 package indicators;
 
-import sesim.Indicator;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RSIIndicator implements Indicator{
+public class RSIIndicator extends BaseIndicator{
     
 }
