@@ -26,20 +26,7 @@
 package sesim;
 
 import gui.Globals;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,29 +40,6 @@ public class AutoTraderLoader extends SeSimClassLoader {
 
     public AutoTraderLoader(ArrayList<String> pathlist) {
         super(pathlist);
-        // setDefaultPathList(default_pathlist);
-    }
-
-    /**
-     * Check if a given class can instaciated as AutoTrader.
-     *
-     * @param cls Class to check
-     * @return true if it is an AutoTrader, otherwise false
-     */
-    public boolean isAutoTrader(Class<?> cls) {
-        if (Modifier.isAbstract(cls.getModifiers())) {
-            return false;
-        }
-
-        do {
-            for (Class<?> i : cls.getInterfaces()) {
-                if (i == (AutoTraderInterface.class)) {
-                    return true;
-                }
-            }
-
-        } while ((cls = cls.getSuperclass()) != null);
-        return false;
     }
 
     private ClassLoader cl;
@@ -98,77 +62,8 @@ public class AutoTraderLoader extends SeSimClassLoader {
         return ai;
     }
 
-    Class<AutoTraderInterface> loadAutoTraderClass(String filename, String classname) {
 
-        //      System.out.printf("Comming in width %s %s", filename, classname);
-        //      Globals.LOGGER.info(String.format("Comming in width %s %s\n", filename, classname));
-        if (classname == null) {
-
-            return null;
-
-        }
-
-        String clnam = classname.substring(1, classname.length() - 6).replace('/', '.');
-        File f = new File(filename);
-
-        URL url = null;
-        try {
-            f.toURI().toURL();
-            //url = f.toURL();
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //   Globals.LOGGER.info(String.format("URL: %s", url.toString()));
-        URL[] urls = new URL[]{url};
-
-        // Create a new class loader with the directory
-        cl = new URLClassLoader(urls);
-
-        //Thread.currentThread().setContextClassLoader(cl);
-        cl = Thread.currentThread().getContextClassLoader();
-
-        try {
-            // Globals.LOGGER.info("try cl");
-            //          Class<?> cls = cl.loadClass(clnam);
-            Class<?> c = cl.loadClass(clnam);
-            if (c == null) {
-                Globals.LOGGER.info("loader c was null");
-            }
-            //   Globals.LOGGER.info("Ccast");
-            Class<AutoTraderInterface> cls = (Class<AutoTraderInterface>) c; // cl.loadClass(clnam);
-            //   return cls;
-            if (cls == null) {
-
-            }
-
-            System.out.printf("Check Class: %s\n", cls.getCanonicalName());
-            //    Globals.LOGGER.info(String.format("Class prope %s", cls.getCanonicalName()));
-
-            if (isAutoTrader(cls)) {
-                Globals.LOGGER.info("We have found an autotrader interface");
-                Class<AutoTraderInterface> claa;
-                claa = (Class<AutoTraderInterface>) cls;
-
-                if (claa == null) {
-                    Globals.LOGGER.info("claa = null");
-                }
-
-                Globals.LOGGER.info("return ok");
-                return claa;
-                //return (Class<AutoTraderInterface>) cls;
-                //return (Class<AutoTraderInterface>) cls;
-            }
-
-        } catch (ClassNotFoundException ex) {
-            // something wnet wrong, but we ignore it
-            System.out.printf("Class not found\n");
-            Globals.LOGGER.info("Class not loadable");
-        }
-        return null;
-
-    }
-
+    
     /**
      * Get a list of all traders found in class path
      *
@@ -258,13 +153,4 @@ public class AutoTraderLoader extends SeSimClassLoader {
         return null;
     }
 
-    /*    
-    public ArrayList xgetTraders(String dir) {
-        File f = new File(dir);
-        File[] ff = f.listFiles();
-        ArrayList a = new ArrayList();
-        a.addAll(Arrays.asList(ff));
-        return a;
-    }
-     */
 }
