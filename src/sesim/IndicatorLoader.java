@@ -40,7 +40,7 @@ public class IndicatorLoader<T> extends SeSimClassLoader {
      *
      * @return List of traders
      */
-    public ArrayList<Class<T>> getInstalledIndicators() {
+    public ArrayList<Class<T>> getInstalled() {
 
         if (cache != null) {
             return cache;
