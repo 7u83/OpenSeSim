@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, tube
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,13 +23,23 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package indicators;
+
+import sesim.Indicator;
 
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tube
  */
-public interface Indicator {
-    public String getName();
-    public String getDescription();
+public class BaseIndicator implements Indicator{
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public String getDescription() {
+        return "";
+    }
 }

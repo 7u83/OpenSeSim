@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2017, tube
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,26 @@
  */
 package sesim;
 
+import org.json.JSONObject;
+
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tube
  */
-public interface Indicator {
-    public String getName();
-    public String getDescription();
+public interface ConfigurableInterface {
+
+    /**
+     * Get current configuration  as JSON object.
+     *
+     * @return JSONObject containing the configuration
+     */
+    public abstract JSONObject getConfig();
+
+    /**
+     * Set the configuration  by a JSON object.
+     *
+     * @param cfg the configuration
+     */
+    public abstract void putConfig(JSONObject cfg);
+
 }

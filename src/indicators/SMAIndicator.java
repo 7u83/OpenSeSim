@@ -25,7 +25,6 @@
  */
 package indicators;
 
-import sesim.Indicator;
 import sesim.OHLCData;
 import sesim.OHLCDataItem;
 
@@ -33,7 +32,7 @@ import sesim.OHLCDataItem;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SMAIndicator implements Indicator {
+public class SMAIndicator extends BaseIndicator {
 
     private OHLCData parent;
 
