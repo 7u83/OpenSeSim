@@ -25,27 +25,17 @@
  */
 package sesim;
 
-import gui.Globals;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JPanel;
 
 /**
  *
@@ -69,7 +59,7 @@ public class SeSimClassLoader {
      * Create a SeSimClassLoader object with an empty default path
      */
     public SeSimClassLoader() {
-        this(new ArrayList<String>());
+        this(new ArrayList<>());
     }
 
     /**
@@ -111,7 +101,7 @@ public class SeSimClassLoader {
 
     /**
      * Create a new instance of specified class
-     * 
+     *
      * @param cls Class to create an instance of
      * @return the instance, null if not successfull
      */
@@ -154,7 +144,7 @@ public class SeSimClassLoader {
             return null;
         }
 
-        URL url = null;
+        URL url;
         try {
             url = new File(directory).toURI().toURL();
 
@@ -173,12 +163,12 @@ public class SeSimClassLoader {
                 return null;
             }
 
-            if (iface != null){
+            if (iface != null) {
                 if (!isInstance(cls, iface)) {
                     return null;
                 }
             }
-            
+
             if (newInstance(cls) == null) {
                 return null;
             }
@@ -195,12 +185,12 @@ public class SeSimClassLoader {
      *
      * @param additional_pathlist
      * @param iface
-     * @return 
+     * @return
      */
     public ArrayList<Class<?>> getInstalledClasses(ArrayList<String> additional_pathlist, Class<?> iface) {
 
         ArrayList<Class<?>> result = new ArrayList<>();
-        
+
         ArrayList<String> pathlist = new ArrayList<>();
         pathlist.addAll(default_pathlist);
         pathlist.addAll(additional_pathlist);
@@ -258,7 +248,8 @@ public class SeSimClassLoader {
 
                     } finally {
                         try {
-                            jarstream.close();
+                            if (jarstream != null)
+                                jarstream.close();
                         } catch (IOException ex) {
                             java.util.logging.Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -267,7 +258,7 @@ public class SeSimClassLoader {
                 }
 
             }
-            //      System.exit(0);
+
         }
         return result;
     }
