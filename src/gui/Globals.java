@@ -150,7 +150,7 @@ public class Globals {
         tloader = new AutoTraderLoader(default_pathlist);
         
         
-        IndicatorLoader<Indicator> il = new IndicatorLoader<Indicator>();
+        IndicatorLoader<Indicator> il = new IndicatorLoader<>(Indicator.class);
         il.setDefaultPathList(default_pathlist);
         il.getInstalled();
         

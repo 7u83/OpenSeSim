@@ -41,7 +41,7 @@ import java.util.logging.Level;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SeSimClassLoader {
+public class SeSimClassLoader <T>{
 
     protected ArrayList<String> default_pathlist;
 

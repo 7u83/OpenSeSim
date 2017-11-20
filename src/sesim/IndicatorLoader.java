@@ -34,6 +34,12 @@ import java.util.ArrayList;
 public class IndicatorLoader<T> extends SeSimClassLoader {
 
     ArrayList<Class<T>> cache;
+    final Class<T> class_type;
+            
+            
+    public IndicatorLoader(Class<T> class_type){
+        this.class_type=class_type;
+    }
 
     /**
      * Get a list of all traders found in class path
@@ -46,11 +52,11 @@ public class IndicatorLoader<T> extends SeSimClassLoader {
             return cache;
         }
 
-        Class<?> tube = null;
+        Class<?> tube ;
 
         ArrayList<Class<?>> trl;
         ArrayList<Class<T>> result = new ArrayList<>();
-        trl = getInstalledClasses(new ArrayList(), tube);
+        trl = getInstalledClasses(new ArrayList(), class_type);
         for (Class<?> c : trl) {
             result.add((Class<T>) c);
         }

@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AutoTraderLoader extends SeSimClassLoader {
+public class AutoTraderLoader extends SeSimClassLoader<AutoTraderInterface> {
 
     private ArrayList<Class<AutoTraderInterface>> traders_cache = null;
 
@@ -44,6 +44,7 @@ public class AutoTraderLoader extends SeSimClassLoader {
 
     private ClassLoader cl;
 
+    @Override
     public AutoTraderInterface newInstance(Class<?> cls) {
         //      ClassLoader cur = Thread.currentThread().getContextClassLoader();
         //      Thread.currentThread().setContextClassLoader(cl);

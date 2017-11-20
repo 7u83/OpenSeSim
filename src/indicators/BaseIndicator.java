@@ -32,7 +32,7 @@ import sesim.Indicator;
  *
  * @author tube
  */
-public class BaseIndicator implements Indicator{
+public abstract class BaseIndicator implements Indicator{
 
     @Override
     public String getName() {
