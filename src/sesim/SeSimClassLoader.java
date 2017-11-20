@@ -41,7 +41,7 @@ import java.util.logging.Level;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SeSimClassLoader <T>{
+public class SeSimClassLoader <T> {
 
     protected ArrayList<String> default_pathlist;
 
@@ -114,14 +114,14 @@ public class SeSimClassLoader <T>{
     }
 
     /**
-     * Check if a given class provides an certain interface and also if the
+     * Check if a given class provides a certain interface and also if the
      * class is not abstract, so it could be instanciated.
      *
      * @param cls Class to check
      * @param iface Interface which the class should provide
      * @return true if it is an instance of insclass, otherwise false
      */
-    public boolean isInstance(Class<?> cls, Class<?> iface) {
+    public boolean hasInterface(Class<?> cls, Class<?> iface) {
 
         if (Modifier.isAbstract(cls.getModifiers())) {
             return false;
@@ -164,7 +164,7 @@ public class SeSimClassLoader <T>{
             }
 
             if (iface != null) {
-                if (!isInstance(cls, iface)) {
+                if (!hasInterface(cls, iface)) {
                     return null;
                 }
             }
