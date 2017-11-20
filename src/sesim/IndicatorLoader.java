@@ -33,37 +33,9 @@ import java.util.ArrayList;
  */
 public class IndicatorLoader<T> extends SeSimClassLoader {
 
-    ArrayList<Class<T>> cache;
-    final Class<T> class_type;
-            
-            
-    public IndicatorLoader(Class<T> class_type){
-        this.class_type=class_type;
+    public IndicatorLoader(Class class_type) {
+        super(class_type);
     }
 
-    /**
-     * Get a list of all traders found in class path
-     *
-     * @return List of traders
-     */
-    public ArrayList<Class<T>> getInstalled() {
-
-        if (cache != null) {
-            return cache;
-        }
-
-        Class<?> tube ;
-
-        ArrayList<Class<?>> trl;
-        ArrayList<Class<T>> result = new ArrayList<>();
-        trl = getInstalledClasses(new ArrayList(), class_type);
-        for (Class<?> c : trl) {
-            result.add((Class<T>) c);
-        }
-
-        cache = result;
-        return cache;
-
-    }
 
 }

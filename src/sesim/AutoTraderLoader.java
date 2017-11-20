@@ -39,7 +39,7 @@ public class AutoTraderLoader extends SeSimClassLoader<AutoTraderInterface> {
     private ArrayList<Class<AutoTraderInterface>> traders_cache = null;
 
     public AutoTraderLoader(ArrayList<String> pathlist) {
-        super(pathlist);
+        super(AutoTraderInterface.class, pathlist);
     }
 
     private ClassLoader cl;
@@ -78,7 +78,7 @@ public class AutoTraderLoader extends SeSimClassLoader<AutoTraderInterface> {
 
         ArrayList<Class<?>> trl;
         ArrayList<Class<AutoTraderInterface>> result = new ArrayList<>();
-        trl = getInstalledClasses(new ArrayList(), AutoTraderInterface.class);
+        trl = getInstalledClasses(new ArrayList());
         for (Class<?> c : trl) {
             result.add((Class<AutoTraderInterface>) c);
         }

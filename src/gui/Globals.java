@@ -150,9 +150,9 @@ public class Globals {
         tloader = new AutoTraderLoader(default_pathlist);
         
         
-        IndicatorLoader<Indicator> il = new IndicatorLoader<>(Indicator.class);
+        SeSimClassLoader<Indicator> il = new SeSimClassLoader<>(Indicator.class);
         il.setDefaultPathList(default_pathlist);
-        il.getInstalled();
+        ArrayList<Class<Indicator>>ires = il.getInstalled();
         
     }
 

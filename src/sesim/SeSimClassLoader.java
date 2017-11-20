@@ -41,9 +41,30 @@ import java.util.logging.Level;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SeSimClassLoader <T> {
+public class SeSimClassLoader<T> {
 
     protected ArrayList<String> default_pathlist;
+    private ArrayList<Class<T>> cache;
+    final Class<T> class_type;
+
+    /**
+     * Create a SeSimClassLoader object with an empty default path
+     * @param class_type
+     */
+    public SeSimClassLoader(Class<T> class_type) {
+        this(class_type, new ArrayList<>());
+    }
+
+    /**
+     * Create a SeSimClassLoader object with fiven default path
+     *
+     * @param class_type
+     * @param pathlist Default path to search classes for
+     */
+    public SeSimClassLoader(Class<T> class_type, ArrayList<String> pathlist) {
+        this.class_type = class_type;
+        setDefaultPathList(pathlist);
+    }
 
     /**
      * Set the path list where to search for traders
@@ -53,22 +74,6 @@ public class SeSimClassLoader <T> {
     public final void setDefaultPathList(ArrayList<String> pathlist) {
         this.default_pathlist = pathlist;
 
-    }
-
-    /**
-     * Create a SeSimClassLoader object with an empty default path
-     */
-    public SeSimClassLoader() {
-        this(new ArrayList<>());
-    }
-
-    /**
-     * Create a SeSimClassLoader object with fiven default path
-     *
-     * @param pathlist Default path to search classes for
-     */
-    public SeSimClassLoader(ArrayList<String> pathlist) {
-        setDefaultPathList(pathlist);
     }
 
     /**
@@ -114,8 +119,8 @@ public class SeSimClassLoader <T> {
     }
 
     /**
-     * Check if a given class provides a certain interface and also if the
-     * class is not abstract, so it could be instanciated.
+     * Check if a given class provides a certain interface and also if the class
+     * is not abstract, so it could be instanciated.
      *
      * @param cls Class to check
      * @param iface Interface which the class should provide
@@ -138,7 +143,7 @@ public class SeSimClassLoader <T> {
         return false;
     }
 
-    private Class<?> loadClass(String directory, String class_name, Class<?> iface) {
+    private Class<T> loadClass(String directory, String class_name) {
 
         if (class_name == null) {
             return null;
@@ -163,8 +168,8 @@ public class SeSimClassLoader <T> {
                 return null;
             }
 
-            if (iface != null) {
-                if (!hasInterface(cls, iface)) {
+            if (class_type != null) {
+                if (!hasInterface(cls, class_type)) {
                     return null;
                 }
             }
@@ -173,7 +178,7 @@ public class SeSimClassLoader <T> {
                 return null;
             }
 
-            return cls;
+            return (Class<T>)cls;
 
         } catch (ClassNotFoundException ex) {
             return null;
@@ -187,11 +192,16 @@ public class SeSimClassLoader <T> {
      * @param iface
      * @return
      */
-    public ArrayList<Class<?>> getInstalledClasses(ArrayList<String> additional_pathlist, Class<?> iface) {
+    public ArrayList<Class<T>> getInstalledClasses(ArrayList<String> additional_pathlist){
 
-        ArrayList<Class<?>> result = new ArrayList<>();
+        if (cache != null) {
+            return cache;
+        }
+           
 
+        ArrayList<Class<T>> result = new ArrayList<>();
         ArrayList<String> pathlist = new ArrayList<>();
+
         pathlist.addAll(default_pathlist);
         pathlist.addAll(additional_pathlist);
 
@@ -209,7 +219,7 @@ public class SeSimClassLoader <T> {
                     class_name = fn.substring(path.length());
                     class_name = class_name.substring(1, class_name.length() - 6).replace('/', '.');
 
-                    Class<?> c = loadClass(path, class_name, iface);
+                    Class<T> c = loadClass(path, class_name);
                     if (null == c) {
                         continue;
                     }
@@ -235,7 +245,7 @@ public class SeSimClassLoader <T> {
 
                                 class_name = class_name.substring(0, class_name.length() - 6).replace('/', '.');
 
-                                Class<?> c = loadClass(path, class_name, iface);
+                                Class<T> c = loadClass(path, class_name);
                                 if (null == c) {
                                     continue;
                                 }
@@ -248,8 +258,9 @@ public class SeSimClassLoader <T> {
 
                     } finally {
                         try {
-                            if (jarstream != null)
+                            if (jarstream != null) {
                                 jarstream.close();
+                            }
                         } catch (IOException ex) {
                             java.util.logging.Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -261,6 +272,31 @@ public class SeSimClassLoader <T> {
 
         }
         return result;
+    }
+
+    /**
+     * Get a list of all traders found in class path
+     *
+     * @return List of traders
+     */
+    public ArrayList<Class<T>> getInstalled() {
+
+        if (cache != null) {
+            return cache;
+        }
+
+        Class<?> tube;
+
+        ArrayList<Class<?>> trl;
+        ArrayList<Class<T>> result = new ArrayList<>();
+        trl = getInstalledClasses(new ArrayList()); //, class_type);
+        for (Class<?> c : trl) {
+            result.add((Class<T>) c);
+        }
+
+        cache = result;
+        return cache;
+
     }
 
 }
