@@ -151,6 +151,7 @@ public class Globals {
         
         
         IndicatorLoader<Indicator> il = new IndicatorLoader<Indicator>();
+        il.setDefaultPathList(default_pathlist);
         il.getInstalled();
         
     }
