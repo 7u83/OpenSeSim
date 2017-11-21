@@ -189,15 +189,10 @@ public class SeSimClassLoader<T> {
     /**
      *
      * @param additional_pathlist
-     * @param iface
      * @return
      */
     public ArrayList<Class<T>> getInstalledClasses(ArrayList<String> additional_pathlist){
-
-        if (cache != null) {
-            return cache;
-        }
-           
+        
 
         ArrayList<Class<T>> result = new ArrayList<>();
         ArrayList<String> pathlist = new ArrayList<>();
@@ -284,17 +279,9 @@ public class SeSimClassLoader<T> {
         if (cache != null) {
             return cache;
         }
+        
+        cache  = getInstalledClasses(new ArrayList());
 
-        Class<?> tube;
-
-        ArrayList<Class<?>> trl;
-        ArrayList<Class<T>> result = new ArrayList<>();
-        trl = getInstalledClasses(new ArrayList()); //, class_type);
-        for (Class<?> c : trl) {
-            result.add((Class<T>) c);
-        }
-
-        cache = result;
         return cache;
 
     }
