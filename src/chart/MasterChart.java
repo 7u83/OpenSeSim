@@ -42,6 +42,8 @@ import sesim.OHLCDataItem;
 import sesim.Quote;
 import indicators.SMAIndicator;
 
+
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -55,7 +57,6 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
     class MyOHLCData extends OHLCData {
 
         
-
         @Override
         public int size() {
             return sma.getData().size();
