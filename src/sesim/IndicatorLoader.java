@@ -30,9 +30,14 @@ import java.util.ArrayList;
 /**
  *
  * @author 7u83 <7u83@mail.ru>
+ * @param <T>
  */
 public class IndicatorLoader<T> extends SeSimClassLoader {
 
+    /**
+     * 
+     * @param class_type 
+     */
     public IndicatorLoader(Class class_type) {
         super(class_type);
     }

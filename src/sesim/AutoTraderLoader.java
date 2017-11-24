@@ -72,19 +72,7 @@ public class AutoTraderLoader extends SeSimClassLoader<AutoTraderInterface> {
      */
     public ArrayList<Class<AutoTraderInterface>> getInstalledTraders() {
 
-        if (traders_cache != null) {
-            return traders_cache;
-        }
-
-        ArrayList<Class<?>> trl;
-        ArrayList<Class<AutoTraderInterface>> result = new ArrayList<>();
-        trl = getInstalledClasses(new ArrayList());
-        for (Class<?> c : trl) {
-            result.add((Class<AutoTraderInterface>) c);
-        }
-
-        traders_cache = result;
-        return traders_cache;
+        return getInstalledClasses(new ArrayList<String>());
 
     }
 

@@ -152,7 +152,7 @@ public class Globals {
         
         SeSimClassLoader<Indicator> il = new SeSimClassLoader<>(Indicator.class);
         il.setDefaultPathList(default_pathlist);
-        ArrayList<Class<Indicator>>ires = il.getInstalled();
+        ArrayList<Class<Indicator>>ires = il.getInstalledClasses();
         
     }
 

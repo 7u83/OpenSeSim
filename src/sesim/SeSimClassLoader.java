@@ -49,6 +49,7 @@ public class SeSimClassLoader<T> {
 
     /**
      * Create a SeSimClassLoader object with an empty default path
+     *
      * @param class_type
      */
     public SeSimClassLoader(Class<T> class_type) {
@@ -178,7 +179,7 @@ public class SeSimClassLoader<T> {
                 return null;
             }
 
-            return (Class<T>)cls;
+            return (Class<T>) cls;
 
         } catch (ClassNotFoundException ex) {
             return null;
@@ -191,14 +192,9 @@ public class SeSimClassLoader<T> {
      * @param additional_pathlist
      * @return
      */
-    public ArrayList<Class<T>> getInstalledClasses(ArrayList<String> additional_pathlist){
-        
+    public ArrayList<Class<T>> getInstalledClasses0(ArrayList<String> pathlist) {
 
         ArrayList<Class<T>> result = new ArrayList<>();
-        ArrayList<String> pathlist = new ArrayList<>();
-
-        pathlist.addAll(default_pathlist);
-        pathlist.addAll(additional_pathlist);
 
         for (String path : pathlist) {
 
@@ -272,18 +268,28 @@ public class SeSimClassLoader<T> {
     /**
      * Get a list of all traders found in class path
      *
-     * @return List of traders
+     * @param additional_pathlist
+     * @return List of installed Clases
      */
-    public ArrayList<Class<T>> getInstalled() {
+    public ArrayList<Class<T>> getInstalledClasses(ArrayList<String> additional_pathlist ) {
 
         if (cache != null) {
             return cache;
         }
-        
-        cache  = getInstalledClasses(new ArrayList());
+
+        ArrayList<String> pathlist;
+        pathlist = new ArrayList<>();
+
+        pathlist.addAll(default_pathlist);
+        pathlist.addAll(additional_pathlist);
+
+        cache = getInstalledClasses0(pathlist);
 
         return cache;
 
     }
-
+    
+    public ArrayList<Class<T>> getInstalledClasses(){
+        return getInstalledClasses(new ArrayList<>());
+    }
 }
