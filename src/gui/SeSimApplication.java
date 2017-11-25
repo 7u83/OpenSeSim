@@ -892,6 +892,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             @Override
             public void run() {
 
+                
 
                 /*              String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
                         .getCodeSource()

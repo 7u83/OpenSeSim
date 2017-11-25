@@ -18,6 +18,8 @@ import javax.swing.Scrollable;
 import sesim.MinMax;
 import sesim.Scheduler;
 
+
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
