@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tube
+ * Copyright (c) 2017, 7u83
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,13 +26,14 @@
 package indicators;
 
 import org.json.JSONObject;
+import sesim.ConfigurableInterface;
 import sesim.Indicator;
 
 /**
  *
  * @author tube
  */
-public abstract class BaseIndicator implements Indicator{
+public abstract class BaseIndicator implements Indicator {
 
     @Override
     public String getName() {

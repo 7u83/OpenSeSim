@@ -138,6 +138,7 @@ public class Globals {
     }
 
     static AutoTraderLoader tloader;
+    static IndicatorLoader iloader;
 
     static void initGlobals() {
         ArrayList default_pathlist = new ArrayList<>();
@@ -149,11 +150,14 @@ public class Globals {
         default_pathlist.add(default_path);
         tloader = new AutoTraderLoader(default_pathlist);
         
+        iloader = new IndicatorLoader(default_pathlist);
         
-        SeSimClassLoader<Indicator> il = new SeSimClassLoader<>(Indicator.class);
-        il.setDefaultPathList(default_pathlist);
-        ArrayList<Class<Indicator>>ires = il.getInstalledClasses();
-        
+        iloader.getNames();
+
+//        SeSimClassLoader<Indicator> il = new SeSimClassLoader<>(Indicator.class);
+//        il.setDefaultPathList(default_pathlist);
+//        ArrayList<Class<Indicator>> ires = il.getInstalledClasses();
+
     }
 
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");

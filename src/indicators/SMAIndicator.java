@@ -25,6 +25,7 @@
  */
 package indicators;
 
+import org.json.JSONObject;
 import sesim.OHLCData;
 import sesim.OHLCDataItem;
 
@@ -38,16 +39,31 @@ public class SMAIndicator extends BaseIndicator {
 
     OHLCData indicator;
 
-    public SMAIndicator(OHLCData parent) {
-        this.parent = parent;
+    public SMAIndicator() {
         indicator = new OHLCData();
     }
-    
-    public void setParent(OHLCData parent){
-        
+
+    public void setParent(OHLCData parent) {
+        this.parent = parent;
     }
 
-    int len = 20;
+    final String LEN = "len";
+    int len = 60;
+
+    @Override
+    public void putConfig(JSONObject cfg) {
+
+        len = cfg.getInt(LEN);
+
+    }
+
+    @Override
+    public JSONObject getConfig() {
+        JSONObject r;
+        r = new JSONObject();
+        r.put(LEN, len);
+        return r;
+    }
 
     private float getAt(int pos) {
         if (parent.size() == 0) {
@@ -67,10 +83,9 @@ public class SMAIndicator extends BaseIndicator {
     }
 
     public void update() {
- 
-             
+
         if (parent.size() == 0) {
-            
+
             return;
         }
 

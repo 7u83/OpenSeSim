@@ -41,8 +41,7 @@ import sesim.OHLCData;
 import sesim.OHLCDataItem;
 import sesim.Quote;
 import indicators.SMAIndicator;
-
-
+import org.json.JSONObject;
 
 /**
  *
@@ -52,16 +51,21 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     private ChartDef chartDef;
 
-    SMAIndicator sma;
+    SMAIndicator sma1, sma2;
 
     class MyOHLCData extends OHLCData {
 
-        
+        SMAIndicator sma;
+
+        MyOHLCData(SMAIndicator sma) {
+            this.sma = sma;
+        }
+
         @Override
         public int size() {
             return sma.getData().size();
         }
-        
+
         @Override
         public OHLCDataItem get(int n) {
             return sma.getData().get(n);
@@ -126,13 +130,30 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         chart.setXSCrollBar(xScrollBar);
         chart.addChartPainter(new ChartCrossPainter());
 
-        sma = new indicators.SMAIndicator(mydata);
-        MyOHLCData mysma = new MyOHLCData();
+        sma1 = new indicators.SMAIndicator();
+        sma1.setParent(mydata);
+
+        JSONObject co;
+        co = new JSONObject("{\"len\": 60}");
+        sma1.putConfig(co);
+        MyOHLCData mysma1;
+        mysma1 = new MyOHLCData(sma1);
         p = new LineChartPainter();
-        p.setOHLCData(mysma);
-        //p.setDataProvider(new SMA(get()));        
+        p.setOHLCData(mysma1);
+ 
         chart.addChartPainter(p);
 
+        sma2 = new indicators.SMAIndicator();
+        sma2.setParent(mydata);
+        co = new JSONObject("{\"len\": 20}");
+        sma2.putConfig(co);
+        MyOHLCData mysma2;
+        mysma2 = new MyOHLCData(sma2);
+        p = new LineChartPainter();
+        p.setOHLCData(mysma2);
+       chart.addChartPainter(p);
+
+ 
         ChartPainter yp = new YLegendPainter(chart);
 //        yp.setDataProvider(this);
         yp.setOHLCData(mydata);
@@ -276,9 +297,14 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     @Override
     public void UpdateQuote(Quote q) {
-        if (sma != null) {
-            sma.update();
+        if (sma1 != null) {
+            sma1.update();
         }
+
+        if (sma2 != null) {
+            sma2.update();
+        }
+
         int s = mydata.size();
         this.xScrollBar.setMaximum(s);
         repaint();

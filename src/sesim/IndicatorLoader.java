@@ -32,15 +32,31 @@ import java.util.ArrayList;
  * @author 7u83 <7u83@mail.ru>
  * @param <T>
  */
-public class IndicatorLoader<T> extends SeSimClassLoader {
+public class IndicatorLoader extends SeSimClassLoader<Indicator> {
 
     /**
-     * 
-     * @param class_type 
+     *
+     * @param class_type
      */
-    public IndicatorLoader(Class class_type) {
-        super(class_type);
+    public IndicatorLoader(ArrayList<String> path_list) {
+        super(Indicator.class, path_list);
+
     }
 
+    public ArrayList<String> getNames() {
+        ArrayList<Class<Indicator>> indicators;
+        indicators = this.getInstalledClasses();
+        for (Class<Indicator> ic : indicators) {
+            Indicator i = (Indicator) this.newInstance(ic);
+
+            String name = i.getName();
+            System.out.printf("Name of Indicator: %s", name);
+
+        }
+
+        return new ArrayList<String>();
+                
+    
+    }
 
 }

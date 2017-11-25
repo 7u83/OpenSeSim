@@ -31,7 +31,7 @@ import org.json.JSONObject;
  *
  * @author tube
  */
-public interface ConfigurableInterface {
+public abstract interface ConfigurableInterface {
 
     /**
      * Get current configuration  as JSON object.
