@@ -189,6 +189,7 @@ public class SeSimClassLoader<T> {
 
     /**
      *
+     * @param pathlist
      * @param additional_pathlist
      * @return
      */
@@ -208,6 +209,8 @@ public class SeSimClassLoader<T> {
 
                     String class_name;
                     class_name = fn.substring(path.length());
+                    // in case we are under Windows, replace \ width /
+                    class_name = class_name.replace("\\", "/");
                     class_name = class_name.substring(1, class_name.length() - 6).replace('/', '.');
 
                     Class<T> c = loadClass(path, class_name);
@@ -215,8 +218,6 @@ public class SeSimClassLoader<T> {
                         continue;
                     }
                     result.add(c);
-                    //System.out.printf("Here is an instance for %s: %s\n", iface.getName(), class_name);
-
                 }
 
                 if (fn.toLowerCase().endsWith(".jar")) {
@@ -230,19 +231,14 @@ public class SeSimClassLoader<T> {
 
                             String class_name = jarentry.getName();
 
-                            System.out.printf("Looking into jar: %s - %s\n", path, class_name);
-
                             if (class_name.endsWith(".class")) {
 
                                 class_name = class_name.substring(0, class_name.length() - 6).replace('/', '.');
-
                                 Class<T> c = loadClass(path, class_name);
                                 if (null == c) {
                                     continue;
                                 }
                                 result.add(c);
-                                //System.out.printf("Here is an instance for %s: %s\n", iface.getName(), class_name);
-
                             }
                         }
                     } catch (IOException ex) {
