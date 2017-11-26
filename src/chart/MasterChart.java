@@ -41,6 +41,9 @@ import sesim.OHLCData;
 import sesim.OHLCDataItem;
 import sesim.Quote;
 import indicators.SMAIndicator;
+import java.util.Objects;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButtonMenuItem;
 import org.json.JSONObject;
 
 /**
@@ -51,6 +54,43 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     private ChartDef chartDef;
 
+
+    class CompressionVal {
+
+        public final String text;
+        public final Integer value;
+
+        CompressionVal(String text, Integer val) {
+            this.text = text;
+            this.value = val;
+        }
+    }
+
+    private final CompressionVal cvalues[] = {
+        new CompressionVal("5 s", 5 * 1000),
+        new CompressionVal("10 s", 10 * 1000),
+        new CompressionVal("15 s", 15 * 1000),
+        new CompressionVal("30 s", 30 * 1000),
+        new CompressionVal("1 m", 1 * 60 * 1000),
+        new CompressionVal("2 m", 2 * 60 * 1000),
+        new CompressionVal("5 m", 5 * 60 * 1000),
+        new CompressionVal("10 m", 10 * 60 * 1000),
+        new CompressionVal("1 h", 1 * 3660 * 1000),
+        new CompressionVal("2 h", 2 * 3660 * 1000),
+        new CompressionVal("4 h", 4 * 3660 * 1000),
+        new CompressionVal("1 d", 1 * 24 * 3660 * 1000),
+        new CompressionVal("2 d", 2 * 24 * 3660 * 1000),
+        new CompressionVal("3 d", 3 * 3660 * 1000),};
+
+       private void initCtxMenu() {
+        ButtonGroup group = new ButtonGroup();
+        for (int i = 0; i < this.cvalues.length; i++) {
+            JRadioButtonMenuItem item = new JRadioButtonMenuItem(this.cvalues[i].text);
+
+        }
+    }
+    
+     
     SMAIndicator sma1, sma2;
 
     class MyOHLCData extends OHLCData {
@@ -140,7 +180,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         mysma1 = new MyOHLCData(sma1);
         p = new LineChartPainter();
         p.setOHLCData(mysma1);
- 
+
         chart.addChartPainter(p);
 
         sma2 = new indicators.SMAIndicator();
@@ -151,9 +191,8 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         mysma2 = new MyOHLCData(sma2);
         p = new LineChartPainter();
         p.setOHLCData(mysma2);
-       chart.addChartPainter(p);
+        chart.addChartPainter(p);
 
- 
         ChartPainter yp = new YLegendPainter(chart);
 //        yp.setDataProvider(this);
         yp.setOHLCData(mydata);
@@ -200,30 +239,28 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        yLegend.setBorder(null);
-
         javax.swing.GroupLayout yLegendLayout = new javax.swing.GroupLayout(yLegend);
         yLegend.setLayout(yLegendLayout);
         yLegendLayout.setHorizontalGroup(
             yLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 83, Short.MAX_VALUE)
+            .addGap(0, 95, Short.MAX_VALUE)
         );
         yLegendLayout.setVerticalGroup(
             yLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 326, Short.MAX_VALUE)
+            .addGap(0, 264, Short.MAX_VALUE)
         );
 
-        xLegend.setBorder(null);
+        xLegend.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout xLegendLayout = new javax.swing.GroupLayout(xLegend);
         xLegend.setLayout(xLegendLayout);
         xLegendLayout.setHorizontalGroup(
             xLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 576, Short.MAX_VALUE)
+            .addGap(0, 561, Short.MAX_VALUE)
         );
         xLegendLayout.setVerticalGroup(
             xLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 61, Short.MAX_VALUE)
+            .addGap(0, 37, Short.MAX_VALUE)
         );
 
         xScrollBar.setOrientation(javax.swing.JScrollBar.HORIZONTAL);
@@ -238,29 +275,25 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xScrollBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(xLegend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(yLegend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                    .addComponent(xLegend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(yLegend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(xScrollBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(yLegend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(yLegend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 52, Short.MAX_VALUE))
                     .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xLegend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xScrollBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xScrollBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

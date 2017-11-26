@@ -184,6 +184,7 @@ setCursor(new MyCursor(Cursor.CROSSHAIR_CURSOR));
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         logMenu = new javax.swing.JCheckBoxMenuItem();
         typeButtonGroup = new javax.swing.ButtonGroup();
+        jMenu1 = new javax.swing.JMenu();
 
         compMenu.setText("Compression");
         ctxMenu.add(compMenu);
@@ -229,6 +230,8 @@ setCursor(new MyCursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
         ctxMenu.add(logMenu);
+
+        jMenu1.setText("jMenu1");
 
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
@@ -339,6 +342,7 @@ setCursor(new MyCursor(Cursor.CROSSHAIR_CURSOR));
     private javax.swing.JRadioButtonMenuItem candleTypeMEnuItem;
     private javax.swing.JMenu compMenu;
     private javax.swing.JPopupMenu ctxMenu;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JRadioButtonMenuItem lineTypeItem;
     private javax.swing.JCheckBoxMenuItem logMenu;
