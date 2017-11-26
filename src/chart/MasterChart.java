@@ -54,7 +54,6 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
     private ChartDef chartDef;
 
-
     class CompressionVal {
 
         public final String text;
@@ -82,15 +81,14 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         new CompressionVal("2 d", 2 * 24 * 3660 * 1000),
         new CompressionVal("3 d", 3 * 3660 * 1000),};
 
-       private void initCtxMenu() {
+    private void initCtxMenu() {
         ButtonGroup group = new ButtonGroup();
         for (int i = 0; i < this.cvalues.length; i++) {
             JRadioButtonMenuItem item = new JRadioButtonMenuItem(this.cvalues[i].text);
 
         }
     }
-    
-     
+
     SMAIndicator sma1, sma2;
 
     class MyOHLCData extends OHLCData {
@@ -210,14 +208,31 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ctxMenu = new javax.swing.JPopupMenu();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         chart = new sesim.ChartPanel();
         yLegend = new sesim.ChartPanel();
         xLegend = new sesim.ChartPanel();
         xScrollBar = new javax.swing.JScrollBar();
 
+        jMenu1.setText("jMenu1");
+        ctxMenu.add(jMenu1);
+
+        jMenuItem1.setText("jMenuItem1");
+        ctxMenu.add(jMenuItem1);
+
         addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 formMouseWheelMoved(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                formMouseReleased(evt);
             }
         });
 
@@ -225,6 +240,11 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         chart.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 chartMouseMoved(evt);
+            }
+        });
+        chart.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                chartMousePressed(evt);
             }
         });
 
@@ -236,7 +256,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         );
         chartLayout.setVerticalGroup(
             chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 314, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout yLegendLayout = new javax.swing.GroupLayout(yLegend);
@@ -247,7 +267,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         );
         yLegendLayout.setVerticalGroup(
             yLegendLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 264, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         xLegend.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -286,10 +306,8 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(yLegend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 52, Short.MAX_VALUE))
-                    .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(yLegend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xLegend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -297,9 +315,31 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void chartMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chartMouseMoved
+    private void xScrollBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_xScrollBarAdjustmentValueChanged
+        repaint();
+    }//GEN-LAST:event_xScrollBarAdjustmentValueChanged
 
-    }//GEN-LAST:event_chartMouseMoved
+    private void showCtxMenu(java.awt.event.MouseEvent evt) {
+
+        this.ctxMenu.setVisible(true);
+        this.ctxMenu.show(this, evt.getX(), evt.getY());
+
+        invalidate();
+        repaint();
+    }
+
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        if (!evt.isPopupTrigger()) {
+            return;
+        }
+        System.out.printf("ctx menu pressed\n");
+        showCtxMenu(evt);
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+        formMousePressed(evt);
+    }//GEN-LAST:event_formMouseReleased
 
     private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
         double n = evt.getPreciseWheelRotation() * (-1.0);
@@ -316,13 +356,21 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         this.repaint();
     }//GEN-LAST:event_formMouseWheelMoved
 
-    private void xScrollBarAdjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {//GEN-FIRST:event_xScrollBarAdjustmentValueChanged
-        repaint();
-    }//GEN-LAST:event_xScrollBarAdjustmentValueChanged
+    private void chartMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chartMouseMoved
+
+    }//GEN-LAST:event_chartMouseMoved
+
+    private void chartMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chartMousePressed
+        System.out.printf("Mauspress\n");
+        this.formMousePressed(evt);
+    }//GEN-LAST:event_chartMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private sesim.ChartPanel chart;
+    private javax.swing.JPopupMenu ctxMenu;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem jMenuItem1;
     private sesim.ChartPanel xLegend;
     private javax.swing.JScrollBar xScrollBar;
     private sesim.ChartPanel yLegend;
