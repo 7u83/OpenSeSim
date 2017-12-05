@@ -256,7 +256,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         );
         chartLayout.setVerticalGroup(
             chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 314, Short.MAX_VALUE)
+            .addGap(0, 317, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout yLegendLayout = new javax.swing.GroupLayout(yLegend);

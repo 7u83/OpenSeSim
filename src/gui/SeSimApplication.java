@@ -25,6 +25,7 @@
  */
 package gui;
 
+import chart.Help;
 import chart.SuperDlg;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -510,7 +511,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         helpMenu.add(aboutMenuItem);
 
-        jMenuItem1.setText("jMenuItem1");
+        jMenuItem1.setText("Help ...");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -853,8 +854,15 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_clearMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        SuperDlg d = new SuperDlg(this, false);
-        d.setVisible(true);
+        //SuperDlg d = new SuperDlg(this, false);
+        //d.setVisible(true);
+        
+        //Help hs = new Help(this,true);
+        //hs.setVisible(true);
+        
+        SeSimHelp h = new SeSimHelp();
+        
+        h.setVisible(true);
 
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
