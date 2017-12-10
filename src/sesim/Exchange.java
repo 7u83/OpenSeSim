@@ -43,11 +43,19 @@ import sesim.Order.OrderType;
  * @author 7u83
  */
 public class Exchange {
-
+//private  HashMap<Order.OrderType, SortedSet<Order>> order_books;
+    
+    
     HashMap<String, Stock> stocks;
 
-    Stock getStock(String symbol) {
+    final String DEFAULT_STOCK="def";
+    
+    public Stock getStock(String symbol) {
         return stocks.get(symbol);
+    }
+    
+    public Stock getDefaultStock(){
+        return getStock(DEFAULT_STOCK);
     }
 
     ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
@@ -240,7 +248,7 @@ public class Exchange {
         return a.id;
     }
 
-    class OrderComparator implements Comparator<Order> {
+    static class OrderComparator implements Comparator<Order> {
 
         OrderType type;
 
@@ -288,7 +296,6 @@ public class Exchange {
 
     }
 
-    HashMap<OrderType, SortedSet<Order>> order_books;
 
     IDGenerator order_id_generator = new IDGenerator();
 
@@ -315,11 +322,15 @@ public class Exchange {
         this.ohlc_data = new HashMap();
 
         // Create order books
-        order_books = new HashMap();
+
+/*        order_books = new HashMap();
         for (OrderType type : OrderType.values()) {
             order_books.put(type, new TreeSet(new OrderComparator(type)));
         }
-
+*/
+        Stock defstock = new Stock(DEFAULT_STOCK);
+        stocks = new HashMap();
+        stocks.put(defstock.getSymbol(), defstock);
     }
 
     /**
@@ -383,7 +394,7 @@ public class Exchange {
                             Account a = o.account;
                             a.orders.put(o.id, o);
                             a.update(o);
-                            executeOrders();
+                            executeOrders(getDefaultStock());
                         }
 
                         updateBookReceivers(OrderType.SELLLIMIT);
@@ -428,7 +439,7 @@ public class Exchange {
         }
     }
      */
-    public SortedSet<Quote> getQuoteHistory(long start) {
+/*    public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
         s.time = start * 1000;
@@ -440,7 +451,8 @@ public class Exchange {
         return result;
 
     }
-
+*/
+    
     public final String CFG_MONEY_DECIMALS = "money_decimals";
     public final String CFG_SHARES_DECIMALS = "shares_decimals";
 
@@ -454,10 +466,10 @@ public class Exchange {
 
     }
 
-    public Double getBestPrice() {
-        System.out.printf("Get BP\n");
-        SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
-        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+    public Double getBestPrice(Stock stock) {
+        
+        SortedSet<Order> bid = stock.order_books.get(OrderType.BUYLIMIT);
+        SortedSet<Order> ask = stock.order_books.get(OrderType.SELLLIMIT);
 
         Quote lq = this.getLastQuoete();
         Order b = null, a = null;
@@ -533,11 +545,11 @@ public class Exchange {
         return lq.price;
     }
 
-    public Quote getBestPrice_0() {
+    public Quote getBestPrice_0(Stock stock) {
 
         synchronized (executor) {
-            SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
-            SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+            SortedSet<Order> bid = stock.order_books.get(OrderType.BUYLIMIT);
+            SortedSet<Order> ask = stock.order_books.get(OrderType.SELLLIMIT);
 
             Quote lq = this.getLastQuoete();
             Order b = null, a = null;
@@ -607,6 +619,10 @@ public class Exchange {
         }
     }
 
+        public Quote getBestPrice_0(){
+            return getBestPrice_0(getDefaultStock());
+        }
+    
     // Class to describe an executed order
     // QuoteReceiver has to be implemented by objects that wants 
     // to receive quote updates  	
@@ -688,9 +704,9 @@ public class Exchange {
     //double lastprice = 100.0;
     //  long lastsvolume;
     // private final Locker tradelock = new Locker();
-    public ArrayList<Order> getOrderBook(OrderType type, int depth) {
+    public ArrayList<Order> getOrderBook(Stock stock, OrderType type, int depth) {
 
-        SortedSet<Order> book = order_books.get(type);
+        SortedSet<Order> book = stock.order_books.get(type);
         if (book == null) {
             return null;
         }
@@ -715,6 +731,11 @@ public class Exchange {
         return ret;
     }
 
+        public ArrayList<Order> getOrderBook(OrderType type, int depth){
+            return getOrderBook(getDefaultStock(),type,depth);
+        }
+    
+    
     public Quote getLastQuoete() {
         if (this.quoteHistory.isEmpty()) {
             return null;
@@ -737,7 +758,7 @@ public class Exchange {
 
     }
 
-    public boolean cancelOrder(double account_id, long order_id) {
+    public boolean cancelOrder(Stock stock,double account_id, long order_id) {
         Account a = accounts.get(account_id);
         if (a == null) {
             return false;
@@ -754,7 +775,7 @@ public class Exchange {
 
             //   System.out.print("The Order:"+o.limit+"\n");
             if (o != null) {
-                SortedSet ob = order_books.get(o.type);
+                SortedSet ob = stock.order_books.get(o.type);
 
                 boolean rc = ob.remove(o);
 
@@ -769,6 +790,10 @@ public class Exchange {
         }
 //        System.out.printf("Levave executor %d\n", Thread.currentThread().getId());
         return ret;
+    }
+    
+    public boolean cancelOrder(double account_id, long order_id){
+        return cancelOrder(getDefaultStock(),account_id,order_id);
     }
 
     Random random;
@@ -797,7 +822,7 @@ public class Exchange {
 
     public double fairValue = 0;
 
-    private void removeOrderIfExecuted(Order o) {
+    private void removeOrderIfExecuted(Stock stock,Order o) {
         if (o.getAccount().getOwner().getName().equals("Tobias0")) {
 //            System.out.printf("Tobias 0 test\n");
         }
@@ -819,7 +844,7 @@ public class Exchange {
 
         o.account.orders.remove(o.id);
 
-        SortedSet book = order_books.get(o.type);
+        SortedSet book = stock.order_books.get(o.type);
 
         book.remove(book.first());
 
@@ -827,10 +852,14 @@ public class Exchange {
         o.account.update(o);
 
     }
+    
+    private void removeOrderIfExecuted(Order o){
+        removeOrderIfExecuted(getDefaultStock(),o);
+    }
 
-    void checkSLOrders(double price) {
-        SortedSet<Order> sl = order_books.get(OrderType.STOPLOSS);
-        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+    void checkSLOrders(Stock stock, double price) {
+        SortedSet<Order> sl = stock.order_books.get(OrderType.STOPLOSS);
+        SortedSet<Order> ask = stock.order_books.get(OrderType.SELLLIMIT);
 
         if (sl.isEmpty()) {
             return;
@@ -846,6 +875,11 @@ public class Exchange {
 //            System.out.printf("Stoploss hit %f %f\n", s.volume, s.limit);
         }
     }
+    
+    void checkSLOrders(double price){
+        checkSLOrders(getDefaultStock(),price);
+    }
+    
 
     public void executeUnlimitedOrders() {
 
@@ -886,14 +920,14 @@ public class Exchange {
     /**
      *
      */
-    public void executeOrders() {
+    public void executeOrders(Stock stock) {
 
 //        System.out.printf("Exec Orders\n");
-        SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
-        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+        SortedSet<Order> bid = stock.order_books.get(OrderType.BUYLIMIT);
+        SortedSet<Order> ask = stock.order_books.get(OrderType.SELLLIMIT);
 
-        SortedSet<Order> ul_buy = order_books.get(OrderType.BUY);
-        SortedSet<Order> ul_sell = order_books.get(OrderType.SELL);
+        SortedSet<Order> ul_buy = stock.order_books.get(OrderType.BUY);
+        SortedSet<Order> ul_sell = stock.order_books.get(OrderType.SELL);
 
         double volume_total = 0;
         double money_total = 0;
@@ -905,7 +939,7 @@ public class Exchange {
                 Order a = ul_sell.first();
                 Order b = ul_buy.first();
 
-                Double price = getBestPrice();
+                Double price = getBestPrice(stock);
                 if (price == null) {
                     break;
                 }
@@ -989,8 +1023,8 @@ public class Exchange {
     long buy_orders = 0;
     long sell_orders = 0;
 
-    private void addOrderToBook(Order o) {
-        order_books.get(o.type).add(o);
+    private void addOrderToBook(Stock stock, Order o) {
+        stock.order_books.get(o.type).add(o);
         switch (o.type) {
             case BUY:
             case BUYLIMIT:
@@ -1003,6 +1037,10 @@ public class Exchange {
 
         }
 //        System.out.printf("B/S  %d/%d Failed B/S: %d/%d\n", buy_orders, sell_orders,buy_failed,sell_failed);
+    }
+    
+    private void addOrderToBook(Order o){
+        addOrderToBook(getDefaultStock(),o);
     }
 
     long buy_failed = 0;
@@ -1054,7 +1092,7 @@ public class Exchange {
             a.orders.put(o.id, o);
             a.update(o);
 
-            executeOrders();
+            executeOrders(getDefaultStock());
             updateBookReceivers(OrderType.SELLLIMIT);
             updateBookReceivers(OrderType.BUYLIMIT);
 
@@ -1066,13 +1104,17 @@ public class Exchange {
         return o.getID();
     }
 
-    public double getBestLimit(OrderType type) {
-        Order o = order_books.get(type).first();
+    public double getBestLimit(Stock stock,OrderType type) {
+        Order o = stock.order_books.get(type).first();
         if (o == null) {
             return -1;
         }
         return o.limit;
     }
+    public double getBestLimit(OrderType type){
+        return getBestLimit(getDefaultStock(),type);
+    }
+    
 
     public int getNumberOfOpenOrders(double account_id) {
         Account a = accounts.get(account_id);

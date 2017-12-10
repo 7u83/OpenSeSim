@@ -25,21 +25,40 @@
  */
 package sesim;
 
+import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import sesim.Exchange.OrderComparator;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class Stock {
-    private String symbol;
+
+    private final String symbol;
     private String name;
-    
-    String getSymbol(){
+
+    Stock(String symbol) {
+        this.symbol=symbol;
+        
+        order_books = new HashMap();
+        
+        // Create an order book for each order type
+        for (Order.OrderType type : Order.OrderType.values()) {
+            this.order_books.put(type, new TreeSet(new Exchange.OrderComparator(type)));
+        }
+    }
+
+    String getSymbol() {
         return symbol;
     }
-    
-    String getName(){
+
+    String getName() {
         return name;
     }
-        
-    
+
+    public final HashMap<Order.OrderType, SortedSet<Order>> order_books;
+
 }
