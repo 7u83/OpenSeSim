@@ -296,7 +296,7 @@ public class RandomTraderB extends AutoTraderBase {
             return false;
         }
 
-        se.createOrder(account_id, type, volume, limit);
+        se.createOrder(account_id, se.getDefaultStockSymbol(), type, volume, limit);
 
         return true;
 
@@ -334,7 +334,7 @@ public class RandomTraderB extends AutoTraderBase {
             return false;
         }
 
-        se.createOrder(account_id, type, volume, limit);
+        se.createOrder(account_id, se.getDefaultStockSymbol(), type, volume, limit);
         
         return true;
 

@@ -58,5 +58,7 @@ public class Stock {
     }
 
     protected final HashMap<Order.OrderType, SortedSet<Order>> order_books;
+    
+    
 
 }

@@ -405,7 +405,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 //            System.out.printf("Buy Order wont work\n");
         //        return false;
         //    }
-        long rc = se.createOrder(account_id, type, volume, limit);
+        long rc = se.createOrder(account_id, se.getDefaultStockSymbol(),type, volume, limit);
 
         if (rc == -1) {
 
@@ -445,7 +445,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         //        return false;
         //    }
 //        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
-        long rc = se.createOrder(account_id, type, volume, limit);
+        long rc = se.createOrder(account_id, se.getDefaultStockSymbol(), type, volume, limit);
         return rc != -1;
 
     }

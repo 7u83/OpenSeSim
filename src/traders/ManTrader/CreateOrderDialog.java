@@ -191,7 +191,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
         new Thread() {
             @Override
             public void run() {
-                Globals.se.createOrder(account.getID(), type, volume, limit);
+                Globals.se.createOrder(account.getID(), Globals.se.getDefaultStockSymbol(), type, volume, limit);
             }
         }.start();
 

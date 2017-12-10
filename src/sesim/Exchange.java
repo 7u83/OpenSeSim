@@ -57,6 +57,11 @@ public class Exchange {
     public Stock getDefaultStock(){
         return getStock(DEFAULT_STOCK);
     }
+    
+    public String getDefaultStockSymbol(){
+        return DEFAULT_STOCK;
+    }
+    
 
     ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
@@ -698,12 +703,14 @@ public class Exchange {
         }
     }
 
-    // long time = 0;
-    //double theprice = 12.9;
-//    long orderid = 1;
-    //double lastprice = 100.0;
-    //  long lastsvolume;
-    // private final Locker tradelock = new Locker();
+
+    /**
+     * 
+     * @param stock
+     * @param type
+     * @param depth
+     * @return 
+     */
     public ArrayList<Order> getOrderBook(Stock stock, OrderType type, int depth) {
 
         SortedSet<Order> book = stock.order_books.get(type);
@@ -735,7 +742,10 @@ public class Exchange {
             return getOrderBook(getDefaultStock(),type,depth);
         }
     
-    
+    /**
+     * 
+     * @return 
+     */
     public Quote getLastQuoete() {
         if (this.quoteHistory.isEmpty()) {
             return null;
@@ -857,6 +867,7 @@ public class Exchange {
         removeOrderIfExecuted(getDefaultStock(),o);
     }
 
+    
     void checkSLOrders(Stock stock, double price) {
         SortedSet<Order> sl = stock.order_books.get(OrderType.STOPLOSS);
         SortedSet<Order> ask = stock.order_books.get(OrderType.SELLLIMIT);
@@ -1054,17 +1065,23 @@ public class Exchange {
      * @param limit
      * @return order_id
      */
-    public long createOrder(double account_id, OrderType type, double volume, double limit) {
+    public long createOrder(double account_id, 
+            String stocksymbol, OrderType type, double volume, double limit) {
 
+        
+        Stock stock = this.getStock(stocksymbol);
+        
         Account a = accounts.get(account_id);
         if (a == null) {
-            System.out.printf("Order not places account\n");
             return -1;
         }
 
         Order o = new Order(order_id_generator.getNext(),
                 timer.currentTimeMillis(),
                 a, type, roundShares(volume), roundMoney(limit));
+        
+        o.stock=stock;
+        
         if (o.volume <= 0 || o.limit <= 0) {
 
             switch (o.type) {
@@ -1077,12 +1094,10 @@ public class Exchange {
                     buy_failed++;
                     break;
             }
-            //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
 
             return -1;
         }
 
-//        System.out.printf("Getting executor in create Order\n", Thread.currentThread().getId());
         synchronized (executor) {
 
             //num_orders++;
