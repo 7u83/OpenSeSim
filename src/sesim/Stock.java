@@ -75,7 +75,7 @@ public class Stock {
     /**
      * Histrory of quotes
      */
-    public TreeSet<Quote> quoteHistory; 
+    public TreeSet<Quote> quoteHistory;
 
     HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
 
@@ -106,6 +106,29 @@ public class Stock {
             }
         }
         return data;
+    }
+
+    protected void updateOHLCData(Quote q) {
+
+        Iterator<OHLCData> it = ohlc_data.values().iterator();
+        while (it.hasNext()) {
+            OHLCData data = it.next();
+            data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
+        }
+    }
+
+    protected void addOrderToBook(Order o) {
+        order_books.get(o.type).add(o);
+        switch (o.type) {
+            case BUY:
+            case BUYLIMIT:
+                break;
+            case SELL:
+            case SELLLIMIT:
+                break;
+
+        }
+
     }
 
 }
