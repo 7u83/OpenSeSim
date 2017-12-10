@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import sesim.Exchange.OrderComparator;
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -59,6 +57,6 @@ public class Stock {
         return name;
     }
 
-    public final HashMap<Order.OrderType, SortedSet<Order>> order_books;
+    protected final HashMap<Order.OrderType, SortedSet<Order>> order_books;
 
 }
