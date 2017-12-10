@@ -57,6 +57,7 @@ public class Stock {
         }
 
         quoteHistory = new TreeSet();
+        ohlc_data = new HashMap();        
     }
 
     String getSymbol() {
@@ -75,4 +76,6 @@ public class Stock {
      */
     public TreeSet<Quote> quoteHistory; // = new TreeSet<>();
 
+     HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
+    
 }

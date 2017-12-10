@@ -144,7 +144,7 @@ public class Exchange {
         public void orderUpdated(Order o);
     }
 
-    HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
+    //HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
 
     public OHLCData buildOHLCData(int timeFrame) {
         Stock stock = getDefaultStock();
@@ -193,21 +193,21 @@ public class Exchange {
 
     }
 
-    public OHLCData getOHLCdata(Integer timeFrame) {
+    public OHLCData getOHLCdata(Stock stock,Integer timeFrame) {
         OHLCData data;
-        data = ohlc_data.get(timeFrame);
+        data = stock.ohlc_data.get(timeFrame);
         if (data == null) {
 
             synchronized (executor) {
                 data = this.buildOHLCData(timeFrame);
-                ohlc_data.put(timeFrame, data);
+                stock.ohlc_data.put(timeFrame, data);
             }
         }
         return data;
     }
 
-    void updateOHLCData(Quote q) {
-        Iterator<OHLCData> it = ohlc_data.values().iterator();
+    void updateOHLCData(Stock stock,Quote q) {
+        Iterator<OHLCData> it = stock.ohlc_data.values().iterator();
         while (it.hasNext()) {
             OHLCData data = it.next();
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
@@ -319,7 +319,7 @@ public class Exchange {
         statistics = new Statistics();
         //num_trades = 0;
 
-        this.ohlc_data = new HashMap();
+       // getDefaultStock().ohlc_data = new HashMap();
 
         // Create order books
 
@@ -917,7 +917,7 @@ public class Exchange {
 
         Stock stock = getDefaultStock();
         stock.quoteHistory.add(q);
-        updateOHLCData(q);
+        updateOHLCData(stock,q);
         updateQuoteReceivers(q);
     }
 

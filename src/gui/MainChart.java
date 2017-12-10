@@ -122,7 +122,7 @@ setCursor(new MyCursor(Cursor.CROSSHAIR_CURSOR));
 
     protected final void setCompression0(int timeFrame) {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            data = Globals.se.getOHLCdata(timeFrame);
+            data = Globals.se.getOHLCdata(Globals.se.getDefaultStock(),timeFrame);
             invalidate();
             repaint();
         });
