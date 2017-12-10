@@ -26,6 +26,7 @@
 package sesim;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -57,7 +58,7 @@ public class Stock {
         }
 
         quoteHistory = new TreeSet();
-        ohlc_data = new HashMap();        
+        ohlc_data = new HashMap();
     }
 
     String getSymbol() {
@@ -74,8 +75,37 @@ public class Stock {
     /**
      * Histrory of quotes
      */
-    public TreeSet<Quote> quoteHistory; // = new TreeSet<>();
+    public TreeSet<Quote> quoteHistory; 
 
-     HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
-    
+    HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
+
+    private OHLCData buildOHLCData(int timeFrame) {
+        OHLCData data = new OHLCData(timeFrame);
+        if (quoteHistory == null) {
+            return data;
+        }
+
+        Iterator<Quote> it = quoteHistory.iterator();
+        while (it.hasNext()) {
+            Quote q = it.next();
+            data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
+
+        }
+
+        return data;
+    }
+
+    public OHLCData getOHLCdata(Integer timeFrame) {
+        OHLCData data;
+        data = ohlc_data.get(timeFrame);
+        if (data == null) {
+
+            synchronized (this) {
+                data = buildOHLCData(timeFrame);
+                ohlc_data.put(timeFrame, data);
+            }
+        }
+        return data;
+    }
+
 }

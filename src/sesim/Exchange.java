@@ -146,7 +146,7 @@ public class Exchange {
 
     //HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
 
-    public OHLCData buildOHLCData(int timeFrame) {
+/*    public OHLCData buildOHLCData(int timeFrame) {
         Stock stock = getDefaultStock();
 
         OHLCData data = new OHLCData(timeFrame);
@@ -163,7 +163,8 @@ public class Exchange {
 
         return data;
     }
-
+*/
+    
     public void injectMoney() {
 
         accounts.forEach(new BiConsumer() {
@@ -194,7 +195,9 @@ public class Exchange {
     }
 
     public OHLCData getOHLCdata(Stock stock,Integer timeFrame) {
-        OHLCData data;
+        return stock.getOHLCdata(timeFrame);
+        
+/*        OHLCData data;
         data = stock.ohlc_data.get(timeFrame);
         if (data == null) {
 
@@ -204,6 +207,7 @@ public class Exchange {
             }
         }
         return data;
+*/        
     }
 
     void updateOHLCData(Stock stock,Quote q) {
