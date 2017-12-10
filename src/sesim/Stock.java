@@ -28,6 +28,7 @@ package sesim;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -39,14 +40,23 @@ public class Stock {
     private String name;
 
     Stock(String symbol) {
-        this.symbol=symbol;
-        
+        this.symbol = symbol;
+
+        reset();
+    }
+
+    /**
+     *
+     */
+    public final void reset() {
         order_books = new HashMap();
-        
+
         // Create an order book for each order type
         for (Order.OrderType type : Order.OrderType.values()) {
             this.order_books.put(type, new TreeSet(new Exchange.OrderComparator(type)));
         }
+
+        quoteHistory = new TreeSet();
     }
 
     String getSymbol() {
@@ -57,8 +67,12 @@ public class Stock {
         return name;
     }
 
-    protected final HashMap<Order.OrderType, SortedSet<Order>> order_books;
-    
-    
+    protected HashMap<Order.OrderType, SortedSet<Order>> order_books;
+    //   protected ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
+
+    /**
+     * Histrory of quotes
+     */
+    public TreeSet<Quote> quoteHistory; // = new TreeSet<>();
 
 }

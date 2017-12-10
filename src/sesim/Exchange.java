@@ -44,26 +44,22 @@ import sesim.Order.OrderType;
  */
 public class Exchange {
 //private  HashMap<Order.OrderType, SortedSet<Order>> order_books;
-    
-    
+
     HashMap<String, Stock> stocks;
 
-    final String DEFAULT_STOCK="def";
-    
+    final String DEFAULT_STOCK = "def";
+
     public Stock getStock(String symbol) {
         return stocks.get(symbol);
     }
-    
-    public Stock getDefaultStock(){
+
+    public Stock getDefaultStock() {
         return getStock(DEFAULT_STOCK);
     }
-    
-    public String getDefaultStockSymbol(){
+
+    public String getDefaultStockSymbol() {
         return DEFAULT_STOCK;
     }
-    
-
-    ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
     private double money_df = 10000;
     private int money_decimals = 2;
@@ -151,12 +147,14 @@ public class Exchange {
     HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
 
     public OHLCData buildOHLCData(int timeFrame) {
+        Stock stock = getDefaultStock();
+
         OHLCData data = new OHLCData(timeFrame);
-        if (this.quoteHistory == null) {
+        if (stock.quoteHistory == null) {
             return data;
         }
 
-        Iterator<Quote> it = quoteHistory.iterator();
+        Iterator<Quote> it = stock.quoteHistory.iterator();
         while (it.hasNext()) {
             Quote q = it.next();
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
@@ -196,7 +194,7 @@ public class Exchange {
     }
 
     public OHLCData getOHLCdata(Integer timeFrame) {
-        OHLCData data; 
+        OHLCData data;
         data = ohlc_data.get(timeFrame);
         if (data == null) {
 
@@ -207,8 +205,6 @@ public class Exchange {
         }
         return data;
     }
-    
-    
 
     void updateOHLCData(Quote q) {
         Iterator<OHLCData> it = ohlc_data.values().iterator();
@@ -217,18 +213,16 @@ public class Exchange {
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
         }
     }
-    
-    ArrayList <Indicator> indicators;
-    void updateIndicators(Quote q){
-        
+
+    ArrayList<Indicator> indicators;
+
+    void updateIndicators(Quote q) {
+
     }
-    
-    
-    public void addIndicator(Indicator i){
+
+    public void addIndicator(Indicator i) {
         this.indicators.add(i);
     }
-    
-    
 
     public void createTraders(JSONArray traderdefs) {
         for (int i = 0; i < traderdefs.length(); i++) {
@@ -301,22 +295,23 @@ public class Exchange {
 
     }
 
-
     IDGenerator order_id_generator = new IDGenerator();
 
-    /**
-     * Histrory of quotes
-     */
-    public TreeSet<Quote> quoteHistory; // = new TreeSet<>();
-
     final void initExchange() {
+
+        Stock defstock = new Stock(DEFAULT_STOCK);
+        stocks = new HashMap();
+        stocks.put(defstock.getSymbol(), defstock);
+
         buy_orders = 0;
         sell_orders = 0;
         timer = new Scheduler();         //  timer = new Scheduler();
         //       random = new Random(12);
         random = new Random();
 
-        quoteHistory = new TreeSet();
+        //    quoteHistory = new TreeSet();
+        getDefaultStock().reset();
+
         accounts = new ConcurrentHashMap<>();
 
         traders = new ArrayList();
@@ -328,14 +323,11 @@ public class Exchange {
 
         // Create order books
 
-/*        order_books = new HashMap();
+        /*        order_books = new HashMap();
         for (OrderType type : OrderType.values()) {
             order_books.put(type, new TreeSet(new OrderComparator(type)));
         }
-*/
-        Stock defstock = new Stock(DEFAULT_STOCK);
-        stocks = new HashMap();
-        stocks.put(defstock.getSymbol(), defstock);
+         */
     }
 
     /**
@@ -345,7 +337,7 @@ public class Exchange {
         qrlist = (new CopyOnWriteArrayList<>());
 
         initExchange();
-        executor.start();
+        //executor.start();
 
     }
 
@@ -387,6 +379,8 @@ public class Exchange {
 
         @Override
         public void run() {
+            /*            Stock stock = getDefaultStock();
+            
             synchronized (this) {
                 try {
                     while (true) {
@@ -394,7 +388,7 @@ public class Exchange {
                         this.wait();
 
                         Order o;
-                        while (null != (o = order_queue.poll())) {
+                        while (null != (o = stock.order_queue.poll())) {
                             addOrderToBook(o);
                             Account a = o.account;
                             a.orders.put(o.id, o);
@@ -411,6 +405,7 @@ public class Exchange {
                 }
 
             }
+             */
         }
 
     }
@@ -444,7 +439,7 @@ public class Exchange {
         }
     }
      */
-/*    public SortedSet<Quote> getQuoteHistory(long start) {
+ /*    public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
         s.time = start * 1000;
@@ -456,8 +451,7 @@ public class Exchange {
         return result;
 
     }
-*/
-    
+     */
     public final String CFG_MONEY_DECIMALS = "money_decimals";
     public final String CFG_SHARES_DECIMALS = "shares_decimals";
 
@@ -472,7 +466,7 @@ public class Exchange {
     }
 
     public Double getBestPrice(Stock stock) {
-        
+
         SortedSet<Order> bid = stock.order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = stock.order_books.get(OrderType.SELLLIMIT);
 
@@ -624,10 +618,10 @@ public class Exchange {
         }
     }
 
-        public Quote getBestPrice_0(){
-            return getBestPrice_0(getDefaultStock());
-        }
-    
+    public Quote getBestPrice_0() {
+        return getBestPrice_0(getDefaultStock());
+    }
+
     // Class to describe an executed order
     // QuoteReceiver has to be implemented by objects that wants 
     // to receive quote updates  	
@@ -703,13 +697,12 @@ public class Exchange {
         }
     }
 
-
     /**
-     * 
+     *
      * @param stock
      * @param type
      * @param depth
-     * @return 
+     * @return
      */
     public ArrayList<Order> getOrderBook(Stock stock, OrderType type, int depth) {
 
@@ -738,20 +731,22 @@ public class Exchange {
         return ret;
     }
 
-        public ArrayList<Order> getOrderBook(OrderType type, int depth){
-            return getOrderBook(getDefaultStock(),type,depth);
-        }
-    
+    public ArrayList<Order> getOrderBook(OrderType type, int depth) {
+        return getOrderBook(getDefaultStock(), type, depth);
+    }
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public Quote getLastQuoete() {
-        if (this.quoteHistory.isEmpty()) {
+        Stock stock = getDefaultStock();
+
+        if (stock.quoteHistory.isEmpty()) {
             return null;
         }
 
-        return this.quoteHistory.last();
+        return stock.quoteHistory.last();
     }
 
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
@@ -768,7 +763,7 @@ public class Exchange {
 
     }
 
-    public boolean cancelOrder(Stock stock,double account_id, long order_id) {
+    public boolean cancelOrder(Stock stock, double account_id, long order_id) {
         Account a = accounts.get(account_id);
         if (a == null) {
             return false;
@@ -801,9 +796,9 @@ public class Exchange {
 //        System.out.printf("Levave executor %d\n", Thread.currentThread().getId());
         return ret;
     }
-    
-    public boolean cancelOrder(double account_id, long order_id){
-        return cancelOrder(getDefaultStock(),account_id,order_id);
+
+    public boolean cancelOrder(double account_id, long order_id) {
+        return cancelOrder(getDefaultStock(), account_id, order_id);
     }
 
     Random random;
@@ -829,10 +824,9 @@ public class Exchange {
      * @param o
      */
 //    long nextQuoteId = 0;
-
     public double fairValue = 0;
 
-    private void removeOrderIfExecuted(Stock stock,Order o) {
+    private void removeOrderIfExecuted(Stock stock, Order o) {
         if (o.getAccount().getOwner().getName().equals("Tobias0")) {
 //            System.out.printf("Tobias 0 test\n");
         }
@@ -862,12 +856,11 @@ public class Exchange {
         o.account.update(o);
 
     }
-    
-    private void removeOrderIfExecuted(Order o){
-        removeOrderIfExecuted(getDefaultStock(),o);
+
+    private void removeOrderIfExecuted(Order o) {
+        removeOrderIfExecuted(getDefaultStock(), o);
     }
 
-    
     void checkSLOrders(Stock stock, double price) {
         SortedSet<Order> sl = stock.order_books.get(OrderType.STOPLOSS);
         SortedSet<Order> ask = stock.order_books.get(OrderType.SELLLIMIT);
@@ -886,11 +879,10 @@ public class Exchange {
 //            System.out.printf("Stoploss hit %f %f\n", s.volume, s.limit);
         }
     }
-    
-    void checkSLOrders(double price){
-        checkSLOrders(getDefaultStock(),price);
+
+    void checkSLOrders(double price) {
+        checkSLOrders(getDefaultStock(), price);
     }
-    
 
     public void executeUnlimitedOrders() {
 
@@ -923,7 +915,8 @@ public class Exchange {
             statistics.low = q.price;
         }
 
-        quoteHistory.add(q);
+        Stock stock = getDefaultStock();
+        stock.quoteHistory.add(q);
         updateOHLCData(q);
         updateQuoteReceivers(q);
     }
@@ -1049,9 +1042,9 @@ public class Exchange {
         }
 //        System.out.printf("B/S  %d/%d Failed B/S: %d/%d\n", buy_orders, sell_orders,buy_failed,sell_failed);
     }
-    
-    private void addOrderToBook(Order o){
-        addOrderToBook(getDefaultStock(),o);
+
+    private void addOrderToBook(Order o) {
+        addOrderToBook(getDefaultStock(), o);
     }
 
     long buy_failed = 0;
@@ -1065,12 +1058,11 @@ public class Exchange {
      * @param limit
      * @return order_id
      */
-    public long createOrder(double account_id, 
+    public long createOrder(double account_id,
             String stocksymbol, OrderType type, double volume, double limit) {
 
-        
         Stock stock = this.getStock(stocksymbol);
-        
+
         Account a = accounts.get(account_id);
         if (a == null) {
             return -1;
@@ -1079,9 +1071,9 @@ public class Exchange {
         Order o = new Order(order_id_generator.getNext(),
                 timer.currentTimeMillis(),
                 a, type, roundShares(volume), roundMoney(limit));
-        
-        o.stock=stock;
-        
+
+        o.stock = stock;
+
         if (o.volume <= 0 || o.limit <= 0) {
 
             switch (o.type) {
@@ -1119,17 +1111,17 @@ public class Exchange {
         return o.getID();
     }
 
-    public double getBestLimit(Stock stock,OrderType type) {
+    public double getBestLimit(Stock stock, OrderType type) {
         Order o = stock.order_books.get(type).first();
         if (o == null) {
             return -1;
         }
         return o.limit;
     }
-    public double getBestLimit(OrderType type){
-        return getBestLimit(getDefaultStock(),type);
+
+    public double getBestLimit(OrderType type) {
+        return getBestLimit(getDefaultStock(), type);
     }
-    
 
     public int getNumberOfOpenOrders(double account_id) {
         Account a = accounts.get(account_id);
