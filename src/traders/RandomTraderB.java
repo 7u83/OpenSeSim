@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
 import sesim.Account;
+import sesim.Order;
 import sesim.Order.OrderType;
 import sesim.Quote;
 
@@ -166,7 +167,8 @@ public class RandomTraderB extends AutoTraderBase {
            Iterator<Long> it = keys.iterator();
            while (it.hasNext()) {
       //          Order od = it.next();
-                boolean rc = se.cancelOrder(account_id, it.next());
+      Order od = ad.getOrders().get(it.next());
+                boolean rc = se.cancelOrder(account_id, od);
            }
         }
         return n;

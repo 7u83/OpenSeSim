@@ -640,42 +640,9 @@ public class Exchange {
         }
     }
 
-    /**
-     *
-     * @param stock
-     * @param type
-     * @param depth
-     * @return
-     */
-    public ArrayList<Order> getOrderBook(Stock stock, OrderType type, int depth) {
-
-        SortedSet<Order> book = stock.order_books.get(type);
-        if (book == null) {
-            return null;
-        }
-        ArrayList<Order> ret;
-        synchronized (stock) {
-
-            ret = new ArrayList<>();
-
-            Iterator<Order> it = book.iterator();
-
-            for (int i = 0; i < depth && it.hasNext(); i++) {
-                Order o = it.next();
-                //   System.out.print(o.volume);
-                if (o.volume <= 0) {
-                    System.out.printf("Volume < 0\n");
-                    System.exit(0);
-                }
-                ret.add(o);
-            }
-            // System.out.println();
-        }
-        return ret;
-    }
 
     public ArrayList<Order> getOrderBook(OrderType type, int depth) {
-        return getOrderBook(getDefaultStock(), type, depth);
+        return getDefaultStock().getOrderBook(type, depth);
     }
 
     /**
@@ -740,8 +707,9 @@ public class Exchange {
         return ret;
     }
 
-    public boolean cancelOrder(double account_id, long order_id) {
-        return cancelOrder(getDefaultStock(), account_id, order_id);
+    public boolean cancelOrder(double account_id, Order order) {
+        
+        return cancelOrder(getDefaultStock(), account_id, order.getID());
     }
 
     Random random;
@@ -972,23 +940,21 @@ public class Exchange {
      * @param limit
      * @return order_id
      */
-    public long createOrder(double account_id,
+    public Order createOrder(double account_id,
             String stocksymbol, OrderType type, double volume, double limit) {
 
         Stock stock = getStock(stocksymbol);
 
         Account a = accounts.get(account_id);
         if (a == null) {
-            return -1;
+            return null;
         }
 
         Order o = new Order(order_id_generator.getNext(),
                 timer.currentTimeMillis(),
-                a, type, roundShares(volume), roundMoney(limit));
+                a, stock, type, roundShares(volume), roundMoney(limit));
 
-        o.stock = stock;
-
-        if (o.volume <= 0 || o.limit <= 0) {
+           if (o.volume <= 0 || o.limit <= 0) {
 
             switch (o.type) {
                 case SELL:
@@ -1001,7 +967,7 @@ public class Exchange {
                     break;
             }
 
-            return -1;
+            return o;
         }
 
         synchronized (stock) {
@@ -1022,7 +988,7 @@ public class Exchange {
 //            executor.notify();
         }
 //       a.update(o);
-        return o.getID();
+        return o;
     }
 
     public double getBestLimit(Stock stock, OrderType type) {

@@ -183,14 +183,16 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         int n = se.getNumberOfOpenOrders(account_id);
         if (n > 0) {
             Account ad = se.getAccount(account_id);
-
+            
+            
             Set<Long> keys = ad.getOrders().keySet();
 
             Iterator<Long> it = keys.iterator();
             while (it.hasNext()) {
-                //          Order od = it.next();
-                boolean rc = se.cancelOrder(account_id, it.next());
+                Order od = ad.getOrders().get(it.next());
+                boolean rc = se.cancelOrder(account_id, od);
             }
+ 
         }
         return n;
 
@@ -405,9 +407,9 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 //            System.out.printf("Buy Order wont work\n");
         //        return false;
         //    }
-        long rc = se.createOrder(account_id, se.getDefaultStockSymbol(),type, volume, limit);
+        Order rc = se.createOrder(account_id, se.getDefaultStockSymbol(),type, volume, limit);
 
-        if (rc == -1) {
+        if (rc == null) {
 
 //            System.out.printf("Buy failed %f, %f / %f (%f)\n", volume, money, limit, ad.getMoney());
             return false;
@@ -445,8 +447,8 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         //        return false;
         //    }
 //        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
-        long rc = se.createOrder(account_id, se.getDefaultStockSymbol(), type, volume, limit);
-        return rc != -1;
+        Order rc = se.createOrder(account_id, se.getDefaultStockSymbol(), type, volume, limit);
+        return rc != null;
 
     }
 

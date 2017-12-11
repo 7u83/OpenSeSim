@@ -227,9 +227,11 @@ public class OpenOrdersList extends javax.swing.JPanel {
     private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed
         int r = table.getSelectedRow();
         Long id = (Long) model.getValueAt(r, 0);
+        
+        Order co = account.getOrders().get(id);
 
         System.out.printf("Should cancel %d\n", id);
-        Globals.se.cancelOrder(account.getID(), id);
+        Globals.se.cancelOrder(account.getID(), co);
 
     }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
 

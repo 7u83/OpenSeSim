@@ -45,9 +45,9 @@ public class Order {
         BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
     }
 
-    Stock stock;
-    OrderStatus status;
-    OrderType type;
+    protected final Stock stock;
+    protected OrderStatus status;
+    protected OrderType type;
     protected double limit;
     protected double volume;
 
@@ -59,8 +59,8 @@ public class Order {
 
     double cost;
 
-    Order(long id, long created, Account account, OrderType type, double volume, double limit) {
-        //id = order_id_generator.getNext();
+    Order(long id, long created, Account account, Stock stock, OrderType type, 
+            double volume, double limit) {
         this.id = id;
         this.account = account;
         this.type = type;
@@ -69,6 +69,7 @@ public class Order {
         this.initial_volume = this.volume;
         this.created = created;
         this.status = OrderStatus.OPEN;
+        this.stock=stock;
         this.cost = 0;
     }
 
@@ -119,4 +120,13 @@ public class Order {
     public long getCreated() {
         return created;
     }
+    
+    /**
+     * Get the stock symbol that this order belongs to
+     * @return Stock symbol
+     */
+    public String getStockSymbol(){
+        return stock.getSymbol();
+    }
+    
 }

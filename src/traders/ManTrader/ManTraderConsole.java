@@ -28,6 +28,7 @@ package traders.ManTrader;
 import gui.OpenOrdersList;
 
 import sesim.Exchange;
+import sesim.Order;
 import sesim.Order.OrderType;
 
 /**
@@ -176,7 +177,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
         
         System.out.printf("Should buy: %f %f\n",volume,limit);
         
-        long createOrder = trader.getSE().createOrder(trader.getAccount().getID(), 
+        Order createOrder = trader.getSE().createOrder(trader.getAccount().getID(), 
                 trader.getSE().getDefaultStockSymbol(),
                 OrderType.BUYLIMIT, volume, limit);
         System.out.printf("The retval is %d",createOrder);
@@ -193,7 +194,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
         
         System.out.printf("Should sell: %f %f\n",volume,limit);
         
-        long createOrder = trader.getSE().createOrder(trader.getAccount().getID(), 
+        Order createOrder = trader.getSE().createOrder(trader.getAccount().getID(), 
                 trader.getSE().getDefaultStockSymbol(),
                 OrderType.SELLLIMIT, volume, limit);
         System.out.printf("The retval is %d",createOrder);
@@ -205,7 +206,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
         
         System.out.printf("Should stoploss: %f %f\n",volume,limit);
         
-        long createOrder = trader.getSE().createOrder(trader.getAccount().getID(), 
+        Order createOrder = trader.getSE().createOrder(trader.getAccount().getID(), 
                 trader.getSE().getDefaultStockSymbol(),
                 OrderType.STOPLOSS, volume, limit);
         System.out.printf("The retval is %d",createOrder);

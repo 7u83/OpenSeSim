@@ -31,9 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
      * Implements a trading account
      */
     public class Account implements Comparable {
-        
-        static String default_symbold = "DFLT"; 
-
+                
         private Exchange.AccountListener listener = null;
 
         protected final double id;

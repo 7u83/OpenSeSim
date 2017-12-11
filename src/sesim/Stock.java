@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
@@ -131,4 +132,38 @@ public class Stock {
 
     }
 
+        /**
+     *
+     * @param stock
+     * @param type
+     * @param depth
+     * @return
+     */
+    public ArrayList<Order> getOrderBook(Order.OrderType type, int depth) {
+
+        SortedSet<Order> book = order_books.get(type);
+        if (book == null) {
+            return null;
+        }
+        ArrayList<Order> ret;
+        synchronized (this) {
+
+            ret = new ArrayList<>();
+
+            Iterator<Order> it = book.iterator();
+
+            for (int i = 0; i < depth && it.hasNext(); i++) {
+                Order o = it.next();
+                
+                if (o.volume <= 0) {
+                    // throw an exception here
+                }
+                ret.add(o);
+            }
+        }
+        return ret;
+    }
+
+    
+    
 }
