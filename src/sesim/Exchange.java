@@ -683,12 +683,10 @@ public class Exchange {
 
         Order o;
 
-//        System.out.printf("Getting executor %d\n", Thread.currentThread().getId());
         synchronized (stock) {
-//            System.out.printf("Have executor %d\n", Thread.currentThread().getId());
             o = a.orders.get(order_id);
 
-            //   System.out.print("The Order:"+o.limit+"\n");
+
             if (o != null) {
                 SortedSet ob = stock.order_books.get(o.type);
 
@@ -709,7 +707,7 @@ public class Exchange {
 
     public boolean cancelOrder(double account_id, Order order) {
         
-        return cancelOrder(getDefaultStock(), account_id, order.getID());
+        return cancelOrder(order.stock, account_id, order.getID());
     }
 
     Random random;
@@ -776,8 +774,6 @@ public class Exchange {
 
             s.type = OrderType.SELL;
             stock.addOrderToBook(s);
-
-//            System.out.printf("Stoploss hit %f %f\n", s.volume, s.limit);
         }
     }
 
@@ -825,7 +821,7 @@ public class Exchange {
     /**
      *
      */
-    public void executeOrders(Stock stock) {
+    private void executeOrders(Stock stock) {
 
         SortedSet<Order> bid = stock.order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = stock.order_books.get(OrderType.SELLLIMIT);
@@ -854,8 +850,6 @@ public class Exchange {
                 money_total += price * volume;
                 this.checkSLOrders(price);
 
-                //System.out.printf("Cannot match two unlimited orders!\n");
-                //System.exit(0);
             }
 
             while (!ul_buy.isEmpty() && !ask.isEmpty()) {
@@ -902,7 +896,6 @@ public class Exchange {
             volume_total += volume;
             money_total += price * volume;
 
-//            num_trades++;
             statistics.trades++;
 
             this.checkSLOrders(price);
@@ -918,10 +911,6 @@ public class Exchange {
         q.time = timer.currentTimeMillis();
 
         addQuoteToHistory(q);
-
-        //this.quoteHistory.add(q);
-        //this.updateOHLCData(q);
-        //this.updateQuoteReceivers(q);
     }
 
     long buy_orders = 0;

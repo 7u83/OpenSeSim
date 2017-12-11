@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -55,7 +54,7 @@ public class Stock {
 
         // Create an order book for each order type
         for (Order.OrderType type : Order.OrderType.values()) {
-            this.order_books.put(type, new TreeSet(new Exchange.OrderComparator(type)));
+            order_books.put(type, new TreeSet(new Exchange.OrderComparator(type)));
         }
 
         quoteHistory = new TreeSet();
@@ -132,9 +131,8 @@ public class Stock {
 
     }
 
-        /**
+    /**
      *
-     * @param stock
      * @param type
      * @param depth
      * @return
@@ -154,7 +152,7 @@ public class Stock {
 
             for (int i = 0; i < depth && it.hasNext(); i++) {
                 Order o = it.next();
-                
+
                 if (o.volume <= 0) {
                     // throw an exception here
                 }
@@ -164,6 +162,4 @@ public class Stock {
         return ret;
     }
 
-    
-    
 }
