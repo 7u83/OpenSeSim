@@ -25,25 +25,36 @@
  */
 package chart;
 
+import chart.painter.XLegendPainter;
+import gui.Globals;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import sesim.Stock;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class MMChart extends javax.swing.JPanel {
+    
+    Stock stock;
 
     /**
      * Creates new form MMChart
      */
     public MMChart() {
+        stock = Globals.se.getDefaultStock();
         initComponents();
         setupLayout();
+        
+        
     }
+    
+    JPanel xLegend;
+    
     void setupLayout() {
         Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
         Border blueborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255));
@@ -61,31 +72,40 @@ public class MMChart extends javax.swing.JPanel {
         p = new JPanel();
         p.setBorder(redborder);
         p.setBackground(Color.blue);
+        p.setPreferredSize(new Dimension(0,0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 1;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.7;
+        gridBagConstraints.weighty = 1.0;
         add(p, gridBagConstraints);
 
-
-
         p = new JPanel();
+        p.setPreferredSize(new Dimension(100,40));
         p.setBorder(redborder);
-        p.setBackground(Color.white);
-        p.setPreferredSize(new Dimension(100,100));
+        p.setBackground(Color.yellow);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(p, gridBagConstraints);
+
+        xLegend = new JPanel();
+        xLegend.setBorder(redborder);
+        xLegend.setBackground(Color.white);
+        xLegend.setPreferredSize(new Dimension(100,0));
+        xLegend.setMinimumSize(new Dimension(100,0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 1;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.0;
-        gridBagConstraints.weighty = 0.7;
-        add(p, gridBagConstraints);
+        gridBagConstraints.weighty = 0.0;
+        add(xLegend, gridBagConstraints);
 
 
         
