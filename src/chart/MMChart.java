@@ -29,6 +29,7 @@ import chart.painter.XLegendPainter;
 import gui.Globals;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -54,34 +55,38 @@ public class MMChart extends javax.swing.JPanel {
     }
     
     JPanel xLegend;
+    JPanel yLegend;
+    JPanel mainChart;
     
-    void setupLayout() {
+    
+    final void setupLayout() {
+        this.removeAll();
+        
         Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
         Border blueborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255));
+        
+        
+        yLegend = new JPanel();        
+        
 
-   //     jButton1 = new javax.swing.JButton();
-   //     jToggleButton1 = new javax.swing.JToggleButton();
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
         setLayout(layout);
+        
         java.awt.GridBagConstraints gridBagConstraints;
-  //      jButton1.setText("jButton1");
-       JButton but = new JButton();
-        but.setText("Hello world");
-        JPanel p;
 
-        p = new JPanel();
-        p.setBorder(redborder);
-        p.setBackground(Color.blue);
-        p.setPreferredSize(new Dimension(0,0));
+        yLegend.setBorder(redborder);
+        yLegend.setPreferredSize(new Dimension(0,0));
+        
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        add(p, gridBagConstraints);
+        
+        add(yLegend, gridBagConstraints);
 
-        p = new JPanel();
+    /*    p = new JPanel();
         p.setPreferredSize(new Dimension(100,40));
         p.setBorder(redborder);
         p.setBackground(Color.yellow);
@@ -108,13 +113,28 @@ public class MMChart extends javax.swing.JPanel {
         add(xLegend, gridBagConstraints);
 
 
-        
+      */
 
-        p.setLayout(layout);
+       // p.setLayout(layout);
  
         
         
     }
+    
+    int em_width;
+
+    @Override
+    public void paint(Graphics g) {
+        em_width = g.getFontMetrics().stringWidth("M");
+       // this.removeAll();
+
+       // repaint();
+        setupLayout();
+               revalidate();
+        super.paint(g); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
