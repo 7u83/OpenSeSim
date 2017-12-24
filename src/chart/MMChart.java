@@ -25,14 +25,20 @@
  */
 package chart;
 
+import chart.painter.ChartPainter;
 import chart.painter.XLegendPainter;
 import gui.Globals;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import sesim.ChartDef;
+import sesim.ChartPanel;
+import sesim.OHLCData;
 import sesim.Stock;
 
 /**
@@ -40,7 +46,7 @@ import sesim.Stock;
  * @author 7u83 <7u83@mail.ru>
  */
 public class MMChart extends javax.swing.JPanel {
-    
+
     Stock stock;
 
     /**
@@ -50,43 +56,104 @@ public class MMChart extends javax.swing.JPanel {
         stock = Globals.se.getDefaultStock();
         initComponents();
         setupLayout();
+
+    }
+
+    ChartPanel xLegend;
+    JPanel yLegend;
+    JPanel mainChart;
+
+    private final void setupYLegend() {
+        yLegend = new ChartPanel();
+        Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
+        yLegend.setBorder(redborder);
+        yLegend.setPreferredSize(new Dimension(this.em_width * 10, 110));
+        yLegend.setMinimumSize(new Dimension(em_width*10,110));
+
+        GridBagConstraints gbConstraints;
+        gbConstraints = new java.awt.GridBagConstraints();
+        gbConstraints.gridx = 1;
+        gbConstraints.gridy = 0;
+        gbConstraints.fill = GridBagConstraints.BOTH;
+        gbConstraints.weightx = 0.0;
+        gbConstraints.weighty = 1.0;
+
+        add(yLegend, gbConstraints);
+    }
+
+    final void setupXLegend() {
+        xLegend = new ChartPanel();
+   //     xLegend.setBackground(Color.blue);
         
+        xLegend.setPreferredSize(new Dimension(em_width*2,em_width*3));
+        xLegend.setMinimumSize(new Dimension(em_width*2,em_width*3));
+        
+        xLegend.setChartDef(chartDef);
+        
+        
+        
+        GridBagConstraints gbConstraints;
+        gbConstraints = new java.awt.GridBagConstraints();
+        gbConstraints.gridx = 0;
+        gbConstraints.gridy = 1;
+        gbConstraints.fill = GridBagConstraints.BOTH;
+        gbConstraints.weightx = 1.0;
+        gbConstraints.weighty = 0.0;
+        
+        add(xLegend,gbConstraints);
+        
+               ChartPainter p;
+        OHLCData mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(),60000 * 20);
+
+       // this.xScrollBar.setMaximum(0);
+
+        p = new XLegendPainter();
+        p.setOHLCData(mydata);
+        xLegend.addChartPainter(p);
         
     }
     
-    JPanel xLegend;
-    JPanel yLegend;
-    JPanel mainChart;
-    
-    
-    final void setupLayout() {
-        this.removeAll();
+    final void setupMainChart(){
+        mainChart = new ChartPanel();
+        mainChart.setBackground(Color.green);
         
+        GridBagConstraints gbConstraints;
+        gbConstraints = new java.awt.GridBagConstraints();
+        gbConstraints.gridx = 0;
+        gbConstraints.gridy = 0;
+        gbConstraints.fill = GridBagConstraints.BOTH;
+        gbConstraints.weightx = 1.0;
+        gbConstraints.weighty = 1.0;
+        
+        add(mainChart,gbConstraints);
+    }
+    
+    ChartDef chartDef;
+
+    final void setupLayout() {
+        removeAll();
+
         Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
         Border blueborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255));
-        
-        
-        yLegend = new JPanel();        
-        
 
-        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        GridBagLayout layout = new GridBagLayout();
         setLayout(layout);
-        
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        yLegend.setBorder(redborder);
-        yLegend.setPreferredSize(new Dimension(0,0));
+        setupYLegend();
+        setupXLegend();
+        setupMainChart();
         
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
         
-        add(yLegend, gridBagConstraints);
+                chartDef = new ChartDef();
+        chartDef.x_unit_width = 3.0;
 
-    /*    p = new JPanel();
+        java.awt.GridBagConstraints gbConstraints;
+
+        mainChart = new JPanel();
+        mainChart.setPreferredSize(new Dimension(100, 40));
+        mainChart.setBackground(Color.blue);
+
+        /*    p = new JPanel();
         p.setPreferredSize(new Dimension(100,40));
         p.setBorder(redborder);
         p.setBackground(Color.yellow);
@@ -113,28 +180,23 @@ public class MMChart extends javax.swing.JPanel {
         add(xLegend, gridBagConstraints);
 
 
-      */
-
-       // p.setLayout(layout);
- 
-        
-        
+         */
+        // p.setLayout(layout);
     }
-    
+
     int em_width;
 
     @Override
     public void paint(Graphics g) {
         em_width = g.getFontMetrics().stringWidth("M");
-       // this.removeAll();
+        // this.removeAll();
 
-       // repaint();
+        // repaint();
         setupLayout();
-               revalidate();
+        revalidate();
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
