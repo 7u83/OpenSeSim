@@ -27,16 +27,13 @@ package chart.painter;
 
 import sesim.ChartDef;
 import sesim.ChartPanel;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import sesim.OHLCData;
 import sesim.OHLCDataItem;
 
 /**
- *
+ * Paints an x-legend for OHLC charts
  * @author 7u83 <7u83@mail.ru>
  */
 public class XLegendPainter extends OHLCChartPainter {
@@ -59,12 +56,7 @@ public class XLegendPainter extends OHLCChartPainter {
         
         init(g);
         
- //       g.setColor(Color.black);
         Dimension size = p.getSize();
-
-        //int bars = (int) (size.width / (def.x_unit_width * em_size));
-
-        int bars = this.getBars(p, def);
         
         int first_bar = getFirstBar(p);
         
@@ -94,7 +86,6 @@ public class XLegendPainter extends OHLCChartPainter {
 
     @Override
     void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

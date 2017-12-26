@@ -64,7 +64,7 @@ public class MMChart extends javax.swing.JPanel {
     JPanel yLegend;
     JPanel mainChart;
 
-    private final void setupYLegend() {
+    private void setupYLegend() {
         yLegend = new ChartPanel();
         Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
         yLegend.setBorder(redborder);
@@ -82,7 +82,7 @@ public class MMChart extends javax.swing.JPanel {
         add(yLegend, gbConstraints);
     }
 
-    final void setupXLegend() {
+    private void setupXLegend() {
         xLegend = new ChartPanel();
         //     xLegend.setBackground(Color.blue);
 
@@ -102,7 +102,9 @@ public class MMChart extends javax.swing.JPanel {
         add(xLegend, gbConstraints);
 
         OHLCChartPainter p;
-        OHLCData mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(), 60000 * 20);
+        OHLCData mydata = stock.getOHLCdata(60*20);
+                
+
 
         // this.xScrollBar.setMaximum(0);
         p = new XLegendPainter();
@@ -111,7 +113,7 @@ public class MMChart extends javax.swing.JPanel {
 
     }
 
-    final void setupMainChart() {
+    private void setupMainChart() {
         mainChart = new ChartPanel();
         mainChart.setBackground(Color.green);
 
@@ -124,11 +126,14 @@ public class MMChart extends javax.swing.JPanel {
         gbConstraints.weighty = 1.0;
 
         add(mainChart, gbConstraints);
+        
+        
+        
     }
 
     ChartDef chartDef;
 
-    final void setupLayout() {
+    private void setupLayout() {
         removeAll();
 
         Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
@@ -149,36 +154,6 @@ public class MMChart extends javax.swing.JPanel {
         mainChart = new JPanel();
         mainChart.setPreferredSize(new Dimension(100, 40));
         mainChart.setBackground(Color.blue);
-
-        /*    p = new JPanel();
-        p.setPreferredSize(new Dimension(100,40));
-        p.setBorder(redborder);
-        p.setBackground(Color.yellow);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(p, gridBagConstraints);
-
-        xLegend = new JPanel();
-        xLegend.setBorder(redborder);
-        xLegend.setBackground(Color.white);
-        xLegend.setPreferredSize(new Dimension(100,0));
-        xLegend.setMinimumSize(new Dimension(100,0));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.0;
-        gridBagConstraints.weighty = 0.0;
-        add(xLegend, gridBagConstraints);
-
-
-         */
-        // p.setLayout(layout);
     }
 
     int em_width;
