@@ -31,6 +31,7 @@ import chart.painter.ChartPainter;
 import chart.painter.XLegendPainter;
 import chart.painter.ChartCrossPainter;
 import chart.painter.LineChartPainter;
+import chart.painter.OHLCChartPainter;
 import chart.painter.YLegendPainter;
 import gui.Globals;
 import java.util.ArrayList;
@@ -149,7 +150,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         this.xLegend.setChartDef(chartDef);
         this.yLegend.setChartDef(chartDef);
 
-        ChartPainter p;
+        OHLCChartPainter p;
         mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(),60000 * 20);
 
         this.xScrollBar.setMaximum(0);
@@ -160,7 +161,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         xLegend.addChartPainter(p);
         xLegend.setXSCrollBar(xScrollBar);
 
-        ChartPainter pc = new CandleStickChartPainter();
+        OHLCChartPainter pc = new CandleStickChartPainter();
         //pc.setDataProvider(this);
         pc.setOHLCData(mydata);
 
@@ -191,7 +192,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         p.setOHLCData(mysma2);
         chart.addChartPainter(p);
 
-        ChartPainter yp = new YLegendPainter(chart);
+        OHLCChartPainter yp = new YLegendPainter(chart);
 //        yp.setDataProvider(this);
         yp.setOHLCData(mydata);
 

@@ -42,12 +42,7 @@ abstract public class ChartPainter implements ChartPainterInterface{
     protected int em_size;
 
     
-    protected OHLCData data;
-    
-    public void setOHLCData(OHLCData data){
-        this.data = data;
-    }
-    
+   
 /*    public abstract interface DataProvider {
 
         abstract OHLCData get();
@@ -59,26 +54,6 @@ abstract public class ChartPainter implements ChartPainterInterface{
         this.dataProvider = dataProvider;
     }
 */
-    protected OHLCData getData() {
-        return this.data;
-        /*if (dataProvider == null) {
-            return null;
-        }
-        return dataProvider.get();
-*/        
-    }
-
-    protected int getFirstBar(ChartPanel p) {
-        if (p.x_scrollbar != null) {
-            return p.x_scrollbar.getValue();
-        }
-        return 0;
-    }
-
-    protected int getBars(ChartPanel p, ChartDef def) {
-        Dimension dim = p.getSize();
-        return (int) (dim.width / (def.x_unit_width * em_size));
-    }
 
     /**
      * Init method scould be called before painting the chart

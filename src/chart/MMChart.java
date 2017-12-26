@@ -26,6 +26,7 @@
 package chart;
 
 import chart.painter.ChartPainter;
+import chart.painter.OHLCChartPainter;
 import chart.painter.XLegendPainter;
 import gui.Globals;
 import java.awt.Color;
@@ -68,7 +69,7 @@ public class MMChart extends javax.swing.JPanel {
         Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
         yLegend.setBorder(redborder);
         yLegend.setPreferredSize(new Dimension(this.em_width * 10, 110));
-        yLegend.setMinimumSize(new Dimension(em_width*10,110));
+        yLegend.setMinimumSize(new Dimension(em_width * 10, 110));
 
         GridBagConstraints gbConstraints;
         gbConstraints = new java.awt.GridBagConstraints();
@@ -83,15 +84,13 @@ public class MMChart extends javax.swing.JPanel {
 
     final void setupXLegend() {
         xLegend = new ChartPanel();
-   //     xLegend.setBackground(Color.blue);
-        
-        xLegend.setPreferredSize(new Dimension(em_width*2,em_width*3));
-        xLegend.setMinimumSize(new Dimension(em_width*2,em_width*3));
-        
+        //     xLegend.setBackground(Color.blue);
+
+        xLegend.setPreferredSize(new Dimension(em_width * 2, em_width * 3));
+        xLegend.setMinimumSize(new Dimension(em_width * 2, em_width * 3));
+
         xLegend.setChartDef(chartDef);
-        
-        
-        
+
         GridBagConstraints gbConstraints;
         gbConstraints = new java.awt.GridBagConstraints();
         gbConstraints.gridx = 0;
@@ -99,24 +98,23 @@ public class MMChart extends javax.swing.JPanel {
         gbConstraints.fill = GridBagConstraints.BOTH;
         gbConstraints.weightx = 1.0;
         gbConstraints.weighty = 0.0;
-        
-        add(xLegend,gbConstraints);
-        
-               ChartPainter p;
-        OHLCData mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(),60000 * 20);
 
-       // this.xScrollBar.setMaximum(0);
+        add(xLegend, gbConstraints);
 
+        OHLCChartPainter p;
+        OHLCData mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(), 60000 * 20);
+
+        // this.xScrollBar.setMaximum(0);
         p = new XLegendPainter();
         p.setOHLCData(mydata);
         xLegend.addChartPainter(p);
-        
+
     }
-    
-    final void setupMainChart(){
+
+    final void setupMainChart() {
         mainChart = new ChartPanel();
         mainChart.setBackground(Color.green);
-        
+
         GridBagConstraints gbConstraints;
         gbConstraints = new java.awt.GridBagConstraints();
         gbConstraints.gridx = 0;
@@ -124,10 +122,10 @@ public class MMChart extends javax.swing.JPanel {
         gbConstraints.fill = GridBagConstraints.BOTH;
         gbConstraints.weightx = 1.0;
         gbConstraints.weighty = 1.0;
-        
-        add(mainChart,gbConstraints);
+
+        add(mainChart, gbConstraints);
     }
-    
+
     ChartDef chartDef;
 
     final void setupLayout() {
@@ -142,9 +140,8 @@ public class MMChart extends javax.swing.JPanel {
         setupYLegend();
         setupXLegend();
         setupMainChart();
-        
-        
-                chartDef = new ChartDef();
+
+        chartDef = new ChartDef();
         chartDef.x_unit_width = 3.0;
 
         java.awt.GridBagConstraints gbConstraints;

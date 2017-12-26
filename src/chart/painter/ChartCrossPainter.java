@@ -43,6 +43,9 @@ public class ChartCrossPainter extends ChartPainter{
         if (mp==null)
             return;
         
+        if (!p.mouseEntered)
+            return;
+        
         g.drawLine(0, p.mouse.y, p.getSize().width, p.mouse.y);
         g.drawLine(p.mouse.x, 0, p.mouse.x, p.getSize().height);        
         

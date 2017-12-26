@@ -38,7 +38,7 @@ import sesim.OHLCDataItem;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class YLegendPainter extends ChartPainter {
+public class YLegendPainter extends OHLCChartPainter {
     
     ChartPanel master;
     
@@ -85,6 +85,11 @@ public class YLegendPainter extends ChartPainter {
 //        v2 = ctx.getValAtY(y2);
 
 
+    }
+
+    @Override
+    void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+        return;
     }
 
  

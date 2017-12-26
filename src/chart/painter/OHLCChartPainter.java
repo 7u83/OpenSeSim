@@ -49,9 +49,70 @@ public abstract class OHLCChartPainter extends ChartPainter {
 
     abstract void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i);
     
+    protected OHLCData data;
+    
+    public void setOHLCData(OHLCData data){
+        this.data = data;
+    }
+ 
+        protected OHLCData getData() {
+        return this.data;
+        /*if (dataProvider == null) {
+            return null;
+        }
+        return dataProvider.get();
+*/        
+    }
+
+    protected int getFirstBar(ChartPanel p) {
+        if (p.x_scrollbar != null) {
+            return p.x_scrollbar.getValue();
+        }
+        return 0;
+    }
+
+    protected int getBars(ChartPanel p, ChartDef def) {
+        Dimension dim = p.getSize();
+        return (int) (dim.width / (def.x_unit_width * em_size));
+    }
+
+    protected float y_scaling;
+    protected int y_height;
+    protected float y_min;
+
+    float getY(float y) {
+//c_yscaling = ctx.rect.height / c_mm.getDiff();
+//               float ys = dim.height / mm.getDiff();
+        /*  if (minmax.isLog()) {
+//            return rect.height + rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
+        }
+         */
+//        return (dim.height - ((y - minmax.getMin()) * y_scaling));
+        return (y_height - ((y - y_min) * y_scaling));
+
+    }
+
+    double getValAtY(float y) {
+        float val = 0;
+
+        /*            if (c_mm.isLog()) {
+                float ys = rect.height / c_mm.getDiff();
+
+                return Math.exp((rect.height + rect.y) / ys + c_mm.getMin() - y / ys);
+
+            }
+         */
+        return (-(y -  y_height)) / y_scaling + y_min;
+
+    }
+
+    void initGetY(MinMax minmax, Dimension dim) {
+        y_height = dim.height;
+        y_scaling = dim.height / minmax.getDiff();
+        y_min = minmax.getMin();
+    }
 
     
-
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
         OHLCData data = getData();

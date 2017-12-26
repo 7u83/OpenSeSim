@@ -33,12 +33,13 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import sesim.OHLCData;
+import sesim.OHLCDataItem;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class XLegendPainter extends ChartPainter {
+public class XLegendPainter extends OHLCChartPainter {
 
     private String getTimeStrAt(OHLCData data, int unit) {
 
@@ -89,6 +90,11 @@ public class XLegendPainter extends ChartPainter {
             n += 1;
         }
 
+    }
+
+    @Override
+    void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
