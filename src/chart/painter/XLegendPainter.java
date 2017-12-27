@@ -42,39 +42,43 @@ public class XLegendPainter extends OHLCChartPainter {
     private String getTimeStrAt(OHLCData data, int unit) {
 
         int fs = data.getFrameSize();
-        return sesim.Scheduler.formatTimeMillis(0 + (long)unit * (long)fs);
+        return sesim.Scheduler.formatTimeMillis(0 + (long) unit * (long) fs);
 
     }
-
-    int big_tick = 2;
-    int y = 0;
 
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
 
         init(g);
-
+        int big_tick = 10;
         Dimension size = p.getSize();
 
         int first_bar = getFirstBar(p);
 
+        double ticksize = em_size * def.x_unit_width;
+        String text = getTimeStrAt(data, first_bar);
+        int swidth = g.getFontMetrics().stringWidth(text);
+
+        big_tick = swidth * 2 / ((int) ticksize);
+        big_tick = (big_tick / 5) * 5 + 5;
+
         int n;
         int x;
-        for (n = first_bar, x = 0; x < size.width; x += em_size * def.x_unit_width) {
+        int y = 0;
+
+        for (n = first_bar, x = 0; x < size.width; x += ticksize) {
+
             if (n % big_tick == 0) {
+
                 g.drawLine((int) x, y, (int) x, y + em_size);
-                String text;
+
                 text = getTimeStrAt(data, n);
 
-                int swidth = g.getFontMetrics().stringWidth(text);
-                g.drawString(text, (int) x - swidth / 2, y + em_size * 2);
+                swidth = g.getFontMetrics().stringWidth(text);
+                g.drawString(text, (int) x - swidth / 2, y + em_size * 3);
 
             } else {
                 g.drawLine((int) x, y, (int) x, y + em_size / 2);
-            }
-
-            if (n % big_tick == 0) {
-
             }
 
             n += 1;
