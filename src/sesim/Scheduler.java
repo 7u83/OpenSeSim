@@ -107,7 +107,6 @@ public class Scheduler extends Thread {
     long last_time_millis = System.currentTimeMillis();
     double current_time_millis = 0.0;
 
-    
     long last_nanos = System.nanoTime();
     double current_nanos = 0;
 
@@ -115,7 +114,7 @@ public class Scheduler extends Thread {
      *
      * @return
      */
-    public long currentTimeMillis1() {
+    private long currentTimeMillis1() {
 
         long cur = System.nanoTime();
         long diff = cur - last_nanos;
@@ -135,54 +134,20 @@ public class Scheduler extends Thread {
         return (long) this.current_time_millis;
     }
 
-    /**
-     *
-     * @return
-     */
-    public long currentTimeMillis1_old() {
-
-        long cur_nano = System.nanoTime();
-        long diff_nano = cur_nano - last_nanos;
-        last_nanos = cur_nano;
-
-        long cur = System.currentTimeMillis();
-
-        long diff = (cur - last_time_millis);
-
-        //System.out.printf("Diff Nanos: %d Diff Millis %d, ND: %d\n", diff_nano, diff, diff_nano/1000000);
-        last_time_millis = cur;
-
-//  last_time_millis += diff;
-        //if (diff == 0) {
-        //      diff++;
-        //  }
-        if (pause) {
-            return (long) this.current_time_millis;
-        }
-
-        //  this.cur_nano += (((double)diff_nano)/1000000.0)*this.acceleration;
-        //     return (long)(cur_nano/1000000.0);        
-        double fac = (((double) diff) + 10.0) * this.acceleration;
-        System.out.printf("Difdif: %f %f\n", fac, this.acceleration);
-        this.current_time_millis += ((double) diff) * this.acceleration;
-        return (long) this.current_time_millis;
-    }
-
     public long currentTimeMillis() {
-//            return (long)(cur_nano/1000000.0);
         return (long) this.current_time_millis;
     }
 
     static public String formatTimeMillis(long t) {
         Date date = new Date(t);
-        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        String dateFormatted = formatter.format(date);
-
+        //    DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        //    String dateFormatted = formatter.format(date);
+        //    return dateFormatted;
         long seconds = (t / 1000) % 60;
         long minutes = (t / 1000 / 60) % 60;
         long hours = (t / 1000) / (60 * 60);
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
+        return String.format("%d:%02d:%02d", hours, minutes, seconds);
     }
 
     AtomicInteger nextTimerTask = new AtomicInteger(0);
@@ -233,7 +198,7 @@ public class Scheduler extends Thread {
 
     public void rescheduleTimerTask(TimerTaskDef task, long time) {
         long evtime = time + currentTimeMillis();
-        task.newevtime=evtime;
+        task.newevtime = evtime;
         set_tasks.add(task);
 
         synchronized (this) {
@@ -267,7 +232,7 @@ public class Scheduler extends Thread {
     //  HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
     private boolean addTimerTask(TimerTaskDef e) {
 
-       // System.out.printf("Add TimerTask %d %d\n",e.curevtime,e.newevtime);
+        // System.out.printf("Add TimerTask %d %d\n",e.curevtime,e.newevtime);
         //   long evtime = time + currentTimeMillis();
         SortedSet<TimerTaskDef> s = event_queue.get(e.newevtime);
         if (s == null) {
@@ -293,10 +258,9 @@ public class Scheduler extends Thread {
 //        if (evtime == null) {
 //            return;
 //        }
-    
         SortedSet<TimerTaskDef> s = event_queue.get(e.curevtime);
         if (s == null) {
-         //   System.out.printf("My not found\n");    
+            //   System.out.printf("My not found\n");    
             return;
         }
 
@@ -346,9 +310,9 @@ public class Scheduler extends Thread {
             Iterator<TimerTaskDef> it = s.iterator();
             while (it.hasNext()) {
                 TimerTaskDef e = it.next();
-          //      if (s.size() > 1) {
-           //         System.out.printf("Sicku: %d %d\n", e.id, e.curevtime);
-           //     }
+                //      if (s.size() > 1) {
+                //         System.out.printf("Sicku: %d %d\n", e.id, e.curevtime);
+                //     }
 
                 long next_t = this.fireEvent(e.taskRunner);
                 e.newevtime = next_t + t;
@@ -390,8 +354,8 @@ public class Scheduler extends Thread {
 
             while (!set_tasks.isEmpty()) {
                 TimerTaskDef td = set_tasks.poll();
-             //   System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
-                
+                //   System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
+
                 this.cancelMy(td);
                 this.addTimerTask(td);
 
