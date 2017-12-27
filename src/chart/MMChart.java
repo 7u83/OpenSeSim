@@ -102,7 +102,7 @@ public class MMChart extends javax.swing.JPanel {
         add(xLegend, gbConstraints);
 
         OHLCChartPainter p;
-        OHLCData mydata = stock.getOHLCdata(60*20);
+        OHLCData mydata = stock.getOHLCdata(60000);
                 
 
 

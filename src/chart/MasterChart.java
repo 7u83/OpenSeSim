@@ -151,7 +151,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         this.yLegend.setChartDef(chartDef);
 
         OHLCChartPainter p;
-        mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(),60000 * 20);
+        mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(),60000);
 
         this.xScrollBar.setMaximum(0);
 

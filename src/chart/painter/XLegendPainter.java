@@ -34,6 +34,7 @@ import sesim.OHLCDataItem;
 
 /**
  * Paints an x-legend for OHLC charts
+ *
  * @author 7u83 <7u83@mail.ru>
  */
 public class XLegendPainter extends OHLCChartPainter {
@@ -41,29 +42,26 @@ public class XLegendPainter extends OHLCChartPainter {
     private String getTimeStrAt(OHLCData data, int unit) {
 
         int fs = data.getFrameSize();
-        return sesim.Scheduler.formatTimeMillis(0 + unit * fs);
+        return sesim.Scheduler.formatTimeMillis(0 + (long)unit * (long)fs);
 
     }
-    
-    int big_tick = 10;
+
+    int big_tick = 2;
     int y = 0;
+
     @Override
-    public void drawChart(Graphics2D g,  ChartPanel p, ChartDef def)
-    {
-        OHLCData data = getData();
-        if (data ==null)
-            return;
-        
+    public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
+
         init(g);
-        
+
         Dimension size = p.getSize();
-        
+
         int first_bar = getFirstBar(p);
-        
+
         int n;
         int x;
         for (n = first_bar, x = 0; x < size.width; x += em_size * def.x_unit_width) {
-            if (n % big_tick == 1) {
+            if (n % big_tick == 0) {
                 g.drawLine((int) x, y, (int) x, y + em_size);
                 String text;
                 text = getTimeStrAt(data, n);
