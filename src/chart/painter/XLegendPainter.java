@@ -68,7 +68,7 @@ public class XLegendPainter extends OHLCChartPainter {
         double x;
         int y = 0;
 
-        for (n = first_bar, x = 0; x < size.width; x += ticksize) {
+        for (n = first_bar, x = 0; x < size.width+em_size*3; x += ticksize) {
 
             if (n % long_tick == 0) {
                 g.drawLine((int) x, y, (int) x, y + em_size);
