@@ -56,6 +56,7 @@ public class MMChart extends javax.swing.JPanel {
     public MMChart() {
         stock = Globals.se.getDefaultStock();
         initComponents();
+        this.em_width=10;
         setupLayout();
 
     }
@@ -115,6 +116,7 @@ public class MMChart extends javax.swing.JPanel {
 
     private void setupMainChart() {
         mainChart = new ChartPanel();
+        mainChart.setDoubleBuffered(true);
         mainChart.setBackground(Color.green);
 
         GridBagConstraints gbConstraints;
@@ -126,6 +128,8 @@ public class MMChart extends javax.swing.JPanel {
         gbConstraints.weighty = 1.0;
 
         add(mainChart, gbConstraints);
+        
+        
         
         
         
@@ -142,12 +146,14 @@ public class MMChart extends javax.swing.JPanel {
         GridBagLayout layout = new GridBagLayout();
         setLayout(layout);
 
+                chartDef = new ChartDef();
+        chartDef.x_unit_width = 3.0;
+
+        
         setupYLegend();
         setupXLegend();
         setupMainChart();
 
-        chartDef = new ChartDef();
-        chartDef.x_unit_width = 3.0;
 
         java.awt.GridBagConstraints gbConstraints;
 
@@ -164,7 +170,10 @@ public class MMChart extends javax.swing.JPanel {
         // this.removeAll();
 
         // repaint();
-        setupLayout();
+      //  setupLayout();
+       xLegend.setPreferredSize(new Dimension(em_width * 2, em_width * 3));
+       xLegend.setMinimumSize(new Dimension(em_width * 2, em_width * 3));
+        
         revalidate();
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
     }
