@@ -132,12 +132,13 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
     }//GEN-LAST:event_formMouseMoved
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
-        this.mouseEntered = true;
-
+        mouseEntered = true;
+        repaint();
     }//GEN-LAST:event_formMouseEntered
 
     private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
-        this.mouseEntered = false;
+        mouseEntered = false;
+        repaint();
     }//GEN-LAST:event_formMouseExited
 
     @Override
