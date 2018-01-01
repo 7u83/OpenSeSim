@@ -23,27 +23,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package chart.painter;
 
-import javax.swing.JScrollBar;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import sesim.ChartDef;
+import sesim.ChartPanel;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartDef {
-  
-    
-    /**
-     * width of an x unit in em
-     */
-    public double x_unit_width=1.0;
-    
-    public ChartPanel mainChart;
-    public ChartPanel xLegend;
-    
-    public ChartDef(){
+public class XLegendDetail extends XLegendPainter{
+    public XLegendDetail(){
         
     }
+    
+    static int ctr=0;
+
+    @Override
+    public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
+     //   System.out.printf("Xlegend Deatil drawchart called %d\n",ctr);
+     //   ctr++;
+        
+        init (g);
+        if (def==null)
+            return;
+        if (def.mainChart==null)
+            return;
+        if (def.mainChart.mouse == null)
+                return;
+        
+        Point mouse = def.mainChart.mouse;
+        
+        int  x = def.mainChart.mouse.x;
+        
+        this.x2Time(p, def, x);
+        
+                g.drawLine(mouse.x, 0, mouse.x, p.getSize().height); 
+        
+        System.out.printf("Detail Mous X: %d\n",x);
+//        super.drawChart(g, p, def); //To change body of generated methods, choose Tools | Templates.
+    }
+
     
 }

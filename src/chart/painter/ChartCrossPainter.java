@@ -29,13 +29,14 @@ import sesim.ChartDef;
 import sesim.ChartPanel;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import sesim.OHLCDataItem;
 
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartCrossPainter extends ChartPainter{
+public class ChartCrossPainter extends OHLCChartPainter{
 
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
@@ -49,6 +50,12 @@ public class ChartCrossPainter extends ChartPainter{
         g.drawLine(0, p.mouse.y, p.getSize().width, p.mouse.y);
         g.drawLine(p.mouse.x, 0, p.mouse.x, p.getSize().height);        
         
+        
+    }
+
+    @Override
+    void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

@@ -36,7 +36,6 @@ import sesim.MinMax;
 import sesim.OHLCData;
 import sesim.OHLCDataItem;
 
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -45,23 +44,21 @@ public abstract class OHLCChartPainter extends ChartPainter {
 
     protected float iwidth;
 
- 
-
     abstract void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i);
-    
+
     protected OHLCData data;
-    
-    public void setOHLCData(OHLCData data){
+
+    public void setOHLCData(OHLCData data) {
         this.data = data;
     }
- 
-        protected OHLCData getData() {
+
+    protected OHLCData getData() {
         return this.data;
         /*if (dataProvider == null) {
             return null;
         }
         return dataProvider.get();
-*/        
+         */
     }
 
     protected int getFirstBar(ChartPanel p) {
@@ -71,6 +68,25 @@ public abstract class OHLCChartPainter extends ChartPainter {
         return 0;
     }
 
+    protected int x2Time(ChartPanel p, ChartDef def, int x) {
+     //   int first_bar = getFirstBar(p);
+     //   OHLCDataItem d = data.get(first_bar);
+       
+        long t = 0;
+     
+        int xbar = (int)((float)x/def.x_unit_width);
+        
+        System.out.printf("XBAR: %d\n",xbar);
+        
+        return 0;
+    }
+
+    /**
+     * Get the number of bars needed to fill the ChartPanel object
+     * @param p ChartPanel object
+     * @param def ChartDef
+     * @return Number of bars
+     */
     protected int getBars(ChartPanel p, ChartDef def) {
         Dimension dim = p.getSize();
         return (int) (dim.width / (def.x_unit_width * em_size));
@@ -102,7 +118,7 @@ public abstract class OHLCChartPainter extends ChartPainter {
 
             }
          */
-        return (-(y -  y_height)) / y_scaling + y_min;
+        return (-(y - y_height)) / y_scaling + y_min;
 
     }
 
@@ -112,45 +128,36 @@ public abstract class OHLCChartPainter extends ChartPainter {
         y_min = minmax.getMin();
     }
 
-    
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
         OHLCData data = getData();
-        if (data==null)
+        if (data == null) {
             return;
-        
+        }
+
         init(g);
 
         iwidth = (float) ((def.x_unit_width * em_size) * 0.9f);
 
-        int first_bar = getFirstBar(p); 
-        
-        
+        int first_bar = getFirstBar(p);
+
         Dimension dim = p.getSize();
         //int bars = (int) (dim.width / (def.x_unit_width * em_size));
         int bars = this.getBars(p, def);
-        
-        
-        int last_bar = first_bar + bars+1;
+
+        int last_bar = first_bar + bars + 1;
 
         MinMax minmax = data.getMinMax(first_bar, last_bar);
-    
-        this.initGetY(minmax, dim);
-        
-       // y_scaling = dim.height / minmax.getDiff();
-        
-        
 
+        this.initGetY(minmax, dim);
+
+        // y_scaling = dim.height / minmax.getDiff();
         OHLCDataItem prevd = null;
         int prevx;
 
-   
-        
         if (data.size() > 0 && first_bar < data.size()) {
             prevd = data.get(first_bar);
         }
-        
- 
 
         for (int b = first_bar, n = 0; b < last_bar && b < data.size(); b++, n++) {
             OHLCDataItem d = data.get(b);

@@ -25,8 +25,10 @@
  */
 package chart;
 
+import chart.painter.ChartCrossPainter;
 import chart.painter.ChartPainter;
 import chart.painter.OHLCChartPainter;
+import chart.painter.XLegendDetail;
 import chart.painter.XLegendPainter;
 import gui.Globals;
 import java.awt.Color;
@@ -34,6 +36,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -56,14 +59,14 @@ public class MMChart extends javax.swing.JPanel {
     public MMChart() {
         stock = Globals.se.getDefaultStock();
         initComponents();
-        this.em_width=10;
+        this.em_width = 10;
         setupLayout();
 
     }
 
     ChartPanel xLegend;
     JPanel yLegend;
-    JPanel mainChart;
+    ChartPanel mainChart;
 
     private void setupYLegend() {
         yLegend = new ChartPanel();
@@ -81,6 +84,7 @@ public class MMChart extends javax.swing.JPanel {
         gbConstraints.weighty = 1.0;
 
         add(yLegend, gbConstraints);
+        this.addMouseMotionListener(yLegend);
     }
 
     private void setupXLegend() {
@@ -104,14 +108,29 @@ public class MMChart extends javax.swing.JPanel {
 
         OHLCChartPainter p;
         OHLCData mydata = stock.getOHLCdata(60000);
-                
-
 
         // this.xScrollBar.setMaximum(0);
         p = new XLegendPainter();
         p.setOHLCData(mydata);
         xLegend.addChartPainter(p);
 
+        p = new XLegendDetail();
+        p.setOHLCData(mydata);
+        xLegend.addChartPainter(p);
+
+        ChartPainter p0;
+        p0 = new ChartCrossPainter();
+        xLegend.addChartPainter(p0);
+        xLegend.setChartDef(chartDef);
+
+    }
+
+    private void addMouseMotionListener(JPanel panel) {
+        panel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
     }
 
     private void setupMainChart() {
@@ -128,11 +147,13 @@ public class MMChart extends javax.swing.JPanel {
         gbConstraints.weighty = 1.0;
 
         add(mainChart, gbConstraints);
+
+        ChartPainter p0;
+        p0 = new ChartCrossPainter();
+        mainChart.addChartPainter(p0);
         
-        
-        
-        
-        
+        this.addMouseMotionListener(mainChart);
+
     }
 
     ChartDef chartDef;
@@ -146,18 +167,17 @@ public class MMChart extends javax.swing.JPanel {
         GridBagLayout layout = new GridBagLayout();
         setLayout(layout);
 
-                chartDef = new ChartDef();
+        chartDef = new ChartDef();
         chartDef.x_unit_width = 3.0;
 
-        
+        setupMainChart();
+        chartDef.mainChart = mainChart;
         setupYLegend();
         setupXLegend();
-        setupMainChart();
-
 
         java.awt.GridBagConstraints gbConstraints;
 
-        mainChart = new JPanel();
+        mainChart = new ChartPanel();
         mainChart.setPreferredSize(new Dimension(100, 40));
         mainChart.setBackground(Color.blue);
     }
@@ -170,10 +190,10 @@ public class MMChart extends javax.swing.JPanel {
         // this.removeAll();
 
         // repaint();
-      //  setupLayout();
-       xLegend.setPreferredSize(new Dimension(em_width * 2, em_width * 3));
-       xLegend.setMinimumSize(new Dimension(em_width * 2, em_width * 3));
-        
+        //  setupLayout();
+        xLegend.setPreferredSize(new Dimension(em_width * 2, em_width * 3));
+        xLegend.setMinimumSize(new Dimension(em_width * 2, em_width * 3));
+
         revalidate();
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
     }
@@ -187,8 +207,20 @@ public class MMChart extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
         setLayout(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        System.out.printf("Mouse Moved\n");
+        // mainChart.repaint();
+  //      xLegend.revalidate();
+        xLegend.repaint();
+    }//GEN-LAST:event_formMouseMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
