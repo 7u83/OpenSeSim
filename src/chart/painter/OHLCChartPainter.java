@@ -74,9 +74,11 @@ public abstract class OHLCChartPainter extends ChartPainter {
        
         long t = 0;
      
-        int xbar = (int)((float)x/def.x_unit_width);
+        double xw = def.x_unit_width*em_size;
         
-        System.out.printf("XBAR: %d\n",xbar);
+        int xbar = (int)((float)x/(xw));
+        
+        System.out.printf("XBAR: %d  %f\n",xbar,def.x_unit_width);
         
         return 0;
     }
