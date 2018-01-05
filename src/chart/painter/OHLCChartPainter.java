@@ -68,7 +68,7 @@ public abstract class OHLCChartPainter extends ChartPainter {
         return 0;
     }
 
-    protected int x2Time(ChartPanel p, ChartDef def, int x) {
+    protected long x2Time(ChartPanel p, ChartDef def, int x) {
      //   int first_bar = getFirstBar(p);
      //   OHLCDataItem d = data.get(first_bar);
        
@@ -76,11 +76,15 @@ public abstract class OHLCChartPainter extends ChartPainter {
      
         double xw = def.x_unit_width*em_size;
         
+        int fs = data.getFrameSize();
+        
         int xbar = (int)((float)x/(xw));
+        int xrest = (int)((float)x%(xw));
         
-        System.out.printf("XBAR: %d  %f\n",xbar,def.x_unit_width);
         
-        return 0;
+    //    System.out.printf("XBAR: %d  %f\n",xbar,def.x_unit_width);
+        
+        return xbar*fs + fs/(int)xw*xrest;
     }
 
     /**

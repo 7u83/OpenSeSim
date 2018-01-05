@@ -25,46 +25,67 @@
  */
 package chart.painter;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import sesim.ChartDef;
 import sesim.ChartPanel;
+import sesim.Scheduler;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class XLegendDetail extends XLegendPainter{
-    public XLegendDetail(){
-        
+public class XLegendDetail extends XLegendPainter {
+
+    public XLegendDetail() {
+
     }
-    
-    static int ctr=0;
+
+    static int ctr = 0;
 
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
-     //   System.out.printf("Xlegend Deatil drawchart called %d\n",ctr);
-     //   ctr++;
-        
-        init (g);
-        if (def==null)
+        //   System.out.printf("Xlegend Deatil drawchart called %d\n",ctr);
+        //   ctr++;
+
+        init(g);
+        if (def == null) {
             return;
-        if (def.mainChart==null)
+        }
+        if (def.mainChart == null) {
             return;
-        if (def.mainChart.mouse == null)
-                return;
+        }
+        if (def.mainChart.mouse == null) {
+            return;
+        }
         
+        if (def.mainChart.mouseEntered!=true){
+            return;
+        }
+
         Point mouse = def.mainChart.mouse;
-        
-        int  x = def.mainChart.mouse.x;
-        
-        this.x2Time(p, def, x);
-        
-                g.drawLine(mouse.x, 0, mouse.x, p.getSize().height); 
-        
-        System.out.printf("Detail Mous X: %d\n",x);
+
+        int x = def.mainChart.mouse.x;
+
+        long t = this.x2Time(p, def, x);
+        System.out.printf("CFR: %s\n", Scheduler.formatTimeMillis(t));
+
+        g.drawLine(mouse.x, 0, mouse.x, p.getSize().height);
+
+        String ts = Scheduler.formatTimeMillis(t);
+        int sw = g.getFontMetrics().stringWidth(ts);
+        Color old = g.getColor();
+        g.setColor(g.getBackground());
+
+        int rd = (sw) + em_size;
+        g.fillRect(x - rd / 2, em_size, rd, em_size * 2);
+        g.setColor(old);
+        g.drawRect(x - rd / 2, em_size, rd, em_size * 2);
+        g.drawString(ts, (int) x - sw / 2, 0 + em_size * 3);
+
+        System.out.printf("Detail Mous X: %d\n", x);
 //        super.drawChart(g, p, def); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
 }
