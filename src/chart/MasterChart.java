@@ -125,6 +125,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
         chartDef = new ChartDef();
         chartDef.x_unit_width = 3.0;
+        chartDef.mainChart=this.chart;
 
         if (Globals.se == null) {
             return;

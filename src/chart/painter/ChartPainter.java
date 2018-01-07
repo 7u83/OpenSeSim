@@ -96,6 +96,11 @@ abstract public class ChartPainter implements ChartPainterInterface{
         return (-(y -  y_height)) / y_scaling + y_min;
 
     }
+    
+    float getRoundNumber(float n){
+        return (float)0.0;
+            
+    }
 
     void initGetY(MinMax minmax, Dimension dim) {
         y_height = dim.height;
@@ -103,6 +108,7 @@ abstract public class ChartPainter implements ChartPainterInterface{
         y_min = minmax.getMin();
     }
 
+    @Override
     abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
 
 }
