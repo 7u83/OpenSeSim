@@ -32,6 +32,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import sesim.MinMax;
+import sesim.OHLCData;
 import sesim.OHLCDataItem;
 
 /**
@@ -42,14 +43,16 @@ public class YLegendPainter extends OHLCChartPainter {
     
     ChartPanel master;
     
-    public YLegendPainter (ChartPanel master){
-        this.master=master;
+    public YLegendPainter (/*ChartPanel master*/){
+    //    this.master=master;
     }
 
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
         init(g);
+        this.master = def.mainChart;
         
+        OHLCData da = getData();
         
         Dimension dim = def.mainChart.getSize();
         int first_bar = getFirstBar(master);
@@ -58,6 +61,9 @@ public class YLegendPainter extends OHLCChartPainter {
         
         this.initGetY(minmax, dim);
 
+        
+        this.getRoundNumber(90);
+        
 
         //Rectangle dim;
        // dim = p.getSize();

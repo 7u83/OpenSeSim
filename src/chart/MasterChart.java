@@ -193,7 +193,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         p.setOHLCData(mysma2);
         chart.addChartPainter(p);
 
-        OHLCChartPainter yp = new YLegendPainter(chart);
+        OHLCChartPainter yp = new YLegendPainter(/*chart*/);
 //        yp.setDataProvider(this);
         yp.setOHLCData(mydata);
 

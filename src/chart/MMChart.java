@@ -30,6 +30,7 @@ import chart.painter.ChartPainter;
 import chart.painter.OHLCChartPainter;
 import chart.painter.XLegendDetail;
 import chart.painter.XLegendPainter;
+import chart.painter.YLegendPainter;
 import gui.Globals;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -65,7 +66,7 @@ public class MMChart extends javax.swing.JPanel {
     }
 
     ChartPanel xLegend;
-    JPanel yLegend;
+    ChartPanel yLegend;
     ChartPanel mainChart;
 
     private void setupYLegend() {
@@ -85,6 +86,14 @@ public class MMChart extends javax.swing.JPanel {
 
         add(yLegend, gbConstraints);
         this.addMouseMotionListener(yLegend);
+        
+        OHLCChartPainter ylp = new YLegendPainter(/*null*/);
+        OHLCData mydata = stock.getOHLCdata(60000);
+
+        ylp.setOHLCData(mydata);
+        yLegend.setChartDef(chartDef);
+        yLegend.addChartPainter(ylp);
+        
     }
 
     private void setupXLegend() {

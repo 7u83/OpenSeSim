@@ -97,7 +97,9 @@ abstract public class ChartPainter implements ChartPainterInterface{
 
     }
     
-    float getRoundNumber(float n){
+    protected float getRoundNumber(float n){
+        
+        System.out.printf("Rounded number", 0);
         return (float)0.0;
             
     }
