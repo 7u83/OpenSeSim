@@ -128,12 +128,14 @@ public abstract class OHLCChartPainter extends ChartPainter {
 
     }
 
+ /*   @Override
     void initGetY(MinMax minmax, Dimension dim) {
         y_height = dim.height;
         y_scaling = dim.height / minmax.getDiff();
         y_min = minmax.getMin();
     }
-
+*/
+    
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
         OHLCData data = getData();

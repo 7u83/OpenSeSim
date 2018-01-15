@@ -97,6 +97,7 @@ abstract public class ChartPainter implements ChartPainterInterface{
         return (-(y -  y_height)) / y_scaling + y_min;
 
     }
+    int trest;
     
     protected float getRoundNumber(float n){
         
@@ -105,7 +106,9 @@ abstract public class ChartPainter implements ChartPainterInterface{
         int ldist = this.em_size*2;
         int steps = y_height/ldist;
         
-        System.out.printf("Steps = %d, h: %d\n", steps, y_height);
+        System.out.printf("Yheight: %d %d\n",y_height,trest);
+        
+        System.out.printf("Steps = %d, h: %d\n", steps, this.y_height);
         
         
         
@@ -118,6 +121,7 @@ abstract public class ChartPainter implements ChartPainterInterface{
         y_scaling = dim.height / minmax.getDiff();
         y_min = minmax.getMin();
         y_max = minmax.getMax();
+        trest=11;
     }
 
     @Override
