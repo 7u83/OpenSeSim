@@ -67,62 +67,12 @@ abstract public class ChartPainter implements ChartPainterInterface{
 
     }
 
-    protected float y_scaling;
-    protected int y_height;
-    protected float y_min;
-   protected float y_max;
+ //   protected float y_scaling;
+//   protected int y_height;
+//    protected float y_min;
+//   protected float y_max;
 
-    float getY(float y) {
-//c_yscaling = ctx.rect.height / c_mm.getDiff();
-//               float ys = dim.height / mm.getDiff();
-        /*  if (minmax.isLog()) {
-//            return rect.height + rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
-        }
-         */
-//        return (dim.height - ((y - minmax.getMin()) * y_scaling));
-        return (y_height - ((y - y_min) * y_scaling));
 
-    }
-
-    double getValAtY(float y) {
-        float val = 0;
-
-        /*            if (c_mm.isLog()) {
-                float ys = rect.height / c_mm.getDiff();
-
-                return Math.exp((rect.height + rect.y) / ys + c_mm.getMin() - y / ys);
-
-            }
-         */
-        return (-(y -  y_height)) / y_scaling + y_min;
-
-    }
-    int trest;
-    
-    protected float getRoundNumber(float n){
-        
-
-        
-        int ldist = this.em_size*2;
-        int steps = y_height/ldist;
-        
-        System.out.printf("Yheight: %d %d\n",y_height,trest);
-        
-        System.out.printf("Steps = %d, h: %d\n", steps, this.y_height);
-        
-        
-        
-        return (float)0.0;
-            
-    }
-
-    void initGetY(MinMax minmax, Dimension dim) {
-        y_height = dim.height;
-        y_scaling = dim.height / minmax.getDiff();
-        y_min = minmax.getMin();
-        y_max = minmax.getMax();
-        trest=11;
-    }
 
     @Override
     abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);

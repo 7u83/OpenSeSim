@@ -101,7 +101,52 @@ public abstract class OHLCChartPainter extends ChartPainter {
     protected float y_scaling;
     protected int y_height;
     protected float y_min;
+    protected float y_max;
 
+ 
+
+       protected float getRoundNumber(float n){
+        
+
+        
+        int ldist = this.em_size*2;
+        int steps = y_height/ldist;
+        
+        System.out.printf("Yheight: %d \n",y_height);
+        
+        System.out.printf("Steps = %d, h: %d\n", steps, this.y_height);
+        
+        float stepsize = (y_max - y_min) / steps; 
+        
+        
+     
+        stepsize = 2;
+      
+     //  double minl10 = Math.log10(y_min);
+ //      double maxl10 = Math.log10(y_max);
+       
+        double  lo = Math.ceil(Math.log10(stepsize));
+        double rss = Math.pow(10, lo);
+        
+       System.out.printf("Ste size %f %f %f\n",stepsize,lo, rss);
+      
+      
+    
+       
+        return (float)0.0;
+            
+    }
+
+    void initGetY(MinMax minmax, Dimension dim) {
+        y_height = dim.height;
+        y_scaling = dim.height / minmax.getDiff();
+        y_min = minmax.getMin();
+        y_max = minmax.getMax();
+
+    }
+   
+    
+    
     float getY(float y) {
 //c_yscaling = ctx.rect.height / c_mm.getDiff();
 //               float ys = dim.height / mm.getDiff();
@@ -127,9 +172,8 @@ public abstract class OHLCChartPainter extends ChartPainter {
         return (-(y - y_height)) / y_scaling + y_min;
 
     }
-
- /*   @Override
-    void initGetY(MinMax minmax, Dimension dim) {
+  
+  /*  void initGetY(MinMax minmax, Dimension dim) {
         y_height = dim.height;
         y_scaling = dim.height / minmax.getDiff();
         y_min = minmax.getMin();
