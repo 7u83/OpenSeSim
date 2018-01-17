@@ -120,7 +120,7 @@ public abstract class OHLCChartPainter extends ChartPainter {
         
         
      
-        stepsize = 2;
+  //      stepsize = 2;
       
      //  double minl10 = Math.log10(y_min);
  //      double maxl10 = Math.log10(y_max);
@@ -128,7 +128,19 @@ public abstract class OHLCChartPainter extends ChartPainter {
         double  lo = Math.ceil(Math.log10(stepsize));
         double rss = Math.pow(10, lo);
         
-       System.out.printf("Ste size %f %f %f\n",stepsize,lo, rss);
+            
+        double st1 = 1/rss;
+      
+        
+        
+        double dr = Math.ceil(y_min*st1)/st1;
+
+   
+   
+        
+       // double f = y_min 
+                
+       System.out.printf("Ste size %f %f %f %f %f\n",stepsize,lo, y_min, rss, dr);
       
       
     
