@@ -104,12 +104,14 @@ public abstract class OHLCChartPainter extends ChartPainter {
     protected float y_max;
 
  
+    
+    
 
        protected float getRoundNumber(float n){
         
 
         
-        int ldist = this.em_size*2;
+        int ldist = em_size*2;
         int steps = y_height/ldist;
         
         System.out.printf("Yheight: %d \n",y_height);

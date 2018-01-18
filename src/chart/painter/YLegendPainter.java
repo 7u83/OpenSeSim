@@ -40,47 +40,46 @@ import sesim.OHLCDataItem;
  * @author 7u83 <7u83@mail.ru>
  */
 public class YLegendPainter extends OHLCChartPainter {
-    
+
     ChartPanel master;
-    
-    public YLegendPainter (/*ChartPanel master*/){
-    //    this.master=master;
+
+    public YLegendPainter(/*ChartPanel master*/) {
+        //    this.master=master;
     }
 
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
         init(g);
         this.master = def.mainChart;
-        
+
         OHLCData da = getData();
-        
+
         Dimension dim = def.mainChart.getSize();
         int first_bar = getFirstBar(master);
-        int last_bar = first_bar + getBars(master,def);
+        int last_bar = first_bar + getBars(master, def);
         MinMax minmax = this.getData().getMinMax(first_bar, last_bar);
-        
+
         this.initGetY(minmax, dim);
 
+        // calculate the number of captionable bars
+        int ldist = em_size * 2;
+        int steps = y_height / ldist;
         
+
         this.getRoundNumber(90);
-        
 
         //Rectangle dim;
-       // dim = p.getSize();
-  //      dim = this.clip_bounds;
-
+        // dim = p.getSize();
+        //      dim = this.clip_bounds;
         // Dimension rv = this.getSize();
 //        int yw = (int) (this.yl_width * em_size);
-
 //        g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
-
-
         float y1 = getY(minmax.getMin(false));
         float y2 = getY(minmax.getMax(false));
         float ydiff = y1 - y2;
 //        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
         int c_font_height = g.getFontMetrics().getHeight();
-        
+
         for (int yp = (int) y2; yp < y1; yp += em_size * 3) {
             g.drawLine(0, yp, em_size, yp);
             double v1 = getValAtY(yp);
@@ -91,7 +90,6 @@ public class YLegendPainter extends OHLCChartPainter {
 //        v1 = ctx.getValAtY(y1);
 //        v2 = ctx.getValAtY(y2);
 
-
     }
 
     @Override
@@ -99,7 +97,43 @@ public class YLegendPainter extends OHLCChartPainter {
         return;
     }
 
- 
+    public void drawChart_old(Graphics2D g, ChartPanel p, ChartDef def) {
+        init(g);
+        this.master = def.mainChart;
 
-    
+        OHLCData da = getData();
+
+        Dimension dim = def.mainChart.getSize();
+        int first_bar = getFirstBar(master);
+        int last_bar = first_bar + getBars(master, def);
+        MinMax minmax = this.getData().getMinMax(first_bar, last_bar);
+
+        this.initGetY(minmax, dim);
+
+        this.getRoundNumber(90);
+
+        //Rectangle dim;
+        // dim = p.getSize();
+        //      dim = this.clip_bounds;
+        // Dimension rv = this.getSize();
+//        int yw = (int) (this.yl_width * em_size);
+//        g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
+        float y1 = getY(minmax.getMin(false));
+        float y2 = getY(minmax.getMax(false));
+        float ydiff = y1 - y2;
+//        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
+        int c_font_height = g.getFontMetrics().getHeight();
+
+        for (int yp = (int) y2; yp < y1; yp += em_size * 3) {
+            g.drawLine(0, yp, em_size, yp);
+            double v1 = getValAtY(yp);
+            g.drawString(String.format("%.2f", v1), em_size * 1.5f, yp + c_font_height / 3);
+        }
+
+        double v1, v2;
+//        v1 = ctx.getValAtY(y1);
+//        v2 = ctx.getValAtY(y2);
+
+    }
+
 }
