@@ -64,20 +64,35 @@ public class YLegendPainter extends OHLCChartPainter {
         // calculate the number of captionable bars
         int ldist = em_size * 2;
         int steps = y_height / ldist;
+
+        // distance between bars
+        float stepsize = (y_max - y_min) / steps;
+
+        // round stepsize to power of 10
+        float stepsize10 = (float)Math.pow(10,Math.ceil(Math.log10(stepsize)));
         
+        // build inverse of stepsize
+        float stepsize10i = 1 / stepsize10;
 
-        this.getRoundNumber(90);
-
-        //Rectangle dim;
-        // dim = p.getSize();
-        //      dim = this.clip_bounds;
-        // Dimension rv = this.getSize();
-//        int yw = (int) (this.yl_width * em_size);
-//        g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
+        // calculate the first y value
+        float firstyv = (float)Math.ceil(y_min * stepsize10i) / stepsize10i;
+        
         float y1 = getY(minmax.getMin(false));
-        float y2 = getY(minmax.getMax(false));
-        float ydiff = y1 - y2;
-//        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
+        float y2 = getY(minmax.getMax(false));       
+                
+        int c_font_height = g.getFontMetrics().getHeight();
+                
+        for (float yv=firstyv; yv<minmax.getMax(false); yv+=stepsize10){
+            float y = this.getY(yv);
+            g.drawLine(0, (int)y, em_size, (int)y);
+            g.drawString(String.format("%.2f", yv), em_size * 1.5f, y + c_font_height / 3);
+        }
+
+    //    this.getRoundNumber(90);
+
+
+ 
+/*        float ydiff = y1 - y2;
         int c_font_height = g.getFontMetrics().getHeight();
 
         for (int yp = (int) y2; yp < y1; yp += em_size * 3) {
@@ -87,9 +102,7 @@ public class YLegendPainter extends OHLCChartPainter {
         }
 
         double v1, v2;
-//        v1 = ctx.getValAtY(y1);
-//        v2 = ctx.getValAtY(y2);
-
+*/
     }
 
     @Override
