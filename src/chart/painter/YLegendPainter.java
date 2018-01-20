@@ -26,6 +26,7 @@
 package chart.painter;
 
 import chart.Chart;
+import java.awt.Color;
 import sesim.ChartDef;
 import sesim.ChartPanel;
 import java.awt.Dimension;
@@ -69,40 +70,41 @@ public class YLegendPainter extends OHLCChartPainter {
         float stepsize = (y_max - y_min) / steps;
 
         // round stepsize to power of 10
-        float stepsize10 = (float)Math.pow(10,Math.ceil(Math.log10(stepsize)));
-        
+        float stepsize10 = (float) Math.pow(10, Math.ceil(Math.log10(stepsize)));
+
         // build inverse of stepsize
         float stepsize10i = 1 / stepsize10;
 
         // calculate the first y value
-        float firstyv = (float)Math.ceil(y_min * stepsize10i) / stepsize10i;
-        
+        float firstyv = (float) Math.ceil(y_min * stepsize10i) / stepsize10i;
+
         float y1 = getY(minmax.getMin(false));
-        float y2 = getY(minmax.getMax(false));       
-                
+        float y2 = getY(minmax.getMax(false));
+
         int c_font_height = g.getFontMetrics().getHeight();
-                
-        for (float yv=firstyv; yv<minmax.getMax(false); yv+=stepsize10){
-            float y = this.getY(yv);
-            g.drawLine(0, (int)y, em_size, (int)y);
+
+        float lastyv = firstyv-stepsize10;
+        for (float yv = firstyv; yv < minmax.getMax(false); yv += stepsize10) {
+            float y;
+
+            float ministep = stepsize10/10.0f;
+            
+            
+            for (float yv10 = lastyv+ministep; yv10 < yv; yv10 += ministep) {
+                y = this.getY(yv10);
+                Color oc = g.getColor();
+                g.setColor(Color.RED);
+                g.drawLine(0, (int) y, em_size/2, (int) y);
+                g.setColor(oc);
+            }
+
+            y = this.getY(yv);
+
+            g.drawLine(0, (int) y, em_size, (int) y);
             g.drawString(String.format("%.2f", yv), em_size * 1.5f, y + c_font_height / 3);
+            lastyv = yv;
         }
-
-    //    this.getRoundNumber(90);
-
-
  
-/*        float ydiff = y1 - y2;
-        int c_font_height = g.getFontMetrics().getHeight();
-
-        for (int yp = (int) y2; yp < y1; yp += em_size * 3) {
-            g.drawLine(0, yp, em_size, yp);
-            double v1 = getValAtY(yp);
-            g.drawString(String.format("%.2f", v1), em_size * 1.5f, yp + c_font_height / 3);
-        }
-
-        double v1, v2;
-*/
     }
 
     @Override
