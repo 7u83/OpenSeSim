@@ -31,7 +31,7 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
     public ChartPanel() {
         initComponents();
 
-        setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        //setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 
     }
 
@@ -101,6 +101,9 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
             }
         });
         addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 formMouseExited(evt);
             }
@@ -140,6 +143,10 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
         mouseEntered = false;
         repaint();
     }//GEN-LAST:event_formMouseExited
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        getParent().dispatchEvent(evt);
+    }//GEN-LAST:event_formMouseClicked
 
     @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {

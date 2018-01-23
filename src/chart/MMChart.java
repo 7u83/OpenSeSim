@@ -33,6 +33,7 @@ import chart.painter.XLegendPainter;
 import chart.painter.YLegendPainter;
 import gui.Globals;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -50,7 +51,7 @@ import sesim.Stock;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class MMChart extends javax.swing.JPanel {
+public class MMChart extends JPanel {
 
     Stock stock;
 
@@ -68,6 +69,11 @@ public class MMChart extends javax.swing.JPanel {
     ChartPanel xLegend;
     ChartPanel yLegend;
     ChartPanel mainChart;
+    
+    private int compression=60000;
+    
+    
+    
 
     private void setupYLegend() {
         yLegend = new ChartPanel();
@@ -88,7 +94,7 @@ public class MMChart extends javax.swing.JPanel {
         this.addMouseMotionListener(yLegend);
         
         OHLCChartPainter ylp = new YLegendPainter(/*null*/);
-        OHLCData mydata = stock.getOHLCdata(60000);
+        OHLCData mydata = stock.getOHLCdata(compression);
 
         ylp.setOHLCData(mydata);
         yLegend.setChartDef(chartDef);
@@ -116,7 +122,7 @@ public class MMChart extends javax.swing.JPanel {
         add(xLegend, gbConstraints);
 
         OHLCChartPainter p;
-        OHLCData mydata = stock.getOHLCdata(60000);
+        OHLCData mydata = stock.getOHLCdata(compression);
 
         // this.xScrollBar.setMaximum(0);
         p = new XLegendPainter();
@@ -136,6 +142,7 @@ public class MMChart extends javax.swing.JPanel {
 
     private void addMouseMotionListener(JPanel panel) {
         panel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            @Override
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 formMouseMoved(evt);
             }
@@ -162,6 +169,9 @@ public class MMChart extends javax.swing.JPanel {
         mainChart.addChartPainter(p0);
         
         this.addMouseMotionListener(mainChart);
+        
+        
+        mainChart.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 
     }
 
@@ -216,9 +226,21 @@ public class MMChart extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        popupMenu = new javax.swing.JPopupMenu();
+
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 formMouseMoved(evt);
+            }
+        });
+        addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                formMouseWheelMoved(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
             }
         });
         setLayout(null);
@@ -231,7 +253,16 @@ public class MMChart extends javax.swing.JPanel {
         xLegend.repaint();
     }//GEN-LAST:event_formMouseMoved
 
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        System.out.printf("The mouse was clicked\n");
+    }//GEN-LAST:event_formMouseClicked
+
+    private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
+        System.out.printf("Wheel!!!\n");
+    }//GEN-LAST:event_formMouseWheelMoved
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu popupMenu;
     // End of variables declaration//GEN-END:variables
 }
