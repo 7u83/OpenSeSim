@@ -96,6 +96,7 @@ public class YLegendPainter extends OHLCChartPainter {
                 g.setColor(Color.RED);
                 g.drawLine(0, (int) y, em_size/2, (int) y);
                 g.setColor(oc);
+                
             }
 
             y = this.getY(yv);
