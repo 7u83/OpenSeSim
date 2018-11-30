@@ -1,3 +1,3 @@
-# SeSim
+# OpenSeSim
 
-OpenSeSim -  Open Source Sock Exchange Simulator
+OpenSeSim - Open Source Sock Exchange Simulator
