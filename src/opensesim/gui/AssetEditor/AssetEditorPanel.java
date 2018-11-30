@@ -247,31 +247,9 @@ public class AssetEditorPanel extends javax.swing.JPanel {
             guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
         }
         
-        //dialog.setPreferredSize(new Dimension(200,200));
-
         dialog.pack();
         dialog.revalidate();        
 
-        
-        // dialog.validate();
-
-        //validate();
-        //this.getParent().getW;
-        //((Dialog)(this.dialog)).getS
-        
-        
-/*        this.getParent().validate();
-        this.getParent().repaint();
-        (this.getParent().getParent()).repaint();
-        this.dialog.pack();
-        this.dialog.validate();
-        this.dialog.repaint();
-        Dimension rrr = this.dialog.getContentPane().getSize();
-        this.dialog.resize(rrr);
-  */      
-
-        //  dialog.pack();
-        System.out.printf("Action performed on combobox %d %s\n", i, a.getTypeName());
 
     }//GEN-LAST:event_assetTypesComboBoxActionPerformed
 
