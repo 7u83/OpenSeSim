@@ -25,6 +25,7 @@
  */
 package opensesim.gui.AssetEditor;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.logging.Level;
@@ -35,6 +36,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import opensesim.AbstractAsset;
 import opensesim.gui.Globals;
+import opensesim.gui.util.JTextFieldLimit;
 
 /**
  *
@@ -50,7 +52,6 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     public AssetEditorPanel() {
         super();
         asset_types = Globals.getAvailableAssetsTypes();
-
         asset_types.sort(new Comparator<Class<AbstractAsset>>() {
             @Override
             public int compare(Class<AbstractAsset> o1, Class<AbstractAsset> o2) {
@@ -84,6 +85,17 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
         symField.setText(asset.getSymbol());
         nameField.setText(asset.getName());
+        decimalsField.getModel().setValue(asset.getDecimals());
+                
+    }
+
+    @JsonGetter("name")
+    public String getNameField() {
+        return nameField.getText();
+    }
+    @JsonGetter("sym")
+    public String getSymField() {
+        return symField.getText();
     }
 
     public JDialog dialog;

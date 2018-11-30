@@ -25,7 +25,14 @@
  */
 package opensesim.gui.AssetEditor;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.awt.Dialog;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
@@ -40,6 +47,7 @@ import opensesim.util.IDGenerator.Id;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -53,6 +61,7 @@ public class AssetEditorDialog extends EscDialog {
      * Creates new form CreateAssetDialog
      */
     public AssetEditorDialog(Dialog parent, AbstractAsset asset) {
+
         super(parent, true);
         initComponents();
         world = Globals.world;
@@ -131,7 +140,6 @@ public class AssetEditorDialog extends EscDialog {
                 int selected = this.assetEditorPanel.assetTypesComboBox.getSelectedIndex();
                 Class<AbstractAsset> cls = (Class<AbstractAsset>) this.assetEditorPanel.asset_types.get(selected);
                 asset = AbstractAsset.create(world, cls, assetEditorPanel.symField.getText());
-                
 
                 //new BasicAsset(assetEditor.symField.getText());
                 //      newId = BasicAsset.newAssed(asset);
@@ -188,6 +196,23 @@ public class AssetEditorDialog extends EscDialog {
         dialog.assetEditorPanel.dialog = dialog;
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
+
+        ObjectMapper mapper = new ObjectMapper();
+        // disable auto detection
+        mapper.disable(MapperFeature.AUTO_DETECT_CREATORS,
+                MapperFeature.AUTO_DETECT_FIELDS,
+                MapperFeature.AUTO_DETECT_GETTERS,
+                MapperFeature.AUTO_DETECT_IS_GETTERS);
+        // if you want to prevent an exception when classes have no annotated properties
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+
+        String vs;
+        try {
+            vs = mapper.writeValueAsString(dialog.assetEditorPanel);
+            System.out.print(vs);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(AssetEditorDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return dialog.newId;
     }

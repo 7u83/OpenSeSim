@@ -1,15 +1,24 @@
 <ivy-module version="2.0">
 
-    <info organisation="sesim" module="NewMDIApplication"/>
+    <info organisation="opensesim" module="NewMDIApplication"/>
     <dependencies>
-        <dependency org="commons-lang" name="commons-lang" rev="2.0"/>
-        <dependency org="commons-cli" name="commons-cli" rev="1.0"/>
+        <!--       <dependency org="commons-lang" name="commons-lang" rev="2.0"/> -->
+        <!--       <dependency org="commons-cli" name="commons-cli" rev="1.0"/>-->
 
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency org="org.json" name="json" rev="20160810"/>
         
         <!-- https://mvnrepository.com/artifact/javax.help/javahelp -->
         <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
+        
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.9.7"/>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.9.7"/>
+        
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.9.7"/>
 
     </dependencies>
 
