@@ -29,6 +29,8 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,33 +48,51 @@ import opensesim.sesim.interfaces.Asset;
  */
 public class AssetEditorPanel extends javax.swing.JPanel {
 
+    ArrayList<Class<AbstractAsset>> asset_types;
+
     /**
      * Creates new form AssetEditor
      */
     public AssetEditorPanel() {
         super();
         asset_types = Globals.getAvailableAssetsTypes();
+
+        asset_types.sort(new Comparator<Class<AbstractAsset>>() {
+            @Override
+            public int compare(Class<AbstractAsset> o1, Class<AbstractAsset> o2) {
+                AbstractAsset a1, a2;
+                try {
+                    a1 = o1.newInstance();
+                    a2 = o2.newInstance();
+                } catch (InstantiationException | IllegalAccessException ex) {
+                    Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    return 0;
+                }
+
+                String t1, t2;
+                t1 = a1.getTypeName();
+                t2 = a2.getTypeName();
+
+                return t1.compareToIgnoreCase(t2);
+            }
+
+        });
+
         initComponents();
         symField.setLimit(Globals.MAX.SYMLEN);
         nameField.setLimit(Globals.MAX.NAMELEN);
-
     }
 
-    
-    void initFields(AbstractAsset asset){
-        if(asset==null)
+    void initFields(AbstractAsset asset) {
+        if (asset == null) {
             return;
-        
+        }
+
         symField.setText(asset.getSymbol());
         nameField.setText(asset.getName());
     }
-    
-    
-    
-    
-    public JDialog dialog;
 
-    ArrayList<Class<AbstractAsset>> asset_types;
+    public JDialog dialog;
 
     ComboBoxModel getComboBoxModel() {
         ArrayList vector = new ArrayList();
@@ -82,7 +102,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         if (asset_types == null) {
             vector.add(0, "Currency");
             vector.add(1, "Stock");
-            
+
             return new DefaultComboBoxModel(vector.toArray());
         }
 
@@ -90,10 +110,10 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
         for (i = 0; i < asset_types.size(); i++) {
             AbstractAsset ait;
-            Class<?> asset_type = asset_types.get(i);
+            Class <AbstractAsset> asset_type = asset_types.get(i);
             try {
 
-                ait = (AbstractAsset) asset_type.newInstance();
+                ait = asset_type.newInstance();
                 vector.add(i, ait.getTypeName());
                 //     assetTypesComboBox.addItem(ait.getTypeName());
 
@@ -246,9 +266,9 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         } else {
             guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
         }
-        
+
         dialog.pack();
-        dialog.revalidate();        
+        dialog.revalidate();
 
 
     }//GEN-LAST:event_assetTypesComboBoxActionPerformed
