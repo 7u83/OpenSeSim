@@ -25,13 +25,8 @@
  */
 package opensesim.gui.AssetEditor;
 
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
@@ -40,7 +35,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import opensesim.AbstractAsset;
 import opensesim.gui.Globals;
-import opensesim.sesim.interfaces.Asset;
 
 /**
  *
