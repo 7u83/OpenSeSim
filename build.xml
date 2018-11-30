@@ -109,30 +109,30 @@
     -->
     
     
- <target name="single-jar" depends="jar">
-    <property name="store.jar.name" value="SeSim"/>
-    <property name="store.dir" value="store"/>
-    <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
-    <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
-    <delete dir="${store.dir}"/>
-    <mkdir dir="${store.dir}"/>
-    <jar destfile="${store.dir}/temp_final.jar" filesetmanifest="skip">
-        <zipgroupfileset dir="dist" includes="*.jar"/>
-        <zipgroupfileset dir="dist/lib" includes="*.jar"/>
-        <manifest>
-            <attribute name="Main-Class" value="${main.class}"/>
-        </manifest>
-    </jar>
-    <zip destfile="${store.jar}">
-        <zipfileset src="${store.dir}/temp_final.jar"
-        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
-    </zip>
-    <delete file="${store.dir}/temp_final.jar"/>
-</target>    
+    <target name="single-jar" depends="jar">
+        <property name="store.jar.name" value="OpenSeSim"/>
+        <property name="store.dir" value="store"/>
+        <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
+        <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
+        <delete dir="${store.dir}"/>
+        <mkdir dir="${store.dir}"/>
+        <jar destfile="${store.dir}/temp_final.jar" filesetmanifest="skip">
+            <zipgroupfileset dir="dist" includes="*.jar"/>
+            <zipgroupfileset dir="dist/lib" includes="*.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+            </manifest>
+        </jar>
+        <zip destfile="${store.jar}">
+            <zipfileset src="${store.dir}/temp_final.jar"
+                        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+        </zip>
+        <delete file="${store.dir}/temp_final.jar"/>
+    </target>    
 
     <property name="ivy.install.version" value="2.1.0-rc2" />
     <condition property="ivy.home" value="${env.IVY_HOME}">
-      <isset property="env.IVY_HOME" />
+        <isset property="env.IVY_HOME" />
     </condition>
     <property name="ivy.home" value="${user.home}/.ant" />
     <property name="ivy.jar.dir" value="${ivy.home}/lib" />
@@ -147,10 +147,10 @@
     </target>
 
     <target name="init-ivy" depends="download-ivy">
-      <!-- try to load ivy here from ivy home, in case the user has not already dropped
-              it into ant's lib dir (note that the latter copy will always take precedence).
-              We will not fail as long as local lib dir exists (it may be empty) and
-              ivy is in at least one of ant's lib dir or the local lib dir. -->
+        <!-- try to load ivy here from ivy home, in case the user has not already dropped
+        it into ant's lib dir (note that the latter copy will always take precedence).
+        We will not fail as long as local lib dir exists (it may be empty) and
+        ivy is in at least one of ant's lib dir or the local lib dir. -->
         <path id="ivy.lib.path">
             <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
 

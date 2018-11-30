@@ -9,7 +9,7 @@
             </extension>
         </buildExtensions>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-            <name>SeSim</name>
+            <name>OpenSeSim</name>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
