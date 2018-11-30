@@ -25,8 +25,14 @@
  */
 package opensesim.gui.AssetEditor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -35,6 +41,7 @@ import opensesim.sesim.Assets.BasicAsset;
 import opensesim.World;
 import opensesim.gui.Globals;
 import opensesim.util.IDGenerator.Id;
+import opensesim.util.SeSimObjectMapper;
 
 /**
  *
@@ -72,6 +79,7 @@ public class AssetListPanel extends javax.swing.JPanel {
             return;
         }
         m.setRowCount(0);
+
         for (AbstractAsset a : world.getAssetCollection()) {
             m.addRow(new Object[]{
                 a.getID(),
@@ -79,12 +87,23 @@ public class AssetListPanel extends javax.swing.JPanel {
                 a.getName(),
                 a.getTypeName()
             });
-
+ 
         }
+
+        Collection ac; 
+       ObjectMapper om = new ObjectMapper();
+        om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        try {
+            String s = om.writeValueAsString(world.getAssetCollection());
+            System.out.printf("MyValues %s", s);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(AssetListPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
 
     }
 
-    public TableModel getModel() {
+    private TableModel getModel() {
 
         class TModel extends DefaultTableModel {
 

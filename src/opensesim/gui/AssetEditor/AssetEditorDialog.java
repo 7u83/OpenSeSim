@@ -30,19 +30,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.awt.Dialog;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.InputVerifier;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JTextField;
 import opensesim.AbstractAsset;
 import opensesim.World;
 import opensesim.gui.EscDialog;
 import opensesim.gui.Globals;
-import opensesim.sesim.Assets.BasicAsset;
 import opensesim.util.IDGenerator.Id;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -208,11 +204,14 @@ public class AssetEditorDialog extends EscDialog {
 
         String vs;
         try {
+
             vs = mapper.writeValueAsString(dialog.assetEditorPanel);
             System.out.print(vs);
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AssetEditorDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        ObjectNode n = mapper.valueToTree(dialog.assetEditorPanel);
 
         return dialog.newId;
     }
