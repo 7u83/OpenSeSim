@@ -65,7 +65,7 @@ import opensesim.util.XClassLoader.ClassCache;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Globals {
-    
+
     public static World world;
 
     public static final String SESIM_FILEEXTENSION = "sesim";
@@ -115,8 +115,9 @@ public class Globals {
         public static final String TRADERS = "traders";
 
     }
-    
-    public static final class MAX{
+
+    public static final class MAX {
+
         public static final int SYMLEN = 6;
         public static final int NAMELEN = 64;
     }
@@ -153,8 +154,8 @@ public class Globals {
                 String lafClassName = lafInfo1.getClassName();
                 try {
                     Logger.getLogger(Globals.class.getName()).log(Level.SEVERE, "Setting LAF:" + lafClassName);
-                  JFrame.setDefaultLookAndFeelDecorated(true);   
-  JDialog.setDefaultLookAndFeelDecorated(true);             
+                    JFrame.setDefaultLookAndFeelDecorated(true);
+                    JDialog.setDefaultLookAndFeelDecorated(true);
 
                     UIManager.setLookAndFeel(lafClassName);
                     break;
@@ -195,8 +196,9 @@ public class Globals {
 
     static ClassLoader setXClassLoader() {
         ClassLoader old_classloader = Thread.currentThread().getContextClassLoader();
-        if (urllist ==null)
+        if (urllist == null) {
             return old_classloader;
+        }
         URL[] urls = urllist.toArray(new URL[urllist.size()]);
         URLClassLoader cl;
         cl = new URLClassLoader(urls, old_classloader);
@@ -209,29 +211,28 @@ public class Globals {
 
     }
 
- 
-   
+    static public ArrayList<Class<AbstractAsset>> getAvailableAssetsTypes() {
+//        ArrayList<Class> asset_types_raw;
+//        ClassLoader old = setXClassLoader();
+        //       asset_types_raw = opensesim.util.XClassLoader.getClassesList(urllist, AbstractAsset.class);
+        //     unsetXClassLoader(old);
+        Collection<Class> asset_types_raw;
+        asset_types_raw = class_cache.getClassCollection(AbstractAsset.class);
 
-    static public ArrayList<Class<AbstractAsset>> getAvailableAssetsTypes(){
-        ArrayList<Class> asset_types_raw;
-        ClassLoader old = setXClassLoader();
-        asset_types_raw = opensesim.util.XClassLoader.getClassesList(urllist, AbstractAsset.class);
-        unsetXClassLoader(old);
-        
-        ArrayList<Class<AbstractAsset>> asset_types=new ArrayList<>();
-        for (Class  a: asset_types_raw ){
-            Class <AbstractAsset> aa = a;
+        ArrayList<Class<AbstractAsset>> asset_types = new ArrayList<>();
+        for (Class a : asset_types_raw) {
+            Class<AbstractAsset> aa = a;
             asset_types.add(aa);
-           // asset_types.put(a.cast(AbstractAsset.class));
+            // asset_types.put(a.cast(AbstractAsset.class));
         }
-        
+
         return asset_types;
     }
 
     static public void installLookAndFeels() {
         Collection<Class> lafs;
-       // lafs = opensesim.util.XClassLoader.getClassesList(urllist, LookAndFeel.class);
-       lafs = class_cache.getClassCollection(LookAndFeel.class);
+        // lafs = opensesim.util.XClassLoader.getClassesList(urllist, LookAndFeel.class);
+        lafs = class_cache.getClassCollection(LookAndFeel.class);
 
         ClassLoader currentThreadClassLoader
                 = Thread.currentThread().getContextClassLoader();
@@ -241,7 +242,7 @@ public class Globals {
         Thread.currentThread().setContextClassLoader(cl);
 
         for (Class<?> cls : lafs) {
-    /*        System.out.println("Class:");
+            /*        System.out.println("Class:");
             System.out.println(cls.getName());*/
 
             Class<LookAndFeel> lafc;
@@ -253,12 +254,10 @@ public class Globals {
                 Logger.getLogger(SeSimApplication.class.getName()).log(Level.SEVERE, null, ex);
                 continue;
             }
-            
-          
 
-         /*   System.out.println("LAF:");
+            /*   System.out.println("LAF:");
             System.out.println(laf.getName());*/
-            UIManager.installLookAndFeel(laf.getName()+" - "+laf.getDescription(), lafc.getName());
+            UIManager.installLookAndFeel(laf.getName() + " - " + laf.getDescription(), lafc.getName());
 
         }
 
@@ -266,29 +265,25 @@ public class Globals {
 
         //       UIManager.installLookAndFeel(laf.getName(), lafc.getName());
     }
-    
+
     static ClassCache class_cache;
 
     static void initGlobals(Class<?> c) {
 
         prefs = Preferences.userNodeForPackage(c);
-        
+
         world = new World();
-        
+
         // initialize urllist used by class loader
         updateUrlList();
 
-
-        
-        class_cache = new ClassCache(urllist,new Class[]{
+        class_cache = new ClassCache(urllist, new Class[]{
             LookAndFeel.class,
             AbstractAsset.class
         });
 
-        installLookAndFeels();        
-        
-        
-        
+        installLookAndFeels();
+
         /*
         ArrayList<Class<LookAndFeelInfo>> res;
 
