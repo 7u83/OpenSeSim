@@ -28,7 +28,7 @@ package opensesim.gui.exchangeeditor;
 import java.awt.Dialog;
 import java.awt.Window;
 import javax.swing.JFrame;
-import opensesim.gui.EscDialog;
+import opensesim.gui.util.EscDialog;
 import opensesim.util.SeSimException;
 
 /**

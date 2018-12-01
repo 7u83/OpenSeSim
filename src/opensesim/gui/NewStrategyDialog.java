@@ -25,6 +25,7 @@
  */
 package opensesim.gui;
 
+import opensesim.gui.util.EscDialog;
 import java.util.ArrayList;
 
 /**

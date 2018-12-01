@@ -25,7 +25,6 @@
  */
 package opensesim.gui.AssetEditor;
 
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -51,10 +50,6 @@ import opensesim.gui.util.Json.Import;
  */
 public class AssetEditorPanel extends javax.swing.JPanel {
 
-
- 
-
-    
     ArrayList<Class<AbstractAsset>> asset_types;
 
     /**
@@ -62,40 +57,8 @@ public class AssetEditorPanel extends javax.swing.JPanel {
      */
     public AssetEditorPanel() {
         super();
-        asset_types = Globals.getAvailableAssetsTypes();
-        asset_types.sort(new Comparator<Class<AbstractAsset>>() {
-            @Override
-            public int compare(Class<AbstractAsset> o1, Class<AbstractAsset> o2) {
-                AbstractAsset a1, a2;
-                try {
-                    a1 = o1.newInstance();
-                    try {
-                        try {
-                            a1 = o1.getConstructor().newInstance(null);
-                        } catch (IllegalArgumentException ex) {
-                            Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (InvocationTargetException ex) {
-                            Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } catch (NoSuchMethodException ex) {
-                        Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (SecurityException ex) {
-                        Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    a2 = o2.newInstance();
-                } catch (InstantiationException | IllegalAccessException ex) {
-                    Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    return 0;
-                }
+        asset_types = Globals.getAvailableAssetsTypes(true);
 
-                String t1, t2;
-                t1 = a1.getTypeName();
-                t2 = a2.getTypeName();
-
-                return t1.compareToIgnoreCase(t2);
-            }
-
-        });
 
         initComponents();
         symField.setLimit(Globals.MAX.SYMLEN);
@@ -113,56 +76,38 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
     }
 
-  
     public String getNameField() {
         return nameField.getText();
     }
 
-
     public String getSymField() {
         return symField.getText();
     }
-    
+
     @Export
     public String hallo = "hello";
-    
-    @Import("type")
-    public void putType(String type){
+
+    public void putType(String type) {
         System.out.printf("Here we have a type: %s\n", type);
     }
-    
-    public JDialog dialog;
 
+    public JDialog dialog;
 
     ComboBoxModel getComboBoxModel() {
         ArrayList vector = new ArrayList();
-
-        // in case asset types are not initialized return a demo 
-        // combo box, so it will be displaeyd in NetBens designer
-        if (asset_types == null) {
-            vector.add(0, "Currency");
-            vector.add(1, "Stock");
-
-            return new DefaultComboBoxModel(vector.toArray());
-        }
-
         int i;
-
         for (i = 0; i < asset_types.size(); i++) {
             AbstractAsset ait;
             Class<AbstractAsset> asset_type = asset_types.get(i);
-            try {
+            System.out.printf("ACL: %s\n", asset_type.getName());
 
+            try {
                 ait = asset_type.newInstance();
                 vector.add(i, ait.getTypeName());
-                //     assetTypesComboBox.addItem(ait.getTypeName());
-
             } catch (InstantiationException | IllegalAccessException | ClassCastException ex) {
                 Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
-
         return new DefaultComboBoxModel(vector.toArray());
     }
 
@@ -190,6 +135,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         jLabel1.setText("Symbol:");
 
         assetTypesComboBox.setModel(getComboBoxModel());
+        assetTypesComboBox.setEnabled(false);
         assetTypesComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 assetTypesComboBoxActionPerformed(evt);
@@ -290,13 +236,27 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void assetTypesComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assetTypesComboBoxActionPerformed
+    @Import("type")
+    public void setType(String type) {
+        System.out.printf("Here we have a type: %s\n", type);
 
-        int i = this.assetTypesComboBox.getSelectedIndex();
+        Class<AbstractAsset> ac = (Class<AbstractAsset>) Globals.getClassByName(type);
+        if (ac == null) {
+            return;
+        }
+
+        System.out.printf("ACNAME: %s\n", ac.getName());
+
         AbstractAsset a;
+
         try {
-            a = (AbstractAsset) asset_types.get(i).newInstance();
-        } catch (InstantiationException | IllegalAccessException ex) {
+            try {
+                a = ac.getConstructor().newInstance();
+            } catch (NoSuchMethodException | SecurityException ex) {
+                Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
@@ -305,7 +265,6 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
         guiPanel.removeAll();
         if (gui != null) {
-
             guiPanel.add(gui, java.awt.BorderLayout.CENTER);
             gui.setVisible(true);
 
@@ -313,9 +272,24 @@ public class AssetEditorPanel extends javax.swing.JPanel {
             guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
         }
 
-        dialog.pack();
-        dialog.revalidate();
+        for (int i = 0; i < asset_types.size(); i++) {
+            if (asset_types.get(i).getName().equals(type)) {
+                assetTypesComboBox.setSelectedIndex(i);
+            }
+        }
 
+    }
+
+
+    private void assetTypesComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assetTypesComboBoxActionPerformed
+
+        int i = this.assetTypesComboBox.getSelectedIndex();
+        setType(asset_types.get(i).getName());
+        //this.pack();
+        revalidate();
+        repaint();
+
+        return;
 
     }//GEN-LAST:event_assetTypesComboBoxActionPerformed
 

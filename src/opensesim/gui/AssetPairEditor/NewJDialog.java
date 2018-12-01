@@ -26,7 +26,7 @@
 package opensesim.gui.AssetPairEditor;
 
 import opensesim.World;
-import opensesim.gui.EscDialog;
+import opensesim.gui.util.EscDialog;
 import opensesim.gui.Globals;
 
 /**

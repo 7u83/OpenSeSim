@@ -52,7 +52,8 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
             return;
         }
 
-        json_set = new JSONObject(Globals.prefs.get("myassets", "{EUR:{name:Euro,decimals:8,type:Curreny}}"));
+        json_set = new JSONObject(Globals.prefs.get("myassets", "{"
+                + "EUR:{name:Euro,decimals:8,type:opensesim.sesim.Assets.FurtureAsset}}"));
         reload();
 
         assetTable.setRowSelectionAllowed(true);

@@ -43,7 +43,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class EditPreferencesDialog extends opensesim.gui.EscDialog {
+public class EditPreferencesDialog extends opensesim.gui.util.EscDialog {
 
     UIManager.LookAndFeelInfo[] lafInfo;
 

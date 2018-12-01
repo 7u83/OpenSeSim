@@ -25,7 +25,7 @@
  */
 package opensesim.gui;
 
-import opensesim.gui.tools.NummericCellRenderer;
+import opensesim.gui.util.NummericCellRenderer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

@@ -30,7 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import opensesim.gui.EscDialog;
+import opensesim.gui.util.EscDialog;
 import opensesim.util.SeSimException;
 
 /**

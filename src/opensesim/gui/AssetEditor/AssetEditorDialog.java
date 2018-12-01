@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
 import opensesim.AbstractAsset;
 import opensesim.World;
 
-import opensesim.gui.EscDialog;
+import opensesim.gui.util.EscDialog;
 import opensesim.gui.Globals;
 import opensesim.gui.util.Json;
 import opensesim.gui.util.Json.Export;
@@ -197,7 +197,8 @@ public class AssetEditorDialog extends EscDialog {
         AssetEditorDialog d = new AssetEditorDialog(parent);
         if (o!=null)
             Json.put(d.assetEditorPanel, o);
-        
+        d.pack();
+        d.revalidate();
         d.setLocationRelativeTo(parent);
         d.setVisible(true);
         d.dispose();

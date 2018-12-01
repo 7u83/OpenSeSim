@@ -29,13 +29,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -45,19 +46,14 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import opensesim.AbstractAsset;
 import opensesim.World;
+import opensesim.gui.AssetEditor.AssetEditorPanel;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import opensesim.old_sesim.AutoTraderInterface;
 import opensesim.old_sesim.AutoTraderLoader;
-import opensesim.old_sesim.Indicator;
 import opensesim.old_sesim.IndicatorLoader;
-import opensesim.sesim.interfaces.Asset;
-import opensesim.util.XClassLoader;
 import opensesim.util.XClassLoader.ClassCache;
 
 /**
@@ -118,7 +114,7 @@ public class Globals {
 
     public static final class MAX {
 
-        public static final int SYMLEN = 6;
+        public static final int SYMLEN = 16;
         public static final int NAMELEN = 64;
     }
 
@@ -211,22 +207,51 @@ public class Globals {
 
     }
 
-    static public ArrayList<Class<AbstractAsset>> getAvailableAssetsTypes() {
-//        ArrayList<Class> asset_types_raw;
-//        ClassLoader old = setXClassLoader();
-        //       asset_types_raw = opensesim.util.XClassLoader.getClassesList(urllist, AbstractAsset.class);
-        //     unsetXClassLoader(old);
+    static public ArrayList<Class<AbstractAsset>> getAvailableAssetsTypes(boolean sort) {
+
         Collection<Class> asset_types_raw;
         asset_types_raw = class_cache.getClassCollection(AbstractAsset.class);
 
         ArrayList<Class<AbstractAsset>> asset_types = new ArrayList<>();
-        for (Class a : asset_types_raw) {
-            Class<AbstractAsset> aa = a;
-            asset_types.add(aa);
-            // asset_types.put(a.cast(AbstractAsset.class));
-        }
+        asset_types_raw.forEach((a) -> {
+            asset_types.add(a);
+        });
+        
+        if (!sort)
+            return asset_types;
+
+        asset_types.sort(new Comparator<Class<AbstractAsset>>() {
+            @Override
+            public int compare(Class<AbstractAsset> o1, Class<AbstractAsset> o2) {
+                AbstractAsset a1, a2;
+
+                try {
+                    //         a1 = o1.newInstance();
+                    a1 = o1.getConstructor().newInstance();
+                    a2 = o2.getConstructor().newInstance();
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
+                    Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    return 0;
+                }
+
+                String t1, t2;
+                t1 = a1.getTypeName();
+                t2 = a2.getTypeName();
+
+                return t1.compareToIgnoreCase(t2);
+            }
+
+        });
 
         return asset_types;
+    }
+
+    static public ArrayList<Class<AbstractAsset>> getAvailableAssetsTypes() {
+        return getAvailableAssetsTypes(false);
+    }
+
+    static public Class getClassByName(String name) {
+        return class_cache.getClassByName(name);
     }
 
     static public void installLookAndFeels() {

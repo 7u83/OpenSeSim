@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2018, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,36 +23,53 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.gui;
+package opensesim.gui.AssetEditor;
 
+import java.awt.Window;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import opensesim.AbstractAsset;
+import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
-import org.json.JSONObject;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
+public class SelectAssetTypeDialog extends EscDialog {
 
+    ArrayList<Class<AbstractAsset>>asset_types;
     /**
-     * Creates new form EditExchnageDialog
+     * Creates new form SelectAssetTypeDialog
      */
-    public EditExchangeDialog(java.awt.Frame parent, boolean modal) {
+    public SelectAssetTypeDialog(Window parent, boolean modal) {
         super(parent, modal);
+        asset_types = Globals.getAvailableAssetsTypes(true);
         initComponents();
-        this.setLocationRelativeTo(parent);
-        JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", Globals.DEFAULT_EXCHANGE_CFG));
 
-            this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.se.CFG_MONEY_DECIMALS));
-            this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.se.CFG_SHARES_DECIMALS));
-            this.setLocationRelativeTo(parent);
     }
 
-    int showdialog() {
-        this.setVisible(true);
-        return 3;
-    }
+    ComboBoxModel getComboBoxModel() {
+        ArrayList vector = new ArrayList();
+        int i;
+        for (i = 0; i < asset_types.size(); i++) {
+            AbstractAsset ait;
+            Class<AbstractAsset> asset_type = asset_types.get(i);
+            System.out.printf("ACL: %s\n", asset_type.getName());
 
+            try {
+                ait = asset_type.newInstance();
+                vector.add(i, ait.getTypeName());
+            } catch (InstantiationException | IllegalAccessException | ClassCastException ex) {
+                Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return new DefaultComboBoxModel(vector.toArray());
+    }    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -62,41 +79,31 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        sharesDecimalsSpinner = new javax.swing.JSpinner();
-        jLabel1 = new javax.swing.JLabel();
-        moneyDecimalsSpinner = new javax.swing.JSpinner();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
+        assetTypeComboBox = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("SeSim ExchangeSettings");
-        setMinimumSize(new java.awt.Dimension(300, 142));
-        setModal(true);
+        setTitle("Select Asset Type to create");
 
-        sharesDecimalsSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 10, 1));
-
-        jLabel1.setText("Number of decimals for shares:");
-
-        moneyDecimalsSpinner.setModel(new javax.swing.SpinnerNumberModel(2, 0, 10, 1));
-
-        jLabel2.setText("Number of decimals for money:");
-
-        jButton1.setMnemonic('c');
-        jButton1.setText("Cancel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
-        okButton.setMnemonic('o');
-        okButton.setText("Ok");
+        okButton.setText("Create ...");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
             }
         });
+
+        assetTypeComboBox.setModel(getComboBoxModel());
+
+        jLabel1.setText("Type:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -105,35 +112,27 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 158, Short.MAX_VALUE)
                         .addComponent(okButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cancelButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(moneyDecimalsSpinner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(sharesDecimalsSpinner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(assetTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(sharesDecimalsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(assetTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(moneyDecimalsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(cancelButton)
                     .addComponent(okButton))
                 .addContainerGap())
         );
@@ -141,19 +140,27 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    String selected = null;
+    
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        JSONObject jo = new JSONObject();
-        jo.put(Globals.se.CFG_MONEY_DECIMALS, (Integer) this.moneyDecimalsSpinner.getValue());
-        jo.put(Globals.se.CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
-        System.out.printf("EC: %s\n", jo.toString(3));
-        Globals.prefs.put("Exchange", jo.toString());
+        int i = this.assetTypeComboBox.getSelectedIndex();
+        selected = asset_types.get(i).getName();
         dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
+    
+    public static String runDialog(Window parent){
+        SelectAssetTypeDialog dialog;
+        dialog = new SelectAssetTypeDialog(parent,true);
+        dialog.setLocationRelativeTo(parent);
+        dialog.setVisible(true);
+        return dialog.selected;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -171,21 +178,20 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditExchangeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SelectAssetTypeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditExchangeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SelectAssetTypeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditExchangeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SelectAssetTypeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditExchangeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SelectAssetTypeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                EditExchangeDialog dialog = new EditExchangeDialog(new javax.swing.JFrame(), true);
+                SelectAssetTypeDialog dialog = new SelectAssetTypeDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -198,11 +204,9 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox<String> assetTypeComboBox;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JSpinner moneyDecimalsSpinner;
     private javax.swing.JButton okButton;
-    private javax.swing.JSpinner sharesDecimalsSpinner;
     // End of variables declaration//GEN-END:variables
 }

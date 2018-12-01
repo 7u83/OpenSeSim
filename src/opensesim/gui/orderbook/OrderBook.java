@@ -27,7 +27,7 @@ package opensesim.gui.orderbook;
 
 import opensesim.gui.Globals;
 import opensesim.gui.Globals.CfgListener;
-import opensesim.gui.tools.NummericCellRenderer;
+import opensesim.gui.util.NummericCellRenderer;
 import java.awt.Component;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

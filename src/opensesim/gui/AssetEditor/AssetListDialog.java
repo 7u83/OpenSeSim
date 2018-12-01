@@ -32,7 +32,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import opensesim.gui.EscDialog;
+import opensesim.gui.util.EscDialog;
 import opensesim.sesim.Assets.BasicAsset;
 import opensesim.util.IDGenerator.Id;
 import org.json.JSONObject;
@@ -43,10 +43,6 @@ import org.json.JSONObject;
  */
 public class AssetListDialog extends EscDialog {
 
-    String getMyName(){
-        return "Miau!";
-    }
-    
     /**
      * Creates new form EditAssetsDialog
      */
@@ -149,50 +145,14 @@ public class AssetListDialog extends EscDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
-
-        //AssetEditorDialog.runDialog(this, null);
+        String type = SelectAssetTypeDialog.runDialog(this);
+        if (type==null)
+            return;
+        JSONObject o = new JSONObject();
+        o.put("type", type);
+        AssetEditorDialog.runDialog(this, o, o);
         this.assetListPanel.reload();
-        /*  javax.swing.JOptionPane.showMessageDialog(this, "Hello", "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);*/
- /*       Id id = AssteEditorDialog.runDialog(this, null);
-        if (id != null) {
-            assetList1.addAsset(id);
-        }
-         */ this.repaint();
-        //      JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
-        /*        
-        //  CreateAssetDialog dlg = new CreateAssetDialog();
-        CreateAssetDialog.runDialog(this);
-
-        javax.swing.JOptionPane.showMessageDialog(this, "Hello", "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-
-        frame = (JFrame) SwingUtilities.getAncestorOfClass(Frame.class, this);
-        dialog = new CreateAssetDialog(frame, false);
-        dialog.setModal(true);
-        this.setModal(true);
-        this.setModalityType(ModalityType.DOCUMENT_MODAL);
-        //   addPropertyChangeListener(new ValuePropertyHandler(dialog));
-
-//dialog.setAlwaysOnTop(true);
-//this.setVisible(false);
-        dialog.setLocationRelativeTo(this);
-        dialog.setModalityType(ModalityType.DOCUMENT_MODAL);
-        dialog.setModal(true);
-        // dialog.setVisible(true);
-        dialog.show();
-
-        Id id = dialog.getCreatedId();
-        this.setModal(true);
-        this.setVisible(true);
-
-        dialog.dispose();
-        if (id != null) {
-            assetList1.addAsset(id);
-        }
-        this.repaint();
-         */
     }//GEN-LAST:event_newButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -201,8 +161,8 @@ public class AssetListDialog extends EscDialog {
 
     private void doEdit() {
         JSONObject o = assetListPanel.getSelectedObject();
-        System.out.printf("JON: %s",o.toString(4));
-        AssetEditorDialog.runDialog(this, o,null);
+        System.out.printf("JON: %s", o.toString(4));
+        AssetEditorDialog.runDialog(this, o, null);
     }
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed

@@ -222,6 +222,10 @@ public class XClassLoader {
             return Collections.unmodifiableCollection(h);
         }
         
+        public Class getClassByName(String name){
+            return byName.get(name);
+        }
+        
     }
 
 }
