@@ -84,8 +84,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         return symField.getText();
     }
 
-    @Export
-    public String hallo = "hello";
+
 
     public void putType(String type) {
         System.out.printf("Here we have a type: %s\n", type);
@@ -99,7 +98,6 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         for (i = 0; i < asset_types.size(); i++) {
             AbstractAsset ait;
             Class<AbstractAsset> asset_type = asset_types.get(i);
-            System.out.printf("ACL: %s\n", asset_type.getName());
 
             try {
                 ait = asset_type.newInstance();
@@ -225,14 +223,14 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
     @Import("type")
     public void setType(String type) {
-        System.out.printf("Here we have a type: %s\n", type);
+
 
         Class<AbstractAsset> ac = (Class<AbstractAsset>) Globals.getClassByName(type);
         if (ac == null) {
             return;
         }
 
-        System.out.printf("ACNAME: %s\n", ac.getName());
+
 
         AbstractAsset a;
 
