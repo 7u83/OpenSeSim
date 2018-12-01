@@ -109,6 +109,7 @@ public class Globals {
         public static final String SESIMVERSION = "version";
         public static final String STRATEGIES = "strategies";
         public static final String TRADERS = "traders";
+        public static final String ASSETS = "assets";
 
     }
 
@@ -335,6 +336,16 @@ public class Globals {
 
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
 
+    static public final JSONObject getAssets() {
+        String assets_json = prefs.get(PrefKeys.ASSETS, "{}");
+        return new JSONObject(assets_json);
+    }
+    
+    static public final void putAssets(JSONObject assets){
+        prefs.put(PrefKeys.ASSETS, assets.toString());
+    }
+    
+    
     static public final JSONArray getTraders() {
 
         String traders_json = Globals.prefs.get(PrefKeys.TRADERS, "[]");
@@ -342,6 +353,8 @@ public class Globals {
         return traders;
     }
 
+    
+    
     static public final JSONObject getStrategies() {
         String cfglist = Globals.prefs.get(PrefKeys.STRATEGIES, "{}");
         JSONObject cfgs = new JSONObject(cfglist);
