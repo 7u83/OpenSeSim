@@ -126,6 +126,11 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     @Export
     public String hallo = "hello";
     
+    @Import("type")
+    public void putType(String type){
+        System.out.printf("Here we have a type: %s\n", type);
+    }
+    
     public JDialog dialog;
 
 

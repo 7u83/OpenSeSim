@@ -202,7 +202,7 @@ public class AssetListDialog extends EscDialog {
     private void doEdit() {
         JSONObject o = assetListPanel.getSelectedObject();
         System.out.printf("JON: %s",o.toString(4));
-        AssetEditorDialog.runDialog(this, o);
+        AssetEditorDialog.runDialog(this, o,null);
     }
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed

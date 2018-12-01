@@ -30,6 +30,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextField;
@@ -89,19 +91,18 @@ public class Json {
 
     /**
      * Inverse to get
+     *
      * @param o Object
      * @param jo JSONObject
      */
     public static void put(Object o, JSONObject jo) {
         Field[] fields = o.getClass().getFields();
         for (Field f : fields) {
-            
-            System.out.printf("ANNOT: %s\n",f.getName());
-            
             Import imp = f.getAnnotation(Import.class);
             if (imp == null) {
                 continue;
             }
+
             Class cls = f.getType();
             if (JTextField.class.isAssignableFrom(cls)) {
                 try {
@@ -110,6 +111,32 @@ public class Json {
                     tf.setText(jo.optString(name));
                 } catch (IllegalArgumentException | IllegalAccessException ex1) {
                     Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+                continue;
+            }
+        }
+
+        Method[] methods = o.getClass().getMethods();
+        for (Method m : methods) {
+            Import imp = m.getAnnotation(Import.class);
+            if (imp == null) {
+                continue;
+            }
+
+            if (m.getParameterCount() != 1) {
+                Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, "Wrong pcouunt");
+                continue;
+            }
+
+            String name = null == imp.value() ? m.getName() : imp.value();
+            
+            Class p0 = m.getParameterTypes()[0];
+            if (String.class.isAssignableFrom(p0)){
+                String param = jo.optString(name, "");
+                try {
+                    m.invoke(o, param);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 

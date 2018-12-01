@@ -192,51 +192,16 @@ public class AssetEditorDialog extends EscDialog {
 
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    static public boolean runDialog(Window parent, JSONObject o) {
-        //JSONObject jo = new org.json.JSONObject(parent, new String[]{"getMyName"});
-        //System.out.printf("PARENT: %s", jo.toString());
-        //   JSONObject.
-        
-        
-       
+    static public boolean runDialog(Window parent, JSONObject o, JSONObject all) {
 
         AssetEditorDialog d = new AssetEditorDialog(parent);
-        Json.put(d.assetEditorPanel, o);
+        if (o!=null)
+            Json.put(d.assetEditorPanel, o);
+        
+        d.setLocationRelativeTo(parent);
         d.setVisible(true);
         d.dispose();
         
-        
-        
-        
-        
-        d.assetEditorPanel.symField.setText("Hallo");
-        //d.assetEditorPanel.symField.setText("Herr");
-        JSONObject jo = Json.get(d.assetEditorPanel);
-        
-        System.out.printf("Resulting JSONN %s\n", jo.toString(5));
-
-        //Class aClass = d.assetEditorPanel.getClass().getDeclaredFields();
-        
-        Field[] fields = d.assetEditorPanel.getClass().getFields();
-        
-
-
-
-        
-        for (Field f  : fields) {
-                       
-            Export ex = f.getAnnotation(Export.class);
-            System.out.printf("Fieldname: %s\n",f.getName());
-            
-            
-            
-            if (ex == null){
-                continue;
-            }
-            
-            System.out.printf("EX: %s\n", ex.getClass().getName());
-           
-        }
         return true;
     }
 
