@@ -32,6 +32,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
@@ -112,9 +116,9 @@ public class XClassLoader {
         return null;
     }
 
-    public static ArrayList<Class<?>> getClassesList(ArrayList<URL> urllist, Class<?> checks[]) {
+    public static ArrayList<Class> getClassesList(ArrayList<URL> urllist, Class checks[]) {
 
-        ArrayList<Class<?>> class_list;
+        ArrayList<Class> class_list;
         class_list = new ArrayList<>();
 
         if (urllist == null) {
@@ -180,8 +184,44 @@ public class XClassLoader {
         return class_list;
     }
 
-    public static ArrayList<Class<?>> getClassesList(ArrayList<URL> urllist, Class<?> check){
-        return XClassLoader.getClassesList(urllist,new Class<?>[]  {check} );
+    public static ArrayList<Class> getClassesList(ArrayList<URL> urllist, Class check){
+        return XClassLoader.getClassesList(urllist,new Class[]  {check} );
+    }
+    
+    
+    public static class ClassCache {
+        HashMap <String,Class> byName;
+        HashMap <Class,HashSet<Class>> byInstanceOf;
+                
+        public ClassCache (ArrayList<URL> urllist,Class[] classes){
+            byName=new HashMap<>();
+            byInstanceOf=new HashMap<>();
+            
+            ArrayList<Class> results = getClassesList(urllist,classes);
+            for (Class result:results){
+                for (Class c:classes){
+                    if (c.isAssignableFrom(result)) {
+                        HashSet<Class> h;
+                        h = byInstanceOf.get(c);
+                        if (h==null){
+                            h=new HashSet<>();
+                            byInstanceOf.put(c, h);
+                        }
+                        h.add(result);
+                    }
+                }       
+                byName.put(result.getName(), result);
+            }
+        }
+     
+        public Collection<Class> getClassCollection(Class cls){
+            HashSet<Class> h;
+            h=byInstanceOf.get(cls);
+            if (h==null)
+                return h;
+            return Collections.unmodifiableCollection(h);
+        }
+        
     }
     /**
      *
