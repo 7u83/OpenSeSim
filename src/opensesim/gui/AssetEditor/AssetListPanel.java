@@ -25,8 +25,12 @@
  */
 package opensesim.gui.AssetEditor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import opensesim.AbstractAsset;
 import opensesim.World;
 import opensesim.gui.Globals;
 import org.json.JSONObject;
@@ -54,45 +58,29 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
 
         json_set = new JSONObject(Globals.prefs.get("myassets", "{"
                 + "EUR:{name:Euro,decimals:8,type:opensesim.sesim.Assets.FurtureAsset}}"));
+        
+        json_set = Globals.getAssets();
         reload();
 
         assetTable.setRowSelectionAllowed(true);
-        assetTable.getColumnModel().getColumn(0).setPreferredWidth(10);
-        assetTable.getColumnModel().getColumn(1).setPreferredWidth(30);
-        assetTable.getColumnModel().getColumn(2).setPreferredWidth(300);
-        assetTable.getColumnModel().getColumn(3).setPreferredWidth(30);
+
+        assetTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+        assetTable.getColumnModel().getColumn(1).setPreferredWidth(250);
+        assetTable.getColumnModel().getColumn(2).setPreferredWidth(80);
     }
 
     @Override
     public JSONObject getSelectedObject() {
         int row = assetTable.getSelectedRow();
-        String symbol = (String) assetTable.getValueAt(row, 1);
+        String symbol = (String) assetTable.getValueAt(row, 0);
         return json_set.getJSONObject(symbol);
     }
 
     final void reload() {
+        json_set = Globals.getAssets();
         DefaultTableModel m = (DefaultTableModel) assetTable.getModel();
-        /*    m.setRowCount(0);
-        Map assets = BasicAsset.getAssets();
-        for (Object key : assets.keySet()) {
-            addAsset((Id) key);
-        }
-        m.fireTableDataChanged();
-         */
-        if (world == null) {
-            return;
-        }
-        m.setRowCount(0);
 
-        /*      for (AbstractAsset a : world.getAssetCollection()) {
-            m.addRow(new Object[]{
-                a.getID(),
-                a.getSymbol(),
-                a.getName(),
-                a.getTypeName()
-            });
-        }
-         */
+
         m.setRowCount(0);
         for (String symbol : json_set.keySet()) {
             JSONObject o = json_set.optJSONObject(symbol);
@@ -100,25 +88,27 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
                 continue;
             }
 
+            Class <AbstractAsset> a = Globals.getClassByName(o.optString("type"));
+            String type_name;
+                    
+            try {
+                type_name=a.getConstructor().newInstance().getTypeName();
+                
+            } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                Logger.getLogger(AssetListPanel.class.getName()).log(Level.SEVERE, null, ex);
+                continue;
+            }
+            
+            
             m.addRow(new Object[]{
-                o.opt("id"),
+
                 symbol,
                 o.opt("name"),
-                o.opt("type")
+                type_name
             });
 
         }
 
-        /*      Collection ac;
-        ObjectMapper om = new ObjectMapper();
-        om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        try {
-            String s = om.writeValueAsString(world.getAssetCollection());
-            System.out.printf("MyValues %s", s);
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(AssetListPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         */
     }
 
     private TableModel getModel() {
@@ -137,7 +127,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
         }
 
         DefaultTableModel model = new TModel(
-                new Object[]{"ID", "Symbol", "Name", "Type"}, 0
+                new Object[]{"Symbol", "Name", "Type"}, 0
         );
 
         assetTable.setAutoCreateRowSorter(true);
@@ -154,16 +144,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
 
     }
 
-    /*    public void addAsset(Id id) {
 
-        BasicAsset a = (BasicAsset) BasicAsset.getAsset(id);
-        DefaultTableModel m = (DefaultTableModel) this.assetList.getModel();
-        m.addRow(new Object[]{
-            a.getID(),
-            a.getSymbol(),
-            a.getName()});
-    }
-     */
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

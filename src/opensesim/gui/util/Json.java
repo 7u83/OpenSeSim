@@ -84,8 +84,33 @@ public class Json {
                     Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex1);
                 }
             }
-
         }
+
+        Method[] methods = o.getClass().getMethods();
+        for (Method m : methods) {
+            Export exp = m.getAnnotation(Export.class);
+            if (exp == null) {
+                continue;
+            }
+
+            if (m.getParameterCount() != 0) {
+                Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, "Wrong pcount");
+                continue;
+            }
+
+            String name = null == exp.value() ? m.getName() : exp.value();
+
+            Class rt = m.getReturnType();
+            if (String.class.isAssignableFrom(rt)) {
+                try {
+                    String str = (String) m.invoke(o);
+                    jo.put(name, str);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
         return jo;
     }
 
@@ -124,14 +149,14 @@ public class Json {
             }
 
             if (m.getParameterCount() != 1) {
-                Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, "Wrong pcouunt");
+                Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, "Wrong pcount");
                 continue;
             }
 
             String name = null == imp.value() ? m.getName() : imp.value();
-            
+
             Class p0 = m.getParameterTypes()[0];
-            if (String.class.isAssignableFrom(p0)){
+            if (String.class.isAssignableFrom(p0)) {
                 String param = jo.optString(name, "");
                 try {
                     m.invoke(o, param);

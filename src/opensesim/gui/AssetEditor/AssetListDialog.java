@@ -26,6 +26,7 @@
 package opensesim.gui.AssetEditor;
 
 import java.awt.event.MouseEvent;
+import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
 
 import org.json.JSONObject;
@@ -92,6 +93,11 @@ public class AssetListDialog extends EscDialog {
         });
 
         jButton3.setText("Delete");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         editButton.setText("Edit ...");
         editButton.addActionListener(new java.awt.event.ActionListener() {
@@ -139,12 +145,13 @@ public class AssetListDialog extends EscDialog {
 
     private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
         String type = SelectAssetTypeDialog.runDialog(this);
-        if (type==null)
+        if (type == null) {
             return;
+        }
         JSONObject o = new JSONObject();
         o.put("type", type);
         AssetEditorDialog.runDialog(this, o, o);
-        this.assetListPanel.reload();
+        assetListPanel.reload();
 
     }//GEN-LAST:event_newButtonActionPerformed
 
@@ -154,25 +161,24 @@ public class AssetListDialog extends EscDialog {
 
     private void doEdit() {
         JSONObject o = assetListPanel.getSelectedObject();
-        System.out.printf("JON: %s", o.toString(4));
-        AssetEditorDialog.runDialog(this, o, null);
+           AssetEditorDialog.runDialog(this, o, o);
+        assetListPanel.reload();
     }
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
 
         doEdit();
 
-//        Id selId = (Id)assetList1.assetList.getValueAt(row, 0);
-/*
-        BasicAsset a = BasicAsset.getAsset(selId);
-        Id id = AssteEditorDialog.runDialog(this, a);
-        if (id != null) {
-        //    assetList1.addAsset(id);
-        }
-        this.assetList1.reload();
-        this.repaint();
-         */
+
     }//GEN-LAST:event_editButtonActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        JSONObject o = assetListPanel.getSelectedObject();
+        JSONObject ass = Globals.getAssets();
+        ass.remove(o.getString("symbol"));
+        Globals.putAssets(ass);
+        assetListPanel.reload();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments

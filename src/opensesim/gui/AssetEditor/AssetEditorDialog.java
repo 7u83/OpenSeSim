@@ -47,8 +47,8 @@ import org.json.JSONObject;
  */
 public class AssetEditorDialog extends EscDialog {
 
-    AbstractAsset asset;
-    World world;
+  
+
 
     /**
      * Creates new form CreateAssetDialog
@@ -57,13 +57,13 @@ public class AssetEditorDialog extends EscDialog {
 
         super(parent, true);
         initComponents();
-        world = Globals.world;
+
     }
 
     public AssetEditorDialog(Window parent) {
         super(parent, true);
         initComponents();
-        world = Globals.world;
+        
     }
 
     /**
@@ -126,26 +126,22 @@ public class AssetEditorDialog extends EscDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private Id newId = null;
-    
-    @Export 
-    public String hallo = "hallo";
-    
-
-    public Id getCreatedId() {
-        return newId;
-    }
-
+  
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 
-        if (this.asset == null) {
+        JSONObject result = Json.get(assetEditorPanel);    
+        System.out.printf("JSON: %s\n", result.toString(5));
+        JSONObject all = Globals.getAssets();
+        all.put(result.getString("symbol"), result);
+        Globals.putAssets(all);
+        
+    /*    if (this.asset == null) {
             try {
                 int selected = this.assetEditorPanel.assetTypesComboBox.getSelectedIndex();
                 Class<AbstractAsset> cls = (Class<AbstractAsset>) this.assetEditorPanel.asset_types.get(selected);
                 asset = AbstractAsset.create(world, cls, assetEditorPanel.symField.getText());
 
-                //new BasicAsset(assetEditor.symField.getText());
-                //      newId = BasicAsset.newAssed(asset);
+
             } catch (Exception ex) {
                 javax.swing.JOptionPane.showMessageDialog(this, ex.getMessage(),
                         "Error",
@@ -153,7 +149,8 @@ public class AssetEditorDialog extends EscDialog {
                 return;
             }
         }
-
+*/
+    
         /*else {
             if (!this.asset.getSymbol().equals(assetEditor.symField.getText())) {
                 try {
@@ -169,12 +166,12 @@ public class AssetEditorDialog extends EscDialog {
             }
 
         }*/
-        asset.setName(assetEditorPanel.nameField.getText());
-        asset.setDecimals((int) assetEditorPanel.decimalsField.getValue());
+      //  asset.setName(assetEditorPanel.nameField.getText());
+      //  asset.setDecimals((int) assetEditorPanel.decimalsField.getValue());
 
-        JSONObject cfg = world.getConfig();
+     //   JSONObject cfg = world.getConfig();
 
-        try {
+     /*   try {
             String jstr = cfg.toString(5);
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
@@ -182,7 +179,7 @@ public class AssetEditorDialog extends EscDialog {
         System.out.printf("JSONARRAY %s\n", cfg.toString(3));
         JSONObject world_cfg = Globals.world.getConfig();
         Globals.prefs.put("world", world_cfg.toString());
-        dispose();
+       */ dispose();
 
     }//GEN-LAST:event_okButtonActionPerformed
 

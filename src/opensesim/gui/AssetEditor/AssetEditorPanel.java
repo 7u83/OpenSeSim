@@ -25,13 +25,8 @@
  */
 package opensesim.gui.AssetEditor;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
@@ -40,7 +35,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import opensesim.AbstractAsset;
 import opensesim.gui.Globals;
-import opensesim.gui.util.JTextFieldLimit;
 import opensesim.gui.util.Json.Export;
 import opensesim.gui.util.Json.Import;
 
@@ -58,7 +52,6 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     public AssetEditorPanel() {
         super();
         asset_types = Globals.getAvailableAssetsTypes(true);
-
 
         initComponents();
         symField.setLimit(Globals.MAX.SYMLEN);
@@ -83,8 +76,6 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     public String getSymField() {
         return symField.getText();
     }
-
-
 
     public void putType(String type) {
         System.out.printf("Here we have a type: %s\n", type);
@@ -221,16 +212,29 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    @Export
+    public String getDeecimals(){
+        return decimalsField.getValue().toString();
+    }
+    
+    @Import
+    public void setDecimals(String d){
+        decimalsField.setValue(Integer.parseInt(d));
+    }
+    
+    @Export("type")
+    public String getType() {
+        int selected = assetTypesComboBox.getSelectedIndex();
+        return asset_types.get(selected).getName();
+    }
+
     @Import("type")
     public void setType(String type) {
-
 
         Class<AbstractAsset> ac = (Class<AbstractAsset>) Globals.getClassByName(type);
         if (ac == null) {
             return;
         }
-
-
 
         AbstractAsset a;
 
@@ -262,7 +266,6 @@ public class AssetEditorPanel extends javax.swing.JPanel {
                 assetTypesComboBox.setSelectedIndex(i);
             }
         }
-
     }
 
 
