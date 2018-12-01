@@ -53,9 +53,10 @@ public class XClassLoader {
 
         ArrayList<URL> urllist = new ArrayList<>();
         URL url;
-        
-        if (xpath == null)
+
+        if (xpath == null) {
             return urllist;
+        }
 
         // add xpath to load find classes stored under xpath
         try {
@@ -75,19 +76,19 @@ public class XClassLoader {
 
     }
 
-    private static Class<?> lClass(ArrayList<URL> urllist, Class<?> check, String class_name) {
+    private static Class lClass(ArrayList<URL> urllist, Class checks[], String class_name) {
 
         URLClassLoader cl;
         URL[] urls = urllist.toArray(new URL[urllist.size()]);
         cl = new URLClassLoader(urls);
 
-        Class<?> cls;
+        Class cls;
         try {
             cls = cl.loadClass(class_name);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(XClassLoader.class.getName()).log(Level.SEVERE, null, ex);
             return null;
-        } catch (NoClassDefFoundError e){
+        } catch (NoClassDefFoundError e) {
             return null;
         }
 
@@ -102,21 +103,24 @@ public class XClassLoader {
         if (Modifier.isInterface(cls.getModifiers())) {
             return null;
         }
-        if (check.isAssignableFrom(cls)) {
-            return cls;
+        for (Class check : checks) {
+            if (check.isAssignableFrom(cls)) {
+                return cls;
+            }
         };
 
         return null;
     }
 
-    public static ArrayList<Class<?>> getClassesList(ArrayList<URL> urllist, Class<?> check) {
+    public static ArrayList<Class<?>> getClassesList(ArrayList<URL> urllist, Class<?> checks[]) {
 
         ArrayList<Class<?>> class_list;
         class_list = new ArrayList<>();
 
-        if (urllist==null)
+        if (urllist == null) {
             return class_list;
-        
+        }
+
         for (URL url : urllist) {
             if (url.getProtocol().equals("file")) {
                 File f = new File(url.getFile());
@@ -132,14 +136,11 @@ public class XClassLoader {
                         class_name = class_name.replace("\\", "/");
                         class_name = class_name.substring(1, class_name.length() - 6).replace('/', '.');
 
-                        System.out.println("Auqa");
-                        System.out.println(class_name);
-
-                        Class<?> c = XClassLoader.lClass(urllist, check, class_name);
+                        Class c = XClassLoader.lClass(urllist, checks, class_name);
                         if (null != c) {
                             class_list.add(c);
                         }
-                        
+
                         //java.util.logging.Logger.getLogger("opensesim").log(Level.SEVERE, );
                         //Class<?> c = checkClass(path, class_name);                        
                     }
@@ -147,11 +148,10 @@ public class XClassLoader {
                 }
             }
 
-
             JarInputStream jarstream;
             try {
                 jarstream = new JarInputStream(url.openConnection().getInputStream());
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(XClassLoader.class.getName()).log(Level.SEVERE, null, ex);
                 continue;
@@ -166,7 +166,7 @@ public class XClassLoader {
                     if (class_name.endsWith(".class")) {
 
                         class_name = class_name.substring(0, class_name.length() - 6).replace('/', '.');
-                        Class<?> c = XClassLoader.lClass(urllist, check, class_name);
+                        Class<?> c = XClassLoader.lClass(urllist, checks, class_name);
                         if (null != c) {
                             class_list.add(c);
                         }
@@ -180,12 +180,15 @@ public class XClassLoader {
         return class_list;
     }
 
+    public static ArrayList<Class<?>> getClassesList(ArrayList<URL> urllist, Class<?> check){
+        return XClassLoader.getClassesList(urllist,new Class<?>[]  {check} );
+    }
     /**
      *
      * @param pathlist
      * @return
      */
-/*    public static ArrayList<Class<?>> getClasses(ArrayList<String> pathlist) {
+    /*    public static ArrayList<Class<?>> getClasses(ArrayList<String> pathlist) {
 
         ArrayList<Class<?>> result = new ArrayList<>();
 
@@ -270,10 +273,8 @@ public class XClassLoader {
 
     }
     
-*/
-
-    
-/*
+     */
+ /*
     private static Class<?> checkClass(String directory, String class_name) {
 
         if (class_name == null) {
@@ -338,5 +339,5 @@ public class XClassLoader {
         }
 
     }
-*/
+     */
 }
