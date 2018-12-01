@@ -25,7 +25,12 @@
  */
 package opensesim.gui.AssetEditor;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.logging.Level;
@@ -37,6 +42,7 @@ import javax.swing.JPanel;
 import opensesim.AbstractAsset;
 import opensesim.gui.Globals;
 import opensesim.gui.util.JTextFieldLimit;
+import opensesim.gui.util.Json.Export;
 
 /**
  *
@@ -44,6 +50,10 @@ import opensesim.gui.util.JTextFieldLimit;
  */
 public class AssetEditorPanel extends javax.swing.JPanel {
 
+
+ 
+
+    
     ArrayList<Class<AbstractAsset>> asset_types;
 
     /**
@@ -58,6 +68,19 @@ public class AssetEditorPanel extends javax.swing.JPanel {
                 AbstractAsset a1, a2;
                 try {
                     a1 = o1.newInstance();
+                    try {
+                        try {
+                            a1 = o1.getConstructor().newInstance(null);
+                        } catch (IllegalArgumentException ex) {
+                            Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InvocationTargetException ex) {
+                            Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } catch (NoSuchMethodException ex) {
+                        Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SecurityException ex) {
+                        Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     a2 = o2.newInstance();
                 } catch (InstantiationException | IllegalAccessException ex) {
                     Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,19 +109,24 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         symField.setText(asset.getSymbol());
         nameField.setText(asset.getName());
         decimalsField.getModel().setValue(asset.getDecimals());
-                
+
     }
 
-    @JsonGetter("name")
+  
     public String getNameField() {
         return nameField.getText();
     }
-    @JsonGetter("sym")
+
+
     public String getSymField() {
         return symField.getText();
     }
-
+    
+    @Export
+    public String hallo = "hello";
+    
     public JDialog dialog;
+
 
     ComboBoxModel getComboBoxModel() {
         ArrayList vector = new ArrayList();
@@ -116,7 +144,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
         for (i = 0; i < asset_types.size(); i++) {
             AbstractAsset ait;
-            Class <AbstractAsset> asset_type = asset_types.get(i);
+            Class<AbstractAsset> asset_type = asset_types.get(i);
             try {
 
                 ait = asset_type.newInstance();
@@ -163,6 +191,12 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         });
 
         jLabel2.setText("Type:");
+
+        symField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                symFieldActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Name:");
 
@@ -279,6 +313,10 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_assetTypesComboBoxActionPerformed
 
+    private void symFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_symFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_symFieldActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JComboBox<String> assetTypesComboBox;
@@ -291,6 +329,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel label;
     protected opensesim.gui.util.JTextFieldLimit nameField;
-    protected opensesim.gui.util.JTextFieldLimit symField;
+    @Export
+    public opensesim.gui.util.JTextFieldLimit symField;
     // End of variables declaration//GEN-END:variables
 }

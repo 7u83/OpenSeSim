@@ -25,6 +25,7 @@
  */
 package opensesim.gui;
 
+import com.google.gson.Gson;
 import opensesim.chart.Help;
 import opensesim.chart.SuperDlg;
 import java.awt.Dialog;
@@ -940,13 +941,50 @@ public class SeSimApplication extends javax.swing.JFrame {
         ExchangeListDialog.runDialog(this);
 
     }//GEN-LAST:event_exchangesMenuItemActionPerformed
+       public static   class Pojo {
 
+            public String getSymbol() {
+                return symbol;
+            }
+
+            public String getName() {
+                return name;
+            }
+            public String symbol = "EUR";
+            public String name = "Euro";
+        };
+  
+
+    
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
+    
+
+        // testing
+        
+        Pojo p = new Pojo();
+  
+        Gson g = new Gson();
+        String r = g.toJson(p);
+        
+        System.out.printf("GSON: %s\n", r);
+        
+        JSONObject o = new JSONObject(p,new String[]{"name","symbol"});
+        System.out.printf("OJSON: %s\n", o.toString(8));  
+        
+        
+        
+        
+     //   System.exit(0);
+        
+        
+        // end testing
+        
+        
         
         // Initialize globals
         Class<?> c = opensesim.gui.SeSimApplication.class;

@@ -25,25 +25,22 @@
  */
 package opensesim.gui.AssetEditor;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.awt.Dialog;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.Window;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 import opensesim.AbstractAsset;
 import opensesim.World;
+
 import opensesim.gui.EscDialog;
 import opensesim.gui.Globals;
+import opensesim.gui.util.Json;
+import opensesim.gui.util.Json.Export;
 import opensesim.util.IDGenerator.Id;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -58,6 +55,12 @@ public class AssetEditorDialog extends EscDialog {
      */
     public AssetEditorDialog(Dialog parent, AbstractAsset asset) {
 
+        super(parent, true);
+        initComponents();
+        world = Globals.world;
+    }
+
+    public AssetEditorDialog(Window parent) {
         super(parent, true);
         initComponents();
         world = Globals.world;
@@ -124,6 +127,10 @@ public class AssetEditorDialog extends EscDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private Id newId = null;
+    
+    @Export 
+    public String hallo = "hallo";
+    
 
     public Id getCreatedId() {
         return newId;
@@ -185,6 +192,47 @@ public class AssetEditorDialog extends EscDialog {
 
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    static public boolean runDialog(Window parent, JSONObject o) {
+        //JSONObject jo = new org.json.JSONObject(parent, new String[]{"getMyName"});
+        //System.out.printf("PARENT: %s", jo.toString());
+        //   JSONObject.
+        
+        
+       
+
+        AssetEditorDialog d = new AssetEditorDialog(parent);
+        d.assetEditorPanel.symField.setText("Hallo");
+        //d.assetEditorPanel.symField.setText("Herr");
+        JSONObject jo = Json.get(d.assetEditorPanel);
+        
+        System.out.printf("Resulting JSONN %s\n", jo.toString(5));
+
+        //Class aClass = d.assetEditorPanel.getClass().getDeclaredFields();
+        
+        Field[] fields = d.assetEditorPanel.getClass().getFields();
+        
+
+
+
+        
+        for (Field f  : fields) {
+                       
+            Export ex = f.getAnnotation(Export.class);
+            System.out.printf("Fieldname: %s\n",f.getName());
+            
+            
+            
+            if (ex == null){
+                continue;
+            }
+            
+            System.out.printf("EX: %s\n", ex.getClass().getName());
+           
+        }
+        return true;
+    }
+
+    /* 
     static public Id runDialog(Dialog parent, AbstractAsset asset) {
         AssetEditorDialog dialog = new AssetEditorDialog(parent, asset);
         dialog.assetEditorPanel.initFields(asset);
@@ -215,7 +263,7 @@ public class AssetEditorDialog extends EscDialog {
 
         return dialog.newId;
     }
-
+     */
     /**
      * @param args the command line arguments
      */
