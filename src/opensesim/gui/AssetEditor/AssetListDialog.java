@@ -25,16 +25,9 @@
  */
 package opensesim.gui.AssetEditor;
 
-import com.sun.rowset.internal.Row;
-import java.awt.Frame;
-import java.awt.Window;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import opensesim.gui.util.EscDialog;
-import opensesim.sesim.Assets.BasicAsset;
-import opensesim.util.IDGenerator.Id;
+
 import org.json.JSONObject;
 
 /**

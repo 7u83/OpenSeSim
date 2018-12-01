@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import opensesim.AbstractAsset;
-import opensesim.sesim.Assets.BasicAsset;
+
 import opensesim.sesim.interfaces.Asset;
 
 /**
