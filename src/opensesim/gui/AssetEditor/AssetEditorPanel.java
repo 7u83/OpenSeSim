@@ -43,6 +43,7 @@ import opensesim.AbstractAsset;
 import opensesim.gui.Globals;
 import opensesim.gui.util.JTextFieldLimit;
 import opensesim.gui.util.Json.Export;
+import opensesim.gui.util.Json.Import;
 
 /**
  *
@@ -328,8 +329,11 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel label;
-    protected opensesim.gui.util.JTextFieldLimit nameField;
-    @Export
+    @Import("name")
+    @Export("name")
+    public opensesim.gui.util.JTextFieldLimit nameField;
+    @Export("symbol")
+    @Import("symbol")
     public opensesim.gui.util.JTextFieldLimit symField;
     // End of variables declaration//GEN-END:variables
 }

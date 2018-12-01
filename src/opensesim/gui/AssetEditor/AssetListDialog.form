@@ -39,7 +39,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="assetListPanel1" max="32767" attributes="0"/>
+                      <Component id="assetListPanel" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -50,7 +50,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="assetListPanel1" pref="282" max="32767" attributes="0"/>
+              <Component id="assetListPanel" pref="282" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="newButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -94,7 +94,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="opensesim.gui.AssetEditor.AssetListPanel" name="assetListPanel1">
+    <Component class="opensesim.gui.AssetEditor.AssetListPanel" name="assetListPanel">
     </Component>
   </SubComponents>
 </Form>

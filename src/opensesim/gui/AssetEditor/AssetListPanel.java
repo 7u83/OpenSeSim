@@ -25,31 +25,21 @@
  */
 package opensesim.gui.AssetEditor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import opensesim.AbstractAsset;
-import opensesim.sesim.Assets.BasicAsset;
 import opensesim.World;
 import opensesim.gui.Globals;
-import opensesim.util.IDGenerator.Id;
-import opensesim.util.SeSimObjectMapper;
+import org.json.JSONObject;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AssetListPanel extends javax.swing.JPanel {
+public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionList{
 
     World world;
+
+    JSONObject json_set;
 
     /**
      * Creates new form AssetList
@@ -57,17 +47,30 @@ public class AssetListPanel extends javax.swing.JPanel {
     public AssetListPanel() {
         world = Globals.world;
         initComponents();
+
+        if (Globals.prefs == null) {
+            return;
+        }
+
+        json_set = new JSONObject(Globals.prefs.get("myassets", "{EUR:{name:Euro,decimals:8}}"));
         reload();
 
-        assetList.setRowSelectionAllowed(true);
-        assetList.getColumnModel().getColumn(0).setPreferredWidth(10);
-        assetList.getColumnModel().getColumn(1).setPreferredWidth(30);
-        assetList.getColumnModel().getColumn(2).setPreferredWidth(300);
-        assetList.getColumnModel().getColumn(3).setPreferredWidth(30);
+        assetTable.setRowSelectionAllowed(true);
+        assetTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+        assetTable.getColumnModel().getColumn(1).setPreferredWidth(30);
+        assetTable.getColumnModel().getColumn(2).setPreferredWidth(300);
+        assetTable.getColumnModel().getColumn(3).setPreferredWidth(30);
+    }
+
+    @Override
+    public JSONObject getSelectedObject() {
+        int row = assetTable.getSelectedRow();
+        String symbol = (String) assetTable.getValueAt(row, 1);
+        return json_set.getJSONObject(symbol);
     }
 
     final void reload() {
-        DefaultTableModel m = (DefaultTableModel) assetList.getModel();
+        DefaultTableModel m = (DefaultTableModel) assetTable.getModel();
         /*    m.setRowCount(0);
         Map assets = BasicAsset.getAssets();
         for (Object key : assets.keySet()) {
@@ -80,18 +83,32 @@ public class AssetListPanel extends javax.swing.JPanel {
         }
         m.setRowCount(0);
 
-        for (AbstractAsset a : world.getAssetCollection()) {
+        /*      for (AbstractAsset a : world.getAssetCollection()) {
             m.addRow(new Object[]{
                 a.getID(),
                 a.getSymbol(),
                 a.getName(),
                 a.getTypeName()
             });
- 
+        }
+         */
+        m.setRowCount(0);
+        for (String symbol : json_set.keySet()) {
+            JSONObject o = json_set.optJSONObject(symbol);
+            if (o == null) {
+                continue;
+            }
+
+            m.addRow(new Object[]{
+                o.opt("id"),
+                symbol,
+                o.opt("name")
+            });
+
         }
 
-        Collection ac; 
-       ObjectMapper om = new ObjectMapper();
+        /*      Collection ac;
+        ObjectMapper om = new ObjectMapper();
         om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         try {
             String s = om.writeValueAsString(world.getAssetCollection());
@@ -99,8 +116,7 @@ public class AssetListPanel extends javax.swing.JPanel {
         } catch (JsonProcessingException ex) {
             Logger.getLogger(AssetListPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-
+         */
     }
 
     private TableModel getModel() {
@@ -122,8 +138,8 @@ public class AssetListPanel extends javax.swing.JPanel {
                 new Object[]{"ID", "Symbol", "Name", "Type"}, 0
         );
 
-        assetList.setAutoCreateRowSorter(true);
-        assetList.getTableHeader().setReorderingAllowed(false);
+        assetTable.setAutoCreateRowSorter(true);
+        assetTable.getTableHeader().setReorderingAllowed(false);
         return model;
 
     }
@@ -131,7 +147,7 @@ public class AssetListPanel extends javax.swing.JPanel {
     public void uppdate() {
         DefaultTableModel m;
 
-        m = (DefaultTableModel) this.assetList.getModel();
+        m = (DefaultTableModel) this.assetTable.getModel();
         m.fireTableDataChanged();
 
     }
@@ -156,11 +172,11 @@ public class AssetListPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        assetList = new javax.swing.JTable();
+        assetTable = new javax.swing.JTable();
 
-        assetList.setModel(getModel());
-        assetList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(assetList);
+        assetTable.setModel(getModel());
+        assetTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(assetTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -180,7 +196,7 @@ public class AssetListPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JTable assetList;
+    public javax.swing.JTable assetTable;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

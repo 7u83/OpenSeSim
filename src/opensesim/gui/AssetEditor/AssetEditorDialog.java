@@ -201,6 +201,14 @@ public class AssetEditorDialog extends EscDialog {
        
 
         AssetEditorDialog d = new AssetEditorDialog(parent);
+        Json.put(d.assetEditorPanel, o);
+        d.setVisible(true);
+        d.dispose();
+        
+        
+        
+        
+        
         d.assetEditorPanel.symField.setText("Hallo");
         //d.assetEditorPanel.symField.setText("Herr");
         JSONObject jo = Json.get(d.assetEditorPanel);

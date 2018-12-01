@@ -28,11 +28,14 @@ package opensesim.gui.AssetEditor;
 import com.sun.rowset.internal.Row;
 import java.awt.Frame;
 import java.awt.Window;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import opensesim.gui.EscDialog;
 import opensesim.sesim.Assets.BasicAsset;
 import opensesim.util.IDGenerator.Id;
+import org.json.JSONObject;
 
 /**
  *
@@ -40,12 +43,29 @@ import opensesim.util.IDGenerator.Id;
  */
 public class AssetListDialog extends EscDialog {
 
+    String getMyName(){
+        return "Miau!";
+    }
+    
     /**
      * Creates new form EditAssetsDialog
      */
     public AssetListDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        java.awt.event.MouseAdapter l = new java.awt.event.MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    doEdit();
+                }
+
+            }
+        };
+
+        this.assetListPanel.assetTable.addMouseListener(l);
     }
 
     /**
@@ -61,7 +81,7 @@ public class AssetListDialog extends EscDialog {
         newButton = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
-        assetListPanel1 = new opensesim.gui.AssetEditor.AssetListPanel();
+        assetListPanel = new opensesim.gui.AssetEditor.AssetListPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Edit Assets");
@@ -108,14 +128,14 @@ public class AssetListDialog extends EscDialog {
                         .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(assetListPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(assetListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(assetListPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                .addComponent(assetListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newButton)
@@ -130,15 +150,15 @@ public class AssetListDialog extends EscDialog {
 
     private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
 
-        AssetEditorDialog.runDialog(this, null);
-        this.assetListPanel1.reload();
+        //AssetEditorDialog.runDialog(this, null);
+        this.assetListPanel.reload();
         /*  javax.swing.JOptionPane.showMessageDialog(this, "Hello", "Error",
                 javax.swing.JOptionPane.ERROR_MESSAGE);*/
  /*       Id id = AssteEditorDialog.runDialog(this, null);
         if (id != null) {
             assetList1.addAsset(id);
         }
-   */     this.repaint();
+         */ this.repaint();
         //      JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
         /*        
@@ -179,9 +199,16 @@ public class AssetListDialog extends EscDialog {
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void doEdit() {
+        JSONObject o = assetListPanel.getSelectedObject();
+        System.out.printf("JON: %s",o.toString(4));
+        AssetEditorDialog.runDialog(this, o);
+    }
+
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
 
-//        int row = assetList1.assetList.getSelectedRow();
+        doEdit();
+
 //        Id selId = (Id)assetList1.assetList.getValueAt(row, 0);
 /*
         BasicAsset a = BasicAsset.getAsset(selId);
@@ -191,7 +218,7 @@ public class AssetListDialog extends EscDialog {
         }
         this.assetList1.reload();
         this.repaint();
-        */
+         */
     }//GEN-LAST:event_editButtonActionPerformed
 
     /**
@@ -238,7 +265,7 @@ public class AssetListDialog extends EscDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private opensesim.gui.AssetEditor.AssetListPanel assetListPanel1;
+    private opensesim.gui.AssetEditor.AssetListPanel assetListPanel;
     private javax.swing.JButton editButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;

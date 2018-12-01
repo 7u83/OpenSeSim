@@ -54,35 +54,66 @@ public class Json {
 
         public String value() default "";
     }
-    
-    
-    
+
+    /**
+     * Get fields from JSON Object
+     *
+     * @param o Object to get fields from
+     * @return the created JSONObject
+     */
     public static JSONObject get(Object o) {
         Field[] fields = o.getClass().getFields();
         JSONObject jo = new JSONObject();
-        
+
         for (Field f : fields) {
 
-            System.out.printf("CHECKFIELD %s\n", f.getName());
-            Export ex = f.getAnnotation(Export.class);
-            if (ex == null) {
+            Export exp = f.getAnnotation(Export.class);
+            if (exp == null) {
                 continue;
             }
-            
+
             Class cls = f.getType();
-            if (JTextField.class.isAssignableFrom(cls)){
+            if (JTextField.class.isAssignableFrom(cls)) {
                 try {
                     JTextField tf = (JTextField) f.get(o);
-                    jo.put(f.getName(), tf.getText());
+                    String name = null == exp.value() ? f.getName() : exp.value();
+                    jo.put(name, tf.getText());
                 } catch (IllegalArgumentException | IllegalAccessException ex1) {
                     Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex1);
                 }
             }
-            
-            System.out.printf("EX: %s\n", ex.getClass().getName());
 
         }
-
         return jo;
     }
+
+    /**
+     * Inverse to get
+     * @param o Object
+     * @param jo JSONObject
+     */
+    public static void put(Object o, JSONObject jo) {
+        Field[] fields = o.getClass().getFields();
+        for (Field f : fields) {
+            
+            System.out.printf("ANNOT: %s\n",f.getName());
+            
+            Import imp = f.getAnnotation(Import.class);
+            if (imp == null) {
+                continue;
+            }
+            Class cls = f.getType();
+            if (JTextField.class.isAssignableFrom(cls)) {
+                try {
+                    JTextField tf = (JTextField) f.get(o);
+                    String name = null == imp.value() ? f.getName() : imp.value();
+                    tf.setText(jo.optString(name));
+                } catch (IllegalArgumentException | IllegalAccessException ex1) {
+                    Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
+
+        }
+    }
+
 }
