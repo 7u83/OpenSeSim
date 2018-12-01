@@ -130,7 +130,6 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         decimalsField = new javax.swing.JSpinner();
         guiPanel = new javax.swing.JPanel();
         defaultGuiPanel = new javax.swing.JPanel();
-        label = new javax.swing.JLabel();
 
         jLabel1.setText("Symbol:");
 
@@ -160,27 +159,15 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
         defaultGuiPanel.setMinimumSize(new java.awt.Dimension(360, 25));
 
-        label.setText("no config");
-
         javax.swing.GroupLayout defaultGuiPanelLayout = new javax.swing.GroupLayout(defaultGuiPanel);
         defaultGuiPanel.setLayout(defaultGuiPanelLayout);
         defaultGuiPanelLayout.setHorizontalGroup(
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 360, Short.MAX_VALUE)
-            .addGroup(defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(defaultGuiPanelLayout.createSequentialGroup()
-                    .addGap(0, 148, Short.MAX_VALUE)
-                    .addComponent(label)
-                    .addGap(0, 149, Short.MAX_VALUE)))
         );
         defaultGuiPanelLayout.setVerticalGroup(
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 25, Short.MAX_VALUE)
-            .addGroup(defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(defaultGuiPanelLayout.createSequentialGroup()
-                    .addGap(0, 5, Short.MAX_VALUE)
-                    .addComponent(label)
-                    .addGap(0, 5, Short.MAX_VALUE)))
         );
 
         guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
@@ -307,7 +294,6 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel label;
     @Import("name")
     @Export("name")
     public opensesim.gui.util.JTextFieldLimit nameField;
