@@ -18,8 +18,12 @@
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.9.7"/>
         
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.9.7"/>
-
+        <!--<dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.9.7"/>-->
+        
+        
+<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+<dependency org="com.google.code.gson" name="gson" rev="2.8.5"/>
+        
     </dependencies>
 
 </ivy-module>
