@@ -110,6 +110,7 @@ public class Globals {
         public static final String STRATEGIES = "strategies";
         public static final String TRADERS = "traders";
         public static final String ASSETS = "assets";
+        public static final String EXCHANGES = "exchanges";
 
     }
 
@@ -345,6 +346,13 @@ public class Globals {
         prefs.put(PrefKeys.ASSETS, assets.toString());
     }
     
+    static public final JSONObject getExchanges(){
+        String json = prefs.get(PrefKeys.EXCHANGES, "{}");
+        return new JSONObject(json);
+    }
+     static public final void putExchanges(JSONObject e){
+        prefs.put(PrefKeys.EXCHANGES, e.toString());
+    }
     
     static public final JSONArray getTraders() {
 

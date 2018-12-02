@@ -30,8 +30,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
+import opensesim.gui.util.Json;
 import opensesim.util.SeSimException;
+import org.json.JSONObject;
 
 /**
  *
@@ -47,11 +50,17 @@ public class ExchangeEditorDialog extends EscDialog {
         initComponents();
     }
 
-    public static void runDialog(Dialog parent) {
+    public static void runDialog(Dialog parent, JSONObject e) {
 
         ExchangeEditorDialog dialog = new ExchangeEditorDialog(parent, true);
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
+        JSONObject r = Json.get(dialog.exchangeEditorPanel1);
+        JSONObject ex = Globals.getExchanges();
+        ex.put(r.getString("symbol"), r);
+        Globals.putExchanges(ex);
+        
+        /*    
         try {
             dialog.exchangeEditorPanel1.saveData();
         } catch (SeSimException ex) {
@@ -60,7 +69,8 @@ public class ExchangeEditorDialog extends EscDialog {
                     javax.swing.JOptionPane.ERROR_MESSAGE);
         }
         dialog.dispose();
-
+*/
+    
     }
 
     /**

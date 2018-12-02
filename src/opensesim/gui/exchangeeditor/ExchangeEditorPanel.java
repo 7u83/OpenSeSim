@@ -28,6 +28,8 @@ package opensesim.gui.exchangeeditor;
 import opensesim.Exchange;
 import opensesim.World;
 import opensesim.gui.Globals;
+import opensesim.gui.util.Json.Export;
+import opensesim.gui.util.Json.Import;
 import opensesim.util.SeSimException;
 
 /**
@@ -80,8 +82,9 @@ public class ExchangeEditorPanel extends javax.swing.JPanel {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                    .addComponent(symField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(symField, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                    .addComponent(nameField))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,7 +105,11 @@ public class ExchangeEditorPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField nameField;
-    private opensesim.gui.util.JTextFieldLimit symField;
+    @Import("name")
+    @Export("name")
+    public javax.swing.JTextField nameField;
+    @Export("symbol")
+    @Import("name")
+    public opensesim.gui.util.JTextFieldLimit symField;
     // End of variables declaration//GEN-END:variables
 }
