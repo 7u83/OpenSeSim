@@ -26,7 +26,7 @@
 package opensesim.sesim.Assets;
 
 import javax.swing.JPanel;
-import opensesim.AbstractAsset;
+import opensesim.world.AbstractAsset;
 
 /**
  *

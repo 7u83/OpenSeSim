@@ -47,8 +47,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
-import opensesim.AbstractAsset;
-import opensesim.World;
+import opensesim.world.AbstractAsset;
+import opensesim.world.World;
 import opensesim.gui.AssetEditor.AssetEditorPanel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -299,7 +299,7 @@ public class Globals {
 
         prefs = Preferences.userNodeForPackage(c);
 
-        world = new World();
+      //  world = new World();
 
         // initialize urllist used by class loader
         updateUrlList();
@@ -443,6 +443,13 @@ public class Globals {
         putStrategies(strategies);
         putTraders(traders);
 
+    }
+    
+    public static JSONObject getWorld(){
+        JSONObject world = new JSONObject();
+        world.put(PrefKeys.ASSETS, getAssets());
+        world.put(PrefKeys.EXCHANGES, getExchanges());
+        return world;
     }
 
     public static void clearAll() {

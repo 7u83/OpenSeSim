@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim;
+package opensesim.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,9 +44,16 @@ import org.json.JSONObject;
  */
 public class World implements Configurable {
 
+    public static final class JKEYS {
+        public static final String ASSETS = "assets";        
+        public static final String EXCHANGES = "exchanges";
+    }
+
     HashMap<Id, AbstractAsset> assetsById = new HashMap<>();
     HashMap<String, AbstractAsset> assetsBySymbol = new HashMap<>();
     IDGenerator assetIdGenerator = new IDGenerator();
+    IDGenerator orderIdGenerator = new IDGenerator();
+    
 
     HashSet<AssetPair> assetPairs = new HashSet<>();
 
@@ -54,8 +61,10 @@ public class World implements Configurable {
 
     /**
      * Create a World object.
+     *
+     * @param world
      */
-    public World() {
+    public World(JSONObject world) {
 
     }
 

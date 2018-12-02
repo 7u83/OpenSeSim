@@ -597,6 +597,12 @@ public class SeSimApplication extends javax.swing.JFrame {
     }
 
     void startSim() {
+        
+      //  World = new World();
+        
+        
+        
+        
 
         resetSim();
         JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", "{}"));
@@ -990,10 +996,11 @@ public class SeSimApplication extends javax.swing.JFrame {
         Class<?> c = opensesim.gui.SeSimApplication.class;
         Globals.initGlobals(c);
         
-        String world_source = Globals.prefs.get("world", "{}");
+    /*    String world_source = Globals.prefs.get("world", "{}");
         JSONObject world = new org.json.JSONObject(world_source);
         Globals.world.putConfig(world);
-        
+    */
+    
         
         //Globals.installLookAndFeels();
 

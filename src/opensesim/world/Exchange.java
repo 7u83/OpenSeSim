@@ -23,16 +23,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim;
+package opensesim.world;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import opensesim.World;
+import opensesim.world.World;
 import opensesim.sesim.AssetPair;
-import opensesim.sesim.Order;
 import opensesim.sesim.interfaces.Configurable;
 import org.json.JSONObject;
 
@@ -78,7 +77,8 @@ public class Exchange implements Configurable{
     }
 
     public Order createOrder(Account account, AssetPair pair, Order.Type type, double volume, double limit) {
-
+        Order o = new Order(world,account,pair,type,volume,limit);
+        
         return null;
     }
     

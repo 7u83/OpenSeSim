@@ -23,27 +23,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim;
+package opensesim.world;
 
-import opensesim.Exchange;
-import java.util.concurrent.ConcurrentHashMap;
-import opensesim.sesim.interfaces.Asset;
-import opensesim.sesim.interfaces.Trader;
+import opensesim.sesim.AssetPair;
+import opensesim.sesim.interfaces.FeeModel;
+import opensesim.util.AssetVol;
 
 /**
- * Class to hold account data of traders
+ *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Account {
-    ConcurrentHashMap <Asset,Double> assets;
-    
-    Trader owner;
-    
-    Account(Exchange exchange){
-        assets = new ConcurrentHashMap<>();
+public class DefaultFeeModel implements FeeModel{
+
+  
+    public AssetVol xgetTakerFee(AssetPair pair) {
+        double vol = 5;
+        return new AssetVol(pair.getCurrency(),vol);
+ 
     }
-    
 
-
+    @Override
+    public double getTakerFee(double x) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

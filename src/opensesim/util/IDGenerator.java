@@ -37,7 +37,7 @@ import java.util.Objects;
 public class IDGenerator {
     
     
-    public static class Id {
+    public static class Id implements Comparable<Id>{
         final Long value;
 
         public Id(String id) {
@@ -61,6 +61,15 @@ public class IDGenerator {
         @Override
         public String toString() {
             return value.toString();
+        }
+
+        @Override
+        public int compareTo(Id o) {
+            if (this.value>o.value)
+                return 1;
+            if (this.value<o.value)
+                return -1;
+            return 0;
         }
         
         

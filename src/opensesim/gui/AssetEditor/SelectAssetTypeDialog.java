@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import opensesim.AbstractAsset;
+import opensesim.world.AbstractAsset;
 import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
 

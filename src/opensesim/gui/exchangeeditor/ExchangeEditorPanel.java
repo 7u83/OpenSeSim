@@ -25,8 +25,8 @@
  */
 package opensesim.gui.exchangeeditor;
 
-import opensesim.Exchange;
-import opensesim.World;
+import opensesim.world.Exchange;
+import opensesim.world.World;
 import opensesim.gui.Globals;
 import opensesim.gui.util.Json.Export;
 import opensesim.gui.util.Json.Import;

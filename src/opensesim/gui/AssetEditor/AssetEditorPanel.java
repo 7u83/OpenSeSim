@@ -33,7 +33,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import opensesim.AbstractAsset;
+import opensesim.world.AbstractAsset;
 import opensesim.gui.Globals;
 import opensesim.gui.util.Json.Export;
 import opensesim.gui.util.Json.Import;

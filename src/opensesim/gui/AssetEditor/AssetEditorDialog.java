@@ -30,8 +30,8 @@ import java.awt.Window;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-import opensesim.AbstractAsset;
-import opensesim.World;
+import opensesim.world.AbstractAsset;
+import opensesim.world.World;
 
 import opensesim.gui.util.EscDialog;
 import opensesim.gui.Globals;

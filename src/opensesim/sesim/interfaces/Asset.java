@@ -27,7 +27,7 @@ package opensesim.sesim.interfaces;
 
 import java.util.HashMap;
 import javax.swing.JPanel;
-import opensesim.World;
+import opensesim.world.World;
 import opensesim.util.IDGenerator;
 import opensesim.util.IDGenerator.Id;
 

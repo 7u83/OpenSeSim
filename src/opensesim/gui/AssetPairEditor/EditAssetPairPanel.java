@@ -1,8 +1,8 @@
 package opensesim.gui.AssetPairEditor;
 
 import java.util.Collection;
-import opensesim.AbstractAsset;
-import opensesim.World;
+import opensesim.world.AbstractAsset;
+import opensesim.world.World;
 import opensesim.gui.Globals;
 
 /*

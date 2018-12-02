@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package opensesim.chart;
-import opensesim.*;
 
 /**
  *

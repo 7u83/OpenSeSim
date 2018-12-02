@@ -25,7 +25,7 @@
  */
 package opensesim.util;
 
-import opensesim.AbstractAsset;
+import opensesim.world.AbstractAsset;
 
 /**
  *

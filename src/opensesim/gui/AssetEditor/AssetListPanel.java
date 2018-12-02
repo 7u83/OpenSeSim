@@ -30,8 +30,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import opensesim.AbstractAsset;
-import opensesim.World;
+import opensesim.world.AbstractAsset;
+import opensesim.world.World;
 import opensesim.gui.Globals;
 import org.json.JSONObject;
 
