@@ -26,14 +26,9 @@
 package opensesim.gui.exchangeeditor;
 
 import java.awt.Dialog;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
 import opensesim.gui.util.Json;
-import opensesim.util.SeSimException;
 import org.json.JSONObject;
 
 /**
