@@ -25,47 +25,35 @@
  */
 package opensesim.util.idgenerator;
 
-import java.util.Objects;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
- * @param <T>
  */
-public class Id<T extends Comparable> implements Comparable<Id> {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({opensesim.util.idgenerator.IdTest.class, opensesim.util.idgenerator.IDGeneratorTest.class})
+public class IdgeneratorSuite {
 
-    final T value;
-
-    Id(T id) {
-        value = id;
+    @BeforeClass
+    public static void setUpClass() throws Exception {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o.getClass() != Id.class) {
-            return false;
-        }
-        return Objects.equals(value, ((Id) o).value);
+    @AfterClass
+    public static void tearDownClass() throws Exception {
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 47 * hash + Objects.hashCode(this.value);
-        return hash;
+    @Before
+    public void setUp() throws Exception {
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
+    @After
+    public void tearDown() throws Exception {
     }
-
-    @Override
-    public int compareTo(Id o) {
-        return value.compareTo(o.value);
-    }
-
+    
 }
-
-
-
