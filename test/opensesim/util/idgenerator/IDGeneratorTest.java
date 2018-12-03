@@ -23,40 +23,65 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.sesim.interfaces;
+package opensesim.util.idgenerator;
 
-import java.util.HashMap;
-import javax.swing.JPanel;
-import opensesim.world.World;
-import opensesim.util.idgenerator.IDGenerator;
-import opensesim.util.idgenerator.Id;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface Asset extends Configurable {
-
-    static HashMap<Id, Asset> assetsById = new HashMap<>();
-    static HashMap<String, Asset> assetsBySymbol = new HashMap<>();
-    static IDGenerator assetIdGenerator = new IDGenerator();
-
-    public String getSymbol();
-
-    public Id getID();
-
-    public Id setID(Id id);
-
-    public JPanel getEditGui();
+public class IDGeneratorTest {
+    
+    public IDGeneratorTest() {
+    }
+    
+    @BeforeClass
+    public static void setUpClass() {
+    }
+    
+    @AfterClass
+    public static void tearDownClass() {
+    }
+    
+    @Before
+    public void setUp() {
+    }
+    
+    @After
+    public void tearDown() {
+    }
 
     /**
-     * Indicate if this asset can act as currency
-     *
-     * @return true if currency, false no.
+     * Test of reset method, of class IDGenerator.
      */
-    public boolean isCurrency();
+    @Test
+    public void testReset() {
+        System.out.println("reset");
+        IDGenerator instance = new IDGenerator();
+        instance.reset();
+        // TODO review the generated test code and remove the default call to fail.
+      //  fail("The test case is a prototype.");
+    }
 
-    public String getTypeName();
-
-    //  public Asset(Id);
+    /**
+     * Test of getNext method, of class IDGenerator.
+     */
+    @Test
+    public void testGetNext() {
+        System.out.println("getNext");
+        IDGenerator instance = new IDGenerator(7L);
+        
+        Id expResult = new Id<Long>(0L);
+        Id result = instance.getNext();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+     //   fail("The test case is a prototype.");
+    }
+    
 }

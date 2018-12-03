@@ -30,7 +30,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import opensesim.sesim.interfaces.Configurable;
-import opensesim.util.IDGenerator.Id;
+import opensesim.util.idgenerator.Id;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

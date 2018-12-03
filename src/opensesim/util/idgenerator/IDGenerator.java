@@ -23,11 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.util;
-
-import java.util.Objects;
-
-
+package opensesim.util.idgenerator;
 
 /**
  * Implementation of a simple ID generator to create uniqe IDs of type long
@@ -35,45 +31,6 @@ import java.util.Objects;
  * @author 7u83 <7u83@mail.ru>
  */
 public class IDGenerator {
-    
-    
-    public static class Id implements Comparable<Id>{
-        final Long value;
-
-        public Id(String id) {
-            value =Long.parseLong(id);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o.getClass() != Id.class)
-                return false;
-            return Objects.equals(value, ((Id)o).value);
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 47 * hash + Objects.hashCode(this.value);
-            return hash;
-        }
-
-        @Override
-        public String toString() {
-            return value.toString();
-        }
-
-        @Override
-        public int compareTo(Id o) {
-            if (this.value>o.value)
-                return 1;
-            if (this.value<o.value)
-                return -1;
-            return 0;
-        }
-        
-        
-    }
 
     private Long next_id;
     private Long start_id;
@@ -83,8 +40,8 @@ public class IDGenerator {
      *
      * @param start ID value to start with
      */
-    public IDGenerator(String start) {
-        start_id=Long.parseLong(start);
+    public IDGenerator(Long start) {
+        start_id=start;
         reset();
     }
 
@@ -92,13 +49,13 @@ public class IDGenerator {
      * Initialize ID Generator with start ID = 0
      */
     public IDGenerator() {
-        this("0");
+        this(0L);
     }
-    
+
     /**
      * Reset the ID generator
      */
-    public final void reset(){
+    protected final void reset() {
         next_id = start_id;
     }
 
@@ -108,6 +65,6 @@ public class IDGenerator {
      * @return the next generated ID
      */
     public synchronized Id getNext() {
-        return new Id((next_id++).toString());
+        return new Id<Long>(next_id++);
     }
 }

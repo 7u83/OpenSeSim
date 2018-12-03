@@ -67,7 +67,7 @@ import org.json.JSONObject;
 import opensesim.old_sesim.AutoTraderInterface;
 import opensesim.old_sesim.Exchange;
 import opensesim.old_sesim.Scheduler;
-import opensesim.util.IDGenerator.Id;
+
 import opensesim.util.XClassLoader;
 
 /**

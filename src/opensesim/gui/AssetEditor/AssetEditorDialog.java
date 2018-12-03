@@ -37,7 +37,7 @@ import opensesim.gui.util.EscDialog;
 import opensesim.gui.Globals;
 import opensesim.gui.util.Json;
 import opensesim.gui.util.Json.Export;
-import opensesim.util.IDGenerator.Id;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

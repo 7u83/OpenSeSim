@@ -23,40 +23,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.sesim.interfaces;
+package opensesim.util.idgenerator;
 
-import java.util.HashMap;
-import javax.swing.JPanel;
-import opensesim.world.World;
-import opensesim.util.idgenerator.IDGenerator;
-import opensesim.util.idgenerator.Id;
+import java.util.Objects;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface Asset extends Configurable {
+public class Id<T extends Comparable> implements Comparable<Id> {
 
-    static HashMap<Id, Asset> assetsById = new HashMap<>();
-    static HashMap<String, Asset> assetsBySymbol = new HashMap<>();
-    static IDGenerator assetIdGenerator = new IDGenerator();
+    final T value;
 
-    public String getSymbol();
+    Id(T id) {
+        value = id;
+    }
 
-    public Id getID();
+    @Override
+    public boolean equals(Object o) {
+        if (o.getClass() != Id.class) {
+            return false;
+        }
+        return Objects.equals(value, ((Id) o).value);
+    }
 
-    public Id setID(Id id);
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.value);
+        return hash;
+    }
 
-    public JPanel getEditGui();
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 
-    /**
-     * Indicate if this asset can act as currency
-     *
-     * @return true if currency, false no.
-     */
-    public boolean isCurrency();
+    @Override
+    public int compareTo(Id o) {
+        return value.compareTo(o);
+    }
 
-    public String getTypeName();
-
-    //  public Asset(Id);
 }
+
+
+
