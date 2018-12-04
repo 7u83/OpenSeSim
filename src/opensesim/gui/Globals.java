@@ -218,9 +218,10 @@ public class Globals {
         asset_types_raw.forEach((a) -> {
             asset_types.add(a);
         });
-        
-        if (!sort)
+
+        if (!sort) {
             return asset_types;
+        }
 
         asset_types.sort(new Comparator<Class<AbstractAsset>>() {
             @Override
@@ -260,6 +261,9 @@ public class Globals {
         Collection<Class> lafs;
         // lafs = opensesim.util.XClassLoader.getClassesList(urllist, LookAndFeel.class);
         lafs = class_cache.getClassCollection(LookAndFeel.class);
+        if (lafs == null) {
+            return;
+        }
 
         ClassLoader currentThreadClassLoader
                 = Thread.currentThread().getContextClassLoader();
@@ -299,8 +303,7 @@ public class Globals {
 
         prefs = Preferences.userNodeForPackage(c);
 
-      //  world = new World();
-
+        //  world = new World();
         // initialize urllist used by class loader
         updateUrlList();
 
@@ -341,19 +344,20 @@ public class Globals {
         String assets_json = prefs.get(PrefKeys.ASSETS, "{}");
         return new JSONObject(assets_json);
     }
-    
-    static public final void putAssets(JSONObject assets){
+
+    static public final void putAssets(JSONObject assets) {
         prefs.put(PrefKeys.ASSETS, assets.toString());
     }
-    
-    static public final JSONObject getExchanges(){
+
+    static public final JSONObject getExchanges() {
         String json = prefs.get(PrefKeys.EXCHANGES, "{}");
         return new JSONObject(json);
     }
-     static public final void putExchanges(JSONObject e){
+
+    static public final void putExchanges(JSONObject e) {
         prefs.put(PrefKeys.EXCHANGES, e.toString());
     }
-    
+
     static public final JSONArray getTraders() {
 
         String traders_json = Globals.prefs.get(PrefKeys.TRADERS, "[]");
@@ -361,8 +365,6 @@ public class Globals {
         return traders;
     }
 
-    
-    
     static public final JSONObject getStrategies() {
         String cfglist = Globals.prefs.get(PrefKeys.STRATEGIES, "{}");
         JSONObject cfgs = new JSONObject(cfglist);
@@ -444,8 +446,7 @@ public class Globals {
         putTraders(traders);
 
     }
-    
- 
+
     public static void clearAll() {
         putStrategies(new JSONObject());
         putTraders(new JSONArray());
@@ -460,12 +461,11 @@ public class Globals {
         loadString(s);
 
     }
-    
-    
-    public static JSONObject getWorld(){
+
+    public static JSONObject getWorld() {
         JSONObject cfg = new JSONObject();
         cfg.put(World.JKEYS.ASSETS, getAssets());
-        cfg.put(World.JKEYS.EXCHANGES, getExchanges()); 
+        cfg.put(World.JKEYS.EXCHANGES, getExchanges());
         return cfg;
     }
 
