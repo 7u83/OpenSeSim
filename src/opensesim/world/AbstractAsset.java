@@ -25,10 +25,11 @@
  */
 package opensesim.world;
 
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
+import opensesim.gui.util.Json;
+import opensesim.gui.util.Json.Import;
 import opensesim.sesim.interfaces.Configurable;
 import opensesim.util.idgenerator.Id;
 
@@ -39,9 +40,11 @@ import org.json.JSONObject;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AbstractAsset implements Configurable {
+public abstract class AbstractAsset {
 
-    private Id id;
+    World world;
+
+
     private String symbol;
     private String name;
     private String description;
@@ -49,18 +52,22 @@ public abstract class AbstractAsset implements Configurable {
 
     /**
      * Constructor
+     * @param world
+     * @param cfg
      */
-    protected AbstractAsset() {
-        id = null;
+    public AbstractAsset(World world, JSONObject cfg) {
+        if (world == null)
+            return;
+        symbol = cfg.getString("symbol");
+        name = cfg.getString("name");
+        decimals = cfg.optInt("decimals",0);
+        
+        this.world = world;
     }
+
+  
 
     public abstract String getTypeName();
-    
-    
-
-    public void setDecimals(int decimals) {
-        this.decimals = decimals;
-    }
 
     public int getDecimals() {
         return decimals;
@@ -68,10 +75,6 @@ public abstract class AbstractAsset implements Configurable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Id getID() {
-        return id;
     }
 
     public String getSymbol() {
@@ -82,25 +85,20 @@ public abstract class AbstractAsset implements Configurable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
     }
-    
-    public boolean isCurrency(){
-        return false;
-    }
-    public boolean isAsset(){
-        return false;
-    }
-        
-    
 
-    public static final String JSON_ID ="id";
-    public static final String JSON_CLASS =  "class";
+    public boolean isCurrency() {
+        return false;
+    }
+
+    public boolean isAsset() {
+        return false;
+    }
+
+    public static final String JSON_ID = "id";
+    public static final String JSON_CLASS = "class";
     public static final String JSON_SYMBOL = "symbol";
     public static final String JSON_NAME = "name";
     public static final String JSON_DESCRIPTION = "description";
@@ -118,9 +116,10 @@ public abstract class AbstractAsset implements Configurable {
 
     }
 
-    public static AbstractAsset create(World world, Class<AbstractAsset> cls, String symbol) throws Exception {
+    /*    public static AbstractAsset create(World world, Class<AbstractAsset> cls, String symbol) throws Exception {
         AbstractAsset a = cls.newInstance();
-
+        
+        
         if (world.assetsBySymbol.get(symbol) != null) {
             throw new java.lang.Exception("Can't create asset. Symbol '" + symbol + "' is already in use.");
         }
@@ -129,13 +128,13 @@ public abstract class AbstractAsset implements Configurable {
         a.symbol=symbol;
 
         
-        world.assetsById.put(a.id, a);
+        world.assetsById.add(a);
         world.assetsBySymbol.put(a.getSymbol(), a);
 
         return a;
     }
-    
-    public static AbstractAsset create(World world, JSONObject cfg){
+     */
+ /*  public static AbstractAsset create(World world, JSONObject cfg){
         AbstractAsset a;
         String class_name;
         Class cls;
@@ -160,9 +159,8 @@ public abstract class AbstractAsset implements Configurable {
         }
         return null;
     }
-
-    @Override
-    public JSONObject getConfig() {
+     */
+ /* public JSONObject getConfig() {
         JSONObject cfg = new JSONObject();
         cfg.put(AbstractAsset.JSON_ID,id.toString());
         cfg.put(AbstractAsset.JSON_CLASS, this.getClass().getName());
@@ -173,15 +171,15 @@ public abstract class AbstractAsset implements Configurable {
         return cfg;
     }
 
-    @Override
+
     public void putConfig(JSONObject cfg) {
         symbol = cfg.optString(AbstractAsset.JSON_SYMBOL);
         decimals = cfg.optInt(AbstractAsset.JSON_DECIMALS, AbstractAsset.DECIMALS_DEFAULT);
         name = cfg.optString(AbstractAsset.JSON_NAME, "");
         description = cfg.optString(AbstractAsset.JSON_DESCRIPTION);
     }
-
-    public JPanel getEditGui(){
+     */
+    public JPanel getEditGui() {
         return null;
     }
 }

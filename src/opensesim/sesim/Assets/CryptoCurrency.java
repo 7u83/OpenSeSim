@@ -26,6 +26,8 @@
 package opensesim.sesim.Assets;
 
 import opensesim.world.AbstractAsset;
+import opensesim.world.World;
+import org.json.JSONObject;
 
 /**
  *
@@ -33,6 +35,12 @@ import opensesim.world.AbstractAsset;
  */
 public class CryptoCurrency extends AbstractAsset{
 
+    public CryptoCurrency(World world, JSONObject cfg) {
+        super(world, cfg);
+    }
+
+ 
+    
     @Override
     public String getTypeName() {
         return "Crypto Currency";

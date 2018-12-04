@@ -51,16 +51,15 @@ public class Exchange implements Configurable{
 
     //private final HashMap<String, AssetPair> asset_pairs;
     
-    private final HashMap<AssetPair,TradingEnv> asset_pairs;
+    private final HashMap<AssetPair,TradingEnv> asset_pairs = new HashMap<>();
 
     Exchange(World world, String symbol) {
-        asset_pairs = new HashMap<>();
+      
         this.world = world;
         this.symbol=symbol;
     }
-
-    private void reset() {
-        asset_pairs.clear();
+    
+    Exchange(World world, JSONObject cfg){
     }
 
     public String getName() {

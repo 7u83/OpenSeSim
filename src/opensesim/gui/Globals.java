@@ -445,13 +445,7 @@ public class Globals {
 
     }
     
-    public static JSONObject getWorld(){
-        JSONObject world = new JSONObject();
-        world.put(PrefKeys.ASSETS, getAssets());
-        world.put(PrefKeys.EXCHANGES, getExchanges());
-        return world;
-    }
-
+ 
     public static void clearAll() {
         putStrategies(new JSONObject());
         putTraders(new JSONArray());
@@ -465,6 +459,14 @@ public class Globals {
 
         loadString(s);
 
+    }
+    
+    
+    public static JSONObject getWorld(){
+        JSONObject cfg = new JSONObject();
+        cfg.put(World.JKEYS.ASSETS, getAssets());
+        cfg.put(World.JKEYS.EXCHANGES, getExchanges()); 
+        return cfg;
     }
 
 }

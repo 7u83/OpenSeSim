@@ -31,14 +31,12 @@ import opensesim.sesim.AssetPair;
 import opensesim.util.idgenerator.IDGenerator;
 import opensesim.util.idgenerator.Id;
 
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class Order implements Comparable<Order> {
-  
-    
+
     @Override
     public int compareTo(Order o) {
         {
@@ -99,7 +97,7 @@ public class Order implements Comparable<Order> {
 
     Order(World world, Account account, AssetPair pair, Type type,
             double volume, double limit) {
-      
+
         this.account = account;
         this.type = type;
         this.limit = limit;
@@ -108,10 +106,10 @@ public class Order implements Comparable<Order> {
         this.created = 0;
         this.status = OrderStatus.OPEN;
         this.cost = 0;
-      //  id = Order.idGenerator.getNext();
-        this.world=world;
-      //  id = world.
-      id = null;
+        //  id = Order.idGenerator.getNext();
+        this.world = world;
+        //  id = world.
+        id = world.orderIdGenerator.getNext();
     }
 
     public Id getID() {
@@ -168,8 +166,8 @@ public class Order implements Comparable<Order> {
      * @return Stock symbol
      */
     public String getStockSymbol() {
-       // return stock.getSymbol();
-       return null;
+        // return stock.getSymbol();
+        return null;
     }
 
 }

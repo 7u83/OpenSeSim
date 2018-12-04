@@ -26,12 +26,20 @@
 package opensesim.sesim.Assets;
 
 import opensesim.world.AbstractAsset;
+import opensesim.world.World;
+import org.json.JSONObject;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class StockAssett extends AbstractAsset{
+
+    public StockAssett(World world, JSONObject cfg) {
+        super(world, cfg);
+    }
+
+   
 
     @Override
     public String getTypeName() {

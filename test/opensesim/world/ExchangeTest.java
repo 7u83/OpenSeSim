@@ -23,8 +23,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.util.idgenerator;
+package opensesim.world;
 
+import java.util.Collection;
+import opensesim.sesim.AssetPair;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,55 +39,26 @@ import static org.junit.Assert.*;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class IDGeneratorTest {
-
-    public IDGeneratorTest() {
+public class ExchangeTest {
+    
+    public ExchangeTest() {
     }
-
+    
     @BeforeClass
     public static void setUpClass() {
     }
-
+    
     @AfterClass
     public static void tearDownClass() {
     }
-
+    
     @Before
     public void setUp() {
     }
-
+    
     @After
     public void tearDown() {
     }
 
-    /**
-     * Test of reset method, of class IDGenerator.
-     */
-    @Test
-    public void testReset() {
-        System.out.println("reset");
-        IDGenerator instance = new IDGenerator();
-        instance.reset();
-        // TODO review the generated test code and remove the default call to fail.
-        //  fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getNext method, of class IDGenerator.
-     */
-    @Test
-    public void testGetNext() {
-        System.out.println("getNext");
-        IDGenerator instance = new IDGenerator(7L);
-
-        Id expResult = new Id<Long>(7L);
-        Id result = instance.getNext();
-        assertEquals(expResult, result);
-
-        result = instance.getNext();
-        expResult = new Id<Long>(8L);
-        assertEquals(expResult, result);
-    
-    }
-
+ 
 }

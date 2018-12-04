@@ -25,35 +25,35 @@
  */
 package opensesim.world;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import opensesim.sesim.AssetPair;
-import opensesim.sesim.interfaces.Configurable;
 import opensesim.util.idgenerator.IDGenerator;
-import opensesim.util.idgenerator.Id;
 import opensesim.util.SeSimException;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class World implements Configurable {
+public class World {
 
     public static final class JKEYS {
-        public static final String ASSETS = "assets";        
+
+        public static final String ASSETS = "assets";
         public static final String EXCHANGES = "exchanges";
     }
 
-    HashMap<Id, AbstractAsset> assetsById = new HashMap<>();
+    HashSet<AbstractAsset> assetsById = new HashSet<>();
     HashMap<String, AbstractAsset> assetsBySymbol = new HashMap<>();
     IDGenerator assetIdGenerator = new IDGenerator();
     IDGenerator orderIdGenerator = new IDGenerator();
-    
 
     HashSet<AssetPair> assetPairs = new HashSet<>();
 
@@ -62,14 +62,37 @@ public class World implements Configurable {
     /**
      * Create a World object.
      *
-     * @param world
+     * @param cfg
      */
-    public World(JSONObject world) {
+    public World(JSONObject cfg) {
 
+        // Read assets
+        JSONObject jassets = cfg.getJSONObject(World.JKEYS.ASSETS);
+        for (String symbol : jassets.keySet()) {
+            AbstractAsset a = createAsset(jassets.getJSONObject(symbol));
+            assetsById.add(a);
+            assetsBySymbol.put(symbol, a);
+        }
+    }
+
+    private AbstractAsset createAsset(JSONObject cfg) {
+        AbstractAsset a;
+        String class_name;
+        Class<AbstractAsset> cls;
+
+        class_name = cfg.getString("type");
+        try {
+            cls = (Class<AbstractAsset>) Class.forName(class_name);
+            a =  cls.getConstructor(World.class,JSONObject.class).newInstance(this,cfg);
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        return a;
     }
 
     public Collection<AbstractAsset> getAssetCollection() {
-        return Collections.unmodifiableCollection(assetsById.values());
+        return Collections.unmodifiableCollection(assetsById);
     }
 
     public Collection<AssetPair> getAssetPairsCollection() {
@@ -99,7 +122,7 @@ public class World implements Configurable {
     static final String JSON_ASSET = "asset";
     static final String JSON_EXCHANGES = "exchanges";
 
-    @Override
+    /*
     public JSONObject getConfig() {
         JSONObject cfg = new JSONObject();
 
@@ -132,12 +155,12 @@ public class World implements Configurable {
             AbstractAsset.create(this, acfg);
         }
     }
-
-    public AbstractAsset createAsset(Class cls, String symbol) throws Exception {
+     */
+ /*  public AbstractAsset createAsset(Class cls, String symbol) throws Exception {
         return AbstractAsset.create(this, cls, symbol);
     }
-
-    /*
+     */
+ /*
         static public JSONArray toJson() {
 
         JSONArray all = new JSONArray();

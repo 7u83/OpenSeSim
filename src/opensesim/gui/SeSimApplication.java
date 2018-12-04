@@ -69,6 +69,7 @@ import opensesim.old_sesim.Exchange;
 import opensesim.old_sesim.Scheduler;
 
 import opensesim.util.XClassLoader;
+import opensesim.world.World;
 
 /**
  *
@@ -598,7 +599,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     void startSim() {
         
-      //  World = new World();
+        World world = new World(Globals.getWorld());
         
         
         

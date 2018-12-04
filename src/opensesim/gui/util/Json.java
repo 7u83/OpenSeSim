@@ -129,16 +129,30 @@ public class Json {
             }
 
             Class cls = f.getType();
+            String name = null == imp.value() ? f.getName() : imp.value();
+
+            // JTextField
             if (JTextField.class.isAssignableFrom(cls)) {
                 try {
                     JTextField tf = (JTextField) f.get(o);
-                    String name = null == imp.value() ? f.getName() : imp.value();
+
                     tf.setText(jo.optString(name));
                 } catch (IllegalArgumentException | IllegalAccessException ex1) {
                     Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex1);
                 }
                 continue;
             }
+
+            // String
+            if (String.class.isAssignableFrom(cls)) {
+                try {
+                    f.set(o, jo.optString(name));
+                } catch (IllegalArgumentException | IllegalAccessException ex1) {
+                    Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+                continue;
+            }
+
         }
 
         Method[] methods = o.getClass().getMethods();

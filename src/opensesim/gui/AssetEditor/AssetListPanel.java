@@ -92,7 +92,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
             String type_name;
                     
             try {
-                type_name=a.getConstructor().newInstance().getTypeName();
+                type_name=a.getConstructor(World.class,JSONObject.class).newInstance(null,null).getTypeName();
                 
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 Logger.getLogger(AssetListPanel.class.getName()).log(Level.SEVERE, null, ex);
