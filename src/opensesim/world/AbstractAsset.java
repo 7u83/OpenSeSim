@@ -160,18 +160,19 @@ public abstract class AbstractAsset {
         return null;
     }
      */
- /* public JSONObject getConfig() {
+  public JSONObject getJson() {
         JSONObject cfg = new JSONObject();
-        cfg.put(AbstractAsset.JSON_ID,id.toString());
-        cfg.put(AbstractAsset.JSON_CLASS, this.getClass().getName());
+        cfg.put(World.JKEYS.ASSET_TYPE, this.getClass().getName());
+        
         cfg.put(AbstractAsset.JSON_SYMBOL, this.getSymbol());
         cfg.put(AbstractAsset.JSON_DECIMALS, this.getDecimals());
         cfg.put(AbstractAsset.JSON_NAME, this.getName());
         cfg.put(AbstractAsset.JSON_DESCRIPTION, this.getDescription());
+        
         return cfg;
     }
 
-
+/*
     public void putConfig(JSONObject cfg) {
         symbol = cfg.optString(AbstractAsset.JSON_SYMBOL);
         decimals = cfg.optInt(AbstractAsset.JSON_DECIMALS, AbstractAsset.DECIMALS_DEFAULT);

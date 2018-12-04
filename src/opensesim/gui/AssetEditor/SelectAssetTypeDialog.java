@@ -26,6 +26,8 @@
 package opensesim.gui.AssetEditor;
 
 import java.awt.Window;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +36,8 @@ import javax.swing.DefaultComboBoxModel;
 import opensesim.world.AbstractAsset;
 import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
+import opensesim.world.World;
+import org.json.JSONObject;
 
 /**
  *
@@ -61,10 +65,16 @@ public class SelectAssetTypeDialog extends EscDialog {
             System.out.printf("ACL: %s\n", asset_type.getName());
 
             try {
-                ait = asset_type.newInstance();
+                Constructor<AbstractAsset> c;
+                c = asset_type.getConstructor(World.class,JSONObject.class);
+                ait = c.newInstance(null,null);
+
+                //ait = asset_type.getConstructor<AbstractAsset>(World.class,JSONObject.class).
                 vector.add(i, ait.getTypeName());
             } catch (InstantiationException | IllegalAccessException | ClassCastException ex) {
                 Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
+                Logger.getLogger(SelectAssetTypeDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return new DefaultComboBoxModel(vector.toArray());

@@ -26,6 +26,7 @@
 package opensesim.gui.AssetEditor;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -33,15 +34,16 @@ import javax.swing.table.TableModel;
 import opensesim.world.AbstractAsset;
 import opensesim.world.World;
 import opensesim.gui.Globals;
+import opensesim.world.WorldAdm;
 import org.json.JSONObject;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionList{
+public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionList {
 
-    World world;
+    WorldAdm worldadm;
 
     JSONObject json_set;
 
@@ -49,7 +51,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
      * Creates new form AssetList
      */
     public AssetListPanel() {
-        world = Globals.world;
+
         initComponents();
 
         if (Globals.prefs == null) {
@@ -58,15 +60,22 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
 
         json_set = new JSONObject(Globals.prefs.get("myassets", "{"
                 + "EUR:{name:Euro,decimals:8,type:opensesim.sesim.Assets.FurtureAsset}}"));
-        
+
         json_set = Globals.getAssets();
-        reload();
+      //  reload();
 
         assetTable.setRowSelectionAllowed(true);
 
         assetTable.getColumnModel().getColumn(0).setPreferredWidth(30);
         assetTable.getColumnModel().getColumn(1).setPreferredWidth(250);
         assetTable.getColumnModel().getColumn(2).setPreferredWidth(80);
+    }
+
+    public AssetListPanel(WorldAdm worldadm) {
+ 
+        this();
+        this.worldadm = worldadm;
+        reload();
     }
 
     @Override
@@ -77,7 +86,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
     }
 
     final void reload() {
-        json_set = Globals.getAssets();
+        /*      json_set = Globals.getAssets();
         DefaultTableModel m = (DefaultTableModel) assetTable.getModel();
 
 
@@ -98,11 +107,43 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
                 Logger.getLogger(AssetListPanel.class.getName()).log(Level.SEVERE, null, ex);
                 continue;
             }
-            
+   
+ 
+              
+  
             
             m.addRow(new Object[]{
 
                 symbol,
+                o.opt("name"),
+                type_name
+            });
+
+        }*/
+
+        Collection<AbstractAsset> assets;
+        assets = worldadm.world.getAssetCollection();
+        DefaultTableModel m = (DefaultTableModel) assetTable.getModel();
+        m.setRowCount(0);
+        for (AbstractAsset asset : assets) {
+            JSONObject o;
+            o = asset.getJson();
+            if (o == null) {
+                continue;
+            }
+
+            Class<AbstractAsset> a = Globals.getClassByName(o.optString("type"));
+            String type_name;
+
+            try {
+                type_name = a.getConstructor(World.class, JSONObject.class).newInstance(null, null).getTypeName();
+
+            } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                Logger.getLogger(AssetListPanel.class.getName()).log(Level.SEVERE, null, ex);
+                continue;
+            }
+            m.addRow(new Object[]{
+                o.opt("symbol"),
                 o.opt("name"),
                 type_name
             });
@@ -143,7 +184,6 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
         m.fireTableDataChanged();
 
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.

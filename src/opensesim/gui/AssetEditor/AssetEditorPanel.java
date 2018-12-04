@@ -35,8 +35,14 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import opensesim.world.AbstractAsset;
 import opensesim.gui.Globals;
+import static opensesim.gui.Globals.world;
+import opensesim.gui.util.Json;
 import opensesim.gui.util.Json.Export;
 import opensesim.gui.util.Json.Import;
+import opensesim.util.SeSimException;
+import opensesim.world.World;
+import opensesim.world.WorldAdm;
+import org.json.JSONObject;
 
 /**
  *
@@ -69,7 +75,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
     }
 
-    public String getNameField() {
+    /*   public String getNameField() {
         return nameField.getText();
     }
 
@@ -80,7 +86,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     public void putType(String type) {
         System.out.printf("Here we have a type: %s\n", type);
     }
-
+     */
     public JDialog dialog;
 
     ComboBoxModel getComboBoxModel() {
@@ -213,24 +219,28 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     @Export
-    public String getDeecimals(){
+    public String getDeecimals() {
         return decimalsField.getValue().toString();
     }
-    
+
     @Import
-    public void setDecimals(String d){
+    public void setDecimals(String d) {
         decimalsField.setValue(Integer.parseInt(d));
     }
-    
-    @Export("type")
+
+    @Export(World.JKEYS.ASSET_TYPE)
     public String getType() {
         int selected = assetTypesComboBox.getSelectedIndex();
-        return asset_types.get(selected).getName();
+        //return asset_types.get(selected).getName();
+        return this.type;
     }
 
-    @Import("type")
+    String type;
+    
+    @Import(World.JKEYS.ASSET_TYPE)
     public void setType(String type) {
-
+        this.type=type;
+        
         Class<AbstractAsset> ac = (Class<AbstractAsset>) Globals.getClassByName(type);
         if (ac == null) {
             return;
@@ -239,13 +249,8 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         AbstractAsset a;
 
         try {
-            try {
-                a = ac.getConstructor().newInstance();
-            } catch (NoSuchMethodException | SecurityException ex) {
-                Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-                return;
-            }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            a = ac.getConstructor(World.class, JSONObject.class).newInstance(null, null);
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
@@ -268,15 +273,38 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         }
     }
 
+    
+    public boolean save(WorldAdm worldadm ){
+        JSONObject jo = Json.get(this);
+        
+        if (jo.getString(World.JKEYS.ASSET_SYMBOL).length()==0){
+                javax.swing.JOptionPane.showMessageDialog(this, "Symbol must not be empty.",
+                        "Error",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);            
+                return false;
+        }
+        
+        try {
+            worldadm.world.createAsset(worldadm.masterKey, jo);
+        } catch (SeSimException ex) {
+                 javax.swing.JOptionPane.showMessageDialog(this, ex.getMessage(),
+                        "Error",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);   
+                 return false;
+        }
+        
+        System.out.printf("JO: %s\n",jo);
+        
+        
+        return true;
+    }
 
     private void assetTypesComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assetTypesComboBoxActionPerformed
 
         int i = this.assetTypesComboBox.getSelectedIndex();
         setType(asset_types.get(i).getName());
-        //this.pack();
         revalidate();
         repaint();
-
         return;
 
     }//GEN-LAST:event_assetTypesComboBoxActionPerformed

@@ -28,7 +28,7 @@
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="250" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="jButton3" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="editButton" min="-2" max="-2" attributes="0"/>
@@ -98,6 +98,9 @@
       </Events>
     </Component>
     <Component class="opensesim.gui.AssetEditor.AssetListPanel" name="assetListPanel">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new opensesim.gui.AssetEditor.AssetListPanel(worldadm)"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

@@ -211,6 +211,11 @@ public class Globals {
 
     static public ArrayList<Class<AbstractAsset>> getAvailableAssetsTypes(boolean sort) {
 
+        // if class_cache is not initialized return an empty list
+        if (class_cache == null){
+            return new ArrayList<>();
+        }
+        
         Collection<Class> asset_types_raw;
         asset_types_raw = class_cache.getClassCollection(AbstractAsset.class);
 
@@ -230,8 +235,8 @@ public class Globals {
 
                 try {
                     //         a1 = o1.newInstance();
-                    a1 = o1.getConstructor().newInstance();
-                    a2 = o2.getConstructor().newInstance();
+                    a1 = o1.getConstructor(World.class,JSONObject.class).newInstance(null,null);
+                    a2 = o2.getConstructor(World.class,JSONObject.class).newInstance(null,null);
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
                     return 0;

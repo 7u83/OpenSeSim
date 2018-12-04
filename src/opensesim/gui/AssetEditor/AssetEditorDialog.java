@@ -27,18 +27,14 @@ package opensesim.gui.AssetEditor;
 
 import java.awt.Dialog;
 import java.awt.Window;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 
 import opensesim.world.AbstractAsset;
-import opensesim.world.World;
 
 import opensesim.gui.util.EscDialog;
 import opensesim.gui.Globals;
 import opensesim.gui.util.Json;
-import opensesim.gui.util.Json.Export;
-
-import org.json.JSONException;
+import opensesim.world.World;
+import opensesim.world.WorldAdm;
 import org.json.JSONObject;
 
 /**
@@ -47,7 +43,7 @@ import org.json.JSONObject;
  */
 public class AssetEditorDialog extends EscDialog {
 
-  
+    WorldAdm worldadm;
 
 
     /**
@@ -103,20 +99,20 @@ public class AssetEditorDialog extends EscDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(okButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton))
-                    .addComponent(assetEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE))
+                    .addComponent(assetEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(assetEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(assetEditorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
@@ -129,12 +125,23 @@ public class AssetEditorDialog extends EscDialog {
   
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 
+        if (assetEditorPanel.save(worldadm)){
+            dispose();
+        }
+        
+        return;
+        
+        
+/*        
         JSONObject result = Json.get(assetEditorPanel);    
         System.out.printf("JSON: %s\n", result.toString(5));
         JSONObject all = Globals.getAssets();
         all.put(result.getString("symbol"), result);
         Globals.putAssets(all);
-        
+  */
+
+
+
     /*    if (this.asset == null) {
             try {
                 int selected = this.assetEditorPanel.assetTypesComboBox.getSelectedIndex();
@@ -179,7 +186,7 @@ public class AssetEditorDialog extends EscDialog {
         System.out.printf("JSONARRAY %s\n", cfg.toString(3));
         JSONObject world_cfg = Globals.world.getConfig();
         Globals.prefs.put("world", world_cfg.toString());
-       */ dispose();
+       */ 
 
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -189,9 +196,12 @@ public class AssetEditorDialog extends EscDialog {
 
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    static public boolean runDialog(Window parent, JSONObject o, JSONObject all) {
+    static public boolean runDialog(Window parent, WorldAdm worldadm, JSONObject o, JSONObject old) {
 
         AssetEditorDialog d = new AssetEditorDialog(parent);
+        d.worldadm = worldadm;
+        
+        
         if (o!=null)
             Json.put(d.assetEditorPanel, o);
         d.pack();

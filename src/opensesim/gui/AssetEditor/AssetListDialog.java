@@ -25,9 +25,12 @@
  */
 package opensesim.gui.AssetEditor;
 
+import java.awt.Window;
 import java.awt.event.MouseEvent;
 import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
+import opensesim.world.World;
+import opensesim.world.WorldAdm;
 
 import org.json.JSONObject;
 
@@ -37,10 +40,12 @@ import org.json.JSONObject;
  */
 public class AssetListDialog extends EscDialog {
 
+    WorldAdm worldadm;
+
     /**
      * Creates new form EditAssetsDialog
      */
-    public AssetListDialog(java.awt.Frame parent, boolean modal) {
+    public AssetListDialog(Window parent, boolean modal) {
         super(parent, modal);
         initComponents();
 
@@ -54,8 +59,27 @@ public class AssetListDialog extends EscDialog {
 
             }
         };
-
         this.assetListPanel.assetTable.addMouseListener(l);
+    }
+
+    public AssetListDialog(WorldAdm worldadm, Window parent, boolean modal) {
+        super(parent, modal);
+        this.worldadm = worldadm;
+
+        initComponents();
+
+        java.awt.event.MouseAdapter l = new java.awt.event.MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    doEdit();
+                }
+
+            }
+        };
+        this.assetListPanel.assetTable.addMouseListener(l);
+
     }
 
     /**
@@ -71,7 +95,7 @@ public class AssetListDialog extends EscDialog {
         newButton = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
-        assetListPanel = new opensesim.gui.AssetEditor.AssetListPanel();
+        assetListPanel = new opensesim.gui.AssetEditor.AssetListPanel(worldadm);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Edit Assets");
@@ -113,7 +137,7 @@ public class AssetListDialog extends EscDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 250, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editButton)
@@ -149,8 +173,9 @@ public class AssetListDialog extends EscDialog {
             return;
         }
         JSONObject o = new JSONObject();
-        o.put("type", type);
-        AssetEditorDialog.runDialog(this, o, o);
+        o.put(World.JKEYS.ASSET_TYPE, type);
+
+        AssetEditorDialog.runDialog(this, worldadm, o, null);
         assetListPanel.reload();
 
     }//GEN-LAST:event_newButtonActionPerformed
@@ -161,7 +186,7 @@ public class AssetListDialog extends EscDialog {
 
     private void doEdit() {
         JSONObject o = assetListPanel.getSelectedObject();
-           AssetEditorDialog.runDialog(this, o, o);
+        //  AssetEditorDialog.runDialog(this, o, o);
         assetListPanel.reload();
     }
 

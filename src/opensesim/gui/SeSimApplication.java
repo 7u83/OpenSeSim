@@ -70,13 +70,17 @@ import opensesim.old_sesim.Scheduler;
 
 import opensesim.util.XClassLoader;
 import opensesim.world.World;
+import opensesim.world.WorldAdm;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class SeSimApplication extends javax.swing.JFrame {
+    
 
+    WorldAdm worldadm;
+    
     /**
      * Creates new form NewMDIApplication
      */
@@ -86,6 +90,11 @@ public class SeSimApplication extends javax.swing.JFrame {
        Globals.setLookAndFeel(Globals.prefs.get(Globals.PrefKeys.LAF, "Nimbus"));
    //    Globals.setLookAndFeel("Metal");        
         initComponents();
+        
+        
+        worldadm = new WorldAdm();
+        
+        
 
         // Get default screen and place our window
         // to the center of this screen
@@ -929,11 +938,14 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void assetsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assetsMenuItemActionPerformed
+        
+        
+        
         opensesim.gui.AssetEditor.AssetListDialog dialog;
-        dialog = new opensesim.gui.AssetEditor.AssetListDialog(this,true);
+        dialog = new opensesim.gui.AssetEditor.AssetListDialog(worldadm,this,true);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(rootPaneCheckingEnabled);
-        dialog.dispose();
+        dialog.dispose();  
     }//GEN-LAST:event_assetsMenuItemActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -970,6 +982,11 @@ public class SeSimApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
     
+       
+        
+        
+        //opensesim.world.World.MasterApi mapi = new opensesim.world.World.MasterApi();
+        
 
         // testing
         
