@@ -34,8 +34,10 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import opensesim.sesim.AssetPair;
+import opensesim.sesim.interfaces.GetJson;
 import opensesim.util.idgenerator.IDGenerator;
 import opensesim.util.SeSimException;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,9 +45,7 @@ import org.json.JSONObject;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class World {
-    
-    
+public class World implements GetJson {
 
     public static final class JKEYS {
 
@@ -82,22 +82,40 @@ public class World {
      */
     public World(JSONObject cfg) {
 
+        putJson(cfg);
+        
+
+    }
+    
+    private void putJson(JSONObject cfg){
         // Read assets
-        JSONObject jassets = cfg.getJSONObject(World.JKEYS.ASSETS);
-        for (String symbol : jassets.keySet()) {
+        JSONArray jassets = cfg.optJSONArray(World.JKEYS.ASSETS);
+        for (int i=0; i<jassets.length();i++) {
+            JSONObject o = jassets.optJSONObject(i);
             AbstractAsset a;
             try {
-                a = createAsset_p(jassets.getJSONObject(symbol));
+                a = createAsset_p(o);
             } catch (SeSimException ex) {
                 Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
             assetsById.add(a);
-            assetsBySymbol.put(symbol, a);
-        }
+            assetsBySymbol.put(a.getSymbol(), a);
+        }        
     }
-    
-    
+
+    @Override
+    public JSONObject getJson() {
+        JSONObject cfg=new JSONObject();
+        // Write assets
+        JSONArray jassets = new JSONArray();
+        for (AbstractAsset asset: this.getAssetCollection()){
+            jassets.put(asset.getJson());
+        }
+        cfg.put(World.JKEYS.ASSETS, jassets);
+        return cfg;
+    }
+
     private long masterkey;
     public World(long masterkey){
         this.masterkey=masterkey;

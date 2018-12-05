@@ -177,7 +177,7 @@ public class AssetListDialog extends EscDialog {
 
         AssetEditorDialog.runDialog(this, worldadm, o, null);
         assetListPanel.reload();
-
+        
     }//GEN-LAST:event_newButtonActionPerformed
 
     private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
