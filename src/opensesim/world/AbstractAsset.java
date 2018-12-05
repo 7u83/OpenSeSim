@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import opensesim.gui.util.Json;
 import opensesim.gui.util.Json.Import;
 import opensesim.sesim.interfaces.Configurable;
+import opensesim.sesim.interfaces.GetJson;
 import opensesim.util.idgenerator.Id;
 
 import org.json.JSONException;
@@ -40,10 +41,9 @@ import org.json.JSONObject;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AbstractAsset {
+public abstract class AbstractAsset implements GetJson {
 
     World world;
-
 
     private String symbol;
     private String name;
@@ -52,20 +52,20 @@ public abstract class AbstractAsset {
 
     /**
      * Constructor
+     *
      * @param world
      * @param cfg
      */
     public AbstractAsset(World world, JSONObject cfg) {
-        if (world == null)
+        if (world == null) {
             return;
+        }
         symbol = cfg.getString("symbol");
         name = cfg.getString("name");
-        decimals = cfg.optInt("decimals",0);
-        
+        decimals = cfg.optInt("decimals", 0);
+
         this.world = world;
     }
-
-  
 
     public abstract String getTypeName();
 
@@ -160,19 +160,20 @@ public abstract class AbstractAsset {
         return null;
     }
      */
-  public JSONObject getJson() {
+    @Override
+    public JSONObject getJson() {
         JSONObject cfg = new JSONObject();
         cfg.put(World.JKEYS.ASSET_TYPE, this.getClass().getName());
-        
+
         cfg.put(AbstractAsset.JSON_SYMBOL, this.getSymbol());
         cfg.put(AbstractAsset.JSON_DECIMALS, this.getDecimals());
         cfg.put(AbstractAsset.JSON_NAME, this.getName());
         cfg.put(AbstractAsset.JSON_DESCRIPTION, this.getDescription());
-        
+
         return cfg;
     }
 
-/*
+    /*
     public void putConfig(JSONObject cfg) {
         symbol = cfg.optString(AbstractAsset.JSON_SYMBOL);
         decimals = cfg.optInt(AbstractAsset.JSON_DECIMALS, AbstractAsset.DECIMALS_DEFAULT);
