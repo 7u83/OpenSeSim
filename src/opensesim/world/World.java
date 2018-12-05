@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 import opensesim.sesim.AssetPair;
 import opensesim.util.idgenerator.IDGenerator;
 import opensesim.util.SeSimException;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -43,21 +44,36 @@ import org.json.JSONObject;
  * @author 7u83 <7u83@mail.ru>
  */
 public class World {
+    
+    
 
     public static final class JKEYS {
 
         public static final String ASSETS = "assets";
         public static final String EXCHANGES = "exchanges";
+        
+        public static final String ASSET_SYMBOL = "symbol";
+        public static final String ASSET_TYPE = "type";
+        
+        
     }
 
     HashSet<AbstractAsset> assetsById = new HashSet<>();
     HashMap<String, AbstractAsset> assetsBySymbol = new HashMap<>();
+    
+    
+    
     IDGenerator assetIdGenerator = new IDGenerator();
     IDGenerator orderIdGenerator = new IDGenerator();
 
     HashSet<AssetPair> assetPairs = new HashSet<>();
 
     ArrayList<Exchange> exchanges = new ArrayList<>();
+    
+    
+    
+    
+    
 
     /**
      * Create a World object.
@@ -69,18 +85,37 @@ public class World {
         // Read assets
         JSONObject jassets = cfg.getJSONObject(World.JKEYS.ASSETS);
         for (String symbol : jassets.keySet()) {
-            AbstractAsset a = createAsset(jassets.getJSONObject(symbol));
+            AbstractAsset a;
+            try {
+                a = createAsset_p(jassets.getJSONObject(symbol));
+            } catch (SeSimException ex) {
+                Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
             assetsById.add(a);
             assetsBySymbol.put(symbol, a);
         }
     }
+    
+    
+    private long masterkey;
+    public World(long masterkey){
+        this.masterkey=masterkey;
+    }
 
-    private AbstractAsset createAsset(JSONObject cfg) {
+    private AbstractAsset createAsset_p(JSONObject cfg) throws SeSimException {
         AbstractAsset a;
         String class_name;
         Class<AbstractAsset> cls;
 
-        class_name = cfg.getString("type");
+        try {
+            class_name = cfg.getString(JKEYS.ASSET_TYPE);
+        }catch (JSONException jex){
+            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, jex);            
+            return null;
+        }
+        
+     
         try {
             cls = (Class<AbstractAsset>) Class.forName(class_name);
             a =  cls.getConstructor(World.class,JSONObject.class).newInstance(this,cfg);
@@ -88,6 +123,13 @@ public class World {
             Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+        
+        if (this.assetsBySymbol.get(a.getSymbol())!=null){
+            throw new SeSimException("Already defined");
+        }
+        
+        this.assetsById.add(a);
+        this.assetsBySymbol.put(a.getSymbol(),a);
         return a;
     }
 
@@ -119,8 +161,19 @@ public class World {
         return ex;
     }
 
-    static final String JSON_ASSET = "asset";
-    static final String JSON_EXCHANGES = "exchanges";
+    
+    public AbstractAsset createAsset(long key, JSONObject cfg) throws SeSimException{
+        if (key!=masterkey)
+            throw new SeSimException("Access denied.");
+        return this.createAsset_p(cfg);
+    }
+    
+    
+ //   static final String JSON_ASSET = "asset";
+ //   static final String JSON_EXCHANGES = "exchanges";
+    
+    
+    
 
     /*
     public JSONObject getConfig() {
