@@ -136,6 +136,10 @@ public class World {
     public Collection<AbstractAsset> getAssetCollection() {
         return Collections.unmodifiableCollection(assetsById);
     }
+    
+    public AbstractAsset getAssetBySymbol(String symbol){
+        return this.assetsBySymbol.get(symbol);
+    }
 
     public Collection<AssetPair> getAssetPairsCollection() {
         return Collections.unmodifiableCollection(assetPairs);

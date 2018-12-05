@@ -91,9 +91,9 @@ public class AssetListDialog extends EscDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        doneButton = new javax.swing.JButton();
         newButton = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
         assetListPanel = new opensesim.gui.AssetEditor.AssetListPanel(worldadm);
 
@@ -101,10 +101,10 @@ public class AssetListDialog extends EscDialog {
         setTitle("Edit Assets");
         setModal(true);
 
-        jButton1.setText("Done");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        doneButton.setText("Done");
+        doneButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                doneButtonActionPerformed(evt);
             }
         });
 
@@ -116,10 +116,10 @@ public class AssetListDialog extends EscDialog {
             }
         });
 
-        jButton3.setText("Delete");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                deleteButtonActionPerformed(evt);
             }
         });
 
@@ -138,13 +138,13 @@ public class AssetListDialog extends EscDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addComponent(deleteButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(newButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
+                        .addComponent(doneButton))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(assetListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -158,8 +158,8 @@ public class AssetListDialog extends EscDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newButton)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3)
+                    .addComponent(doneButton)
+                    .addComponent(deleteButton)
                     .addComponent(editButton))
                 .addContainerGap())
         );
@@ -180,13 +180,13 @@ public class AssetListDialog extends EscDialog {
 
     }//GEN-LAST:event_newButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
         dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_doneButtonActionPerformed
 
     private void doEdit() {
         JSONObject o = assetListPanel.getSelectedObject();
-        //  AssetEditorDialog.runDialog(this, o, o);
+        AssetEditorDialog.runDialog(this, worldadm, o, o);
         assetListPanel.reload();
     }
 
@@ -197,13 +197,13 @@ public class AssetListDialog extends EscDialog {
 
     }//GEN-LAST:event_editButtonActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         JSONObject o = assetListPanel.getSelectedObject();
         JSONObject ass = Globals.getAssets();
-        ass.remove(o.getString("symbol"));
+        ass.remove(o.getString(World.JKEYS.ASSET_SYMBOL));
         Globals.putAssets(ass);
         assetListPanel.reload();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -250,9 +250,9 @@ public class AssetListDialog extends EscDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private opensesim.gui.AssetEditor.AssetListPanel assetListPanel;
+    private javax.swing.JButton deleteButton;
+    private javax.swing.JButton doneButton;
     private javax.swing.JButton editButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton newButton;
     // End of variables declaration//GEN-END:variables
 }
