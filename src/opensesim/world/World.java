@@ -124,6 +124,10 @@ public class World implements GetJson {
         this.masterkey=masterkey;
         putJson(cfg);
     }
+    
+    public boolean checkMasterKey(long masterkey){
+        return masterkey == this.masterkey;
+    }
 
     private AbstractAsset createAsset_p(JSONObject cfg) throws SeSimException {
         AbstractAsset a;

@@ -25,6 +25,7 @@
  */
 package opensesim.world;
 
+import java.util.Random;
 import org.json.JSONObject;
 
 /**
@@ -35,7 +36,7 @@ public class WorldAdm {
     public World world;
     public long masterKey;
     public WorldAdm(JSONObject cfg){
-        masterKey = 123456;
+        masterKey = new Random().nextLong();
         world = new World(cfg,masterKey);
     }
 

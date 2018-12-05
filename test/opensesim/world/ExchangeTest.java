@@ -61,4 +61,23 @@ public class ExchangeTest {
     }
 
  
+
+
+    /**
+     * Test of createAccount method, of class Exchange.
+     */
+    @Test
+    public void testCreateAccount() {
+        System.out.println("createAccount");
+        Exchange instance = new Exchange(null,(JSONObject)null);
+        Account expResult = null;
+        Account result = instance.createAccount();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+
+
+ 
 }

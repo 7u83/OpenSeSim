@@ -25,8 +25,12 @@
  */
 package opensesim.world;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import opensesim.world.Exchange;
 import java.util.concurrent.ConcurrentHashMap;
+import static jdk.vm.ci.code.CodeUtil.K;
 import opensesim.sesim.interfaces.Asset;
 import opensesim.sesim.interfaces.Trader;
 
@@ -38,9 +42,26 @@ public class Account {
     ConcurrentHashMap <Asset,Double> assets;
     
     Trader owner;
+    Exchange exchange;
+
+    public Map<Asset,Double> getAssets() {
+        return Collections.unmodifiableMap(assets);
+    }
+
+    public Trader getOwner() {
+        return owner;
+    }
+
+    public Exchange getExchange() {
+        return exchange;
+    }
     
     Account(Exchange exchange){
         assets = new ConcurrentHashMap<>();
+    }
+    
+    Account(long masterKey){
+        
     }
      
 }
