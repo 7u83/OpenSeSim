@@ -218,12 +218,12 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    @Export
-    public String getDeecimals() {
+    @Export("decimals")
+    public String getDecimals() {
         return decimalsField.getValue().toString();
     }
 
-    @Import
+    @Import("decimals")
     public void setDecimals(String d) {
         decimalsField.setValue(Integer.parseInt(d));
     }
@@ -276,6 +276,8 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     
     public boolean save(WorldAdm worldadm ){
         JSONObject jo = Json.get(this);
+        
+        System.out.printf("ASSETGETTER: %s\n",jo.toString(5));
         
         if (jo.getString(World.JKEYS.ASSET_SYMBOL).length()==0){
                 javax.swing.JOptionPane.showMessageDialog(this, "Symbol must not be empty.",

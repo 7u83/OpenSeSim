@@ -25,6 +25,8 @@
  */
 package opensesim.world;
 
+import org.json.JSONObject;
+
 /**
  *
  * @author tohe
@@ -32,9 +34,9 @@ package opensesim.world;
 public class WorldAdm {
     public World world;
     public long masterKey;
-    public WorldAdm(){
+    public WorldAdm(JSONObject cfg){
         masterKey = 123456;
-        world = new World(masterKey);
+        world = new World(cfg,masterKey);
     }
 
     public World getWorld() {

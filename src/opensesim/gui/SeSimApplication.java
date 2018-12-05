@@ -91,8 +91,9 @@ public class SeSimApplication extends javax.swing.JFrame {
    //    Globals.setLookAndFeel("Metal");        
         initComponents();
         
-        
-        worldadm = new WorldAdm();
+        JSONObject cfg;
+        cfg = new JSONObject(Globals.prefs.get("world","{}"));
+        worldadm = new WorldAdm(cfg);
         
         
 

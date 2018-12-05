@@ -90,6 +90,9 @@ public class World implements GetJson {
     private void putJson(JSONObject cfg){
         // Read assets
         JSONArray jassets = cfg.optJSONArray(World.JKEYS.ASSETS);
+        if (jassets==null){
+            jassets=new JSONArray();
+        }
         for (int i=0; i<jassets.length();i++) {
             JSONObject o = jassets.optJSONObject(i);
             AbstractAsset a;
@@ -117,8 +120,9 @@ public class World implements GetJson {
     }
 
     private long masterkey;
-    public World(long masterkey){
+    public World(JSONObject cfg, long masterkey){
         this.masterkey=masterkey;
+        putJson(cfg);
     }
 
     private AbstractAsset createAsset_p(JSONObject cfg) throws SeSimException {
