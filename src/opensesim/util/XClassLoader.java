@@ -138,8 +138,13 @@ public class XClassLoader {
                         class_name = classfile.toString().substring(f.toString().length());
                         // in case we are under Windows, replace \ with /
                         class_name = class_name.replace("\\", "/");
-                        class_name = class_name.substring(1, class_name.length() - 6).replace('/', '.');
-
+                        
+                        try{
+                            class_name = class_name.substring(1, class_name.length() - 6).replace('/', '.');
+                        }catch (Exception e){
+                            continue;
+                        }
+                            
                         Class c = XClassLoader.lClass(urllist, checks, class_name);
                         if (null != c) {
                             class_list.add(c);
