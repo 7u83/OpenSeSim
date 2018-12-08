@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import opensesim.sesim.AssetPair;
 import opensesim.sesim.interfaces.GetJson;
 import opensesim.util.idgenerator.IDGenerator;
 import opensesim.util.SeSimException;

@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import opensesim.world.World;
-import opensesim.sesim.AssetPair;
 import opensesim.sesim.interfaces.Configurable;
 import org.json.JSONObject;
 
@@ -60,10 +59,12 @@ public class Exchange implements Configurable{
     }
     
     Exchange(World world, JSONObject cfg){
+        final int x;
+
     }
 
     public String getName() {
-        return name;
+        return  name;
     }
     
     public String getSymbol(){
@@ -81,7 +82,7 @@ public class Exchange implements Configurable{
         return null;
     }
     
-    public Collection getOrderBook(AssetPair a){
+    public Collection<Order> getOrderBook(AssetPair a){
         TradingEnv e = asset_pairs.get(a);
         SortedSet<Order> ob = e.order_books.get(Order.Type.BUYLIMIT);
         return Collections.unmodifiableCollection(ob);

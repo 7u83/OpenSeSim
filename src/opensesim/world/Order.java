@@ -27,7 +27,6 @@ package opensesim.world;
 
 import opensesim.world.Account;
 import opensesim.world.World;
-import opensesim.sesim.AssetPair;
 import opensesim.util.idgenerator.IDGenerator;
 import opensesim.util.idgenerator.Id;
 

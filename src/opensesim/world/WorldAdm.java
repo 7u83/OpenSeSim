@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, tohe
+ * Copyright (c) 2018, 7u73
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ import org.json.JSONObject;
 
 /**
  *
- * @author tohe
+ * @author 7u83
  */
 public class WorldAdm {
     public World world;

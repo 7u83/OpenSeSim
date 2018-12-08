@@ -26,7 +26,6 @@
 package opensesim.world;
 
 import java.util.Collection;
-import opensesim.sesim.AssetPair;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;

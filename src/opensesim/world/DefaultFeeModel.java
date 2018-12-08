@@ -25,9 +25,7 @@
  */
 package opensesim.world;
 
-import opensesim.sesim.AssetPair;
 import opensesim.sesim.interfaces.FeeModel;
-import opensesim.util.AssetVol;
 
 /**
  *

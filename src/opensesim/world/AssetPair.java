@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.sesim;
+package opensesim.world;
 
 import opensesim.world.Order;
 import java.util.HashMap;
