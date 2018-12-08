@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.traders;
+package opensesim.trader;
 
 import javax.swing.JDialog;
 import org.json.JSONObject;
@@ -163,8 +163,6 @@ public class RandomTraderGuiA extends AutoTraderGui {
         jLabel27 = new javax.swing.JLabel();
 
         jTextField1.setText("jTextField1");
-
-        setBorder(null);
 
         buyWaitMin.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1000L));
 

@@ -37,7 +37,7 @@ import javax.swing.table.DefaultTableModel;
 import opensesim.old_sesim.Account;
 import opensesim.old_sesim.Order;
 import opensesim.old_sesim.Order.OrderType;
-import opensesim.traders.ManTrader.CreateOrderDialog;
+import opensesim.trader.ManTrader.CreateOrderDialog;
 
 /**
  *

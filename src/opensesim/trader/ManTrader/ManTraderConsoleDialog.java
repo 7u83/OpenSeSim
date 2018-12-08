@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.traders.ManTrader;
+package opensesim.trader.ManTrader;
 
 import javax.swing.JPanel;
 import opensesim.old_sesim.Account;
@@ -73,7 +73,7 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         ordersList = new opensesim.gui.OpenOrdersList();
-        accountBalance1 = new opensesim.traders.ManTrader.AccountBalance();
+        accountBalance1 = new opensesim.trader.ManTrader.AccountBalance();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -149,7 +149,7 @@ public class ManTraderConsoleDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private opensesim.traders.ManTrader.AccountBalance accountBalance1;
+    private opensesim.trader.ManTrader.AccountBalance accountBalance1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private opensesim.gui.OpenOrdersList ordersList;
     // End of variables declaration//GEN-END:variables
