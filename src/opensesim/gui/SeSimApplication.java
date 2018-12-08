@@ -26,8 +26,6 @@
 package opensesim.gui;
 
 import com.google.gson.Gson;
-import opensesim.chart.Help;
-import opensesim.chart.SuperDlg;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
@@ -39,27 +37,14 @@ import java.io.File;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.LookAndFeel;
-import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
-import javax.swing.UIManager;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import opensesim.gui.AssetPairEditor.NewJDialog;
-import opensesim.gui.exchangeeditor.ExchangeEditorDialog;
 import opensesim.gui.exchangeeditor.ExchangeListDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,9 +53,7 @@ import opensesim.old_sesim.AutoTraderInterface;
 import opensesim.old_sesim.Exchange;
 import opensesim.old_sesim.Scheduler;
 
-import opensesim.util.XClassLoader;
-import opensesim.world.World;
-import opensesim.world.WorldAdm;
+import opensesim.world.GodWorld;
 
 /**
  *
@@ -79,7 +62,7 @@ import opensesim.world.WorldAdm;
 public class SeSimApplication extends javax.swing.JFrame {
     
 
-    WorldAdm worldadm;
+    GodWorld  worldadm;
     
     /**
      * Creates new form NewMDIApplication
@@ -93,7 +76,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         
         JSONObject cfg;
         cfg = new JSONObject(Globals.prefs.get("world","{}"));
-        worldadm = new WorldAdm(cfg);
+        worldadm = new GodWorld(cfg);
         
         
 
@@ -609,7 +592,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     void startSim() {
         
-        World world = new World(Globals.getWorld());
+        GodWorld world = new GodWorld(Globals.getWorld());
         
         
         
@@ -984,7 +967,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
     
        
-        
         
         //opensesim.world.World.MasterApi mapi = new opensesim.world.World.MasterApi();
         

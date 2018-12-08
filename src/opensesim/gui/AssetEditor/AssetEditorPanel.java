@@ -40,8 +40,9 @@ import opensesim.gui.util.Json;
 import opensesim.gui.util.Json.Export;
 import opensesim.gui.util.Json.Import;
 import opensesim.util.SeSimException;
-import opensesim.world.World;
-import opensesim.world.WorldAdm;
+import opensesim.world.GodWorld;
+import opensesim.world.RealWorld;
+
 import org.json.JSONObject;
 
 /**
@@ -228,7 +229,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         decimalsField.setValue(Integer.parseInt(d));
     }
 
-    @Export(World.JKEYS.ASSET_TYPE)
+    @Export(GodWorld.JKEYS.ASSET_TYPE)
     public String getType() {
         int selected = assetTypesComboBox.getSelectedIndex();
         //return asset_types.get(selected).getName();
@@ -237,7 +238,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
 
     String type;
     
-    @Import(World.JKEYS.ASSET_TYPE)
+    @Import(GodWorld.JKEYS.ASSET_TYPE)
     public void setType(String type) {
         this.type=type;
         
@@ -249,7 +250,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         AbstractAsset a;
 
         try {
-            a = ac.getConstructor(World.class, JSONObject.class).newInstance(null, null);
+            a = ac.getConstructor(RealWorld.class, JSONObject.class).newInstance(null, null);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
             return;
@@ -274,12 +275,12 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     }
 
     
-    public boolean save(WorldAdm worldadm ){
+    public boolean save(GodWorld worldadm ){
         JSONObject jo = Json.get(this);
         
         System.out.printf("ASSETGETTER: %s\n",jo.toString(5));
         
-        if (jo.getString(World.JKEYS.ASSET_SYMBOL).length()==0){
+        if (jo.getString(GodWorld.JKEYS.ASSET_SYMBOL).length()==0){
                 javax.swing.JOptionPane.showMessageDialog(this, "Symbol must not be empty.",
                         "Error",
                         javax.swing.JOptionPane.ERROR_MESSAGE);            
@@ -287,7 +288,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         }
         
         try {
-            worldadm.world.createAsset(worldadm.masterKey, jo);
+            worldadm.createAsset(jo);
         } catch (SeSimException ex) {
                  javax.swing.JOptionPane.showMessageDialog(this, ex.getMessage(),
                         "Error",

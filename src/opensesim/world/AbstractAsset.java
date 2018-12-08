@@ -43,7 +43,7 @@ import org.json.JSONObject;
  */
 public abstract class AbstractAsset implements GetJson {
 
-    World world;
+    GodWorld world;
 
     private String symbol;
     private String name;
@@ -56,7 +56,7 @@ public abstract class AbstractAsset implements GetJson {
      * @param world
      * @param cfg
      */
-    public AbstractAsset(World world, JSONObject cfg) {
+    public AbstractAsset(GodWorld world, JSONObject cfg) {
         if (world == null) {
             return;
         }
@@ -105,7 +105,7 @@ public abstract class AbstractAsset implements GetJson {
     public static final String JSON_DECIMALS = "decimals";
     public static final int DECIMALS_DEFAULT = 2;
 
-    public static void rename(World world, AbstractAsset a, String symbol) throws Exception {
+    public static void rename(GodWorld world, AbstractAsset a, String symbol) throws Exception {
         if (world.assetsBySymbol.get(symbol) != null) {
             throw new java.lang.Exception("Can't rename asset symbol. Symbol '" + symbol + "' is already in use.");
         }
@@ -163,7 +163,7 @@ public abstract class AbstractAsset implements GetJson {
     @Override
     public JSONObject getJson() {
         JSONObject cfg = new JSONObject();
-        cfg.put(World.JKEYS.ASSET_TYPE, this.getClass().getName());
+        cfg.put(GodWorld.JKEYS.ASSET_TYPE, this.getClass().getName());
 
         cfg.put(AbstractAsset.JSON_SYMBOL, this.getSymbol());
         cfg.put(AbstractAsset.JSON_DECIMALS, this.getDecimals());

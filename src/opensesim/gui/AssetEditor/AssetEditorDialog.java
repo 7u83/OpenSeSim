@@ -31,10 +31,8 @@ import java.awt.Window;
 import opensesim.world.AbstractAsset;
 
 import opensesim.gui.util.EscDialog;
-import opensesim.gui.Globals;
 import opensesim.gui.util.Json;
-import opensesim.world.World;
-import opensesim.world.WorldAdm;
+import opensesim.world.GodWorld;
 import org.json.JSONObject;
 
 /**
@@ -43,7 +41,7 @@ import org.json.JSONObject;
  */
 public class AssetEditorDialog extends EscDialog {
 
-    WorldAdm worldadm;
+    GodWorld worldadm;
 
 
     /**
@@ -196,7 +194,7 @@ public class AssetEditorDialog extends EscDialog {
 
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    static public boolean runDialog(Window parent, WorldAdm worldadm, JSONObject o, JSONObject old) {
+    static public boolean runDialog(Window parent, GodWorld worldadm, JSONObject o, JSONObject old) {
 
         AssetEditorDialog d = new AssetEditorDialog(parent);
         d.worldadm = worldadm;

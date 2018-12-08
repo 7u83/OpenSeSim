@@ -39,28 +39,25 @@ import static org.junit.Assert.*;
  * @author 7u83 <7u83@mail.ru>
  */
 public class ExchangeTest {
-    
+
     public ExchangeTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
-
- 
-
 
     /**
      * Test of createAccount method, of class Exchange.
@@ -68,7 +65,27 @@ public class ExchangeTest {
     @Test
     public void testCreateAccount() {
         System.out.println("createAccount");
-        Exchange instance = new Exchange(null,(JSONObject)null);
+
+        WorldAdm worldadm = new opensesim.world.WorldAdm(new JSONObject(
+                "{ assets: [ "
+                + "{"
+                        + "symbol: EUR,"
+                        + "name: Euro,"
+                        + "decimals: 2,"
+                        + "type: opensesim.sesim.Assets.CryptoCurrency"
+                        
+                + "},"
+                + "{"
+                        + "symbol: AAPL,"
+                        + "name: Apple,"
+                        + "decimals: 0,"
+                        + "type: opensesim.sesim.Assets.CryptoCurrency"
+                + "}"
+                + "]"
+                + "}"
+        ));
+
+        Exchange instance = new Exchange(null, (JSONObject) null);
         Account expResult = null;
         Account result = instance.createAccount();
         assertEquals(expResult, result);
@@ -76,7 +93,4 @@ public class ExchangeTest {
         fail("The test case is a prototype.");
     }
 
-
-
- 
 }

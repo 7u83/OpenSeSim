@@ -29,8 +29,7 @@ import java.awt.Window;
 import java.awt.event.MouseEvent;
 import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
-import opensesim.world.World;
-import opensesim.world.WorldAdm;
+import opensesim.world.GodWorld;
 
 import org.json.JSONObject;
 
@@ -40,7 +39,7 @@ import org.json.JSONObject;
  */
 public class AssetListDialog extends EscDialog {
 
-    WorldAdm worldadm;
+    GodWorld worldadm;
 
     /**
      * Creates new form EditAssetsDialog
@@ -62,7 +61,7 @@ public class AssetListDialog extends EscDialog {
         this.assetListPanel.assetTable.addMouseListener(l);
     }
 
-    public AssetListDialog(WorldAdm worldadm, Window parent, boolean modal) {
+    public AssetListDialog(GodWorld worldadm, Window parent, boolean modal) {
         super(parent, modal);
         this.worldadm = worldadm;
 
@@ -173,7 +172,7 @@ public class AssetListDialog extends EscDialog {
             return;
         }
         JSONObject o = new JSONObject();
-        o.put(World.JKEYS.ASSET_TYPE, type);
+        o.put(GodWorld.JKEYS.ASSET_TYPE, type);
 
         AssetEditorDialog.runDialog(this, worldadm, o, null);
         assetListPanel.reload();
@@ -185,7 +184,7 @@ public class AssetListDialog extends EscDialog {
     private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
         dispose();
         
-        JSONObject o = worldadm.world.getJson();
+        JSONObject o = worldadm.getJson();
         Globals.prefs.put("world", o.toString());
     }//GEN-LAST:event_doneButtonActionPerformed
 
@@ -205,7 +204,7 @@ public class AssetListDialog extends EscDialog {
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         JSONObject o = assetListPanel.getSelectedObject();
         JSONObject ass = Globals.getAssets();
-        ass.remove(o.getString(World.JKEYS.ASSET_SYMBOL));
+        ass.remove(o.getString(GodWorld.JKEYS.ASSET_SYMBOL));
         Globals.putAssets(ass);
         assetListPanel.reload();
     }//GEN-LAST:event_deleteButtonActionPerformed

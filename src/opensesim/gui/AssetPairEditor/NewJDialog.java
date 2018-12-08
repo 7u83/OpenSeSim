@@ -25,7 +25,7 @@
  */
 package opensesim.gui.AssetPairEditor;
 
-import opensesim.world.World;
+import opensesim.world.RealWorld;
 import opensesim.gui.util.EscDialog;
 import opensesim.gui.Globals;
 
@@ -34,7 +34,7 @@ import opensesim.gui.Globals;
  * @author tohe
  */
 public class NewJDialog extends EscDialog /*javax.swing.JDialog*/ {
-    World world;
+    RealWorld world;
     
     /**
      * Creates new form NewJDialog

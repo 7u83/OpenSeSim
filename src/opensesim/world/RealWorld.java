@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 7u73
+ * Copyright (c) 2018, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,26 @@
  */
 package opensesim.world;
 
-import java.util.Random;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import opensesim.sesim.interfaces.GetJson;
+import opensesim.util.idgenerator.IDGenerator;
+import opensesim.util.SeSimException;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  *
- * @author 7u83
+ * @author 7u83 <7u83@mail.ru>
  */
-public class WorldAdm {
-    public World world;
-    public long masterKey;
-    public WorldAdm(JSONObject cfg){
-        masterKey = new Random().nextLong();
-        world = new World(cfg,masterKey);
-    }
+public class RealWorld  implements World{
 
-    public World getWorld() {
-        return world;
-    }
 
-    public long getMasterKey() {
-        return masterKey;
-    }
-    
-    
 }

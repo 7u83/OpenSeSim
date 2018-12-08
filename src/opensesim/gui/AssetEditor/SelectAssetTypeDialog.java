@@ -36,7 +36,8 @@ import javax.swing.DefaultComboBoxModel;
 import opensesim.world.AbstractAsset;
 import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
-import opensesim.world.World;
+import opensesim.world.GodWorld;
+import opensesim.world.RealWorld;
 import org.json.JSONObject;
 
 /**
@@ -45,7 +46,8 @@ import org.json.JSONObject;
  */
 public class SelectAssetTypeDialog extends EscDialog {
 
-    ArrayList<Class<AbstractAsset>>asset_types;
+    ArrayList<Class<AbstractAsset>> asset_types;
+
     /**
      * Creates new form SelectAssetTypeDialog
      */
@@ -64,22 +66,16 @@ public class SelectAssetTypeDialog extends EscDialog {
             Class<AbstractAsset> asset_type = asset_types.get(i);
             System.out.printf("ACL: %s\n", asset_type.getName());
 
-            try {
-                Constructor<AbstractAsset> c;
-                c = asset_type.getConstructor(World.class,JSONObject.class);
-                ait = c.newInstance(null,null);
-
-                //ait = asset_type.getConstructor<AbstractAsset>(World.class,JSONObject.class).
-                vector.add(i, ait.getTypeName());
-            } catch (InstantiationException | IllegalAccessException | ClassCastException ex) {
-                Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
-                Logger.getLogger(SelectAssetTypeDialog.class.getName()).log(Level.SEVERE, null, ex);
+            String tn = GodWorld.getTypeName(asset_type);
+            if (tn == null) {
+                continue;
             }
+            vector.add(i, tn);
+
         }
         return new DefaultComboBoxModel(vector.toArray());
-    }    
-    
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -151,7 +147,7 @@ public class SelectAssetTypeDialog extends EscDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     String selected = null;
-    
+
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         int i = this.assetTypeComboBox.getSelectedIndex();
         selected = asset_types.get(i).getName();
@@ -162,15 +158,14 @@ public class SelectAssetTypeDialog extends EscDialog {
         dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    
-    public static String runDialog(Window parent){
+    public static String runDialog(Window parent) {
         SelectAssetTypeDialog dialog;
-        dialog = new SelectAssetTypeDialog(parent,true);
+        dialog = new SelectAssetTypeDialog(parent, true);
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
         return dialog.selected;
     }
-    
+
     /**
      * @param args the command line arguments
      */

@@ -51,11 +51,11 @@ public class OrderTest {
     public static void tearDownClass() {
     }
 
-    World world;
+    RealWorld world;
 
     @Before
     public void setUp() {
-        world = new World(new JSONObject("{}"));
+        world = new RealWorld(new JSONObject("{}"));
     }
 
     @After

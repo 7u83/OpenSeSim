@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import opensesim.world.World;
+import opensesim.world.RealWorld;
 import opensesim.sesim.interfaces.Configurable;
 import org.json.JSONObject;
 
@@ -40,7 +40,7 @@ import org.json.JSONObject;
  */
 public class Exchange implements Configurable{
 
-    private World world;
+    private RealWorld world;
     private String name;
     private String symbol;
 
@@ -52,13 +52,13 @@ public class Exchange implements Configurable{
     
     private final HashMap<AssetPair,TradingEnv> asset_pairs = new HashMap<>();
 
-    Exchange(World world, String symbol) {
+    Exchange(RealWorld world, String symbol) {
       
         this.world = world;
         this.symbol=symbol;
     }
     
-    Exchange(World world, JSONObject cfg){
+    Exchange(RealWorld world, JSONObject cfg){
         final int x;
 
     }
@@ -77,7 +77,7 @@ public class Exchange implements Configurable{
     }
 
     public Order createOrder(Account account, AssetPair pair, Order.Type type, double volume, double limit) {
-        Order o = new Order(world,account,pair,type,volume,limit);
+//        Order o = new Order(world,account,pair,type,volume,limit);
         
         return null;
     }

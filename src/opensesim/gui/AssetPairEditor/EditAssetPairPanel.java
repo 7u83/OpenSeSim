@@ -2,7 +2,7 @@ package opensesim.gui.AssetPairEditor;
 
 import java.util.Collection;
 import opensesim.world.AbstractAsset;
-import opensesim.world.World;
+import opensesim.world.RealWorld;
 import opensesim.gui.Globals;
 
 /*
@@ -37,7 +37,7 @@ import opensesim.gui.Globals;
  */
 public class EditAssetPairPanel extends javax.swing.JPanel {
 
-    World world;
+    RealWorld world;
     /**
      * Creates new form EditAssetPairPanel
      */
@@ -50,8 +50,8 @@ public class EditAssetPairPanel extends javax.swing.JPanel {
         assetBox.removeAllItems();
         currencyBox.removeAllItems();
         
-        Collection<AbstractAsset> ac = world.getAssetCollection();
-        for (AbstractAsset asset: ac ){
+ //       Collection<AbstractAsset> ac = world.getAssetCollection();
+ /*       for (AbstractAsset asset: ac ){
             if (asset.isCurrency()){
                 this.currencyBox.addItem(asset.getSymbol());
             }
@@ -60,7 +60,7 @@ public class EditAssetPairPanel extends javax.swing.JPanel {
             }
             
         }
-    }
+   */ }
 
     /**
      * This method is called from within the constructor to initialize the form.

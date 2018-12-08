@@ -32,9 +32,9 @@ import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import opensesim.world.AbstractAsset;
-import opensesim.world.World;
+import opensesim.world.RealWorld;
 import opensesim.gui.Globals;
-import opensesim.world.WorldAdm;
+import opensesim.world.GodWorld;
 import org.json.JSONObject;
 
 /**
@@ -43,7 +43,7 @@ import org.json.JSONObject;
  */
 public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionList {
 
-    WorldAdm worldadm;
+    GodWorld worldadm;
 
     /**
      * Creates new form AssetList
@@ -63,7 +63,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
         assetTable.getColumnModel().getColumn(2).setPreferredWidth(80);
     }
 
-    public AssetListPanel(WorldAdm worldadm) {
+    public AssetListPanel(GodWorld worldadm) {
  
         this();
         this.worldadm = worldadm;
@@ -74,13 +74,13 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
     public JSONObject getSelectedObject() {
         int row = assetTable.getSelectedRow();
         String symbol = (String) assetTable.getValueAt(row, 0);
-        return worldadm.world.getAssetBySymbol(symbol).getJson();
+        return worldadm.getAssetBySymbol(symbol).getJson();
     }
 
     final void reload() {
         
         Collection<AbstractAsset> assets;
-        assets = worldadm.world.getAssetCollection();
+        assets = worldadm.getAssetCollection();
         DefaultTableModel m = (DefaultTableModel) assetTable.getModel();
         m.setRowCount(0);
         for (AbstractAsset asset : assets) {
@@ -94,7 +94,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
             String type_name;
 
             try {
-                type_name = a.getConstructor(World.class, JSONObject.class).newInstance(null, null).getTypeName();
+                type_name = a.getConstructor(GodWorld.class, JSONObject.class).newInstance(null, null).getTypeName();
 
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 Logger.getLogger(AssetListPanel.class.getName()).log(Level.SEVERE, null, ex);

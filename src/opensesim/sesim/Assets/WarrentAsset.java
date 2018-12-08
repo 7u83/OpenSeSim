@@ -26,7 +26,8 @@
 package opensesim.sesim.Assets;
 
 import opensesim.world.AbstractAsset;
-import opensesim.world.World;
+import opensesim.world.GodWorld;
+import opensesim.world.RealWorld;
 import org.json.JSONObject;
 
 /**
@@ -35,7 +36,7 @@ import org.json.JSONObject;
  */
 public class WarrentAsset extends AbstractAsset{
 
-    public WarrentAsset(World world, JSONObject cfg) {
+    public WarrentAsset(GodWorld world, JSONObject cfg) {
         super(world, cfg);
     }
 

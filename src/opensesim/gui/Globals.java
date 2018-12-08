@@ -48,13 +48,14 @@ import javax.swing.JFrame;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import opensesim.world.AbstractAsset;
-import opensesim.world.World;
+import opensesim.world.RealWorld;
 import opensesim.gui.AssetEditor.AssetEditorPanel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import opensesim.old_sesim.AutoTraderLoader;
 import opensesim.old_sesim.IndicatorLoader;
 import opensesim.util.XClassLoader.ClassCache;
+import opensesim.world.GodWorld;
 
 /**
  *
@@ -62,7 +63,7 @@ import opensesim.util.XClassLoader.ClassCache;
  */
 public class Globals {
 
-    public static World world;
+    public static RealWorld world;
 
     public static final String SESIM_FILEEXTENSION = "sesim";
     public static final Double SESIM_FILEVERSION = 0.1;
@@ -235,8 +236,8 @@ public class Globals {
 
                 try {
                     //         a1 = o1.newInstance();
-                    a1 = o1.getConstructor(World.class,JSONObject.class).newInstance(null,null);
-                    a2 = o2.getConstructor(World.class,JSONObject.class).newInstance(null,null);
+                    a1 = o1.getConstructor(RealWorld.class,JSONObject.class).newInstance(null,null);
+                    a2 = o2.getConstructor(RealWorld.class,JSONObject.class).newInstance(null,null);
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
                     return 0;
@@ -420,7 +421,7 @@ public class Globals {
 
     public static void saveFile(File f) throws FileNotFoundException {
 
-        JSONObject sobj = new JSONObject();
+ /*       JSONObject sobj = new JSONObject();
 
         JSONArray traders = getTraders();
         JSONObject strategies = getStrategies();
@@ -428,7 +429,9 @@ public class Globals {
         sobj.put(PrefKeys.SESIMVERSION, SESIM_FILEVERSION);
         sobj.put(PrefKeys.STRATEGIES, strategies);
         sobj.put(PrefKeys.TRADERS, traders);
-
+*/
+        JSONObject sobj = Globals.getWorld();
+ 
         PrintWriter out;
         out = new PrintWriter(f.getAbsolutePath());
         out.print(sobj.toString(4));
@@ -469,8 +472,8 @@ public class Globals {
 
     public static JSONObject getWorld() {
         JSONObject cfg = new JSONObject();
-        cfg.put(World.JKEYS.ASSETS, getAssets());
-        cfg.put(World.JKEYS.EXCHANGES, getExchanges());
+        cfg.put(GodWorld.JKEYS.ASSETS, getAssets());
+        cfg.put(GodWorld.JKEYS.EXCHANGES, getExchanges());
         return cfg;
     }
 

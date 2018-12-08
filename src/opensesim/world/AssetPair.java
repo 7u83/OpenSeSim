@@ -57,8 +57,14 @@ public class AssetPair {
     public AssetPair(AbstractAsset asset, AbstractAsset currency) {
         this.asset = asset;
         this.currency = currency;
-
     }
+    
+    public AssetPair(GodWorld world, String asset, String currency){
+        this.asset = world.getAssetBySymbol(asset);
+        this.currency = world.getAssetBySymbol(asset);
+    }
+   
+ 
 
     protected HashMap<Order.Type, SortedSet<Order>> order_books;
 
@@ -82,9 +88,9 @@ public class AssetPair {
         AssetPair ap = (AssetPair)o;
         if (ap.asset==asset && ap.currency==currency)
             return true;
-        if (ap.asset==currency && ap.currency==asset)
-            return false;
-        return true;
+ //       if (ap.asset==currency && ap.currency==asset)
+  //          return false;
+        return false;
      }
 
     

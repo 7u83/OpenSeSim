@@ -27,7 +27,8 @@ package opensesim.sesim.Assets;
 
 import javax.swing.JPanel;
 import opensesim.world.AbstractAsset;
-import opensesim.world.World;
+import opensesim.world.GodWorld;
+import opensesim.world.RealWorld;
 import org.json.JSONObject;
 
 /**
@@ -36,7 +37,7 @@ import org.json.JSONObject;
  */
 public class FurtureAsset extends AbstractAsset{
 
-    public FurtureAsset(World world, JSONObject cfg) {
+    public FurtureAsset(GodWorld world, JSONObject cfg) {
         super(world, cfg);
     }
 

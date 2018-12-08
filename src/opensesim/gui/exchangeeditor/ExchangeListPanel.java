@@ -27,7 +27,7 @@ package opensesim.gui.exchangeeditor;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import opensesim.world.World;
+import opensesim.world.RealWorld;
 import opensesim.gui.Globals;
 import opensesim.world.Exchange;
 import org.json.JSONObject;

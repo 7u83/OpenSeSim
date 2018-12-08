@@ -26,7 +26,7 @@
 package opensesim.world;
 
 import opensesim.world.Account;
-import opensesim.world.World;
+import opensesim.world.RealWorld;
 import opensesim.util.idgenerator.IDGenerator;
 import opensesim.util.idgenerator.Id;
 
@@ -92,9 +92,9 @@ public class Order implements Comparable<Order> {
     protected final Account account;
 
     double cost;
-    World world;
+    GodWorld world;
 
-    Order(World world, Account account, AssetPair pair, Type type,
+    Order(GodWorld world, Account account, AssetPair pair, Type type,
             double volume, double limit) {
 
         this.account = account;
