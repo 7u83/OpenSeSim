@@ -69,18 +69,18 @@ public class Order implements Comparable<Order> {
 
     }
 
-    public enum OrderStatus {
+    public static enum Status {
         OPEN, PARTIALLY_EXECUTED, CLOSED, CANCELED
     }
 
     /**
      * Definition of order types
      */
-    public enum Type {
+    public static enum Type {
         BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
     }
 
-    protected OrderStatus status;
+    protected Status status;
     protected Type type;
     protected double limit;
     protected double volume;
@@ -103,7 +103,7 @@ public class Order implements Comparable<Order> {
         this.volume = volume;
         this.initial_volume = this.volume;
         this.created = 0;
-        this.status = OrderStatus.OPEN;
+        this.status = Status.OPEN;
         this.cost = 0;
         //  id = Order.idGenerator.getNext();
         this.world = world;
@@ -151,7 +151,7 @@ public class Order implements Comparable<Order> {
         return account;
     }
 
-    public OrderStatus getOrderStatus() {
+    public Status getOrderStatus() {
         return status;
     }
 
@@ -159,14 +159,5 @@ public class Order implements Comparable<Order> {
         return created;
     }
 
-    /**
-     * Get the stock symbol that this order belongs to
-     *
-     * @return Stock symbol
-     */
-    public String getStockSymbol() {
-        // return stock.getSymbol();
-        return null;
-    }
 
 }
