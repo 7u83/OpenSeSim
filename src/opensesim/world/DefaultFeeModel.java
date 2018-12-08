@@ -34,9 +34,9 @@ import opensesim.sesim.interfaces.FeeModel;
 public class DefaultFeeModel implements FeeModel{
 
   
-    public AssetVol xgetTakerFee(AssetPair pair) {
+    public AssetPack xgetTakerFee(AssetPair pair) {
         double vol = 5;
-        return new AssetVol(pair.getCurrency(),vol);
+        return new AssetPack(pair.getCurrency(),vol);
  
     }
 

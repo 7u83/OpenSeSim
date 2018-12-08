@@ -66,23 +66,40 @@ public abstract class AbstractAsset implements GetJson {
 
         this.world = world;
     }
+    
+    
+    public AbstractAsset(){
+        
+    }
 
     public abstract String getTypeName();
 
-    public int getDecimals() {
+    public final int getDecimals() {
         return decimals;
+    }
+    
+    protected final void setDecimals(int decimals){
+        this.decimals=decimals;
     }
 
     protected void setDescription(String description) {
         this.description = description;
     }
 
-    public String getSymbol() {
+    public final String getSymbol() {
         return symbol;
     }
+    
+    protected final void setSymbol(String symbol){
+        this.symbol=symbol;
+    }
 
-    public String getName() {
+    public final String getName() {
         return name;
+    }
+    
+    protected final void setName(String name){
+        this.name=name;
     }
 
     public String getDescription() {

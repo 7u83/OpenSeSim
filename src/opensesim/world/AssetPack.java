@@ -25,18 +25,20 @@
  */
 package opensesim.world;
 
-import opensesim.world.AbstractAsset;
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AssetVol {
+public class AssetPack {
     public AbstractAsset asset;
     public double volume;
     
-    public AssetVol(AbstractAsset asset, double volume){
+    public AssetPack(AbstractAsset asset, double volume){
         this.asset=asset;
         this.volume=volume;
+    }
+    
+    public AssetPack(World world, String symbol,double volume){
+        this(world.getAssetBySymbol(symbol),volume);
     }
 }

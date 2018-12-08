@@ -25,8 +25,10 @@
  */
 package opensesim.world;
 
-import java.util.Collection;
-import org.json.JSONObject;
+import java.util.Map;
+import opensesim.sesim.Assets.CurrencyAsset;
+import opensesim.sesim.Assets.DummyAsset;
+import opensesim.sesim.interfaces.Trader;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,9 +40,9 @@ import static org.junit.Assert.*;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ExchangeTest {
+public class AccountTest {
 
-    public ExchangeTest() {
+    public AccountTest() {
     }
 
     @BeforeClass
@@ -60,43 +62,57 @@ public class ExchangeTest {
     }
 
     /**
-     * Test of createAccount method, of class Exchange.
+     * Test of getAssets method, of class Account.
+     */
+    /*   @Test
+    public void testGetAssets() {
+        System.out.println("getAssets");
+        Account instance = new Account();
+        Map<AbstractAsset, Double> expResult = null;
+        Map<AbstractAsset, Double> result = instance.getAssets();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+     //   fail("The test case is a prototype.");
+    }
+     */
+    /**
+     * Test of getOwner method, of class Account.
      */
     @Test
-    public void testCreateAccount() {
-        System.out.println("createAccount");
-
-        GodWorld godworld = new opensesim.world.GodWorld(new JSONObject(
-                "{ assets: [ "
-                + "{"
-                        + "symbol: EUR,"
-                        + "name: Euro,"
-                        + "decimals: 2,"
-                        + "type: opensesim.sesim.Assets.CryptoCurrency"
-                        
-                + "},"
-                + "{"
-                        + "symbol: AAPL,"
-                        + "name: Apple,"
-                        + "decimals: 0,"
-                        + "type: opensesim.sesim.Assets.CryptoCurrency"
-                + "}"
-                + "]"
-                + "}"
-        ));
-
-        World world = godworld.getWorld();
-        AssetPair ap = new AssetPair(world,"EUR","AAPL");
-        
-        Exchange instance = new Exchange(null, (JSONObject) null);
-        Account expResult = null;
-        
-        
-        
-        Account result = instance.createAccount();
-     //   assertEquals(expResult, result);
+    public void testGetOwner() {
+        System.out.println("getOwner");
+        Account instance = new Account();
+        Trader expResult = null;
+        Trader result = instance.getOwner();
+        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-   //     fail("The test case is a prototype.");
+        //   fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of add method, of class Account.
+     */
+    @Test
+    public void testAdd() {
+
+        System.out.println("add");
+
+        AbstractAsset c = new DummyAsset("EUR", "Euro", 2);
+
+        Double expResult = 123.0;
+        AssetPack pack = new AssetPack(c, expResult);
+        Account account = new Account();
+        
+        account.add(pack);
+        Double result;
+
+        result = account.get(c);
+        assertEquals(expResult, result);
+
+        account.add(pack);
+        result = account.get(c);
+        expResult *= 2;
+        assertEquals(expResult, result);
     }
 
 }

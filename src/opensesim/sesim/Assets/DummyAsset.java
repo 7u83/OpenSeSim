@@ -23,34 +23,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.util;
+package opensesim.sesim.Assets;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-
+import opensesim.world.AbstractAsset;
+import opensesim.world.GodWorld;
+import org.json.JSONObject;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Scollection<KEY, OBJ> {
+public class DummyAsset extends AbstractAsset {
 
-  //  HashSet<OBJ> byObj = new HashSet<>();
-    HashMap<KEY, OBJ> byKey = new HashMap<>();
+    @Override
+    public String getTypeName() {
+        return "DummyAsset";
+    }
 
-    public void add(KEY key, OBJ obj) {
-   //     byObj.add(obj);
-        byKey.put(key, obj);
+    DummyAsset(GodWorld gw, JSONObject cfg) {
+        super(gw, cfg);
     }
-    
-    public Collection<OBJ> getCollection(){
 
-        return Collections.unmodifiableCollection(byKey.values());
+    public DummyAsset(String symbol, String name, int decimals) {
+       setSymbol(symbol);
+       setDecimals(decimals);
+       setName(name);
     }
-    
-    public OBJ get(KEY key){
-        return byKey.get(key);
-    }
+
 }
