@@ -65,6 +65,6 @@ public class IDGenerator {
      * @return the next generated ID
      */
     public synchronized Id getNext() {
-        return new Id<Long>(next_id++);
+        return new Id<>(next_id++);
     }
 }
