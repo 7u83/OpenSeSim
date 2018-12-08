@@ -59,7 +59,7 @@ public class AssetPair {
         this.currency = currency;
     }
     
-    public AssetPair(GodWorld world, String asset, String currency){
+    public AssetPair(World world, String asset, String currency){
         this.asset = world.getAssetBySymbol(asset);
         this.currency = world.getAssetBySymbol(asset);
     }
@@ -85,6 +85,7 @@ public class AssetPair {
 
     @Override
     public boolean equals(Object o) {
+        
         AssetPair ap = (AssetPair)o;
         if (ap.asset==asset && ap.currency==currency)
             return true;

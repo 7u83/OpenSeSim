@@ -23,29 +23,33 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.world;
+package opensesim.util;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RealWorld  implements World{
-    private GodWorld godworld;
+public class Scollection<KEY, OBJ> {
+
+    HashSet<OBJ> byObj = new HashSet<>();
+    HashMap<KEY, OBJ> byKey = new HashMap<>();
+
+    public void add(KEY key, OBJ obj) {
+        byObj.add(obj);
+        byKey.put(key, obj);
+    }
     
-    RealWorld(GodWorld godworld){
-        this.godworld=godworld;
+    public Collection<OBJ> getCollection(){
+        return Collections.unmodifiableCollection(byObj);
     }
-
-    @Override
-    public Collection<AbstractAsset> getAssetCollection() {
-        return godworld.getAssetCollection();
+    
+    public OBJ get(KEY key){
+        return byKey.get(key);
     }
-
-    @Override
-    public AbstractAsset getAssetBySymbol(String symbol) {
-        return godworld.getAssetBySymbol(symbol);
-    }
-
 }

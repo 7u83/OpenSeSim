@@ -73,7 +73,7 @@ public abstract class AbstractAsset implements GetJson {
         return decimals;
     }
 
-    public void setDescription(String description) {
+    protected void setDescription(String description) {
         this.description = description;
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractAsset implements GetJson {
     public static final String JSON_DECIMALS = "decimals";
     public static final int DECIMALS_DEFAULT = 2;
 
-    public static void rename(GodWorld world, AbstractAsset a, String symbol) throws Exception {
+ /*   public static void rename(GodWorld world, AbstractAsset a, String symbol) throws Exception {
         if (world.assetsBySymbol.get(symbol) != null) {
             throw new java.lang.Exception("Can't rename asset symbol. Symbol '" + symbol + "' is already in use.");
         }
@@ -115,7 +115,7 @@ public abstract class AbstractAsset implements GetJson {
         world.assetsBySymbol.put(a.getSymbol(), a);
 
     }
-
+*/
     /*    public static AbstractAsset create(World world, Class<AbstractAsset> cls, String symbol) throws Exception {
         AbstractAsset a = cls.newInstance();
         

@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import opensesim.sesim.interfaces.GetJson;
+import opensesim.util.Scollection;
 import opensesim.util.SeSimException;
 import opensesim.util.idgenerator.IDGenerator;
 import org.json.JSONArray;
@@ -57,15 +58,22 @@ public class GodWorld implements GetJson, World {
 
     }
 
-    HashSet<AbstractAsset> assetsById = new HashSet<>();
+ /*   HashSet<AbstractAsset> assetsById = new HashSet<>();
     HashMap<String, AbstractAsset> assetsBySymbol = new HashMap<>();
-
+*/
+    
+    Scollection <String,AbstractAsset> assets = new Scollection<>();
+    
     IDGenerator assetIdGenerator = new IDGenerator();
     IDGenerator orderIdGenerator = new IDGenerator();
 
     HashSet<AssetPair> assetPairs = new HashSet<>();
 
-    ArrayList<Exchange> exchanges = new ArrayList<>();
+    //ArrayList<Exchange> exchanges = new ArrayList<>();
+    
+    
+    Scollection <String, Exchange> exchanges = new Scollection<>();
+    
 
     /**
      * Create a World object.
@@ -100,8 +108,8 @@ public class GodWorld implements GetJson, World {
             if (a == null) {
                 continue;
             }
-            assetsById.add(a);
-            assetsBySymbol.put(a.getSymbol(), a);
+
+            assets.add(a.getSymbol(), a);
         }
     }
 
@@ -124,10 +132,10 @@ public class GodWorld implements GetJson, World {
         putJson(cfg);
     }
 
-    public boolean checkMasterKey(long masterkey) {
+ /*   public boolean checkMasterKey(long masterkey) {
         return masterkey == this.masterkey;
     }
-
+*/
     public AbstractAsset createAsset(JSONObject cfg) throws SeSimException {
         AbstractAsset a;
         String class_name;
@@ -148,21 +156,20 @@ public class GodWorld implements GetJson, World {
             return null;
         }
 
-        if (this.assetsBySymbol.get(a.getSymbol()) != null) {
+        if (this.assets.get(a.getSymbol()) != null) {
             throw new SeSimException("Already defined");
         }
-
-        this.assetsById.add(a);
-        this.assetsBySymbol.put(a.getSymbol(), a);
+        
+        assets.add(a.getSymbol(), a);
         return a;
     }
 
     public Collection<AbstractAsset> getAssetCollection() {
-        return Collections.unmodifiableCollection(assetsById);
+        return assets.getCollection(); //Collections.unmodifiableCollection(assetsById);
     }
 
     public AbstractAsset getAssetBySymbol(String symbol) {
-        return this.assetsBySymbol.get(symbol);
+        return this.assets.get(symbol);
     }
 
     public Collection<AssetPair> getAssetPairsCollection() {
@@ -170,7 +177,7 @@ public class GodWorld implements GetJson, World {
     }
 
     public Collection<Exchange> getExchangeCollection() {
-        return Collections.unmodifiableCollection(exchanges);
+        return exchanges.getCollection();
     }
 
     public void add(AssetPair pair) {
@@ -269,4 +276,9 @@ public class GodWorld implements GetJson, World {
         }
     }
 
+    
+    public World getWorld(){
+        return new RealWorld(this);
+    }
+    
 }

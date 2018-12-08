@@ -45,7 +45,7 @@ public class Account {
     Exchange exchange;
 
     public Map<Asset,Double> getAssets() {
-        return Collections.unmodifiableMap(assets);
+        return  Collections.unmodifiableMap(assets);
     }
 
     public Trader getOwner() {
@@ -60,8 +60,6 @@ public class Account {
         assets = new ConcurrentHashMap<>();
     }
     
-    Account(long masterKey){
-        
-    }
+ 
      
 }

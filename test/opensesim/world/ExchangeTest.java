@@ -66,7 +66,7 @@ public class ExchangeTest {
     public void testCreateAccount() {
         System.out.println("createAccount");
 
-        WorldAdm worldadm = new opensesim.world.WorldAdm(new JSONObject(
+        GodWorld godworld = new opensesim.world.GodWorld(new JSONObject(
                 "{ assets: [ "
                 + "{"
                         + "symbol: EUR,"
@@ -85,8 +85,14 @@ public class ExchangeTest {
                 + "}"
         ));
 
+        World world = godworld.getWorld();
+        AssetPair ap = new AssetPair(world,"EUR","AAPL");
+        
         Exchange instance = new Exchange(null, (JSONObject) null);
         Account expResult = null;
+        
+        
+        
         Account result = instance.createAccount();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
