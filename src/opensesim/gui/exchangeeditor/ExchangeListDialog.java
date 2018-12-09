@@ -27,7 +27,11 @@ package opensesim.gui.exchangeeditor;
 
 import java.awt.Dialog;
 import java.awt.Window;
+import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
+import opensesim.world.GodWorld;
+import opensesim.world.World;
+import org.json.JSONObject;
 
 /**
  *
@@ -35,28 +39,30 @@ import opensesim.gui.util.EscDialog;
  */
 public class ExchangeListDialog extends EscDialog {
 
+    GodWorld world = null;
+
     /**
      * Creates new form ExchangeListDialog
      */
     public ExchangeListDialog(Window parent, boolean modal) {
         super(parent, modal);
+    }
+
+    public ExchangeListDialog(Window parent, GodWorld world) {
+        this(parent, true);
+        this.world = world;
         initComponents();
     }
 
-    public static void runDialog(Window parent) {
+    public static void runDialog(Window parent, GodWorld world) {
 
-        ExchangeListDialog dialog = new ExchangeListDialog(parent, true);
+        ExchangeListDialog dialog = new ExchangeListDialog(parent, world);
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
-        /*        try {
-            dialog.exchangeListPanel1.
-        } catch (SeSimException ex) {
-            javax.swing.JOptionPane.showMessageDialog(parent, ex.getMessage(),
-                    "Error Hello",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-        }
-         */ dialog.dispose();
-
+        dialog.world = world;
+        dialog.dispose();
+        JSONObject o = world.getJson();
+        Globals.prefs.put("world", o.toString());
     }
 
     /**
@@ -70,12 +76,17 @@ public class ExchangeListDialog extends EscDialog {
 
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        exchangeListPanel = new opensesim.gui.exchangeeditor.ExchangeListPanel();
+        exchangeListPanel = new opensesim.gui.exchangeeditor.ExchangeListPanel(world);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Exchanges");
 
         jButton1.setText("Done");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("New ...");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -87,28 +98,24 @@ public class ExchangeListDialog extends EscDialog {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(exchangeListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
                 .addContainerGap())
+            .addComponent(exchangeListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(exchangeListPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(exchangeListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
+                .addContainerGap())
         );
 
         pack();
@@ -116,9 +123,13 @@ public class ExchangeListDialog extends EscDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Dialog d = this;
-        ExchangeEditorDialog.runDialog(d,null);
+        ExchangeEditorDialog.runDialog(d, world, null);
         this.exchangeListPanel.reload();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -26,9 +26,13 @@
 package opensesim.gui.exchangeeditor;
 
 import java.awt.Dialog;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import opensesim.gui.Globals;
 import opensesim.gui.util.EscDialog;
 import opensesim.gui.util.Json;
+import opensesim.util.SeSimException;
+import opensesim.world.GodWorld;
 import org.json.JSONObject;
 
 /**
@@ -37,6 +41,8 @@ import org.json.JSONObject;
  */
 public class ExchangeEditorDialog extends EscDialog {
 
+    private GodWorld world;
+    
     /**
      * Creates new form ExchangeEditorDialog
      */
@@ -45,15 +51,16 @@ public class ExchangeEditorDialog extends EscDialog {
         initComponents();
     }
 
-    public static void runDialog(Dialog parent, JSONObject e) {
+    public static void runDialog(Dialog parent, GodWorld world, JSONObject e) {
 
         ExchangeEditorDialog dialog = new ExchangeEditorDialog(parent, true);
+        dialog.world=world;
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
-        JSONObject r = Json.get(dialog.exchangeEditorPanel1);
-        JSONObject ex = Globals.getExchanges();
-        ex.put(r.getString("symbol"), r);
-        Globals.putExchanges(ex);
+ //       JSONObject r = Json.get(dialog.exchangeEditorPanel1);
+//        JSONObject ex = Globals.getExchanges();
+//        ex.put(r.getString("symbol"), r);
+//        Globals.putExchanges(ex);
         
         /*    
         try {
@@ -91,6 +98,11 @@ public class ExchangeEditorDialog extends EscDialog {
         });
 
         jButton2.setText("Cancel");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -119,8 +131,19 @@ public class ExchangeEditorDialog extends EscDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        setVisible(false);
+        try {
+            if (!this.exchangeEditorPanel1.save(world))
+                return;
+        } catch (SeSimException ex) {
+            return;
+        }
+        
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

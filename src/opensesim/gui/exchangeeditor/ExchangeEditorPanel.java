@@ -28,10 +28,12 @@ package opensesim.gui.exchangeeditor;
 import opensesim.world.Exchange;
 import opensesim.world.RealWorld;
 import opensesim.gui.Globals;
+import opensesim.gui.util.Json;
 import opensesim.gui.util.Json.Export;
 import opensesim.gui.util.Json.Import;
 import opensesim.util.SeSimException;
 import opensesim.world.GodWorld;
+import org.json.JSONObject;
 
 /**
  *
@@ -39,18 +41,19 @@ import opensesim.world.GodWorld;
  */
 public class ExchangeEditorPanel extends javax.swing.JPanel {
 
-    GodWorld world=null;
+
     /**
      * Creates new form ExchangeEditorPanel
      */
     public ExchangeEditorPanel() {
-        //world = Globals.world;
         initComponents();
     }
     
-    public void saveData() throws SeSimException{
-        Exchange ex = world.addExchange(symField.getText());
-        ex.setName(nameField.getText());
+    public boolean save(GodWorld world) throws SeSimException{
+        JSONObject cfg;
+        cfg = Json.get(this);
+        world.createExchange(cfg);
+        return true;
     }
 
     /**

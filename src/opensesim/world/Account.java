@@ -28,7 +28,7 @@ package opensesim.world;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import opensesim.sesim.interfaces.Trader;
+import org.json.JSONObject;
 
 /**
  * Class to hold account data of traders
@@ -48,8 +48,12 @@ public class Account {
         return owner;
     }
     
-    Account(Exchange exchange){
-     //  assets = new ConcurrentHashMap<>();
+    protected Account(Exchange exchange){
+        this.exchange = exchange;
+    }
+    
+    protected Account(Exchange exchange, JSONObject cfg){
+        this.exchange = exchange;
     }
     
     Account(){

@@ -30,6 +30,8 @@ import javax.swing.table.TableModel;
 import opensesim.world.RealWorld;
 import opensesim.gui.Globals;
 import opensesim.world.Exchange;
+import opensesim.world.GodWorld;
+import opensesim.world.World;
 import org.json.JSONObject;
 
 /**
@@ -38,38 +40,43 @@ import org.json.JSONObject;
  */
 public class ExchangeListPanel extends javax.swing.JPanel {
 
-    
+    GodWorld world=null;
     
     /**
      * Creates new form ExchangeList
+     * @param world
      */
-    public ExchangeListPanel() {
+    public ExchangeListPanel(GodWorld world) {
+        this.world=world;
         initComponents();
-        if (Globals.prefs==null)
-           return;
         reload();
+    }
+    
+        public ExchangeListPanel() {
+        //world = Globals.world;
+        initComponents();
     }
 
     final void reload() {
         DefaultTableModel m = (DefaultTableModel) exchangeTable.getModel();
 
-        JSONObject jex = Globals.getExchanges();
+      //  JSONObject jex = Globals.getExchanges();
 
         m.setRowCount(0);
-        for (String esym : jex.keySet()) {
-            JSONObject e = jex.getJSONObject(esym);
+        for (Exchange ex : world.getExchangeCollection()) {
+        //    JSONObject e = jex.getJSONObject(esym);
             
             
             m.addRow(new Object[]{
-                e.getString("symbol"),
-                e.getString("name")
+                ex.getSymbol(),
+                ex.getName()
                 
             });
 
         }
     }
     
- 
+    
 
     private TableModel getModel() {
 

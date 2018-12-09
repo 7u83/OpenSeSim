@@ -34,7 +34,7 @@ import java.util.Collection;
 public class RealWorld  implements World{
     private GodWorld godworld;
     
-    RealWorld(GodWorld godworld){
+    protected RealWorld(GodWorld godworld){
         this.godworld=godworld;
     }
 
@@ -46,6 +46,11 @@ public class RealWorld  implements World{
     @Override
     public AbstractAsset getAssetBySymbol(String symbol) {
         return godworld.getAssetBySymbol(symbol);
+    }
+
+    @Override
+    public Collection<Exchange> getExchangeCollection() {
+        return godworld.getExchangeCollection();
     }
 
 }

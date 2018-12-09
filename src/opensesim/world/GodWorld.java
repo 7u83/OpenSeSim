@@ -38,6 +38,7 @@ import opensesim.sesim.interfaces.GetJson;
 import opensesim.util.Scollection;
 import opensesim.util.SeSimException;
 import opensesim.util.idgenerator.IDGenerator;
+import opensesim.world.scheduler.Scheduler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,22 +59,18 @@ public class GodWorld implements GetJson, World {
 
     }
 
- /*   HashSet<AbstractAsset> assetsById = new HashSet<>();
+    /*   HashSet<AbstractAsset> assetsById = new HashSet<>();
     HashMap<String, AbstractAsset> assetsBySymbol = new HashMap<>();
-*/
-    
-    Scollection <String,AbstractAsset> assets = new Scollection<>();
-    
+     */
+    Scollection<String, AbstractAsset> assets = new Scollection<>();
+
     IDGenerator assetIdGenerator = new IDGenerator();
     IDGenerator orderIdGenerator = new IDGenerator();
 
     HashSet<AssetPair> assetPairs = new HashSet<>();
 
     //ArrayList<Exchange> exchanges = new ArrayList<>();
-    
-    
-    Scollection <String, Exchange> exchanges = new Scollection<>();
-    
+    private Scheduler scheduler = new Scheduler();
 
     /**
      * Create a World object.
@@ -111,17 +108,39 @@ public class GodWorld implements GetJson, World {
 
             assets.add(a.getSymbol(), a);
         }
+
+        // Read exchanges
+        JSONArray exs = cfg.optJSONArray(GodWorld.JKEYS.EXCHANGES);
+        if (exs == null) {
+            exs = new JSONArray();
+        }
+        for (int i = 0; i < exs.length(); i++) {
+            JSONObject o = exs.optJSONObject(i);
+            if (o==null)
+                continue;
+            createExchange(o);
+        }
+
     }
 
     @Override
     public JSONObject getJson() {
         JSONObject cfg = new JSONObject();
         // Write assets
-        JSONArray jassets = new JSONArray();
+        JSONArray out;
+        out = new JSONArray();
         for (AbstractAsset asset : this.getAssetCollection()) {
-            jassets.put(asset.getJson());
+            out.put(asset.getJson());
         }
-        cfg.put(GodWorld.JKEYS.ASSETS, jassets);
+        cfg.put(GodWorld.JKEYS.ASSETS, out);
+
+        // Write exchanges
+        out = new JSONArray();
+        for (Exchange ex : this.getExchangeCollection()) {
+            out.put(ex.getJson());
+        }
+        cfg.put(GodWorld.JKEYS.EXCHANGES, out);
+
         return cfg;
     }
 
@@ -132,10 +151,10 @@ public class GodWorld implements GetJson, World {
         putJson(cfg);
     }
 
- /*   public boolean checkMasterKey(long masterkey) {
+    /*   public boolean checkMasterKey(long masterkey) {
         return masterkey == this.masterkey;
     }
-*/
+     */
     public AbstractAsset createAsset(JSONObject cfg) throws SeSimException {
         AbstractAsset a;
         String class_name;
@@ -159,9 +178,21 @@ public class GodWorld implements GetJson, World {
         if (this.assets.get(a.getSymbol()) != null) {
             throw new SeSimException("Already defined");
         }
-        
+
         assets.add(a.getSymbol(), a);
         return a;
+    }
+
+    HashMap<String, Exchange> exchanges = new HashMap<>();
+
+    public void createExchange(JSONObject cfg) {
+        Exchange ex = new Exchange(this.getWorld(), cfg);
+        exchanges.put(ex.getSymbol(), ex);
+    }
+
+    @Override
+    public Collection<Exchange> getExchangeCollection() {
+        return Collections.unmodifiableCollection(exchanges.values());
     }
 
     public Collection<AbstractAsset> getAssetCollection() {
@@ -174,10 +205,6 @@ public class GodWorld implements GetJson, World {
 
     public Collection<AssetPair> getAssetPairsCollection() {
         return Collections.unmodifiableCollection(assetPairs);
-    }
-
-    public Collection<Exchange> getExchangeCollection() {
-        return exchanges.getCollection();
     }
 
     public void add(AssetPair pair) {
@@ -257,17 +284,16 @@ public class GodWorld implements GetJson, World {
         return all;
     }
      */
-
-
     /**
      * Get the typename of an AbstractAsset class
+     *
      * @param asset_type AbstractAsset
      * @return the type name
      */
     public static String getTypeName(Class<AbstractAsset> asset_type) {
         Constructor<AbstractAsset> c;
         try {
-            c = asset_type.getConstructor(GodWorld.class, JSONObject.class);
+            c = asset_type.getConstructor(GodWorld.class,JSONObject.class);
             AbstractAsset ait = c.newInstance(null, null);
             return ait.getTypeName();
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -276,9 +302,15 @@ public class GodWorld implements GetJson, World {
         }
     }
 
-    
-    public World getWorld(){
+    public World getWorld() {
         return new RealWorld(this);
     }
-    
+
+    HashSet traders;
+
+    public Trader createTrader() {
+
+        return null;
+    }
+
 }

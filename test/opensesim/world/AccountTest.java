@@ -28,7 +28,6 @@ package opensesim.world;
 import java.util.Map;
 import opensesim.sesim.Assets.CurrencyAsset;
 import opensesim.sesim.Assets.DummyAsset;
-import opensesim.sesim.interfaces.Trader;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

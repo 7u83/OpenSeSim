@@ -23,19 +23,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.world;
+package opensesim.trader;
 
-import java.util.Collection;
+import opensesim.world.AbstractTrader;
+import opensesim.world.World;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface World {
+public class SimpleTrader extends AbstractTrader{
 
-    public Collection<AbstractAsset> getAssetCollection();
-
-    public AbstractAsset getAssetBySymbol(String symbol);
-
-    Collection<Exchange> getExchangeCollection();
+    @Override
+    public String getStrategyTypeName() {
+        return "Very Simple Trader";
+    }
+    
+    
+    SimpleTrader(World world){
+        super(world);
+    }
+    
 }

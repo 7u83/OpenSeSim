@@ -23,13 +23,81 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.sesim.interfaces;
+package opensesim.world;
+
+import java.util.HashSet;
+import org.json.JSONObject;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface Trader {
-    String getName();
+public abstract class AbstractTrader implements Trader {
+
+    private String name;
+    private String status;
+    private World world;
+    HashSet accounts;
     
+    /**
+     * @return the world
+     */
+    public final World getWorld() {
+        return world;
+    }
+
+    /**
+     * @param world the world to set
+     */
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+ 
+
+
+    /**
+     * @return the status
+     */
+    @Override
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    protected void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    public AbstractTrader(World world) {
+        this.world=world;
+        
+    }
+
+
+
+    @Override
+    public void start() {
+
+        /*    long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
+        setStatus("Inital delay: %d", delay);
+        timerTask = se.timer.startTimerTask(this, delay);*/
+    }
+
 }

@@ -25,17 +25,14 @@
  */
 package opensesim.world;
 
-import java.util.Collection;
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface World {
+public interface Trader {
+    public String getName();
+    public String getStrategyTypeName();
+    public void start();
+    public String getStatus();
 
-    public Collection<AbstractAsset> getAssetCollection();
-
-    public AbstractAsset getAssetBySymbol(String symbol);
-
-    Collection<Exchange> getExchangeCollection();
 }

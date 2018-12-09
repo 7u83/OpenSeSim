@@ -28,19 +28,21 @@ package opensesim.world;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import opensesim.world.RealWorld;
 import opensesim.sesim.interfaces.Configurable;
+import opensesim.sesim.interfaces.GetJson;
 import org.json.JSONObject;
 
 /**
  *
  * @author 7u83
  */
-public class Exchange implements Configurable{
+public class Exchange implements Configurable, GetJson {
 
-    private RealWorld world;
+    private World world;
     private String name;
     private String symbol;
 
@@ -49,40 +51,44 @@ public class Exchange implements Configurable{
     }
 
     //private final HashMap<String, AssetPair> asset_pairs;
-    
-    private final HashMap<AssetPair,TradingEnv> asset_pairs = new HashMap<>();
+    private final HashMap<AssetPair, TradingEnv> asset_pairs = new HashMap<>();
 
-    Exchange(RealWorld world, String symbol) {
-      
+    Exchange(World world, String symbol) {
+
         this.world = world;
-        this.symbol=symbol;
+        this.symbol = symbol;
     }
-    
-    Exchange(RealWorld world, JSONObject cfg){
-        final int x;
+
+    Exchange(World world, JSONObject cfg) {
+        this.world = world;
+        this.name = cfg.optString("name", "Sesim");
+        this.symbol = cfg.optString("symbol");
 
     }
 
     public String getName() {
-        return  name;
+        return name;
     }
-    
-    public String getSymbol(){
+
+    public String getSymbol() {
         return symbol;
     }
 
+    private HashSet<Account> accounts = new HashSet<>();
+
     Account createAccount() {
         Account a = new Account(this);
+        accounts.add(a);
         return a;
     }
 
     public Order createOrder(Account account, AssetPair pair, Order.Type type, double volume, double limit) {
+
 //        Order o = new Order(world,account,pair,type,volume,limit);
-        
         return null;
     }
-    
-    public Collection<Order> getOrderBook(AssetPair a){
+
+    public Collection<Order> getOrderBook(AssetPair a) {
         TradingEnv e = asset_pairs.get(a);
         SortedSet<Order> ob = e.order_books.get(Order.Type.BUYLIMIT);
         return Collections.unmodifiableCollection(ob);
@@ -90,9 +96,9 @@ public class Exchange implements Configurable{
 
     @Override
     public JSONObject getConfig() {
-        JSONObject cfg =  new JSONObject();
+        JSONObject cfg = new JSONObject();
         cfg.put("symbol", getSymbol());
-        cfg.put("name", getName());        
+        cfg.put("name", getName());
         return cfg;
 
     }
@@ -100,7 +106,14 @@ public class Exchange implements Configurable{
     @Override
     public void putConfig(JSONObject cfg) {
 
-        
+    }
+
+    @Override
+    public JSONObject getJson() {
+        JSONObject cfg = new JSONObject();
+        cfg.put("symbol", getSymbol());
+        cfg.put("name", getName());
+        return cfg;
     }
 
     class TradingEnv {
@@ -122,12 +135,13 @@ public class Exchange implements Configurable{
             //  quoteHistory = new TreeSet();
             //  ohlc_data = new HashMap();
         }
-        
-        
+
+        public Order createOrder(Account account, Order.Type type, double volume, double limit) {
+
+            return null;
+        }
 
     }
-    
-    
-    // public void add
 
+    // public void add
 }

@@ -62,7 +62,7 @@ import opensesim.world.GodWorld;
 public class SeSimApplication extends javax.swing.JFrame {
     
 
-    GodWorld  worldadm;
+    GodWorld  godworld;
     
     /**
      * Creates new form NewMDIApplication
@@ -76,7 +76,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         
         JSONObject cfg;
         cfg = new JSONObject(Globals.prefs.get("world","{}"));
-        worldadm = new GodWorld(cfg);
+        godworld = new GodWorld(cfg);
         
         
 
@@ -926,7 +926,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         
         
         opensesim.gui.AssetEditor.AssetListDialog dialog;
-        dialog = new opensesim.gui.AssetEditor.AssetListDialog(worldadm,this,true);
+        dialog = new opensesim.gui.AssetEditor.AssetListDialog(godworld,this,true);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(rootPaneCheckingEnabled);
         dialog.dispose();  
@@ -941,7 +941,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     private void exchangesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exchangesMenuItemActionPerformed
         
-        ExchangeListDialog.runDialog(this);
+        //ExchangeListDialog.runDialog(this,this.godworld);
+        ExchangeListDialog.runDialog(this, godworld);
 
     }//GEN-LAST:event_exchangesMenuItemActionPerformed
        public static   class Pojo {
