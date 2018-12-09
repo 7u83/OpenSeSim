@@ -298,7 +298,7 @@ public class GodWorld implements GetJson, World {
             return ait.getTypeName();
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(GodWorld.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return asset_type.getName();
         }
     }
 

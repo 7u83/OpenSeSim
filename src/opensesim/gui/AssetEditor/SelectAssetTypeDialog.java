@@ -59,7 +59,7 @@ public class SelectAssetTypeDialog extends EscDialog {
     }
 
     ComboBoxModel getComboBoxModel() {
-        ArrayList vector = new ArrayList();
+        ArrayList vector = new ArrayList(asset_types.size()+1);
         int i;
         for (i = 0; i < asset_types.size(); i++) {
             AbstractAsset ait;
@@ -67,9 +67,6 @@ public class SelectAssetTypeDialog extends EscDialog {
             System.out.printf("ACL: %s\n", asset_type.getName());
 
             String tn = GodWorld.getTypeName(asset_type);
-            if (tn == null) {
-                continue;
-            }
             vector.add(i, tn);
 
         }

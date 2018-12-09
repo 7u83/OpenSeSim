@@ -232,21 +232,9 @@ public class Globals {
         asset_types.sort(new Comparator<Class<AbstractAsset>>() {
             @Override
             public int compare(Class<AbstractAsset> o1, Class<AbstractAsset> o2) {
-                AbstractAsset a1, a2;
-
-                try {
-                    //         a1 = o1.newInstance();
-                    a1 = o1.getConstructor(RealWorld.class,JSONObject.class).newInstance(null,null);
-                    a2 = o2.getConstructor(RealWorld.class,JSONObject.class).newInstance(null,null);
-                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
-                    Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    return 0;
-                }
-
                 String t1, t2;
-                t1 = a1.getTypeName();
-                t2 = a2.getTypeName();
-
+                t1 = GodWorld.getTypeName(o1);
+                t2 = GodWorld.getTypeName(o2);
                 return t1.compareToIgnoreCase(t2);
             }
 
