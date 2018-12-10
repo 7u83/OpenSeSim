@@ -42,6 +42,7 @@ import opensesim.gui.util.Json.Import;
 import opensesim.util.SeSimException;
 import opensesim.world.GodWorld;
 import opensesim.world.RealWorld;
+import opensesim.world.World;
 
 import org.json.JSONObject;
 
@@ -97,12 +98,15 @@ public class AssetEditorPanel extends javax.swing.JPanel {
             AbstractAsset ait;
             Class<AbstractAsset> asset_type = asset_types.get(i);
 
-            try {
-                ait = asset_type.newInstance();
-                vector.add(i, ait.getTypeName());
-            } catch (InstantiationException | IllegalAccessException | ClassCastException ex) {
-                Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                ait = asset_type.newInstance();
+  //              vector.add(i, ait.getTypeName());
+                
+                vector.add(i,GodWorld.getTypeName(asset_type));
+                
+    //        } catch (InstantiationException | IllegalAccessException | ClassCastException ex) {
+      //          Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
+        //    }
         }
         return new DefaultComboBoxModel(vector.toArray());
     }
@@ -250,7 +254,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
         AbstractAsset a;
 
         try {
-            a = ac.getConstructor(RealWorld.class, JSONObject.class).newInstance(null, null);
+            a = ac.getConstructor(GodWorld.class, JSONObject.class).newInstance(null, null);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(AssetEditorPanel.class.getName()).log(Level.SEVERE, null, ex);
             return;
