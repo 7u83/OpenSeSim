@@ -278,7 +278,7 @@ public class AssetEditorPanel extends javax.swing.JPanel {
     public boolean save(GodWorld worldadm ){
         JSONObject jo = Json.get(this);
         
-        System.out.printf("ASSETGETTER: %s\n",jo.toString(5));
+        
         
         if (jo.getString(GodWorld.JKEYS.ASSET_SYMBOL).length()==0){
                 javax.swing.JOptionPane.showMessageDialog(this, "Symbol must not be empty.",

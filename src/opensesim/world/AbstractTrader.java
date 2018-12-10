@@ -37,7 +37,7 @@ public abstract class AbstractTrader implements Trader {
     private String name;
     private String status;
     private World world;
-    HashSet accounts;
+    protected Account account;
     
     /**
      * @return the world

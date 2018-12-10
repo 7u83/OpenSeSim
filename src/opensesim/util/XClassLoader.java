@@ -89,10 +89,8 @@ public class XClassLoader {
         Class cls;
         try {
             cls = cl.loadClass(class_name);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(XClassLoader.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError ex) {
+           // Logger.getLogger(XClassLoader.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 

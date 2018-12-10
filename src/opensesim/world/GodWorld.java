@@ -116,8 +116,9 @@ public class GodWorld implements GetJson, World {
         }
         for (int i = 0; i < exs.length(); i++) {
             JSONObject o = exs.optJSONObject(i);
-            if (o==null)
+            if (o == null) {
                 continue;
+            }
             createExchange(o);
         }
 
@@ -207,6 +208,7 @@ public class GodWorld implements GetJson, World {
         return Collections.unmodifiableCollection(assetPairs);
     }
 
+
     public void add(AssetPair pair) {
         assetPairs.add(pair);
     }
@@ -293,7 +295,7 @@ public class GodWorld implements GetJson, World {
     public static String getTypeName(Class<AbstractAsset> asset_type) {
         Constructor<AbstractAsset> c;
         try {
-            c = asset_type.getConstructor(GodWorld.class,JSONObject.class);
+            c = asset_type.getConstructor(GodWorld.class, JSONObject.class);
             AbstractAsset ait = c.newInstance(null, null);
             return ait.getTypeName();
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -305,12 +307,22 @@ public class GodWorld implements GetJson, World {
     public World getWorld() {
         return new RealWorld(this);
     }
+    
+    // --------------------------------------------------------------------
+    // Stuff belonging to traders
+    // --------------------------------------------------------------------
+    
+    
+    private final HashSet<Trader> traders = new HashSet<>();
 
-    HashSet traders;
-
-    public Trader createTrader() {
-
+    public Trader createTrader(JSONObject cfg) {
+        
         return null;
     }
 
+    @Override
+    public Collection<Trader> getTradersCollection() {
+        return Collections.unmodifiableCollection(traders);
+    }
+    
 }

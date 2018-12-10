@@ -40,7 +40,7 @@ public class DummyAsset extends AbstractAsset {
         return "DummyAsset";
     }
 
-    DummyAsset(GodWorld gw, JSONObject cfg) {
+    public DummyAsset(GodWorld gw, JSONObject cfg) {
         super(gw, cfg);
     }
 

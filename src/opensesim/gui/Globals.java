@@ -56,6 +56,7 @@ import opensesim.old_sesim.AutoTraderLoader;
 import opensesim.old_sesim.IndicatorLoader;
 import opensesim.util.XClassLoader.ClassCache;
 import opensesim.world.GodWorld;
+import opensesim.world.Trader;
 
 /**
  *
@@ -213,10 +214,10 @@ public class Globals {
     static public ArrayList<Class<AbstractAsset>> getAvailableAssetsTypes(boolean sort) {
 
         // if class_cache is not initialized return an empty list
-        if (class_cache == null){
+        if (class_cache == null) {
             return new ArrayList<>();
         }
-        
+
         Collection<Class> asset_types_raw;
         asset_types_raw = class_cache.getClassCollection(AbstractAsset.class);
 
@@ -251,9 +252,8 @@ public class Globals {
         return class_cache.getClassByName(name);
     }
 
-    static public void installLookAndFeels() {
+    static private void installLookAndFeels() {
         Collection<Class> lafs;
-        // lafs = opensesim.util.XClassLoader.getClassesList(urllist, LookAndFeel.class);
         lafs = class_cache.getClassCollection(LookAndFeel.class);
         if (lafs == null) {
             return;
@@ -267,69 +267,52 @@ public class Globals {
         Thread.currentThread().setContextClassLoader(cl);
 
         for (Class<?> cls : lafs) {
-            /*        System.out.println("Class:");
-            System.out.println(cls.getName());*/
 
             Class<LookAndFeel> lafc;
             lafc = (Class<LookAndFeel>) cls;
             LookAndFeel laf;
+
             try {
-                laf = lafc.newInstance();
-            } catch (InstantiationException | IllegalAccessException | InternalError ex) {
-                Logger.getLogger(SeSimApplication.class.getName()).log(Level.SEVERE, null, ex);
+                laf = lafc.getConstructor().newInstance();
+            } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                //Logger.getLogger(Globals.class.getName()).log(Level.SEVERE, null, ex);
                 continue;
             }
 
-            /*   System.out.println("LAF:");
-            System.out.println(laf.getName());*/
             UIManager.installLookAndFeel(laf.getName() + " - " + laf.getDescription(), lafc.getName());
 
         }
 
         Thread.currentThread().setContextClassLoader(currentThreadClassLoader);
 
-        //       UIManager.installLookAndFeel(laf.getName(), lafc.getName());
     }
 
-    static ClassCache class_cache;
+    private static ClassCache class_cache;
 
+    /**
+     * Initialize Globals object.
+     *
+     * This function initializes a Preferences object where preferences are
+     * stored. Furthermore a search trough all class paths is performed to find
+     * available LookAndFeels, Traders and Assets.
+     *
+     * @param c The class which uses this Globals object
+     */
     static void initGlobals(Class<?> c) {
 
         prefs = Preferences.userNodeForPackage(c);
 
-        //  world = new World();
         // initialize urllist used by class loader
         updateUrlList();
 
         class_cache = new ClassCache(urllist, new Class[]{
             LookAndFeel.class,
-            AbstractAsset.class
+            AbstractAsset.class,
+            Trader.class
         });
 
         installLookAndFeels();
 
-        /*
-        ArrayList<Class<LookAndFeelInfo>> res;
-
-        res = cl.getInstalledClasses(default_pathlist);
-
-        for (Class<LookAndFeelInfo> laf : res) {
-            System.out.print(laf.getCanonicalName());
-        }
-         */
- /*      System.out.print("PATH LIST\n");
-        System.out.print(default_pathlist);
-        System.out.print("END PL\n");
-         */
-        tloader = new AutoTraderLoader(default_pathlist);
-
-        iloader = new IndicatorLoader(default_pathlist);
-
-        iloader.getNames();
-
-//        SeSimClassLoader<Indicator> il = new SeSimClassLoader<>(Indicator.class);
-//        il.setDefaultPathList(default_pathlist);
-//        ArrayList<Class<Indicator>> ires = il.getInstalledClasses();
     }
 
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
@@ -409,7 +392,7 @@ public class Globals {
 
     public static void saveFile(File f) throws FileNotFoundException {
 
- /*       JSONObject sobj = new JSONObject();
+        /*       JSONObject sobj = new JSONObject();
 
         JSONArray traders = getTraders();
         JSONObject strategies = getStrategies();
@@ -417,9 +400,9 @@ public class Globals {
         sobj.put(PrefKeys.SESIMVERSION, SESIM_FILEVERSION);
         sobj.put(PrefKeys.STRATEGIES, strategies);
         sobj.put(PrefKeys.TRADERS, traders);
-*/
+         */
         JSONObject sobj = Globals.getWorld();
- 
+
         PrintWriter out;
         out = new PrintWriter(f.getAbsolutePath());
         out.print(sobj.toString(4));

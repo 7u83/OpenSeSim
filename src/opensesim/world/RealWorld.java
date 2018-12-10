@@ -53,4 +53,9 @@ public class RealWorld  implements World{
         return godworld.getExchangeCollection();
     }
 
+    @Override
+    public Collection<Trader> getTradersCollection() {
+        return godworld.getTradersCollection();
+    }
+
 }
