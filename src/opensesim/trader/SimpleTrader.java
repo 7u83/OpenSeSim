@@ -44,4 +44,10 @@ public class SimpleTrader extends AbstractTrader{
         super(world);
     }
     
+    SimpleTrader(){
+        this(null);
+    }
+    
+    
+    
 }

@@ -5,7 +5,7 @@
 
 <helpset version="2.0">
    <!-- title --> 
-   <title>Java Development Environment - Help</title>
+   <title>OpenSeSim - Help</title>
 			
    <!-- maps --> 
    <maps>
@@ -44,8 +44,8 @@
       <label>Glossary</label>
       <type>javax.help.GlossaryView</type>
       <data>glossary.xml</data>
-   </view>
--->
+   </view> -->
+
    <!-- A favorites navigator -->
    <view>
       <name>favorites</name>

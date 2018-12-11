@@ -42,30 +42,28 @@ public class SeSimHelp extends javax.swing.JFrame {
      */
     public SeSimHelp() {
         initComponents();
-   String helpHS = "resources/helpset.hs";
-   ClassLoader cl = Help.class.getClassLoader();
-   HelpSet hs;
-   	JHelp helpViewer = null;
-   try {
-URL url = HelpSet.findHelpSet(null, helpHS); //, "xml", Locale.ENGLISH);
-  //    URL hsURL = HelpSet.findHelpSet(cl, helpHS);
-        //hs = new HelpSet(null, hsURL);
-        helpViewer = new JHelp(new HelpSet(cl, url));
-   } catch (Exception ee) {
-      // Say what the exception really is
-      System.out.println( "HelpSet " + ee.getMessage());
+        String helpHS = "opensesim/resources/help/helpset.hs";
+        ClassLoader cl = Help.class.getClassLoader();
+        HelpSet hs;
+        JHelp helpViewer = null;
+        try {
+            URL url = HelpSet.findHelpSet(null, helpHS); //, "xml", Locale.ENGLISH);
+            //    URL hsURL = HelpSet.findHelpSet(cl, helpHS);
+            hs = new HelpSet(null, url);
+            //helpViewer = new JHelp(new HelpSet(cl, url));
+            helpViewer = new javax.help.JHelp(hs);
+        } catch (Exception ee) {
+            // Say what the exception really is
+       //     System.out.println("HelpSet " + ee.getMessage());
 //     System.out.println("HelpSet "+ helpHS +" not found")
-      return;
-   }
-        
-        
-        
-        
-	setTitle("Help");
-	setSize(800,600);
-	getContentPane().add(helpViewer);
-	setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	//setVisible(true);        
+            return;
+        }
+
+        setTitle("Help");
+        setSize(800, 600);
+        getContentPane().add(helpViewer);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //setVisible(true);        
     }
 
     /**
