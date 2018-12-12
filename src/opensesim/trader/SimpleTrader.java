@@ -27,6 +27,7 @@ package opensesim.trader;
 
 import opensesim.world.AbstractTrader;
 import opensesim.world.World;
+import org.json.JSONObject;
 
 /**
  *
@@ -40,12 +41,12 @@ public class SimpleTrader extends AbstractTrader{
     }
     
     
-    SimpleTrader(World world){
-        super(world);
+    SimpleTrader(World world, JSONObject cfg){
+        super(world,cfg);
     }
     
     SimpleTrader(){
-        this(null);
+        this(null,null);
     }
     
     

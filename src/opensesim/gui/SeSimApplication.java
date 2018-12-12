@@ -594,7 +594,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         
         GodWorld world = new GodWorld(Globals.getWorld());
         
-        
+        JSONObject cfg = new JSONObject("{"
+                + "strategy: opensesim.trader.SimpleTrader"
+                + "}");
+        world.createTrader(cfg);
         
         
 

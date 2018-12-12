@@ -208,7 +208,6 @@ public class GodWorld implements GetJson, World {
         return Collections.unmodifiableCollection(assetPairs);
     }
 
-
     public void add(AssetPair pair) {
         assetPairs.add(pair);
     }
@@ -307,15 +306,28 @@ public class GodWorld implements GetJson, World {
     public World getWorld() {
         return new RealWorld(this);
     }
-    
+
     // --------------------------------------------------------------------
     // Stuff belonging to traders
     // --------------------------------------------------------------------
-    
-    
     private final HashSet<Trader> traders = new HashSet<>();
 
     public Trader createTrader(JSONObject cfg) {
+        AbstractTrader trader;
+        String strategy = cfg.optString("strategy", null);
+        if (strategy == null) {
+            return null;
+        }
+
+        Class cls;
+        try {
+            cls = (Class<Trader>) Class.forName(strategy);
+            trader = (AbstractTrader) cls.getConstructor(JSONObject.class).newInstance(cfg);
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(GodWorld.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
         
         return null;
     }
@@ -324,5 +336,8 @@ public class GodWorld implements GetJson, World {
     public Collection<Trader> getTradersCollection() {
         return Collections.unmodifiableCollection(traders);
     }
-    
+
+    // --------------------------------------------------------------------
+    // Stuff belonging to accounts
+    // --------------------------------------------------------------------
 }

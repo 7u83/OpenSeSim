@@ -38,7 +38,7 @@ public class Account {
     ConcurrentHashMap <AbstractAsset,Double> assets = new ConcurrentHashMap<>();
     
     Trader owner;
-    Exchange exchange;
+    Exchange exchange=null;
 
     public Map<AbstractAsset,Double> getAssets() {
        return  Collections.unmodifiableMap(assets);

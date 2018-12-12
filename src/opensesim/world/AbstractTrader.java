@@ -85,7 +85,7 @@ public abstract class AbstractTrader implements Trader {
         this.name = name;
     }
 
-    public AbstractTrader(World world) {
+    public AbstractTrader(World world, JSONObject cfg) {
         this.world=world;
         
     }
