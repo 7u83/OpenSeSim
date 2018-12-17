@@ -57,7 +57,7 @@ public class Scheduler extends Thread {
         return this.acceleration;
     }
 
-    private final SortedMap<Long, SortedSet<TimerTaskDef>> event_queue = new TreeMap<>();
+    private final SortedMap<Long, LinkedList<TimerTaskDef>> event_queue = new TreeMap<>();
     
     
 
@@ -233,9 +233,9 @@ public class Scheduler extends Thread {
 
         // System.out.printf("Add TimerTask %d %d\n",e.curevtime,e.newevtime);
         //   long evtime = time + currentTimeMillis();
-        SortedSet<TimerTaskDef> s = event_queue.get(e.newevtime);
+        LinkedList<TimerTaskDef> s = event_queue.get(e.newevtime);
         if (s == null) {
-            s = new TreeSet<>();
+            s = new LinkedList<>();
             event_queue.put(e.newevtime, s);
         }
 
@@ -257,7 +257,7 @@ public class Scheduler extends Thread {
 //        if (evtime == null) {
 //            return;
 //        }
-        SortedSet<TimerTaskDef> s = event_queue.get(e.curevtime);
+        LinkedList<TimerTaskDef> s = event_queue.get(e.curevtime);
         if (s == null) {
             //   System.out.printf("My not found\n");    
             return;
@@ -299,13 +299,21 @@ public class Scheduler extends Thread {
             }
 
             //  if (t <= ct) {
-            SortedSet s = event_queue.get(t);
-            Object rc = event_queue.remove(t);
+            LinkedList<TimerTaskDef> s = event_queue.get(t);
+            Object rc;
+            rc = event_queue.remove(t);
 
-            if (s.size() > 1) {
+            while (s.size() > 0) {
+                TimerTaskDef def = s.pop();
+               long next_t = this.fireEvent(def.listener,def.arg);
+                if (next_t == -1)
+                    continue;   
+
+                def.newevtime = next_t + t;
+                this.addTimerTask(def);                
                 //System.out.printf("Events in a row: %d\n", s.size());
             }
-
+/*
             Iterator<TimerTaskDef> it = s.iterator();
             while (it.hasNext()) {
                 TimerTaskDef def = it.next();
@@ -318,7 +326,7 @@ public class Scheduler extends Thread {
                 def.newevtime = next_t + t;
                 this.addTimerTask(def);
             }
-            return 0;
+  */          return 0;
 
         }
 

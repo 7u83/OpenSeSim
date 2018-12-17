@@ -45,6 +45,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import opensesim.gui.AssetPairEditor.NewJDialog;
+
 import opensesim.gui.exchangeeditor.ExchangeListDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -604,8 +605,18 @@ public class SeSimApplication extends javax.swing.JFrame {
   //      world.createTrader(cfg);
         
         opensesim.world.scheduler.Scheduler s = godworld.getScheduler();
-        
+ 
+           class MyEvent extends Event {
+                int count = 0;
+                MyEvent(){
+                    
+                }
+            }        
         class MyListener implements EventListener{
+            
+ 
+            
+            
             World world;
             MyListener(World world){
                 this.world = world;
@@ -613,8 +624,10 @@ public class SeSimApplication extends javax.swing.JFrame {
             
             @Override
             public long receive(Event event) {
-                System.out.println("Received an Event");
-                world.schedule(this, event, 2000);
+                MyEvent e = (MyEvent) event;
+                System.out.printf("Received an Event %d\n",e.count);
+                e.count++;
+                world.schedule(this, event, 1000);
                 return -1;
             }
 
@@ -628,7 +641,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
         
         MyListener listener = new MyListener(godworld.getWorld());
-        Event arg = new Event();
+        MyEvent arg = new MyEvent();
         
         s.startTimerTask(listener, arg, WIDTH);
         
