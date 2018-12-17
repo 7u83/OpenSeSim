@@ -25,10 +25,32 @@
  */
 package opensesim.world.scheduler;
 
+import opensesim.world.scheduler.Scheduler.EventListener;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class Event {
-    
-}
+    public class Event  {
+
+        EventListener listener;
+
+        
+        long curevtime;
+        long newevtime;
+  //      int id;
+
+        Event(EventListener listener,  long t) {
+            this.listener = listener;
+
+            newevtime = t;
+//            id = nextTimerTask.getAndAdd(1);
+
+        }
+
+/*        @Override
+        public int compareTo(Object o) {
+            return ((TimerTaskDef) o).id - this.id;
+        }
+*/
+    }

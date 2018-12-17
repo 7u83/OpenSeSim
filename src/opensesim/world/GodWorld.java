@@ -38,7 +38,7 @@ import opensesim.sesim.interfaces.GetJson;
 import opensesim.util.Scollection;
 import opensesim.util.SeSimException;
 import opensesim.util.idgenerator.IDGenerator;
-import opensesim.world.scheduler.Event;
+
 import opensesim.world.scheduler.Scheduler;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,8 +51,8 @@ import org.json.JSONObject;
 public class GodWorld implements GetJson, World {
 
     @Override
-    public void schedule(Scheduler.EventListener listener, Event arg, long t) {
-        scheduler.startTimerTask(listener, arg, t);
+    public void schedule(Scheduler.EventListener listener, long t) {
+        scheduler.startTimerTask(listener, t);
     }
 
     public static final class JKEYS {

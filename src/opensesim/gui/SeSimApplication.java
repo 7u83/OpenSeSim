@@ -53,10 +53,10 @@ import org.json.JSONObject;
 import opensesim.old_sesim.AutoTraderInterface;
 import opensesim.old_sesim.Exchange;
 import opensesim.old_sesim.Scheduler;
+import opensesim.old_sesim.Scheduler.TimerTaskDef;
 
 import opensesim.world.GodWorld;
 import opensesim.world.World;
-import opensesim.world.scheduler.Event;
 
 import opensesim.world.scheduler.Scheduler.EventListener;
 
@@ -65,25 +65,22 @@ import opensesim.world.scheduler.Scheduler.EventListener;
  * @author 7u83 <7u83@mail.ru>
  */
 public class SeSimApplication extends javax.swing.JFrame {
-    
 
-    GodWorld  godworld;
-    
+    GodWorld godworld;
+
     /**
      * Creates new form NewMDIApplication
      */
     public SeSimApplication() {
 
         Globals.setXClassLoader();
-       Globals.setLookAndFeel(Globals.prefs.get(Globals.PrefKeys.LAF, "Nimbus"));
-   //    Globals.setLookAndFeel("Metal");        
+        Globals.setLookAndFeel(Globals.prefs.get(Globals.PrefKeys.LAF, "Nimbus"));
+        //    Globals.setLookAndFeel("Metal");        
         initComponents();
-        
+
         JSONObject cfg;
-        cfg = new JSONObject(Globals.prefs.get("world","{}"));
+        cfg = new JSONObject(Globals.prefs.get("world", "{}"));
         godworld = new GodWorld(cfg);
-        
-        
 
         // Get default screen and place our window
         // to the center of this screen
@@ -596,39 +593,23 @@ public class SeSimApplication extends javax.swing.JFrame {
     }
 
     void startSim() {
-        
+
         GodWorld godworld = new GodWorld(Globals.getWorld());
-        
+
         JSONObject cfg = new JSONObject("{"
                 + "strategy: opensesim.trader.SimpleTrader"
                 + "}");
-  //      world.createTrader(cfg);
-        
+        //      world.createTrader(cfg);
+
         opensesim.world.scheduler.Scheduler s = godworld.getScheduler();
- 
-           class MyEvent extends Event {
-                int count = 0;
-                MyEvent(){
-                    
-                }
-            }        
-        class MyListener implements EventListener{
-            
- 
-            
-            
+
+
+        class MyListener implements EventListener {
+
             World world;
-            MyListener(World world){
+
+            MyListener(World world) {
                 this.world = world;
-            }
-            
-            @Override
-            public long receive(Event event) {
-                MyEvent e = (MyEvent) event;
-                System.out.printf("Received an Event %d\n",e.count);
-                e.count++;
-                world.schedule(this, event, 1000);
-                return -1;
             }
 
             @Override
@@ -637,15 +618,23 @@ public class SeSimApplication extends javax.swing.JFrame {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
+            @Override
+            public long receive(opensesim.world.scheduler.Event task) {
+
+                System.out.printf("Received an Event %d\n", 0);
+                //   e.count++;
+                world.schedule(this, 1000);
+                return -1;
+            }
 
         }
-        
+
         MyListener listener = new MyListener(godworld.getWorld());
-        MyEvent arg = new MyEvent();
-        
-        s.startTimerTask(listener, arg, WIDTH);
-        
- /*       
+        //    MyEvent arg = new MyEvent();
+
+        s.startTimerTask(listener, 1000);
+
+        /*       
 
         resetSim();
         JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", "{}"));
@@ -679,8 +668,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         };
 //        Globals.se.timer.startTimerTask(tt, 0);
-        */
-
+         */
     }
 
     void stopSim() {
@@ -972,104 +960,75 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void assetsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assetsMenuItemActionPerformed
-        
-        
-        
+
         opensesim.gui.AssetEditor.AssetListDialog dialog;
-        dialog = new opensesim.gui.AssetEditor.AssetListDialog(godworld,this,true);
+        dialog = new opensesim.gui.AssetEditor.AssetListDialog(godworld, this, true);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(rootPaneCheckingEnabled);
-        dialog.dispose();  
+        dialog.dispose();
     }//GEN-LAST:event_assetsMenuItemActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        JDialog dialog = new NewJDialog(this,true);
+        JDialog dialog = new NewJDialog(this, true);
         dialog.setVisible(true);
         dialog.dispose();
-        
+
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void exchangesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exchangesMenuItemActionPerformed
-        
+
         //ExchangeListDialog.runDialog(this,this.godworld);
         ExchangeListDialog.runDialog(this, godworld);
 
     }//GEN-LAST:event_exchangesMenuItemActionPerformed
-       public static   class Pojo {
+    public static class Pojo {
 
-            public String getSymbol() {
-                return symbol;
-            }
+        public String getSymbol() {
+            return symbol;
+        }
 
-            public String getName() {
-                return name;
-            }
-            public String symbol = "EUR";
-            public String name = "Euro";
-        };
-  
+        public String getName() {
+            return name;
+        }
+        public String symbol = "EUR";
+        public String name = "Euro";
+    };
 
-    
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
-    
-       
-        
-        //opensesim.world.World.MasterApi mapi = new opensesim.world.World.MasterApi();
-        
 
+        //opensesim.world.World.MasterApi mapi = new opensesim.world.World.MasterApi();
         // testing
-        
         Pojo p = new Pojo();
-  
+
         Gson g = new Gson();
         String r = g.toJson(p);
-        
+
         System.out.printf("GSON: %s\n", r);
-        
-        JSONObject o = new JSONObject(p,new String[]{"name","symbol"});
-        System.out.printf("OJSON: %s\n", o.toString(8));  
-        
-        
-        
-        
-     //   System.exit(0);
-        
-        
+
+        JSONObject o = new JSONObject(p, new String[]{"name", "symbol"});
+        System.out.printf("OJSON: %s\n", o.toString(8));
+
+        //   System.exit(0);
         // end testing
-        
-        
-        
         // Initialize globals
         Class<?> c = opensesim.gui.SeSimApplication.class;
         Globals.initGlobals(c);
-        
-    /*    String world_source = Globals.prefs.get("world", "{}");
+
+        /*    String world_source = Globals.prefs.get("world", "{}");
         JSONObject world = new org.json.JSONObject(world_source);
         Globals.world.putConfig(world);
-    */
-    
-        
+         */
         //Globals.installLookAndFeels();
-
-   //    Globals.setLookAndFeel("Metal");
-
-       //JDialog.setDefaultLookAndFeelDecorated(true);
-        
-
-
-        
+        //    Globals.setLookAndFeel("Metal");
+        //JDialog.setDefaultLookAndFeelDecorated(true);
         Globals.se = new Exchange();
 
- 
         Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
-
-
- 
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

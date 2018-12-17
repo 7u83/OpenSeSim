@@ -26,7 +26,7 @@
 package opensesim.world;
 
 import java.util.Collection;
-import opensesim.world.scheduler.Event;
+
 import opensesim.world.scheduler.Scheduler.EventListener;
 
 /**
@@ -43,5 +43,5 @@ public interface World {
 
     Collection<Trader> getTradersCollection();
     
-    public void schedule(EventListener listener, Event arg, long t);
+    public void schedule(EventListener listener,  long t);
 }

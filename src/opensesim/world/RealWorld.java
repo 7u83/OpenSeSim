@@ -26,7 +26,7 @@
 package opensesim.world;
 
 import java.util.Collection;
-import opensesim.world.scheduler.Event;
+
 import opensesim.world.scheduler.Scheduler;
 
 /**
@@ -61,8 +61,8 @@ public class RealWorld  implements World{
     }
 
     @Override
-    public void schedule(Scheduler.EventListener listener, Event arg, long t) {
-        godworld.schedule(listener, arg, t);
+    public void schedule(Scheduler.EventListener listener,  long t) {
+        godworld.schedule(listener,  t);
     }
 
 }
