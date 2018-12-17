@@ -38,6 +38,7 @@ import opensesim.sesim.interfaces.GetJson;
 import opensesim.util.Scollection;
 import opensesim.util.SeSimException;
 import opensesim.util.idgenerator.IDGenerator;
+import opensesim.world.scheduler.Event;
 import opensesim.world.scheduler.Scheduler;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +49,11 @@ import org.json.JSONObject;
  * @author 7u83 <7u83@mail.ru>
  */
 public class GodWorld implements GetJson, World {
+
+    @Override
+    public void schedule(Scheduler.EventListener listener, Event arg, long t) {
+        scheduler.startTimerTask(listener, arg, t);
+    }
 
     public static final class JKEYS {
 
@@ -78,13 +84,27 @@ public class GodWorld implements GetJson, World {
      * @param cfg
      */
     public GodWorld(JSONObject cfg) {
+        init(cfg,false);
 
-        putJson(cfg);
 
+    }
+
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    public void setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
     public GodWorld() {
         this(new JSONObject("{}"));
+    }
+
+    private void init(JSONObject cfg, boolean mt) {
+        this.scheduler = new Scheduler();
+        this.scheduler.start();
+        putJson(cfg);
     }
 
     private void putJson(JSONObject cfg) {
@@ -322,13 +342,12 @@ public class GodWorld implements GetJson, World {
         Class cls;
         try {
             cls = (Class<Trader>) Class.forName(strategy);
-            trader = (AbstractTrader) cls.getConstructor(JSONObject.class).newInstance(cfg);
+            trader = (AbstractTrader) cls.getConstructor(World.class, JSONObject.class).newInstance(null, cfg);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(GodWorld.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 
-        
         return null;
     }
 

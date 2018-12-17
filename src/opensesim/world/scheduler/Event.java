@@ -23,46 +23,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.world;
-
-import java.util.Collection;
-import opensesim.world.scheduler.Event;
-import opensesim.world.scheduler.Scheduler;
+package opensesim.world.scheduler;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RealWorld  implements World{
-    private GodWorld godworld;
+public class Event {
     
-    protected RealWorld(GodWorld godworld){
-        this.godworld=godworld;
-    }
-
-    @Override
-    public Collection<AbstractAsset> getAssetCollection() {
-        return godworld.getAssetCollection();
-    }
-
-    @Override
-    public AbstractAsset getAssetBySymbol(String symbol) {
-        return godworld.getAssetBySymbol(symbol);
-    }
-
-    @Override
-    public Collection<Exchange> getExchangeCollection() {
-        return godworld.getExchangeCollection();
-    }
-
-    @Override
-    public Collection<Trader> getTradersCollection() {
-        return godworld.getTradersCollection();
-    }
-
-    @Override
-    public void schedule(Scheduler.EventListener listener, Event arg, long t) {
-        godworld.schedule(listener, arg, t);
-    }
-
 }

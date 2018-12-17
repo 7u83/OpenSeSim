@@ -44,9 +44,9 @@ public class Scheduler extends Thread {
 
     private double acceleration = 1.0;
 
-    public void setAcceleration(double val) {
+    public void setAcceleration(double acceleration) {
 
-        this.acceleration = val;
+        this.acceleration = acceleration;
         synchronized (this) {
             this.notify();
         }
@@ -58,11 +58,14 @@ public class Scheduler extends Thread {
     }
 
     private final SortedMap<Long, SortedSet<TimerTaskDef>> event_queue = new TreeMap<>();
+    
+    
 
-    public interface TimerTaskRunner {
 
-        long timerTask();
+    public interface EventListener {
 
+        long receive(Event event);
+        
         long getID();
     }
 
@@ -93,7 +96,7 @@ public class Scheduler extends Thread {
         @Override
         public int compare(Object o1, Object o2) {
 
-            return (((TimerTaskRunner) o1).getID() - ((TimerTaskRunner) o2).getID()) < 0 ? -1 : 1;
+            return (((EventListener) o1).getID() - ((EventListener) o2).getID()) < 0 ? -1 : 1;
             //return System.identityHashCode(o1) - System.identityHashCode(o2);
         }
     }
@@ -148,13 +151,16 @@ public class Scheduler extends Thread {
 
     public class TimerTaskDef implements Comparable {
 
-        TimerTaskRunner taskRunner;
+        EventListener listener;
+        Event arg;
+        
         long curevtime;
         long newevtime;
         int id;
 
-        TimerTaskDef(TimerTaskRunner e, long t) {
-            taskRunner = e;
+        TimerTaskDef(EventListener listener, Event arg, long t) {
+            this.listener = listener;
+            this.arg=arg;
             newevtime = t;
             id = nextTimerTask.getAndAdd(1);
 
@@ -168,20 +174,20 @@ public class Scheduler extends Thread {
     }
 
     //LinkedList<TimerTaskDef> set_tasks = new LinkedList<>();
-    ConcurrentLinkedQueue<TimerTaskDef> set_tasks = new ConcurrentLinkedQueue<>();
+    ConcurrentLinkedQueue<TimerTaskDef> new_tasks = new ConcurrentLinkedQueue<>();
 
     /**
      *
-     * @param e
+     * @param listener
      * @param time
      * @return The TimerTask created
      */
-    public TimerTaskDef startTimerTask(TimerTaskRunner e, long time) {
+    public TimerTaskDef startTimerTask(EventListener listener, Event arg, long time) {
 
         long evtime = time + currentTimeMillis();
 
-        TimerTaskDef task = new TimerTaskDef(e, evtime);
-        set_tasks.add(task);
+        TimerTaskDef task = new TimerTaskDef(listener,arg, evtime);
+        new_tasks.add(task);
 
         synchronized (this) {
             notify();
@@ -192,7 +198,7 @@ public class Scheduler extends Thread {
     public void rescheduleTimerTask(TimerTaskDef task, long time) {
         long evtime = time + currentTimeMillis();
         task.newevtime = evtime;
-        set_tasks.add(task);
+        new_tasks.add(task);
 
         synchronized (this) {
             notify();
@@ -218,8 +224,8 @@ public class Scheduler extends Thread {
         return pause;
     }
 
-    public long fireEvent(TimerTaskRunner e) {
-        return e.timerTask();
+    public long fireEvent(EventListener e, Event arg) {
+        return e.receive(arg);//   .receive(e,arg);
     }
 
     //  HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
@@ -239,9 +245,9 @@ public class Scheduler extends Thread {
         return s.add(e);
     }
 
-    private final LinkedList<TimerTaskRunner> cancel_queue = new LinkedList();
+    private final LinkedList<EventListener> cancel_queue = new LinkedList();
 
-    public void cancelTimerTask(TimerTaskRunner e) {
+    public void cancelTimerTask(EventListener e) {
         cancel_queue.add(e);
     }
 
@@ -302,14 +308,15 @@ public class Scheduler extends Thread {
 
             Iterator<TimerTaskDef> it = s.iterator();
             while (it.hasNext()) {
-                TimerTaskDef e = it.next();
-                //      if (s.size() > 1) {
-                //         System.out.printf("Sicku: %d %d\n", e.id, e.curevtime);
-                //     }
+                TimerTaskDef def = it.next();
 
-                long next_t = this.fireEvent(e.taskRunner);
-                e.newevtime = next_t + t;
-                this.addTimerTask(e);
+
+                long next_t = this.fireEvent(def.listener,def.arg);
+                if (next_t == -1)
+                    continue;
+                
+                def.newevtime = next_t + t;
+                this.addTimerTask(def);
             }
             return 0;
 
@@ -317,10 +324,11 @@ public class Scheduler extends Thread {
 
     }
 
-    class EmptyCtr implements TimerTaskRunner {
+    /*
+    class EmptyCtr implements EventListener {
 
         @Override
-        public long timerTask() {
+        public long receive() {
             //   System.out.printf("Current best brice %f\n", Globals.se.getBestPrice());
             return 1000;
         }
@@ -332,10 +340,11 @@ public class Scheduler extends Thread {
         }
 
     }
-
+*/
+    
     void initScheduler() {
         current_time_millis = 0.0;
-        this.startTimerTask(new EmptyCtr(), 0);
+   //     this.startTimerTask(new EmptyCtr(), 0);
         terminate = false;
 
     }
@@ -345,8 +354,8 @@ public class Scheduler extends Thread {
 
         while (!terminate) {
 
-            while (!set_tasks.isEmpty()) {
-                TimerTaskDef td = set_tasks.poll();
+            while (!new_tasks.isEmpty()) {
+                TimerTaskDef td = new_tasks.poll();
                 //   System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
 
                 this.cancelMy(td);

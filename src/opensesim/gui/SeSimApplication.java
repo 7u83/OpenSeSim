@@ -54,6 +54,10 @@ import opensesim.old_sesim.Exchange;
 import opensesim.old_sesim.Scheduler;
 
 import opensesim.world.GodWorld;
+import opensesim.world.World;
+import opensesim.world.scheduler.Event;
+
+import opensesim.world.scheduler.Scheduler.EventListener;
 
 /**
  *
@@ -592,14 +596,43 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     void startSim() {
         
-        GodWorld world = new GodWorld(Globals.getWorld());
+        GodWorld godworld = new GodWorld(Globals.getWorld());
         
         JSONObject cfg = new JSONObject("{"
                 + "strategy: opensesim.trader.SimpleTrader"
                 + "}");
-        world.createTrader(cfg);
+  //      world.createTrader(cfg);
         
+        opensesim.world.scheduler.Scheduler s = godworld.getScheduler();
         
+        class MyListener implements EventListener{
+            World world;
+            MyListener(World world){
+                this.world = world;
+            }
+            
+            @Override
+            public long receive(Event event) {
+                System.out.println("Received an Event");
+                world.schedule(this, event, 2000);
+                return -1;
+            }
+
+            @Override
+            public long getID() {
+                return 1;
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+
+        }
+        
+        MyListener listener = new MyListener(godworld.getWorld());
+        Event arg = new Event();
+        
+        s.startTimerTask(listener, arg, WIDTH);
+        
+ /*       
 
         resetSim();
         JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", "{}"));
@@ -633,6 +666,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         };
 //        Globals.se.timer.startTimerTask(tt, 0);
+        */
 
     }
 
