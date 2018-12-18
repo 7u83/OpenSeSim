@@ -150,7 +150,6 @@ public class Json {
                 } catch (IllegalArgumentException | IllegalAccessException ex1) {
                     Logger.getLogger(Json.class.getName()).log(Level.SEVERE, null, ex1);
                 }
-                continue;
             }
 
         }
