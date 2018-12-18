@@ -612,11 +612,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                 this.world = world;
             }
 
-            @Override
-            public long getID() {
-                return 1;
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
+
 
             @Override
             public long receive(opensesim.world.scheduler.Event task) {

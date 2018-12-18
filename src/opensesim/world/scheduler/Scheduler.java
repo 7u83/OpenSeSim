@@ -25,7 +25,6 @@
  */
 package opensesim.world.scheduler;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.SortedMap;
@@ -63,7 +62,7 @@ public class Scheduler extends Thread {
 
         long receive(Event task);
         
-        long getID();
+//        long getID();
     }
 
     private boolean terminate = false;
@@ -88,7 +87,7 @@ public class Scheduler extends Thread {
         super.start();
     }
 
-    private class ObjectComparator implements Comparator<Object> {
+/*    private class ObjectComparator implements Comparator<Object> {
 
         @Override
         public int compare(Object o1, Object o2) {
@@ -97,7 +96,8 @@ public class Scheduler extends Thread {
             //return System.identityHashCode(o1) - System.identityHashCode(o2);
         }
     }
-
+*/
+    
     long last_time_millis = System.currentTimeMillis();
     double current_time_millis = 0.0;
 
@@ -187,6 +187,15 @@ public class Scheduler extends Thread {
             notify();
         }
         return task;
+    }
+    
+    
+    public Event scheduleEvent(Event e){
+        new_tasks.add(e);
+        synchronized (this) {
+            notify();
+        }        
+        return e;
     }
 
     public void rescheduleTimerTask(Event task, long time) {
