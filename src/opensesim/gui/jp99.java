@@ -28,20 +28,6 @@ public class jp99 extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        chart11 = new opensesim.old_sesim.ChartPanel();
-
-        javax.swing.GroupLayout chart11Layout = new javax.swing.GroupLayout(chart11);
-        chart11.setLayout(chart11Layout);
-        chart11Layout.setHorizontalGroup(
-            chart11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 382, Short.MAX_VALUE)
-        );
-        chart11Layout.setVerticalGroup(
-            chart11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 282, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setViewportView(chart11);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -63,7 +49,6 @@ public class jp99 extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private opensesim.old_sesim.ChartPanel chart11;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
