@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, tohe
+ * Copyright (c) 2018, 7u83
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -95,12 +95,13 @@ public class Clock {
             return (long) (((double) t - this.current_millis) / this.acceleration);
         }
 
-        if (t < ct) {
+   /*     if (t < ct) {
             //  System.out.printf("Time is overslipping: %d\n",ct-t);
             this.current_millis = t;
             this.current_nanos = this.current_millis * 1000000.0;
 
-        }
+        }*/
+   
         return 0;
     }
 

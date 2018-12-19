@@ -274,7 +274,7 @@ public class StScheduler extends Thread {
             long t = event_queue.firstKey();
             
             long delay = clock.getDelay(t);
-            System.out.printf("Delay is %d %s\n", delay,StScheduler.formatTimeMillis(clock.currentTimeMillis()));
+          //  System.out.printf("Delay is %d %s\n", delay,StScheduler.formatTimeMillis(clock.currentTimeMillis()));
             if (delay>0)
                 return delay;
             

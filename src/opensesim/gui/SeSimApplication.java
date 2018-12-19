@@ -627,10 +627,10 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         }
 
-        MyListener listener = new MyListener(godworld.getWorld());
+   //     MyListener listener = new MyListener(godworld.getWorld());
         //    MyEvent arg = new MyEvent();
 
-        s.startTimerTask(listener, 1000);
+    //    s.startTimerTask(listener, 1000);
 
         /*       
 
