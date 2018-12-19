@@ -40,7 +40,7 @@ public class StScheduler extends Thread {
 
    // private double acceleration = 1.0;
     
-    StScheduler(Clock clock){
+    StScheduler(Clock clock ){
         this.clock = clock;
     }
 
