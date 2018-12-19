@@ -25,7 +25,6 @@
  */
 package opensesim.world.scheduler;
 
-import opensesim.world.scheduler.Scheduler.EventListener;
 
 /**
  *
@@ -35,22 +34,8 @@ import opensesim.world.scheduler.Scheduler.EventListener;
 
         EventListener listener;
 
-        
-        long curevtime;
-        long newevtime;
-  //      int id;
-
-        Event(EventListener listener,  long t) {
+        Event(EventListener listener) {
             this.listener = listener;
-
-            newevtime = t;
-//            id = nextTimerTask.getAndAdd(1);
-
         }
 
-/*        @Override
-        public int compareTo(Object o) {
-            return ((TimerTaskDef) o).id - this.id;
-        }
-*/
     }

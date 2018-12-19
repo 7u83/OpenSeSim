@@ -32,14 +32,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import opensesim.sesim.interfaces.GetJson;
 import opensesim.util.Scollection;
 import opensesim.util.SeSimException;
 import opensesim.util.idgenerator.IDGenerator;
+import opensesim.world.scheduler.EventListener;
 
 import opensesim.world.scheduler.Scheduler;
+import opensesim.world.scheduler.StScheduler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +54,7 @@ import org.json.JSONObject;
 public class GodWorld implements GetJson, World {
 
     @Override
-    public void schedule(Scheduler.EventListener listener, long t) {
+    public void schedule(EventListener listener, long t) {
         scheduler.startTimerTask(listener, t);
     }
 
@@ -84,8 +87,7 @@ public class GodWorld implements GetJson, World {
      * @param cfg
      */
     public GodWorld(JSONObject cfg) {
-        init(cfg,false);
-
+        init(cfg, false);
 
     }
 
@@ -342,13 +344,13 @@ public class GodWorld implements GetJson, World {
         Class cls;
         try {
             cls = (Class<Trader>) Class.forName(strategy);
-            trader = (AbstractTrader) cls.getConstructor(World.class, JSONObject.class).newInstance(null, cfg);
+            trader = (AbstractTrader) cls.getConstructor(World.class, JSONObject.class).newInstance(this.getWorld(), cfg);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(GodWorld.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 
-        return null;
+        return trader;
     }
 
     @Override
@@ -359,4 +361,37 @@ public class GodWorld implements GetJson, World {
     // --------------------------------------------------------------------
     // Stuff belonging to accounts
     // --------------------------------------------------------------------
+
+
+    // --------------------------------------------------------------------
+    // Pseudo random generator stuff
+    // --------------------------------------------------------------------   
+    Random random = new Random(34561);
+
+    public int randNextInt() {
+        return random.nextInt();
+    }
+
+    public int randNextInt(int bounds) {
+        return random.nextInt(bounds);
+    }
+
+    public double randNextDouble() {
+        return random.nextDouble();
+    }
+
+    public float randNextFloat() {
+        return random.nextFloat();
+    }
+
+    public boolean randNextBool() {
+        return random.nextBoolean();
+    }
+
+    @Override
+    public float randNextFloat(float min, float max) {
+        float r = randNextFloat();
+        return (max - min) * r + min;
+    }
+
 }

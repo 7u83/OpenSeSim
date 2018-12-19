@@ -26,18 +26,20 @@
 package opensesim.world;
 
 import java.util.Collection;
+import opensesim.world.scheduler.EventListener;
 
-import opensesim.world.scheduler.Scheduler;
+import opensesim.world.scheduler.StScheduler;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RealWorld  implements World{
+public class RealWorld implements World {
+
     private GodWorld godworld;
-    
-    protected RealWorld(GodWorld godworld){
-        this.godworld=godworld;
+
+    protected RealWorld(GodWorld godworld) {
+        this.godworld = godworld;
     }
 
     @Override
@@ -61,8 +63,13 @@ public class RealWorld  implements World{
     }
 
     @Override
-    public void schedule(Scheduler.EventListener listener,  long t) {
-        godworld.schedule(listener,  t);
+    public void schedule(EventListener listener, long t) {
+        godworld.schedule(listener, t);
+    }
+
+    @Override
+    public float randNextFloat(float min, float max) {
+        return godworld.randNextFloat(min, max);
     }
 
 }

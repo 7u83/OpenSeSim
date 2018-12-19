@@ -56,9 +56,10 @@ import opensesim.old_sesim.Scheduler;
 import opensesim.old_sesim.Scheduler.TimerTaskDef;
 
 import opensesim.world.GodWorld;
+import opensesim.world.Trader;
 import opensesim.world.World;
 
-import opensesim.world.scheduler.Scheduler.EventListener;
+import opensesim.world.scheduler.EventListener;
 
 /**
  *
@@ -599,7 +600,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         JSONObject cfg = new JSONObject("{"
                 + "strategy: opensesim.trader.SimpleTrader"
                 + "}");
-        //      world.createTrader(cfg);
+        Trader t = godworld.createTrader(cfg);
+        t.start();
 
         opensesim.world.scheduler.Scheduler s = godworld.getScheduler();
 
@@ -616,8 +618,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             @Override
             public long receive(opensesim.world.scheduler.Event task) {
-
-                System.out.printf("Received an Event %d\n", 0);
+               
+                System.out.printf("Received an Event %d\n", Thread.currentThread().getId());
                 //   e.count++;
                 world.schedule(this, 1000);
                 return -1;

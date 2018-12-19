@@ -30,7 +30,7 @@ import java.util.LinkedList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 /**
  *
@@ -156,7 +156,16 @@ public class StScheduler extends Thread {
 */
     
     //LinkedList<TimerTaskDef> set_tasks = new LinkedList<>();
-    ConcurrentLinkedQueue<Event> new_tasks = new ConcurrentLinkedQueue<>();
+    
+    class NewEvent {
+        Event e;
+        long t;
+        NewEvent(Event e, long t){
+            this.e=e;
+            this.t=t;
+        }
+    }
+    ConcurrentLinkedQueue<NewEvent> new_tasks = new ConcurrentLinkedQueue<>();
 
     /**
      *
@@ -168,8 +177,8 @@ public class StScheduler extends Thread {
 
         long evtime = time + clock.currentTimeMillis();
 
-        Event task = new Event(listener, evtime);
-        new_tasks.add(task);
+        Event task = new Event(listener);
+        new_tasks.add(new NewEvent(task,evtime));
 
         synchronized (this) {
             notify();
@@ -178,59 +187,46 @@ public class StScheduler extends Thread {
     }
     
     
-    public Event scheduleEvent(Event e){
+    public Event scheduleEvent(NewEvent e){
         new_tasks.add(e);
         synchronized (this) {
             notify();
         }        
-        return e;
+        return e.e;
     }
 
-    public void rescheduleTimerTask(Event task, long time) {
+    public void rescheduleTimerTask(Event e, long time) {
         long evtime = time + clock.currentTimeMillis();
-        task.newevtime = evtime;
-        new_tasks.add(task);
+    //    task.newevtime = evtime;
+        new_tasks.add(new NewEvent(e,evtime));
 
         synchronized (this) {
             notify();
         }
     }
 
-    private boolean pause = false;
+//    private boolean pause = false;
 
-    public void pause() {
-        setPause(!pause);
+ 
 
-    }
 
-    public void setPause(boolean val) {
-        pause = val;
-        synchronized (this) {
-            this.notify();
-        }
-
-    }
-
-    public boolean getPause() {
-        return pause;
-    }
 
     public long fireEvent(EventListener e, Event arg) {
         return e.receive(arg);//   .receive(e,arg);
     }
 
     //  HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
-    private boolean addTimerTask(Event e) {
+    private boolean addTimerTask(Event e, long t) {
 
         // System.out.printf("Add TimerTask %d %d\n",e.curevtime,e.newevtime);
         //   long evtime = time + currentTimeMillis();
-        LinkedList<Event> s = event_queue.get(e.newevtime);
+        LinkedList<Event> s = event_queue.get(t);
         if (s == null) {
             s = new LinkedList<>();
-            event_queue.put(e.newevtime, s);
+            event_queue.put(t, s);
         }
 
-        e.curevtime = e.newevtime;
+        //e.curevtime = e.newevtime;
 
         //      tasks.put(e, e.evtime);
         return s.add(e);
@@ -242,7 +238,7 @@ public class StScheduler extends Thread {
         cancel_queue.add(e);
     }
 
-    private void cancelMy(Event e) {
+ /*   private void cancelMy(Event e) {
 
 //        Long evtime = tasks.get(e.curevtime);
 //        if (evtime == null) {
@@ -263,7 +259,8 @@ public class StScheduler extends Thread {
         }
 
     }
-
+*/
+    
     public long runEvents() {
         
       //  System.out.printf("RunEvents in Thread %d\n",Thread.currentThread().getId());
@@ -279,7 +276,7 @@ public class StScheduler extends Thread {
             long delay = clock.getDelay(t);
             System.out.printf("Delay is %d %s\n", delay,StScheduler.formatTimeMillis(clock.currentTimeMillis()));
             if (delay>0)
-                return delay*2;
+                return delay;
             
 
             //  if (t <= ct) {
@@ -293,8 +290,10 @@ public class StScheduler extends Thread {
                 if (next_t == -1)
                     continue;   
 
-                def.newevtime = next_t + t;
-                this.addTimerTask(def);                
+//                def.newevtime = next_t + t;
+//                this.addTimerTask(def);                
+
+
                 //System.out.printf("Events in a row: %d\n", s.size());
             }
 /*
@@ -347,11 +346,11 @@ public class StScheduler extends Thread {
         while (!terminate) {
 
             while (!new_tasks.isEmpty()) {
-                Event td = new_tasks.poll();
+                NewEvent td = new_tasks.poll();
                 //   System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
 
-                this.cancelMy(td);
-                this.addTimerTask(td);
+                //this.cancelMy(td);
+                this.addTimerTask(td.e,td.t);
 
             }
 
@@ -364,7 +363,7 @@ public class StScheduler extends Thread {
             synchronized (this) {
                 try {
 //                    System.out.printf("My WTIME %d\n", wtime);
-                    if (wtime != -1 && !pause) {
+                    if (wtime != -1 && !clock.isPause()) {
                         wait(wtime);
                     } else {
                         wait();

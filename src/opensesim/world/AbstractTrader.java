@@ -92,12 +92,6 @@ public abstract class AbstractTrader implements Trader {
 
 
 
-    @Override
-    public void start() {
 
-        /*    long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-        setStatus("Inital delay: %d", delay);
-        timerTask = se.timer.startTimerTask(this, delay);*/
-    }
 
 }

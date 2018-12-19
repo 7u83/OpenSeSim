@@ -27,13 +27,15 @@ package opensesim.trader;
 
 import opensesim.world.AbstractTrader;
 import opensesim.world.World;
+import opensesim.world.scheduler.Event;
+import opensesim.world.scheduler.EventListener;
 import org.json.JSONObject;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SimpleTrader extends AbstractTrader{
+public class SimpleTrader extends AbstractTrader implements EventListener{
 
     @Override
     public String getStrategyTypeName() {
@@ -41,14 +43,51 @@ public class SimpleTrader extends AbstractTrader{
     }
     
     
-    SimpleTrader(World world, JSONObject cfg){
+    public SimpleTrader(World world, JSONObject cfg){
         super(world,cfg);
     }
     
-    SimpleTrader(){
+    public SimpleTrader(){
         this(null,null);
     }
     
+    float initial_delay[] = new float[2];
     
+        /**
+     * Get a (long) random number between min an max
+     *
+     * @param min minimum value
+     * @param max maximeum value
+     * @return the number
+     */
+    protected float getRandom(float min, float max) {
+        //double r = se.randNextDouble();
+
+        // System.out.printf("RD: %f", r);
+        // System.exit(0);
+     //   return (max - min) * r + min;
+     return 0;
+    }
+    
+    
+        @Override
+    public void start() {
+        
+        long delay = (long) (1000.0f * getWorld().randNextFloat(3.0f, 12.7f));
+        System.out.printf("Initial delay %d\n", delay);
+        
+        getWorld().schedule(this, delay);
+
+      //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
+    //    setStatus("Inital delay: %d", delay);
+     //   timerTask = se.timer.startTimerTask(this, delay);
+    }
+
+    @Override
+    public long receive(Event task) {
+        System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
+        getWorld().schedule(this, 100);        
+        return -1;
+    }
     
 }

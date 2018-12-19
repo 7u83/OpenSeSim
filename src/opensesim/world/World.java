@@ -27,7 +27,7 @@ package opensesim.world;
 
 import java.util.Collection;
 
-import opensesim.world.scheduler.Scheduler.EventListener;
+import opensesim.world.scheduler.EventListener;
 
 /**
  *
@@ -42,6 +42,8 @@ public interface World {
     Collection<Exchange> getExchangeCollection();
 
     Collection<Trader> getTradersCollection();
-    
-    public void schedule(EventListener listener,  long t);
+
+    public void schedule(EventListener listener, long t);
+
+    public float randNextFloat(float min, float max);
 }
