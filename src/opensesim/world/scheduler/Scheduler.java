@@ -26,6 +26,9 @@
 package opensesim.world.scheduler;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import opensesim.world.scheduler.EventListener;
 
 /**
@@ -33,33 +36,102 @@ import opensesim.world.scheduler.EventListener;
  * @author tohe
  */
 public class Scheduler {
-    ArrayList<StScheduler> schedulers;
-    Clock clock = new Clock();
-    int next=0;
-    
-    public Scheduler(int nthreads){
-        schedulers = new ArrayList<>();
-        for (int i=0; i<nthreads; i++){
-            schedulers.add(i,new StScheduler(clock));
+
+    private final SortedMap<Long, LinkedList<Event>> event_queue = new TreeMap<>();
+
+    private class Worker extends Thread {
+
+        boolean terminate = false;
+
+        @Override
+        public void run() {
+            while (!terminate) {
+
+                long delay = getDelay();
+                if (delay > 0) {
+                    synchronized (clock) {
+                        try {
+                            if (delay != -1 && !clock.isPause()) {
+                                clock.wait(delay);
+                            } else {
+                                clock.wait();
+                            }
+                        } catch (InterruptedException e) {
+
+                        }
+                    }
+                }
+                Event e = getNextEvent();
+                if (e==null){
+                    continue;
+                }
+                
+                e.listener.receive(e);
+            }
         }
     }
-    
-    public Scheduler(){
+
+    ArrayList<Worker> workers;
+    final private Clock clock = new Clock();
+    int next = 0;
+
+    public Scheduler(int nthreads) {
+        workers = new ArrayList<>();
+        for (int i = 0; i < nthreads; i++) {
+            workers.add(i, new Worker());
+        }
+    }
+
+    public Scheduler() {
         this(1);
     }
-    
-    
-    public void start(){
-        for (StScheduler s: schedulers){
-            s.start();
+
+    public void start() {
+        for (Worker w : workers) {
+            w.start();
         }
     }
-    
+
     public synchronized Event startTimerTask(EventListener listener, long time) {
-        Event e = schedulers.get(next++).startTimerTask(listener, time);
-        if (next==schedulers.size())
-            next=0;
-        return e;
+        //    Event e = schedulers.get(next++).startTimerTask(listener, time);
+//        if (next == schedulers.size()) {
+        //          next = 0;
+        //    }
+        return null;
     }
-    
+
+    protected long getDelay() {
+        synchronized (event_queue) {
+            if (event_queue.isEmpty()) {
+                return -1;
+            }
+
+            long t = event_queue.firstKey();
+
+            return clock.getDelay(t);
+        }
+    }
+
+    protected Event getNextEvent() {
+
+        //  System.out.printf("RunEvents in Thread %d\n",Thread.currentThread().getId());
+        synchronized (event_queue) {
+            if (event_queue.isEmpty()) {
+                return null;
+            }
+
+            long t = event_queue.firstKey();
+            LinkedList<Event> s = event_queue.get(t);
+
+            Event e = s.pop();
+            if (s.isEmpty()) {
+                event_queue.remove(t);
+            }
+
+            return e;
+
+        }
+
+    }
+
 }
