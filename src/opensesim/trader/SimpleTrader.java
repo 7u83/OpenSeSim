@@ -72,10 +72,11 @@ public class SimpleTrader extends AbstractTrader implements EventListener{
     
         @Override
     public void start() {
+        setVerbose(true);
+        setStatus("Trader started");
         
         long delay = (long) (1000.0f * getWorld().randNextFloat(3.0f, 12.7f));
-        System.out.printf("Initial delay %d\n", delay);
-        
+        setStatus(String.format("Initial delay: Sleeping for %d seconds.", delay));
         getWorld().schedule(this, delay);
 
       //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
@@ -86,7 +87,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener{
     @Override
     public long receive(Event task) {
         System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
-        getWorld().schedule(this, 100);        
+     //   getWorld().schedule(this, 100);        
         return -1;
     }
     
