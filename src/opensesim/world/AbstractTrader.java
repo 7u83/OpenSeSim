@@ -53,8 +53,16 @@ public abstract class AbstractTrader implements Trader {
         this.world = world;
     }
 
- 
+    private boolean verbose=false;
 
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+    
 
     /**
      * @return the status
@@ -64,11 +72,16 @@ public abstract class AbstractTrader implements Trader {
         return status;
     }
 
+    
     /**
      * @param status the status to set
      */
     protected void setStatus(String status) {
         this.status = status;
+        if (verbose){
+            System.out.printf("%s: %s\n",this.getName(),this.getStatus());
+        }
+
     }
 
     /**
