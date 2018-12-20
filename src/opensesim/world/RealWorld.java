@@ -28,8 +28,6 @@ package opensesim.world;
 import java.util.Collection;
 import opensesim.world.scheduler.EventListener;
 
-import opensesim.world.scheduler.StScheduler;
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -70,6 +68,11 @@ public class RealWorld implements World {
     @Override
     public float randNextFloat(float min, float max) {
         return godworld.randNextFloat(min, max);
+    }
+
+    @Override
+    public long currentTimeMillis() {
+        return godworld.currentTimeMillis();
     }
 
 }

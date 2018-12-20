@@ -42,7 +42,7 @@ import opensesim.util.idgenerator.IDGenerator;
 import opensesim.world.scheduler.EventListener;
 
 import opensesim.world.scheduler.Scheduler;
-import opensesim.world.scheduler.StScheduler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +56,11 @@ public class GodWorld implements GetJson, World {
     @Override
     public void schedule(EventListener listener, long t) {
         scheduler.startTimerTask(listener, t);
+    }
+
+    @Override
+    public long currentTimeMillis() {
+        return scheduler.currentTimeMillis();
     }
 
     public static final class JKEYS {
