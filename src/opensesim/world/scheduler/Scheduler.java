@@ -48,8 +48,9 @@ public class Scheduler {
             while (!terminate) {
 
                 long delay = getDelay();
-                if (delay > 0) {
-                    System.out.printf("Worker %d sleeps for %d\n",Thread.currentThread().getId(), delay);
+//System.out.printf("Worker %d has delay %d\n",Thread.currentThread().getId(), delay);                
+                if (delay > 0  || delay==-1) {
+                    //System.out.printf("Worker %d sleeps for %d\n",Thread.currentThread().getId(), delay);
                     synchronized (clock) {
                         try {
                             if (delay != -1 && !clock.isPause()) {
@@ -58,16 +59,17 @@ public class Scheduler {
                                 clock.wait();
                             }
                         } catch (InterruptedException e) {
-System.out.printf("Interrupted\n");
+//System.out.printf("Interrupted\n");
                         }
                     }
                     continue;
                 }
                 Event e = getNextEvent();
+                
                 if (e == null) {
                     continue;
                 }
-
+//System.out.printf("Worker %d got event %d\n",Thread.currentThread().getId(), e.t);
                 e.listener.receive(e);
             }
         }
@@ -116,12 +118,14 @@ System.out.printf("Interrupted\n");
 
     protected long getDelay() {
         synchronized (event_queue) {
+            
+
             if (event_queue.isEmpty()) {
                 return -1;
             }
 
             long t = event_queue.firstKey();
-
+//System.out.printf("Worker: %d - queu is not empty: cur millis %d til %d\n", Thread.currentThread().getId(), clock.currentTimeMillis(),t);
             return clock.getDelay(t);
         }
     }
@@ -148,4 +152,13 @@ System.out.printf("Interrupted\n");
 
     }
 
+    public long currentTimeMillis(){
+        return clock.currentTimeMillis();
+    }
+    
+    public void setAcceleration(double a){
+        clock.setAcceleration(a);
+        
+    }
+    
 }
