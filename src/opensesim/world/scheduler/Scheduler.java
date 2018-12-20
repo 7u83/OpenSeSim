@@ -49,6 +49,7 @@ public class Scheduler {
 
                 long delay = getDelay();
                 if (delay > 0) {
+                    System.out.printf("Worker %d sleeps for %d\n",Thread.currentThread().getId(), delay);
                     synchronized (clock) {
                         try {
                             if (delay != -1 && !clock.isPause()) {
@@ -57,9 +58,10 @@ public class Scheduler {
                                 clock.wait();
                             }
                         } catch (InterruptedException e) {
-
+System.out.printf("Interrupted\n");
                         }
                     }
+                    continue;
                 }
                 Event e = getNextEvent();
                 if (e == null) {
@@ -73,7 +75,7 @@ public class Scheduler {
 
     ArrayList<Worker> workers;
     final private Clock clock = new Clock();
-    int next = 0;
+ //   int next = 0;
 
     public Scheduler(int nthreads) {
         workers = new ArrayList<>();
@@ -83,7 +85,7 @@ public class Scheduler {
     }
 
     public Scheduler() {
-        this(1);
+        this(10);
     }
 
     public void start() {
@@ -95,6 +97,7 @@ public class Scheduler {
     public Event startTimerTask(EventListener listener, long time) {
         Event e = new Event(listener);
         long t = time + clock.currentTimeMillis();
+        e.t=t;
         synchronized (event_queue) {
             LinkedList<Event> s = event_queue.get(t);
             if (s == null) {
