@@ -93,7 +93,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener{
      long diff = getWorld().currentTimeMillis()-last_time;
      last_time = getWorld().currentTimeMillis();
      
-     System.out.printf("Here we are: %d - [%d] (%d)\n",Thread.currentThread().getId(),diff,task.t );
+     System.out.printf("Here we are: %d - [%d]\n",Thread.currentThread().getId(),diff);
      getWorld().schedule(this, 1000);        
         return -1;
     }

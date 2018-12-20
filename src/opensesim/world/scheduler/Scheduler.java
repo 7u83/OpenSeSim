@@ -99,7 +99,6 @@ public class Scheduler {
     public Event startTimerTask(EventListener listener, long time) {
         Event e = new Event(listener);
         long t = time + clock.currentTimeMillis();
-        e.t=t;
         synchronized (event_queue) {
             LinkedList<Event> s = event_queue.get(t);
             if (s == null) {

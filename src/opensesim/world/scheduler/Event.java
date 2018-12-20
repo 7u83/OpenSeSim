@@ -33,9 +33,7 @@ package opensesim.world.scheduler;
     public class Event  {
 
         EventListener listener;
-
-        public long t;
-        
+       
         Event(EventListener listener) {
             this.listener = listener;
         }
