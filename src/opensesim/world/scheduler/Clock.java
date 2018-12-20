@@ -31,18 +31,20 @@ package opensesim.world.scheduler;
  */
 public class Clock {
 
-
-    private double current_millis = 0.0;
-    private long last_nanos = System.nanoTime();
-    private double current_nanos = 0;
-    private double acceleration = 1.0;
+    private double current_millis;
+    private long last_nanos;
+    private double current_nanos;
+    private double acceleration;
 
     public double getAcceleration() {
         return acceleration;
     }
 
     public void setAcceleration(double acceleration) {
-        this.acceleration = acceleration;
+        synchronized (this) {
+            this.acceleration = acceleration;
+            this.notifyAll();
+        }
     }
     private boolean pause = false;
 
@@ -53,27 +55,26 @@ public class Clock {
     public void setPause(boolean pause) {
         this.pause = pause;
     }
-    
 
-    /**
-     *
-     * @return
-     */
+    Clock() {
+        this.acceleration = 1.0;
+        this.current_nanos = 0;
+        this.current_millis = 0.0;
+        this.last_nanos = System.nanoTime();
+
+    }
+
     private long currentTimeMillis1() {
 
-        long cur = System.nanoTime();
-        long diff = cur - last_nanos;
-        last_nanos = cur;
+        long nanos = System.nanoTime();
+        long diff = nanos - last_nanos;
+        last_nanos = nanos;
 
         if (pause) {
             return (long) this.current_millis;
         }
 
-        //  this.cur_nano += (((double)diff_nano)/1000000.0)*this.acceleration;
-        //     return (long)(cur_nano/1000000.0);        
         this.current_nanos += (double) diff * (double) this.acceleration;
-
-//        this.current_time_millis += ((double) diff) * this.acceleration;
         this.current_millis = this.current_nanos / 1000000.0;
 
         return (long) this.current_millis;
@@ -84,24 +85,18 @@ public class Clock {
     }
 
     synchronized long getDelay(long t) {
-        long ct = currentTimeMillis1();
+        long current = currentTimeMillis1();
 
-//            ct = t;
-        if (t > ct) {
-            //if ((long) diff > 0) {
-            //              System.out.printf("Leave Event Queue in run events %d\n", Thread.currentThread().getId());
-//                System.out.printf("Sleeping somewat %d\n", (long) (0.5 + (t - this.currentTimeMillis()) / this.acceleration));
-            //  return (long) diff;
+        if (t > current) {
             return (long) (((double) t - this.current_millis) / this.acceleration);
         }
 
-   /*     if (t < ct) {
+        /*     if (t < ct) {
             //  System.out.printf("Time is overslipping: %d\n",ct-t);
             this.current_millis = t;
             this.current_nanos = this.current_millis * 1000000.0;
 
         }*/
-   
         return 0;
     }
 
