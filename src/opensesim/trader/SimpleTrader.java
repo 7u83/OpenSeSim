@@ -83,11 +83,17 @@ public class SimpleTrader extends AbstractTrader implements EventListener{
     //    setStatus("Inital delay: %d", delay);
      //   timerTask = se.timer.startTimerTask(this, delay);
     }
+    
+    long last_time = 0;
 
     @Override
     public long receive(Event task) {
      //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
-     System.out.printf("Here we are: %d - %d (%d)\n",Thread.currentThread().getId(),System.nanoTime()/1000,task.t );
+     
+     long diff = getWorld().currentTimeMillis()-last_time;
+     last_time = getWorld().currentTimeMillis();
+     
+     System.out.printf("Here we are: %d - [%d] (%d)\n",Thread.currentThread().getId(),diff,task.t );
      getWorld().schedule(this, 1000);        
         return -1;
     }
