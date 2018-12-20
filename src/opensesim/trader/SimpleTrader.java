@@ -87,7 +87,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener{
     @Override
     public long receive(Event task) {
         System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
-     //   getWorld().schedule(this, 100);        
+     getWorld().schedule(this, 5000);        
         return -1;
     }
     

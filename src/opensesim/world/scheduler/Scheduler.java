@@ -62,10 +62,10 @@ public class Scheduler {
                     }
                 }
                 Event e = getNextEvent();
-                if (e==null){
+                if (e == null) {
                     continue;
                 }
-                
+
                 e.listener.receive(e);
             }
         }
@@ -92,12 +92,23 @@ public class Scheduler {
         }
     }
 
-    public synchronized Event startTimerTask(EventListener listener, long time) {
-        //    Event e = schedulers.get(next++).startTimerTask(listener, time);
-//        if (next == schedulers.size()) {
-        //          next = 0;
-        //    }
-        return null;
+    public Event startTimerTask(EventListener listener, long time) {
+        Event e = new Event(listener);
+        long t = time + clock.currentTimeMillis();
+        synchronized (event_queue) {
+            LinkedList<Event> s = event_queue.get(t);
+            if (s == null) {
+                s = new LinkedList<>();
+                event_queue.put(t, s);
+            }
+
+            s.add(e);
+        }
+        synchronized (clock) {
+            clock.notifyAll();
+        }
+        return e;
+
     }
 
     protected long getDelay() {
