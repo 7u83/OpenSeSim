@@ -46,4 +46,6 @@ public interface World {
     public void schedule(EventListener listener, long t);
 
     public float randNextFloat(float min, float max);
+    
+    public long currentTimeMillis();
 }
