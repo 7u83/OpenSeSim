@@ -26,6 +26,7 @@
 package opensesim.trader;
 
 import opensesim.world.AbstractTrader;
+import opensesim.world.Exchange;
 import opensesim.world.World;
 import opensesim.world.scheduler.Event;
 import opensesim.world.scheduler.EventListener;
@@ -35,25 +36,26 @@ import org.json.JSONObject;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class SimpleTrader extends AbstractTrader implements EventListener{
+public class SimpleTrader extends AbstractTrader implements EventListener {
+
+    Exchange ex = null;
 
     @Override
     public String getStrategyTypeName() {
         return "Very Simple Trader";
     }
-    
-    
-    public SimpleTrader(World world, JSONObject cfg){
-        super(world,cfg);
+
+    public SimpleTrader(World world, JSONObject cfg) {
+        super(world, cfg);
     }
-    
-    public SimpleTrader(){
-        this(null,null);
+
+    public SimpleTrader() {
+        this(null, null);
     }
-    
+
     float initial_delay[] = new float[2];
-    
-        /**
+
+    /**
      * Get a (long) random number between min an max
      *
      * @param min minimum value
@@ -65,37 +67,48 @@ public class SimpleTrader extends AbstractTrader implements EventListener{
 
         // System.out.printf("RD: %f", r);
         // System.exit(0);
-     //   return (max - min) * r + min;
-     return 0;
+        //   return (max - min) * r + min;
+        return 0;
     }
-    
-    
-        @Override
+
+    @Override
     public void start() {
         setVerbose(true);
         setStatus("Trader started");
-        
+
+        // set exchange if we haven't one already
+        if (ex == null) {
+            ex = getWorld().getDefaultExchange();
+        }
+        if (ex != null) {
+            this.log(String.format("Exchange is %s", ex.getName()));
+        } else {
+            this.log("No exchange. Stopping.");
+            setStatus("Stopped.");
+            return;
+        }
+
         long delay = (long) (1000.0f * getWorld().randNextFloat(3.0f, 12.7f));
         setStatus(String.format("Initial delay: Sleeping for %d seconds.", delay));
         getWorld().schedule(this, delay);
 
-      //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-    //    setStatus("Inital delay: %d", delay);
-     //   timerTask = se.timer.startTimerTask(this, delay);
+        //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
+        //    setStatus("Inital delay: %d", delay);
+        //   timerTask = se.timer.startTimerTask(this, delay);
     }
-    
+
     long last_time = 0;
 
     @Override
     public long receive(Event task) {
-     //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
-     
-     long diff = getWorld().currentTimeMillis()-last_time;
-     last_time = getWorld().currentTimeMillis();
-     
-     System.out.printf("Here we are: %d - [%d]\n",Thread.currentThread().getId(),diff);
-     getWorld().schedule(this, 1000);        
+        //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
+
+        long diff = getWorld().currentTimeMillis() - last_time;
+        last_time = getWorld().currentTimeMillis();
+
+        System.out.printf("Here we are: %d - [%d]\n", Thread.currentThread().getId(), diff);
+        getWorld().schedule(this, 1000);
         return -1;
     }
-    
+
 }
