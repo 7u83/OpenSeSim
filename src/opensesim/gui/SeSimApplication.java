@@ -254,6 +254,11 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 480));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/opensesim/resources/icons/stop.gif"))); // NOI18N
         stopButton.setText("Stop");
@@ -580,6 +585,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        dispose();
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
@@ -979,6 +985,11 @@ public class SeSimApplication extends javax.swing.JFrame {
         ExchangeListDialog.runDialog(this, godworld);
 
     }//GEN-LAST:event_exchangesMenuItemActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        System.out.printf("Closing Windows\n");
+    }//GEN-LAST:event_formWindowClosing
     public static class Pojo {
 
         public String getSymbol() {
