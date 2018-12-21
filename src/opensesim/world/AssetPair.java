@@ -61,27 +61,9 @@ public class AssetPair {
     
     public AssetPair(World world, String asset, String currency){
         this.asset = world.getAssetBySymbol(asset);
-        this.currency = world.getAssetBySymbol(asset);
+        this.currency = world.getAssetBySymbol(currency);
     }
    
- 
-
-    protected HashMap<Order.Type, SortedSet<Order>> order_books;
-
-    public final void reset() {
-        order_books = new HashMap();
-
-        // Create an order book for each order type
-        for (Order.Type type : Order.Type.values()) {
-            //  order_books.put(type, new TreeSet(new Exchange.OrderComparator(type)));
-            order_books.put(type, new TreeSet<>());
-        }
-
-        //  quoteHistory = new TreeSet();
-        //  ohlc_data = new HashMap();
-    }
-    
-    
 
     @Override
     public boolean equals(Object o) {
