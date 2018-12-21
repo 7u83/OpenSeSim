@@ -74,6 +74,7 @@ public class AssetEditorDialog extends EscDialog {
         assetEditorPanel = new opensesim.gui.AssetEditor.AssetEditorPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Edit Asset");
         setModal(true);
 
         cancelButton.setText("Cancel");
