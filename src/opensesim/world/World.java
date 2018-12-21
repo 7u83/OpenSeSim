@@ -42,7 +42,7 @@ public interface World {
     Collection<Exchange> getExchangeCollection();
     
     public Exchange getDefaultExchange();
-
+    
     Collection<Trader> getTradersCollection();
 
     public void schedule(EventListener listener, long t);
