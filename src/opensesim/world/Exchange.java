@@ -116,7 +116,7 @@ public class Exchange implements Configurable, GetJson {
         return cfg;
     }
 
-    class TradingEnv {
+    class TradingEnv implements TradingAPI{
 
         protected HashMap<Order.Type, SortedSet<Order>> order_books;
 
@@ -124,7 +124,7 @@ public class Exchange implements Configurable, GetJson {
             reset();
         }
 
-        public final void reset() {
+        protected final void reset() {
             order_books = new HashMap();
 
             // Create an order book for each order type
@@ -136,12 +136,27 @@ public class Exchange implements Configurable, GetJson {
             //  ohlc_data = new HashMap();
         }
 
+        @Override
         public Order createOrder(Account account, Order.Type type, double volume, double limit) {
 
             return null;
         }
 
+    
+
+    }
+    
+    private TradingAPI add(AssetPair p){
+        TradingEnv e = new TradingEnv();
+        asset_pairs.put(p, e);
+        return e;
     }
 
-    // public void add
+    public TradingAPI getAPI(AssetPair pair){
+        TradingAPI a = asset_pairs.get(pair);
+        if (a==null){
+            return add(pair);
+        }
+        return a;
+    }
 }
