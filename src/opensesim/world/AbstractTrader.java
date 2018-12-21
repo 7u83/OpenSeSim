@@ -34,7 +34,7 @@ import org.json.JSONObject;
  */
 public abstract class AbstractTrader implements Trader {
 
-    private String name;
+    private String name = "Unnamed";
     private String status;
     private World world;
     protected Account account;
@@ -79,7 +79,7 @@ public abstract class AbstractTrader implements Trader {
     protected void setStatus(String status) {
         this.status = status;
         if (verbose){
-            System.out.printf("%s: %s\n",this.getName(),this.getStatus());
+            System.out.printf("STA: %s: %s\n",this.getName(),this.getStatus());
         }
 
     }
@@ -103,8 +103,12 @@ public abstract class AbstractTrader implements Trader {
         
     }
 
+    protected void log(String s){
 
-
-
+        if (verbose){
+            System.out.printf("LOG: %s: %s\n",this.getName(),s);
+        }
+        
+    }
 
 }
