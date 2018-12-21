@@ -50,8 +50,7 @@ public class Exchange implements Configurable, GetJson {
         this.name = name;
     }
 
-    //private final HashMap<String, AssetPair> asset_pairs;
-    private final HashMap<AssetPair, TradingEnv> asset_pairs = new HashMap<>();
+    private final HashMap<AssetPair, TradingAPI> asset_pairs = new HashMap<>();
 
     Exchange(World world, String symbol) {
 
@@ -88,12 +87,6 @@ public class Exchange implements Configurable, GetJson {
         return null;
     }
 
-    public Collection<Order> getOrderBook(AssetPair a) {
-        TradingEnv e = asset_pairs.get(a);
-        SortedSet<Order> ob = e.order_books.get(Order.Type.BUYLIMIT);
-        return Collections.unmodifiableCollection(ob);
-    }
-
     @Override
     public JSONObject getConfig() {
         JSONObject cfg = new JSONObject();
@@ -116,7 +109,7 @@ public class Exchange implements Configurable, GetJson {
         return cfg;
     }
 
-    class TradingEnv implements TradingAPI{
+    class TradingEnv implements TradingAPI {
 
         protected HashMap<Order.Type, SortedSet<Order>> order_books;
 
@@ -142,19 +135,17 @@ public class Exchange implements Configurable, GetJson {
             return null;
         }
 
-    
-
     }
-    
-    private TradingAPI add(AssetPair p){
+
+    private TradingAPI add(AssetPair p) {
         TradingEnv e = new TradingEnv();
         asset_pairs.put(p, e);
         return e;
     }
 
-    public TradingAPI getAPI(AssetPair pair){
+    public TradingAPI getAPI(AssetPair pair) {
         TradingAPI a = asset_pairs.get(pair);
-        if (a==null){
+        if (a == null) {
             return add(pair);
         }
         return a;
