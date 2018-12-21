@@ -211,12 +211,27 @@ public class GodWorld implements GetJson, World {
         return a;
     }
 
-    HashMap<String, Exchange> exchanges = new HashMap<>();
+    // --------------------------------------------------------------------
+    // Exchanges in our world
+    // --------------------------------------------------------------------
+
+    private final HashMap<String, Exchange> exchanges = new HashMap<>();
+    private Exchange default_exchange = null;
 
     public void createExchange(JSONObject cfg) {
         Exchange ex = new Exchange(this.getWorld(), cfg);
         exchanges.put(ex.getSymbol(), ex);
+        if (default_exchange == null) {
+            default_exchange = ex;
+        }
     }
+    
+    public Exchange getDefaultExchange(){
+        return default_exchange;
+    }
+    
+    
+    
 
     @Override
     public Collection<Exchange> getExchangeCollection() {
@@ -366,8 +381,6 @@ public class GodWorld implements GetJson, World {
     // --------------------------------------------------------------------
     // Stuff belonging to accounts
     // --------------------------------------------------------------------
-
-
     // --------------------------------------------------------------------
     // Pseudo random generator stuff
     // --------------------------------------------------------------------   

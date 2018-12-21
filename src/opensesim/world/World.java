@@ -40,6 +40,8 @@ public interface World {
     public AbstractAsset getAssetBySymbol(String symbol);
 
     Collection<Exchange> getExchangeCollection();
+    
+    public Exchange getDefaultExchange();
 
     Collection<Trader> getTradersCollection();
 

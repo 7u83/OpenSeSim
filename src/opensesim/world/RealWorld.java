@@ -75,4 +75,9 @@ public class RealWorld implements World {
         return godworld.currentTimeMillis();
     }
 
+    @Override
+    public Exchange getDefaultExchange() {
+        return godworld.getDefaultExchange();
+    }
+
 }
