@@ -27,7 +27,6 @@ package opensesim.world;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -83,8 +82,7 @@ public class GodWorld implements GetJson, World {
 
     HashSet<AssetPair> assetPairs = new HashSet<>();
 
-    //ArrayList<Exchange> exchanges = new ArrayList<>();
-    private Scheduler scheduler = new Scheduler();
+     private Scheduler scheduler = new Scheduler();
 
     /**
      * Create a World object.
@@ -172,17 +170,6 @@ public class GodWorld implements GetJson, World {
         return cfg;
     }
 
-    private long masterkey;
-
-    public GodWorld(JSONObject cfg, long masterkey) {
-        this.masterkey = masterkey;
-        putJson(cfg);
-    }
-
-    /*   public boolean checkMasterKey(long masterkey) {
-        return masterkey == this.masterkey;
-    }
-     */
     public AbstractAsset createAsset(JSONObject cfg) throws SeSimException {
         AbstractAsset a;
         String class_name;
@@ -214,7 +201,6 @@ public class GodWorld implements GetJson, World {
     // --------------------------------------------------------------------
     // Exchanges in our world
     // --------------------------------------------------------------------
-
     private final HashMap<String, Exchange> exchanges = new HashMap<>();
     private Exchange default_exchange = null;
 
@@ -225,23 +211,26 @@ public class GodWorld implements GetJson, World {
             default_exchange = ex;
         }
     }
-    
-    public Exchange getDefaultExchange(){
+
+    public Exchange getDefaultExchange() {
         return default_exchange;
     }
-    
-    
-    
 
     @Override
     public Collection<Exchange> getExchangeCollection() {
         return Collections.unmodifiableCollection(exchanges.values());
     }
 
+    // --------------------------------------------------------------------
+    // Assets
+    // --------------------------------------------------------------------
+    
+    @Override
     public Collection<AbstractAsset> getAssetCollection() {
         return assets.getCollection(); //Collections.unmodifiableCollection(assetsById);
     }
 
+    @Override
     public AbstractAsset getAssetBySymbol(String symbol) {
         return this.assets.get(symbol);
     }
