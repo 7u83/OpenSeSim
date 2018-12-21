@@ -25,13 +25,8 @@
  */
 package opensesim.world;
 
-import opensesim.world.Order;
-import java.util.HashMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import opensesim.world.AbstractAsset;
 
-import opensesim.sesim.interfaces.Asset;
 
 /**
  *
