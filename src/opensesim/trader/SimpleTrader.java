@@ -25,8 +25,12 @@
  */
 package opensesim.trader;
 
+import opensesim.world.AbstractAsset;
 import opensesim.world.AbstractTrader;
+import opensesim.world.AssetPair;
 import opensesim.world.Exchange;
+import opensesim.world.Order;
+import opensesim.world.TradingAPI;
 import opensesim.world.World;
 import opensesim.world.scheduler.Event;
 import opensesim.world.scheduler.EventListener;
@@ -40,6 +44,8 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
     Exchange ex = null;
 
+    TradingAPI api;
+
     @Override
     public String getStrategyTypeName() {
         return "Very Simple Trader";
@@ -47,6 +53,10 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
     public SimpleTrader(World world, JSONObject cfg) {
         super(world, cfg);
+        if (cfg == null) {
+            return;
+        }
+        
     }
 
     public SimpleTrader() {
@@ -87,6 +97,15 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
             setStatus("Stopped.");
             return;
         }
+        AbstractAsset c,a;
+        c=getWorld().getAssetBySymbol("EUR");
+        a=getWorld().getAssetBySymbol("AAPL");
+        AssetPair p = new AssetPair(c,a);
+        
+        ex = getWorld().getDefaultExchange();
+        api = ex.getAPI(p);        
+        Order o = api.createOrder(account, Order.Type.BUY, 100, 200);        
+        
 
         long delay = (long) (1000.0f * getWorld().randNextFloat(3.0f, 12.7f));
         setStatus(String.format("Initial delay: Sleeping for %d seconds.", delay));

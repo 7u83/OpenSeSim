@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import opensesim.world.RealWorld;
@@ -42,7 +43,7 @@ import org.json.JSONObject;
  */
 public class Exchange implements Configurable, GetJson {
 
-    private World world;
+    private GodWorld world;
     private String name;
     private String symbol;
 
@@ -52,13 +53,13 @@ public class Exchange implements Configurable, GetJson {
 
     private final HashMap<AssetPair, TradingAPI> asset_pairs = new HashMap<>();
 
-    Exchange(World world, String symbol) {
+    Exchange(GodWorld world, String symbol) {
 
         this.world = world;
         this.symbol = symbol;
     }
 
-    Exchange(World world, JSONObject cfg) {
+    Exchange(GodWorld world, JSONObject cfg) {
         this.world = world;
         this.name = cfg.optString("name", "Sesim");
         this.symbol = cfg.optString("symbol");
@@ -112,8 +113,10 @@ public class Exchange implements Configurable, GetJson {
     class TradingEnv implements TradingAPI {
 
         protected HashMap<Order.Type, SortedSet<Order>> order_books;
+        AssetPair pair;
 
-        TradingEnv() {
+        TradingEnv(AssetPair p) {
+            pair = p;
             reset();
         }
 
@@ -129,16 +132,41 @@ public class Exchange implements Configurable, GetJson {
             //  ohlc_data = new HashMap();
         }
 
+        protected void addOrderToBook(Order o) {
+            order_books.get(o.type).add(o);
+            switch (o.type) {
+                case BUY:
+                case BUYLIMIT:
+                    break;
+                case SELL:
+                case SELLLIMIT:
+                    break;
+
+            }
+
+        }
+
         @Override
         public Order createOrder(Account account, Order.Type type, double volume, double limit) {
 
-            return null;
+            Order o = new opensesim.world.Order(world, account, pair, type, volume, limit);
+            synchronized (this){
+                order_books.get(o.type).add(o);
+            }
+            return o;
         }
+
+        @Override
+        public Set getOrderBook(Order.Type type) {
+            return Collections.unmodifiableSet(order_books.get(type));
+        }
+        
+        
 
     }
 
     private TradingAPI add(AssetPair p) {
-        TradingEnv e = new TradingEnv();
+        TradingEnv e = new TradingEnv(p);
         asset_pairs.put(p, e);
         return e;
     }

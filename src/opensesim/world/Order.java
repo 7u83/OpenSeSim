@@ -25,7 +25,6 @@
  */
 package opensesim.world;
 
-import opensesim.util.idgenerator.IDGenerator;
 import opensesim.util.idgenerator.Id;
 
 /**

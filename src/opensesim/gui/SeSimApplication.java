@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -45,6 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import opensesim.gui.AssetPairEditor.NewJDialog;
+import static opensesim.gui.Globals.getWorld;
 
 import opensesim.gui.exchangeeditor.ExchangeListDialog;
 import org.json.JSONArray;
@@ -54,9 +56,13 @@ import opensesim.old_sesim.AutoTraderInterface;
 import opensesim.old_sesim.Exchange;
 import opensesim.old_sesim.Scheduler;
 import opensesim.old_sesim.Scheduler.TimerTaskDef;
+import opensesim.world.AbstractAsset;
+import opensesim.world.AssetPair;
 
 import opensesim.world.GodWorld;
+import opensesim.world.Order;
 import opensesim.world.Trader;
+import opensesim.world.TradingAPI;
 import opensesim.world.World;
 
 import opensesim.world.scheduler.EventListener;
@@ -601,13 +607,33 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     void startSim() {
 
-        GodWorld godworld = new GodWorld(Globals.getWorld());
+     //   GodWorld godworld = new GodWorld(Globals.getWorld());
 
         JSONObject cfg = new JSONObject("{"
                 + "strategy: opensesim.trader.SimpleTrader"
                 + "}");
         Trader t = godworld.createTrader(cfg);
         t.start();
+        
+        TradingAPI api;
+       AbstractAsset c,a;
+        c=godworld.getAssetBySymbol("EUR");
+        a=godworld.getAssetBySymbol("AAPL");
+        AssetPair p = new AssetPair(c,a);
+        
+        opensesim.world.Exchange ex = godworld.getDefaultExchange();
+        api = ex.getAPI(p);                
+        
+        Set<Order> ob;
+        
+        ob = api.getOrderBook(Order.Type.BUY);
+        
+        for (Order o: ob){
+            System.out.printf("Volume: %d\n",o.getVolume());
+        }
+        
+      
+        
 
         opensesim.world.scheduler.Scheduler s = godworld.getScheduler();
 

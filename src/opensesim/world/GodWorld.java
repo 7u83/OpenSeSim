@@ -82,7 +82,7 @@ public class GodWorld implements GetJson, World {
 
     HashSet<AssetPair> assetPairs = new HashSet<>();
 
-     private Scheduler scheduler = new Scheduler();
+    private Scheduler scheduler = new Scheduler();
 
     /**
      * Create a World object.
@@ -205,7 +205,7 @@ public class GodWorld implements GetJson, World {
     private Exchange default_exchange = null;
 
     public void createExchange(JSONObject cfg) {
-        Exchange ex = new Exchange(this.getWorld(), cfg);
+        Exchange ex = new Exchange(this, cfg);
         exchanges.put(ex.getSymbol(), ex);
         if (default_exchange == null) {
             default_exchange = ex;
@@ -224,7 +224,6 @@ public class GodWorld implements GetJson, World {
     // --------------------------------------------------------------------
     // Assets
     // --------------------------------------------------------------------
-    
     @Override
     public Collection<AbstractAsset> getAssetCollection() {
         return assets.getCollection(); //Collections.unmodifiableCollection(assetsById);

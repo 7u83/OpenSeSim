@@ -25,6 +25,8 @@
  */
 package opensesim.world;
 
+import java.util.Set;
+
 /**
  *
  * @author tube
@@ -33,4 +35,5 @@ public interface TradingAPI {
 
     public Order createOrder(Account account, Order.Type type, double volume, double limit);
 
+    public Set getOrderBook(Order.Type type);
 }

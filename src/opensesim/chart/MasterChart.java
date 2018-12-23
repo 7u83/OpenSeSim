@@ -363,7 +363,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
     }//GEN-LAST:event_chartMouseMoved
 
     private void chartMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chartMousePressed
-        System.out.printf("Mauspress\n");
+      //  System.out.printf("Mauspress\n");
         this.formMousePressed(evt);
     }//GEN-LAST:event_chartMousePressed
 
