@@ -75,9 +75,6 @@ public class GodWorld implements GetJson, World {
     /*   HashSet<AbstractAsset> assetsById = new HashSet<>();
     HashMap<String, AbstractAsset> assetsBySymbol = new HashMap<>();
      */
-
-
-
     IDGenerator orderIdGenerator = new IDGenerator();
 
     private Scheduler scheduler = new Scheduler();
@@ -231,12 +228,12 @@ public class GodWorld implements GetJson, World {
 //        return ex;
         return null;
     }
-    
+
     // --------------------------------------------------------------------
     // Assets
     // --------------------------------------------------------------------
     private final HashMap<String, AbstractAsset> assets = new HashMap<>();
-    
+
     @Override
     public Collection<AbstractAsset> getAssetCollection() {
         return Collections.unmodifiableCollection(assets.values());
@@ -250,14 +247,29 @@ public class GodWorld implements GetJson, World {
     // --------------------------------------------------------------------
     // AssetsPairs
     // --------------------------------------------------------------------    
-    private final HashSet<AssetPair> asset_pairs = new HashSet<>();
+    private final HashMap<String, AssetPair> asset_pairs = new HashMap<>();
+
+    private AssetPair default_asset_pair = null;
 
     public Collection<AssetPair> getAssetPairsCollection() {
-        return Collections.unmodifiableCollection(asset_pairs);
+        return Collections.unmodifiableCollection(asset_pairs.values());
     }
 
     public void add(AssetPair pair) {
-        asset_pairs.add(pair);
+        asset_pairs.put(pair.getSymbol(), pair);
+        if (default_asset_pair == null) {
+            default_asset_pair = pair;
+        }
+    }
+
+    public AssetPair addAssetPair(String currency, String asset) {
+        AssetPair pair = new AssetPair(assets.get(currency), assets.get(asset));
+        add(pair);
+        return pair;
+    }
+
+    public AssetPair getDefaultAssetPair() {
+        return default_asset_pair;
     }
 
 
@@ -375,9 +387,6 @@ public class GodWorld implements GetJson, World {
     // --------------------------------------------------------------------
     // Stuff belonging to accounts
     // --------------------------------------------------------------------
-    
-    
-    
     // --------------------------------------------------------------------
     // Pseudo random generator stuff
     // --------------------------------------------------------------------   

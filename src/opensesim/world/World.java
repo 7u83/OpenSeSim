@@ -42,6 +42,7 @@ public interface World {
     Collection<Exchange> getExchangeCollection();
     
     public Exchange getDefaultExchange();
+    public AssetPair getDefaultAssetPair();
     
     Collection<Trader> getTradersCollection();
 

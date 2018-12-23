@@ -80,4 +80,9 @@ public class RealWorld implements World {
         return godworld.getDefaultExchange();
     }
 
+    @Override
+    public AssetPair getDefaultAssetPair() {
+        return godworld.getDefaultAssetPair();
+    }
+
 }
