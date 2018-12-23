@@ -607,26 +607,26 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     void startSim() {
      
+        godworld.addAssetPair("AAPL", "EUR");
+        
         JSONObject cfg = new JSONObject("{"
                 + "strategy: opensesim.trader.SimpleTrader"
                 + "}");
         Trader t = godworld.createTrader(cfg);
         t.start();
         
-        TradingAPI api;
-       AbstractAsset c,a;
-        c=godworld.getAssetBySymbol("EUR");
-        a=godworld.getAssetBySymbol("AAPL");
-        AssetPair p = new AssetPair(c,a);
+
+        AssetPair p = godworld.getDefaultAssetPair();
         
         opensesim.world.Exchange ex = godworld.getDefaultExchange();
-        api = ex.getAPI(p);                
+        TradingAPI api = ex.getAPI(p);                
         
         Set<Order> ob;
         
         ob = api.getOrderBook(Order.Type.BUY);
         
         for (Order o: ob){
+            double v = o.getVolume();
             System.out.printf("Volume: %d\n",o.getVolume());
         }
         

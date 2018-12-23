@@ -98,9 +98,8 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
             return;
         }
         AbstractAsset c,a;
-        c=getWorld().getAssetBySymbol("EUR");
-        a=getWorld().getAssetBySymbol("AAPL");
-        AssetPair p = new AssetPair(c,a);
+
+        AssetPair p = getWorld().getDefaultAssetPair();
         
         ex = getWorld().getDefaultExchange();
         api = ex.getAPI(p);        
