@@ -35,7 +35,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import opensesim.sesim.interfaces.GetJson;
-import opensesim.util.Scollection;
+
 import opensesim.util.SeSimException;
 import opensesim.util.idgenerator.IDGenerator;
 import opensesim.world.scheduler.EventListener;
@@ -75,12 +75,10 @@ public class GodWorld implements GetJson, World {
     /*   HashSet<AbstractAsset> assetsById = new HashSet<>();
     HashMap<String, AbstractAsset> assetsBySymbol = new HashMap<>();
      */
-    Scollection<String, AbstractAsset> assets = new Scollection<>();
 
-    IDGenerator assetIdGenerator = new IDGenerator();
+
+
     IDGenerator orderIdGenerator = new IDGenerator();
-
-    HashSet<AssetPair> assetPairs = new HashSet<>();
 
     private Scheduler scheduler = new Scheduler();
 
@@ -131,7 +129,7 @@ public class GodWorld implements GetJson, World {
                 continue;
             }
 
-            assets.add(a.getSymbol(), a);
+            assets.put(a.getSymbol(), a);
         }
 
         // Read exchanges
@@ -194,7 +192,7 @@ public class GodWorld implements GetJson, World {
             throw new SeSimException("Already defined");
         }
 
-        assets.add(a.getSymbol(), a);
+        assets.put(a.getSymbol(), a);
         return a;
     }
 
@@ -221,27 +219,6 @@ public class GodWorld implements GetJson, World {
         return Collections.unmodifiableCollection(exchanges.values());
     }
 
-    // --------------------------------------------------------------------
-    // Assets
-    // --------------------------------------------------------------------
-    @Override
-    public Collection<AbstractAsset> getAssetCollection() {
-        return assets.getCollection(); //Collections.unmodifiableCollection(assetsById);
-    }
-
-    @Override
-    public AbstractAsset getAssetBySymbol(String symbol) {
-        return this.assets.get(symbol);
-    }
-
-    public Collection<AssetPair> getAssetPairsCollection() {
-        return Collections.unmodifiableCollection(assetPairs);
-    }
-
-    public void add(AssetPair pair) {
-        assetPairs.add(pair);
-    }
-
     public Exchange addExchange(String symbol) throws SeSimException {
         for (Exchange ex : getExchangeCollection()) {
             if (ex.getSymbol().equals(symbol)) {
@@ -254,6 +231,35 @@ public class GodWorld implements GetJson, World {
 //        return ex;
         return null;
     }
+    
+    // --------------------------------------------------------------------
+    // Assets
+    // --------------------------------------------------------------------
+    private final HashMap<String, AbstractAsset> assets = new HashMap<>();
+    
+    @Override
+    public Collection<AbstractAsset> getAssetCollection() {
+        return Collections.unmodifiableCollection(assets.values());
+    }
+
+    @Override
+    public AbstractAsset getAssetBySymbol(String symbol) {
+        return this.assets.get(symbol);
+    }
+
+    // --------------------------------------------------------------------
+    // AssetsPairs
+    // --------------------------------------------------------------------    
+    private final HashSet<AssetPair> asset_pairs = new HashSet<>();
+
+    public Collection<AssetPair> getAssetPairsCollection() {
+        return Collections.unmodifiableCollection(asset_pairs);
+    }
+
+    public void add(AssetPair pair) {
+        asset_pairs.add(pair);
+    }
+
 
     /*    public AbstractAsset createAsset(long key, JSONObject cfg) throws SeSimException{
         if (key!=masterkey)
@@ -369,6 +375,9 @@ public class GodWorld implements GetJson, World {
     // --------------------------------------------------------------------
     // Stuff belonging to accounts
     // --------------------------------------------------------------------
+    
+    
+    
     // --------------------------------------------------------------------
     // Pseudo random generator stuff
     // --------------------------------------------------------------------   
