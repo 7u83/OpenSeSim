@@ -25,6 +25,7 @@
  */
 package opensesim.world;
 
+import java.util.Objects;
 import opensesim.world.AbstractAsset;
 
 
@@ -37,6 +38,10 @@ public class AssetPair {
     private final AbstractAsset asset;
     private final AbstractAsset currency;
 
+    public static String buildSymbol(String currency,String asset){
+        return currency+"/"+asset;
+    }
+    
     public AbstractAsset getAsset() {
         return asset;
     }
@@ -46,7 +51,7 @@ public class AssetPair {
     }
 
     public String getSymbol() {
-        return asset.getSymbol() + "/" + currency.getSymbol();
+        return buildSymbol(asset.getSymbol(),currency.getSymbol());
     }
 
     public AssetPair(AbstractAsset asset, AbstractAsset currency) {
@@ -64,12 +69,20 @@ public class AssetPair {
     public boolean equals(Object o) {
         
         AssetPair ap = (AssetPair)o;
-        if (ap.asset==asset && ap.currency==currency)
+        if (ap.asset==this.asset && ap.currency==this.currency)
             return true;
  //       if (ap.asset==currency && ap.currency==asset)
   //          return false;
         return false;
      }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.asset);
+        hash = 97 * hash + Objects.hashCode(this.currency);
+        return hash;
+    }
 
     
 
