@@ -165,9 +165,9 @@ public class Exchange implements Configurable, GetJson {
 
     }
 
-    private TradingAPI add(AssetPair p) {
-        TradingEnv e = new TradingEnv(p);
-        asset_pairs.put(p, e);
+    private TradingAPI add(AssetPair pair) {
+        TradingEnv e = new TradingEnv(pair);
+        asset_pairs.put(pair, e);
         return e;
     }
 
