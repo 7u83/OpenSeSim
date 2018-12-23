@@ -25,16 +25,8 @@
  */
 package opensesim.world;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
-import opensesim.gui.util.Json;
-import opensesim.gui.util.Json.Import;
-import opensesim.sesim.interfaces.Configurable;
 import opensesim.sesim.interfaces.GetJson;
-import opensesim.util.idgenerator.Id;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -122,61 +114,7 @@ public abstract class AbstractAsset implements GetJson {
     public static final String JSON_DECIMALS = "decimals";
     public static final int DECIMALS_DEFAULT = 2;
 
- /*   public static void rename(GodWorld world, AbstractAsset a, String symbol) throws Exception {
-        if (world.assetsBySymbol.get(symbol) != null) {
-            throw new java.lang.Exception("Can't rename asset symbol. Symbol '" + symbol + "' is already in use.");
-        }
 
-        world.assetsBySymbol.remove(a.getSymbol());
-        a.symbol = symbol;
-        world.assetsBySymbol.put(a.getSymbol(), a);
-
-    }
-*/
-    /*    public static AbstractAsset create(World world, Class<AbstractAsset> cls, String symbol) throws Exception {
-        AbstractAsset a = cls.newInstance();
-        
-        
-        if (world.assetsBySymbol.get(symbol) != null) {
-            throw new java.lang.Exception("Can't create asset. Symbol '" + symbol + "' is already in use.");
-        }
-
-        a.id = world.assetIdGenerator.getNext();
-        a.symbol=symbol;
-
-        
-        world.assetsById.add(a);
-        world.assetsBySymbol.put(a.getSymbol(), a);
-
-        return a;
-    }
-     */
- /*  public static AbstractAsset create(World world, JSONObject cfg){
-        AbstractAsset a;
-        String class_name;
-        Class cls;
-        
-        String symbol;
-        try {
-            symbol = cfg.getString(JSON_SYMBOL);
-            class_name = cfg.getString(JSON_CLASS);
-            cls = Class.forName(class_name);
-            a = create(world,cls,symbol);
-            a.name = cfg.optString(JSON_NAME, symbol);
-            a.description = cfg.optString(JSON_DESCRIPTION);
-            a.decimals = cfg.optInt(JSON_DECIMALS);
-            
-        }catch (JSONException ex){
-            return null;
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(AbstractAsset.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        } catch (Exception ex) {
-            Logger.getLogger(AbstractAsset.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-     */
     @Override
     public JSONObject getJson() {
         JSONObject cfg = new JSONObject();
@@ -190,14 +128,7 @@ public abstract class AbstractAsset implements GetJson {
         return cfg;
     }
 
-    /*
-    public void putConfig(JSONObject cfg) {
-        symbol = cfg.optString(AbstractAsset.JSON_SYMBOL);
-        decimals = cfg.optInt(AbstractAsset.JSON_DECIMALS, AbstractAsset.DECIMALS_DEFAULT);
-        name = cfg.optString(AbstractAsset.JSON_NAME, "");
-        description = cfg.optString(AbstractAsset.JSON_DESCRIPTION);
-    }
-     */
+
     public JPanel getEditGui() {
         return null;
     }
