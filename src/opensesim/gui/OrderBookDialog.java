@@ -48,15 +48,8 @@ public class OrderBookDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        orderBookNew1 = new opensesim.gui.orderbook.OrderBook();
-        quotePanel1 = new opensesim.gui.QuotePanel();
-        orderBookNew2 = new opensesim.gui.orderbook.OrderBook();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.FlowLayout());
-        getContentPane().add(orderBookNew1);
-        getContentPane().add(quotePanel1);
-        getContentPane().add(orderBookNew2);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -104,8 +97,5 @@ public class OrderBookDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private opensesim.gui.orderbook.OrderBook orderBookNew1;
-    private opensesim.gui.orderbook.OrderBook orderBookNew2;
-    private opensesim.gui.QuotePanel quotePanel1;
     // End of variables declaration//GEN-END:variables
 }

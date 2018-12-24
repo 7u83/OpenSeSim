@@ -43,13 +43,13 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
         if (Globals.se==null)
             return;
         
-        bidBook.setType(OrderType.BUYLIMIT);
-        askBook.setType(OrderType.SELLLIMIT);
+//        bidBook.setType(OrderType.BUYLIMIT);
+//        askBook.setType(OrderType.SELLLIMIT);
     }
     
     public void setDepth(int depth){
-        bidBook.depth=depth;
-        askBook.depth=depth;
+//        bidBook.depth=depth;
+//        askBook.depth=depth;
     }
 
     /**
@@ -62,11 +62,8 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
     private void initComponents() {
 
         bidBookPanel = new javax.swing.JPanel();
-        bidBook = new opensesim.gui.orderbook.OrderBook();
         jLabel2 = new javax.swing.JLabel();
-        quoteVertical2 = new opensesim.gui.orderbook.QuoteVertical();
         askBookPanel = new javax.swing.JPanel();
-        askBook = new opensesim.gui.orderbook.OrderBook();
         jLabel1 = new javax.swing.JLabel();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
@@ -83,9 +80,7 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
             bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bidBookPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
                 .addContainerGap())
         );
         bidBookPanelLayout.setVerticalGroup(
@@ -93,12 +88,10 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bidBookPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+                .addContainerGap(345, Short.MAX_VALUE))
         );
 
         add(bidBookPanel);
-        add(quoteVertical2);
 
         askBookPanel.setPreferredSize(new java.awt.Dimension(320, 296));
 
@@ -112,9 +105,7 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
             askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(askBookPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
                 .addContainerGap())
         );
         askBookPanelLayout.setVerticalGroup(
@@ -122,8 +113,7 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, askBookPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+                .addContainerGap(345, Short.MAX_VALUE))
         );
 
         add(askBookPanel);
@@ -131,12 +121,9 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private opensesim.gui.orderbook.OrderBook askBook;
     private javax.swing.JPanel askBookPanel;
-    private opensesim.gui.orderbook.OrderBook bidBook;
     private javax.swing.JPanel bidBookPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private opensesim.gui.orderbook.QuoteVertical quoteVertical2;
     // End of variables declaration//GEN-END:variables
 }

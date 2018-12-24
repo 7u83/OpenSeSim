@@ -26,32 +26,53 @@
 package opensesim.gui.orderbook;
 
 import opensesim.gui.Globals;
-import opensesim.gui.Globals.CfgListener;
 import opensesim.gui.util.NummericCellRenderer;
 import java.awt.Component;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import opensesim.old_sesim.Exchange;
-import opensesim.old_sesim.Order;
-import opensesim.old_sesim.Order.OrderType;
+import opensesim.world.GodWorld;
+import opensesim.world.Order;
+
+
+import opensesim.world.TradingAPI;
+import opensesim.world.scheduler.Event;
+import opensesim.world.scheduler.EventListener;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiver, CfgListener {
+public class OrderBookPanel extends javax.swing.JPanel implements EventListener {
 
     DefaultTableModel model;
     TableColumn trader_column = null;
+    
+    TradingAPI api=null;
+
+    @Override
+    public long receive(Event task) {
+          synchronized (this) {
+            if (oupdate) {
+                new_oupdate = true;
+                return 0;
+            }
+            oupdate = true;
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            oupdater();
+        });
+        return 0;
+    }
 
     class Renderer extends DefaultTableCellRenderer {
 
@@ -76,7 +97,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
         }
     }
 
-    OrderType type = OrderType.BUYLIMIT;
+//    OrderType type = OrderType.BUYLIMIT;
     int depth = 40;
 
     public void setGodMode(boolean on) {
@@ -99,35 +120,42 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     /**
      * Bla
      */
-    @Override
+/*    @Override
     public final void cfgChanged() {
         boolean gm = Globals.prefs.get(Globals.CfgStrings.GODMODE, "false").equals("true");
         setGodMode(gm);
         list.invalidate();
         list.repaint();
     }
+*/
 
+/*    
     public void setType(OrderType type) {
         this.type = type;
         Globals.se.addBookReceiver(type, this);
     }
-
+*/
+    
+    GodWorld godworld;
     /**
      * Creates new form OrderBookNew
      */
-    public OrderBook() {
+    public OrderBookPanel(GodWorld godworld) {
         initComponents();
 
-        if (Globals.se == null) {
+        if (Globals.world == null) {
             return;
         }
+        
+        this.godworld = godworld;
+        
         model = (DefaultTableModel) this.list.getModel();
         trader_column = list.getColumnModel().getColumn(0);
         list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
         list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));
-        cfgChanged();
+//        cfgChanged();
 //        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
-        Globals.addCfgListener(this);
+//        Globals.addCfgListener(this);
         
         new Timer().schedule(new TimerTask() {
             @Override
@@ -145,7 +173,10 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     long ouctr = 0;
 
     void oupdater() {
-        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
+//        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
+
+        Collection <Order> ob = api.getOrderBook(Order.Type.BUY);
+
         model.setRowCount(ob.size());
         int row = 0;
         for (Order ob1 : ob) {
@@ -168,7 +199,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
 
     }
 
-    @Override
+//    @Override
     public void UpdateOrderBook() {
 
         synchronized (this) {

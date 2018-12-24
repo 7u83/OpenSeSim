@@ -22,12 +22,4 @@
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
-  <SubComponents>
-    <Component class="gui.orderbook.OrderBook" name="orderBookNew1">
-    </Component>
-    <Component class="gui.QuotePanel" name="quotePanel1">
-    </Component>
-    <Component class="gui.orderbook.OrderBook" name="orderBookNew2">
-    </Component>
-  </SubComponents>
 </Form>

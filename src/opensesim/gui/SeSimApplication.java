@@ -200,7 +200,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane2 = new javax.swing.JSplitPane();
-        orderBookNew1 = new opensesim.gui.orderbook.OrderBook();
         jPanel2 = new javax.swing.JPanel();
         stopButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
@@ -210,11 +209,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
-        orderBooksHorizontal1 = new opensesim.gui.orderbook.OrderBooksHorizontal();
         chart = new opensesim.chart.MasterChart();
-        quoteVertical1 = new opensesim.gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
-        statistics1 = new opensesim.gui.Statistics();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -253,9 +249,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea1);
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        jSplitPane2.setLeftComponent(orderBookNew1);
-
         jSplitPane1.setTopComponent(jSplitPane2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -353,15 +346,11 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         jSplitPane4.setDividerLocation(300);
         jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane4.setBottomComponent(orderBooksHorizontal1);
         jSplitPane4.setLeftComponent(chart);
 
         jSplitPane3.setRightComponent(jSplitPane4);
-        jSplitPane3.setLeftComponent(quoteVertical1);
 
         jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane5.setTopComponent(statistics1);
-
         jSplitPane3.setLeftComponent(jSplitPane5);
 
         getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
@@ -919,8 +908,10 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_stopButtonActionPerformed
 
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
-        JDialog jd = new opensesim.gui.orderbook.OrderBookDialog(this, false);
-        jd.setVisible(rootPaneCheckingEnabled);
+//        JDialog jd = new opensesim.gui.orderbook.OrderBookDialog(this, false);
+//        jd.setVisible(rootPaneCheckingEnabled);
+        opensesim.gui.orderbook.OrderBookDialog.runDialog(this, godworld);
+
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
     TraderListDialog tld = null;
@@ -1106,10 +1097,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
-    private opensesim.gui.orderbook.OrderBook orderBookNew1;
-    private opensesim.gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
     private javax.swing.JMenuItem pasteMenuItem;
-    private opensesim.gui.orderbook.QuoteVertical quoteVertical1;
     private javax.swing.JMenuItem resetToDefaultsMenuItem;
     private javax.swing.JButton runButton;
     private javax.swing.JMenuItem saveAsMenuItem;
@@ -1118,7 +1106,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem simMenuPause;
     private javax.swing.JMenuItem simMenuStart;
     private javax.swing.JMenuItem simMenuStop;
-    private opensesim.gui.Statistics statistics1;
     private javax.swing.JButton stopButton;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JCheckBoxMenuItem viewTraderListCheckBox;

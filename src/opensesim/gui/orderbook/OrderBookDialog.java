@@ -25,6 +25,10 @@
  */
 package opensesim.gui.orderbook;
 
+import java.awt.Frame;
+import java.awt.Window;
+import opensesim.world.GodWorld;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -37,7 +41,19 @@ public class OrderBookDialog extends javax.swing.JDialog {
     public OrderBookDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        books.setDepth(1000000);
+ //       books.setDepth(1000000);
+    }
+    
+    GodWorld godworld;
+    
+    
+    static public void runDialog(Frame parent, GodWorld godworld){
+        OrderBookDialog d = new OrderBookDialog(parent,false);
+        d.godworld=godworld;
+        d.setVisible(true);
+       // d.dispose();
+        
+        
     }
 
     /**
@@ -49,7 +65,7 @@ public class OrderBookDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        books = new opensesim.gui.orderbook.OrderBooksHorizontal();
+        orderBookPanel1 = new opensesim.gui.orderbook.OrderBookPanel(godworld);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -59,14 +75,14 @@ public class OrderBookDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(books, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(orderBookPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(books, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(orderBookPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -116,6 +132,6 @@ public class OrderBookDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private opensesim.gui.orderbook.OrderBooksHorizontal books;
+    private opensesim.gui.orderbook.OrderBookPanel orderBookPanel1;
     // End of variables declaration//GEN-END:variables
 }
