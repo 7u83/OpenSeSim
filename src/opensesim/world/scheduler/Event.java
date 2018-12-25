@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2018, tube
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,10 @@
  */
 package opensesim.world.scheduler;
 
-
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tube
  */
-    public class Event  {
-
-        EventListener listener;
-       
-        Event(EventListener listener) {
-            this.listener = listener;
-        }
-
-    }
+public abstract class Event {
+    
+}

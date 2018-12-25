@@ -37,6 +37,7 @@ import java.io.File;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import javax.swing.JDialog;
@@ -64,6 +65,7 @@ import opensesim.world.Order;
 import opensesim.world.Trader;
 import opensesim.world.TradingAPI;
 import opensesim.world.World;
+import opensesim.world.scheduler.FiringEvent;
 
 import opensesim.world.scheduler.EventListener;
 
@@ -616,7 +618,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         
         for (Order o: ob){
             double v = o.getVolume();
-            System.out.printf("Volume: %d\n",o.getVolume());
+            System.out.printf("Volume: %f\n",o.getVolume());
         }
         
       
@@ -907,10 +909,29 @@ public class SeSimApplication extends javax.swing.JFrame {
         stopSim();
     }//GEN-LAST:event_stopButtonActionPerformed
 
+    public class GodWorldEvent extends FiringEvent{
+        public GodWorld goworld;
+        public GodWorldEvent(EventListener listener) {
+            super(listener);
+        }
+        
+    }
+    
+    HashSet <EventListener> gwlisteners = new HashSet<>();
+    
+    void updateGodWorld(GodWorld godworld){
+        GodWorldEvent e = new GodWorldEvent(null);
+        for (EventListener el : gwlisteners){
+
+        }
+    }
+    
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
 //        JDialog jd = new opensesim.gui.orderbook.OrderBookDialog(this, false);
 //        jd.setVisible(rootPaneCheckingEnabled);
-        opensesim.gui.orderbook.OrderBookDialog.runDialog(this, godworld);
+        EventListener e = opensesim.gui.orderbook.OrderBookDialog.runDialog(this, godworld);
+        gwlisteners.add(e);
+        
 
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 

@@ -37,7 +37,7 @@ import opensesim.world.scheduler.EventListener;
  */
 public class Scheduler {
 
-    private final SortedMap<Long, LinkedList<Event>> event_queue = new TreeMap<>();
+    private final SortedMap<Long, LinkedList<FiringEvent>> event_queue = new TreeMap<>();
 
     private class Worker extends Thread {
 
@@ -64,7 +64,7 @@ public class Scheduler {
                     }
                     continue;
                 }
-                Event e = getNextEvent();
+                FiringEvent e = getNextEvent();
                 
                 if (e == null) {
                     continue;
@@ -96,11 +96,11 @@ public class Scheduler {
         }
     }
 
-    public Event startTimerTask(EventListener listener, long time) {
-        Event e = new Event(listener);
+    public FiringEvent startTimerTask(EventListener listener, long time) {
+        FiringEvent e = new FiringEvent(listener);
         long t = time + clock.currentTimeMillis();
         synchronized (event_queue) {
-            LinkedList<Event> s = event_queue.get(t);
+            LinkedList<FiringEvent> s = event_queue.get(t);
             if (s == null) {
                 s = new LinkedList<>();
                 event_queue.put(t, s);
@@ -129,7 +129,7 @@ public class Scheduler {
         }
     }
 
-    protected Event getNextEvent() {
+    protected FiringEvent getNextEvent() {
 
         //  System.out.printf("RunEvents in Thread %d\n",Thread.currentThread().getId());
         synchronized (event_queue) {
@@ -138,9 +138,9 @@ public class Scheduler {
             }
 
             long t = event_queue.firstKey();
-            LinkedList<Event> s = event_queue.get(t);
+            LinkedList<FiringEvent> s = event_queue.get(t);
 
-            Event e = s.pop();
+            FiringEvent e = s.pop();
             if (s.isEmpty()) {
                 event_queue.remove(t);
             }

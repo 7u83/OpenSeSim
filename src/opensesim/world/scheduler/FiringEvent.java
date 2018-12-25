@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, tube
+ * Copyright (c) 2018, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,20 +23,23 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.world;
+package opensesim.world.scheduler;
 
-import java.util.Set;
-import opensesim.world.scheduler.EventListener;
 
 /**
  *
- * @author tube
+ * @author 7u83 <7u83@mail.ru>
  */
-public interface TradingAPI {
-    
-    public void addOrderBookListener(EventListener listener);
-    
-    public Order createOrder(Account account, Order.Type type, double volume, double limit);
+    public class FiringEvent extends Event {
 
-    public Set getOrderBook(Order.Type type);
-}
+        EventListener listener;
+       
+        public FiringEvent(EventListener listener) {
+            this.listener = listener;
+        }
+        
+        public void fire(){
+            listener.receive(this);
+        }
+
+    }

@@ -33,6 +33,7 @@ import opensesim.world.Order;
 import opensesim.world.TradingAPI;
 import opensesim.world.World;
 import opensesim.world.scheduler.Event;
+import opensesim.world.scheduler.FiringEvent;
 import opensesim.world.scheduler.EventListener;
 import org.json.JSONObject;
 

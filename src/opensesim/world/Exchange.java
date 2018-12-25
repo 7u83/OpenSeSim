@@ -35,6 +35,8 @@ import java.util.TreeSet;
 import opensesim.world.RealWorld;
 import opensesim.sesim.interfaces.Configurable;
 import opensesim.sesim.interfaces.GetJson;
+import opensesim.world.scheduler.FiringEvent;
+import opensesim.world.scheduler.EventListener;
 import org.json.JSONObject;
 
 /**
@@ -145,20 +147,34 @@ public class Exchange implements Configurable, GetJson {
             }
 
         }
+        
+        
+        
 
         @Override
         public Order createOrder(Account account, Order.Type type, double volume, double limit) {
 
+            
             Order o = new opensesim.world.Order(world, account, pair, type, volume, limit);
             synchronized (this){
                 order_books.get(o.type).add(o);
             }
+            for (FiringEvent e:book_listener){
+                e.fire();
+            }
+            
             return o;
         }
 
         @Override
         public Set getOrderBook(Order.Type type) {
             return Collections.unmodifiableSet(order_books.get(type));
+        }
+
+        HashSet <FiringEvent> book_listener = new HashSet<>();
+        @Override
+        public void addOrderBookListener(EventListener listener) {
+            book_listener.add(new FiringEvent(listener));
         }
         
         

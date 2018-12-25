@@ -29,7 +29,6 @@ import opensesim.gui.Globals;
 import opensesim.gui.util.NummericCellRenderer;
 import java.awt.Component;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -39,12 +38,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import opensesim.world.AssetPair;
+import opensesim.world.Exchange;
 import opensesim.world.GodWorld;
 import opensesim.world.Order;
 
-
 import opensesim.world.TradingAPI;
 import opensesim.world.scheduler.Event;
+import opensesim.world.scheduler.FiringEvent;
 import opensesim.world.scheduler.EventListener;
 
 /**
@@ -55,12 +56,14 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
 
     DefaultTableModel model;
     TableColumn trader_column = null;
-    
-    TradingAPI api=null;
+
+    TradingAPI api = null;
 
     @Override
     public long receive(Event task) {
-          synchronized (this) {
+        System.out.printf("There is an o event \n");
+
+        synchronized (this) {
             if (oupdate) {
                 new_oupdate = true;
                 return 0;
@@ -120,35 +123,59 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
     /**
      * Bla
      */
-/*    @Override
+    /*    @Override
     public final void cfgChanged() {
         boolean gm = Globals.prefs.get(Globals.CfgStrings.GODMODE, "false").equals("true");
         setGodMode(gm);
         list.invalidate();
         list.repaint();
     }
-*/
+     */
 
-/*    
+ /*    
     public void setType(OrderType type) {
         this.type = type;
         Globals.se.addBookReceiver(type, this);
     }
-*/
-    
+     */
+    public OrderBookPanel() {
+        initComponents();
+    }
+
     GodWorld godworld;
+
+    public void setGodWorld(GodWorld godworld) {
+        // is our world alread the godworld to set?
+        if (this.godworld == godworld) {
+            return;
+        }
+
+        this.godworld = godworld;
+        Exchange ex = godworld.getDefaultExchange();
+        AssetPair ap = godworld.getDefaultAssetPair();
+        api = ex.getAPI(ap);
+        api.addOrderBookListener(this);
+
+    }
+
     /**
      * Creates new form OrderBookNew
      */
     public OrderBookPanel(GodWorld godworld) {
+
         initComponents();
 
         if (Globals.world == null) {
-            return;
+//            return;
         }
-        
+
         this.godworld = godworld;
-        
+
+        Exchange ex = godworld.getDefaultExchange();
+        AssetPair ap = godworld.getDefaultAssetPair();
+        api = ex.getAPI(ap);
+        api.addOrderBookListener(this);
+
         model = (DefaultTableModel) this.list.getModel();
         trader_column = list.getColumnModel().getColumn(0);
         list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
@@ -156,15 +183,15 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
 //        cfgChanged();
 //        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
 //        Globals.addCfgListener(this);
-        
+
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-               // System.out.printf("Update order book\n");
-               // UpdateOrderBook();
+                // System.out.printf("Update order book\n");
+                // UpdateOrderBook();
             }
         }, 1000, 1000);
-        
+
     }
 
     boolean oupdate = false;
@@ -175,7 +202,7 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
     void oupdater() {
 //        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
 
-        Collection <Order> ob = api.getOrderBook(Order.Type.BUY);
+        Collection<Order> ob = api.getOrderBook(Order.Type.BUY);
 
         model.setRowCount(ob.size());
         int row = 0;
