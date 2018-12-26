@@ -613,15 +613,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         opensesim.world.Exchange ex = godworld.getDefaultExchange();
         TradingAPI api = ex.getAPI(p);
 
-        Set<Order> ob;
-
-        ob = api.getOrderBook(Order.Type.BUY);
-
-        for (Order o : ob) {
-            double v = o.getVolume();
-            System.out.printf("Volume: %f\n", o.getVolume());
-        }
-
+ 
         opensesim.world.scheduler.Scheduler s = godworld.getScheduler();
 
         class MyListener implements EventListener {

@@ -25,6 +25,7 @@
  */
 package opensesim.world;
 
+import java.text.DecimalFormat;
 import javax.swing.JPanel;
 import opensesim.sesim.interfaces.GetJson;
 import org.json.JSONObject;
@@ -40,7 +41,9 @@ public abstract class AbstractAsset implements GetJson {
     private String symbol;
     private String name;
     private String description;
-    int decimals;
+    private int decimals;
+    private double decimals_df;
+    private DecimalFormat formatter;
 
     /**
      * Constructor
@@ -54,25 +57,40 @@ public abstract class AbstractAsset implements GetJson {
         }
         symbol = cfg.getString("symbol");
         name = cfg.getString("name");
-        decimals = cfg.optInt("decimals", 0);
+        setDecimals(cfg.optInt("decimals", 0));
 
         this.world = world;
     }
-    
-    
-    public AbstractAsset(){
-        
+
+    public AbstractAsset() {
+
     }
 
-    public abstract String getTypeName();
+    public double roundToDecimals(double val) {
+        return Math.floor(val * decimals_df) / decimals_df;
+    }
+
+    protected void setDecimals(int n) {
+        decimals = n;
+        decimals_df = Math.pow(10, n);
+
+        // create formatter string
+        String fs = "#";
+        if (n > 0) {
+            fs = fs + "0.";
+            for (int i = 0; i < n; i++) {
+                fs = fs + "0";
+            }
+        }
+        // create fromatter from string
+        formatter = new DecimalFormat(fs);
+    }
 
     public final int getDecimals() {
         return decimals;
     }
-    
-    protected final void setDecimals(int decimals){
-        this.decimals=decimals;
-    }
+
+    public abstract String getTypeName();
 
     protected void setDescription(String description) {
         this.description = description;
@@ -81,17 +99,17 @@ public abstract class AbstractAsset implements GetJson {
     public final String getSymbol() {
         return symbol;
     }
-    
-    protected final void setSymbol(String symbol){
-        this.symbol=symbol;
+
+    protected final void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public final String getName() {
         return name;
     }
-    
-    protected final void setName(String name){
-        this.name=name;
+
+    protected final void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -114,7 +132,6 @@ public abstract class AbstractAsset implements GetJson {
     public static final String JSON_DECIMALS = "decimals";
     public static final int DECIMALS_DEFAULT = 2;
 
-
     @Override
     public JSONObject getJson() {
         JSONObject cfg = new JSONObject();
@@ -127,7 +144,6 @@ public abstract class AbstractAsset implements GetJson {
 
         return cfg;
     }
-
 
     public JPanel getEditGui() {
         return null;

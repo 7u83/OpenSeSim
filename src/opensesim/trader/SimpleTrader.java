@@ -118,7 +118,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
     long last_time = 0;
 
-    double limit = 100;
+    double limit = 253.871239;
     @Override
     public long receive(Event task) {
         //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
@@ -133,7 +133,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         
         ex = getWorld().getDefaultExchange();
         api = ex.getAPI(p);        
-        Order o = api.createOrder(account, Order.Type.BUY, 100, limit);       
+        Order o = api.createOrder(account, Order.Type.BUY, 112.987123, limit);       
         limit += 12;
         
         return -1;

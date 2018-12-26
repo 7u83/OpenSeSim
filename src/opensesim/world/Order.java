@@ -91,21 +91,45 @@ public class Order implements Comparable<Order> {
     double cost;
     GodWorld world;
 
-    Order(GodWorld world, Account account, AssetPair pair, Type type,
+    Order(opensesim.world.TradingEngine engine, Account account, Type type,
             double volume, double limit) {
+
+        AssetPair pair = engine.getAssetPair();
+
+        // round asset and currency        
+        double v, l;
+        switch (type) {
+            case BUY:
+                l = pair.getCurrency().roundToDecimals(limit);
+                v = pair.getAsset().roundToDecimals(volume);
+                break;
+            case SELL:
+                l = pair.getCurrency().roundToDecimals(limit);
+                v = pair.getAsset().roundToDecimals(volume);
+                break;
+
+            default:
+                l = limit;
+                v = volume;
+
+        }
+
+        // assign rounded volume and limit
+        this.volume = v;
+        this.initial_volume = v;
+        this.limit = l;
 
         this.account = account;
         this.type = type;
-        this.limit = limit;
-        this.volume = volume;
-        this.initial_volume = this.volume;
+
         this.created = 0;
         this.status = Status.OPEN;
         this.cost = 0;
         //  id = Order.idGenerator.getNext();
-        this.world = world;
+        //     this.world = world;
         //  id = world.
-        id = world.orderIdGenerator.getNext();
+        //   id = world.orderIdGenerator.getNext();
+        id = engine.id_generator.getNext();
     }
 
     public Id getID() {
@@ -155,6 +179,5 @@ public class Order implements Comparable<Order> {
     public long getCreated() {
         return created;
     }
-
 
 }

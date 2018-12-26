@@ -32,12 +32,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import opensesim.sesim.interfaces.GetJson;
 
 import opensesim.util.SeSimException;
 import opensesim.util.idgenerator.IDGenerator;
+import opensesim.world.TradingEngine;
 import opensesim.world.scheduler.Event;
 import opensesim.world.scheduler.EventListener;
 
@@ -76,7 +78,7 @@ public class GodWorld implements GetJson, World {
     /*   HashSet<AbstractAsset> assetsById = new HashSet<>();
     HashMap<String, AbstractAsset> assetsBySymbol = new HashMap<>();
      */
-    IDGenerator orderIdGenerator = new IDGenerator();
+    //IDGenerator orderIdGenerator = new IDGenerator();
 
     private Scheduler scheduler = new Scheduler();
 
@@ -436,6 +438,11 @@ public class GodWorld implements GetJson, World {
         for (EventListener l : update_listeners) {
             l.receive(e);
         }
+    }
+    
+    
+    public Set getOrderBook(Exchange ex,AssetPair pair,Order.Type type){
+        return ((TradingEngine)ex.getAPI(pair)).getOrderBook(type);
     }
 
 }

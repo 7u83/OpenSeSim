@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, tube
+ * Copyright (c) 2016, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,47 @@
  */
 package opensesim.world;
 
-import java.util.Set;
-import opensesim.world.scheduler.EventListener;
-
 /**
  *
- * @author tube
+ * @author 7u83 <7u83@mail.ru>
  */
-public interface TradingAPI {
-    
-    public void addOrderBookListener(EventListener listener);
-    
-    public Order createOrder(Account account, Order.Type type, double volume, double limit);
+public class Quote implements Comparable {
+        
+    public double bid;
+    public double bid_volume;
+    public double ask;
+    public double ask_volume;
 
-      
-    public Set getBidBook();
-    public Set getAskBook();
+    public double price;
+    public double volume;
+    public long time;
+    
+//    Locker lock = new Locker();
+
+    public void print() {
+        System.out.print("Quote ("
+                + time
+                + ") :"
+                + price
+                + " / "
+                + volume
+                + "\n"
+        );
+
+    }
+    
+    public long id;
+
+    @Override
+    public int compareTo(Object o) {
+        int ret; 
+        Quote q = (Quote)o;
+        
+        ret = (int)(this.time-q.time);
+        if (ret !=0)
+            return ret;
+     
+        return (int)(this.id-q.id);
+    }
+
 }

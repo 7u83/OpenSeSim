@@ -212,8 +212,8 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
     void oupdater() {
 //        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
 
-        Collection<Order> ob = api.getOrderBook(Order.Type.BUY);
-
+        Collection<Order> ob = api.getBidBook();
+        
         model.setRowCount(ob.size());
         int row = 0;
         for (Order ob1 : ob) {

@@ -25,16 +25,15 @@
  */
 package opensesim.world;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import opensesim.world.RealWorld;
 import opensesim.sesim.interfaces.Configurable;
 import opensesim.sesim.interfaces.GetJson;
+import opensesim.util.idgenerator.IDGenerator;
 import opensesim.world.scheduler.FiringEvent;
 import opensesim.world.scheduler.EventListener;
 import org.json.JSONObject;
@@ -86,7 +85,7 @@ public class Exchange implements Configurable, GetJson {
 
     public Order createOrder(Account account, AssetPair pair, Order.Type type, double volume, double limit) {
 
-//        Order o = new Order(world,account,pair,type,volume,limit);
+//        Order o = new Order(world,account,assetpair,type,volume,limit);
         return null;
     }
 
@@ -112,77 +111,27 @@ public class Exchange implements Configurable, GetJson {
         return cfg;
     }
 
-    class TradingEnv implements TradingAPI {
-
-        protected HashMap<Order.Type, SortedSet<Order>> order_books;
-        AssetPair pair;
-
-        TradingEnv(AssetPair p) {
-            pair = p;
-            reset();
-        }
-
-        protected final void reset() {
-            order_books = new HashMap();
-
-            // Create an order book for each order type
-            for (Order.Type type : Order.Type.values()) {
-                order_books.put(type, new TreeSet<>());
-            }
-
-            //  quoteHistory = new TreeSet();
-            //  ohlc_data = new HashMap();
-        }
-
-        protected void addOrderToBook(Order o) {
-            order_books.get(o.type).add(o);
-            switch (o.type) {
-                case BUY:
-                case BUYLIMIT:
-                    break;
-                case SELL:
-                case SELLLIMIT:
-                    break;
-
-            }
-
-        }
-        
-        
-        
-
-        @Override
-        public Order createOrder(Account account, Order.Type type, double volume, double limit) {
-
-            
-            Order o = new opensesim.world.Order(world, account, pair, type, volume, limit);
-            synchronized (this){
-                order_books.get(o.type).add(o);
-            }
-            for (FiringEvent e:book_listener){
-                e.fire();
-            }
-            
-            return o;
-        }
-
-        @Override
-        public Set getOrderBook(Order.Type type) {
-            return Collections.unmodifiableSet(order_books.get(type));
-        }
-
-        HashSet <FiringEvent> book_listener = new HashSet<>();
-        @Override
-        public void addOrderBookListener(EventListener listener) {
-            book_listener.add(new FiringEvent(listener));
-        }
-        
-        
-
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     private TradingAPI add(AssetPair pair) {
-        TradingEnv e = new TradingEnv(pair);
+        TradingEngine e = new TradingEngine(pair, this);
         asset_pairs.put(pair, e);
         return e;
     }
