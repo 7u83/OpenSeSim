@@ -38,6 +38,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import opensesim.gui.SeSimApplication.GodWorldEvent;
 import opensesim.world.AssetPair;
 import opensesim.world.Exchange;
 import opensesim.world.GodWorld;
@@ -61,6 +62,9 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
 
     @Override
     public long receive(Event task) {
+        
+
+        
         System.out.printf("There is an o event \n");
 
         synchronized (this) {
@@ -138,14 +142,14 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
         Globals.se.addBookReceiver(type, this);
     }
      */
-    public OrderBookPanel() {
+ /*   public OrderBookPanel() {
         initComponents();
     }
-
+*/
     GodWorld godworld;
 
     public void setGodWorld(GodWorld godworld) {
-        // is our world alread the godworld to set?
+        // is our world already the godworld to set?
         if (this.godworld == godworld) {
             return;
         }
@@ -157,11 +161,17 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
         api.addOrderBookListener(this);
 
     }
+    
+    
+    public void init(GodWorld godworld,Exchange ex, AssetPair pair){
+        api = ex.getAPI(pair);
+        api.addOrderBookListener(this);        
+    }
 
     /**
      * Creates new form OrderBookNew
      */
-    public OrderBookPanel(GodWorld godworld) {
+    public OrderBookPanel() {
 
         initComponents();
 
@@ -169,12 +179,12 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
 //            return;
         }
 
-        this.godworld = godworld;
+  //      this.godworld = godworld;
 
-        Exchange ex = godworld.getDefaultExchange();
-        AssetPair ap = godworld.getDefaultAssetPair();
-        api = ex.getAPI(ap);
-        api.addOrderBookListener(this);
+  //      Exchange ex = godworld.getDefaultExchange();
+   //     AssetPair ap = godworld.getDefaultAssetPair();
+   //     api = ex.getAPI(ap);
+   //     api.addOrderBookListener(this);
 
         model = (DefaultTableModel) this.list.getModel();
         trader_column = list.getColumnModel().getColumn(0);
@@ -207,7 +217,7 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
         model.setRowCount(ob.size());
         int row = 0;
         for (Order ob1 : ob) {
-            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
+//            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
             model.setValueAt(ob1.getLimit(), row, 1);
             model.setValueAt(ob1.getVolume(), row, 2);
             row++;

@@ -41,7 +41,7 @@ import org.json.JSONObject;
  */
 public class AssetEditorDialog extends EscDialog {
 
-    GodWorld worldadm;
+    GodWorld godworld;
 
 
     /**
@@ -124,10 +124,10 @@ public class AssetEditorDialog extends EscDialog {
   
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 
-        if (assetEditorPanel.save(worldadm)){
+        if (assetEditorPanel.save(godworld)){
             dispose();
         }
-        
+        godworld.notifyUpdateListeners();
         return;
         
         
@@ -198,7 +198,7 @@ public class AssetEditorDialog extends EscDialog {
     static public boolean runDialog(Window parent, GodWorld worldadm, JSONObject o, JSONObject old) {
 
         AssetEditorDialog d = new AssetEditorDialog(parent);
-        d.worldadm = worldadm;
+        d.godworld = worldadm;
         
         
         if (o!=null)

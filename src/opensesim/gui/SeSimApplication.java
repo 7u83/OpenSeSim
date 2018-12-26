@@ -65,6 +65,7 @@ import opensesim.world.Order;
 import opensesim.world.Trader;
 import opensesim.world.TradingAPI;
 import opensesim.world.World;
+import opensesim.world.scheduler.Event;
 import opensesim.world.scheduler.FiringEvent;
 
 import opensesim.world.scheduler.EventListener;
@@ -90,6 +91,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         JSONObject cfg;
         cfg = new JSONObject(Globals.prefs.get("world", "{}"));
         godworld = new GodWorld(cfg);
+        godworld.addAssetPair("AAPL", "EUR");
 
         // Get default screen and place our window
         // to the center of this screen
@@ -597,35 +599,30 @@ public class SeSimApplication extends javax.swing.JFrame {
     }
 
     void startSim() {
-     
-        godworld.addAssetPair("AAPL", "EUR");
-        
+
         JSONObject cfg = new JSONObject("{"
                 + "strategy: opensesim.trader.SimpleTrader"
                 + "}");
         Trader t = godworld.createTrader(cfg);
         t.start();
-        
+
+        updateGodWorld(godworld);
 
         AssetPair p = godworld.getDefaultAssetPair();
-        
+
         opensesim.world.Exchange ex = godworld.getDefaultExchange();
-        TradingAPI api = ex.getAPI(p);                
-        
+        TradingAPI api = ex.getAPI(p);
+
         Set<Order> ob;
-        
+
         ob = api.getOrderBook(Order.Type.BUY);
-        
-        for (Order o: ob){
+
+        for (Order o : ob) {
             double v = o.getVolume();
-            System.out.printf("Volume: %f\n",o.getVolume());
+            System.out.printf("Volume: %f\n", o.getVolume());
         }
-        
-      
-        
 
         opensesim.world.scheduler.Scheduler s = godworld.getScheduler();
-
 
         class MyListener implements EventListener {
 
@@ -635,11 +632,9 @@ public class SeSimApplication extends javax.swing.JFrame {
                 this.world = world;
             }
 
-
-
             @Override
             public long receive(opensesim.world.scheduler.Event task) {
-               
+
                 System.out.printf("Received an Event %d\n", Thread.currentThread().getId());
                 //   e.count++;
                 world.schedule(this, 1000);
@@ -648,10 +643,9 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         }
 
-   //     MyListener listener = new MyListener(godworld.getWorld());
+        //     MyListener listener = new MyListener(godworld.getWorld());
         //    MyEvent arg = new MyEvent();
-
-    //    s.startTimerTask(listener, 1000);
+        //    s.startTimerTask(listener, 1000);
 
         /*       
 
@@ -909,29 +903,35 @@ public class SeSimApplication extends javax.swing.JFrame {
         stopSim();
     }//GEN-LAST:event_stopButtonActionPerformed
 
-    public class GodWorldEvent extends FiringEvent{
-        public GodWorld goworld;
-        public GodWorldEvent(EventListener listener) {
-            super(listener);
-        }
-        
-    }
-    
-    HashSet <EventListener> gwlisteners = new HashSet<>();
-    
-    void updateGodWorld(GodWorld godworld){
-        GodWorldEvent e = new GodWorldEvent(null);
-        for (EventListener el : gwlisteners){
+    public class GodWorldEvent extends Event {
 
+        public GodWorld goworld;
+
+        public GodWorldEvent(GodWorld world) {
+            this.goworld = world;
+        }
+
+    }
+
+    HashSet<EventListener> gwlisteners = new HashSet<>();
+
+    void updateGodWorld(GodWorld godworld) {
+        GodWorldEvent e = new GodWorldEvent(null);
+        for (EventListener el : gwlisteners) {
+            el.receive(e);
         }
     }
-    
+
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
 //        JDialog jd = new opensesim.gui.orderbook.OrderBookDialog(this, false);
 //        jd.setVisible(rootPaneCheckingEnabled);
-        EventListener e = opensesim.gui.orderbook.OrderBookDialog.runDialog(this, godworld);
-        gwlisteners.add(e);
-        
+        //EventListener e = opensesim.gui.orderbook.OrderBookDialog.runDialog(this, godworld);
+        //gwlisteners.add(e);
+
+        AssetPair ap = godworld.getDefaultAssetPair();
+        opensesim.world.Exchange ex = godworld.getDefaultExchange();
+        opensesim.gui.orderbook.OrderBookDialog.runDialog(this, godworld, ex, ap);
+
 
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 

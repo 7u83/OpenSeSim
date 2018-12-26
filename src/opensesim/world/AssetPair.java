@@ -36,7 +36,7 @@ public class AssetPair {
     private final AbstractAsset currency;
 
     public static String buildSymbol(String asset,String currency){
-        return currency+"/"+asset;
+        return asset+"/"+currency;
     }
     
     public AbstractAsset getAsset() {

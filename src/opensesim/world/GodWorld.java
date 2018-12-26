@@ -38,6 +38,7 @@ import opensesim.sesim.interfaces.GetJson;
 
 import opensesim.util.SeSimException;
 import opensesim.util.idgenerator.IDGenerator;
+import opensesim.world.scheduler.Event;
 import opensesim.world.scheduler.EventListener;
 
 import opensesim.world.scheduler.Scheduler;
@@ -262,8 +263,8 @@ public class GodWorld implements GetJson, World {
         }
     }
 
-    public AssetPair addAssetPair(String currency, String asset) {
-        AssetPair pair = new AssetPair(assets.get(currency), assets.get(asset));
+    public AssetPair addAssetPair(String asset, String currency) {
+        AssetPair pair = new AssetPair(assets.get(asset), assets.get(currency));
         add(pair);
         return pair;
     }
@@ -416,6 +417,25 @@ public class GodWorld implements GetJson, World {
     public float randNextFloat(float min, float max) {
         float r = randNextFloat();
         return (max - min) * r + min;
+    }
+
+    // --------------------------------------------------------------------
+    // Update listeners
+    // --------------------------------------------------------------------
+    private final HashSet<EventListener> update_listeners = new HashSet<>();
+
+    public class UpdateEvent extends Event {
+    }
+
+    public void addUpdateListener(EventListener u) {
+        update_listeners.add(u);
+    }
+
+    public void notifyUpdateListeners() {
+        Event e = new UpdateEvent();
+        for (EventListener l : update_listeners) {
+            l.receive(e);
+        }
     }
 
 }

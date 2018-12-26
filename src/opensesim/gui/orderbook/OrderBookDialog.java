@@ -26,9 +26,11 @@
 package opensesim.gui.orderbook;
 
 import java.awt.Frame;
+
+import opensesim.world.AssetPair;
+import opensesim.world.Exchange;
 import opensesim.world.GodWorld;
 import opensesim.world.scheduler.Event;
-import opensesim.world.scheduler.FiringEvent;
 import opensesim.world.scheduler.EventListener;
 
 /**
@@ -48,10 +50,24 @@ public class OrderBookDialog extends javax.swing.JDialog implements EventListene
     
     GodWorld godworld;
     
+    void init(){
+        this.setTitle(asset_pair.getSymbol()+" on "+ex.getSymbol());
+        this.orderBookPanel1.init(godworld, ex, asset_pair);
+    }
     
-    static public EventListener runDialog(Frame parent, GodWorld godworld){
+    AssetPair asset_pair;
+    Exchange ex;
+    
+    
+    static public EventListener runDialog(Frame parent, GodWorld godworld, Exchange ex, AssetPair pair){
         OrderBookDialog d = new OrderBookDialog(parent,false);
+        godworld.addUpdateListener(d);
+        
         d.godworld=godworld;
+        d.asset_pair = pair;
+        d.ex=ex;
+        d.init();
+        
         d.setVisible(true);
        // d.dispose();
         
@@ -139,7 +155,15 @@ public class OrderBookDialog extends javax.swing.JDialog implements EventListene
 
     @Override
     public long receive(Event task) {
-        this.orderBookPanel1.setGodWorld(godworld);
+        
+        if (task.getClass() != GodWorld.UpdateEvent.class){
+            return 0;
+        }
+        
+       // opensesim.gui.SeSimApplication.GodWorldEvent gwe = (opensesim.gui.SeSimApplication.GodWorldEvent) task;
+       
+        System.out.printf("Godworld updated\n");
+       // this.orderBookPanel1.setGodWorld(gwe.goworld);
         return 0;
     }
 }
