@@ -43,13 +43,20 @@ class TradingEngine implements TradingAPI {
     
     private final Exchange outer;
 
-    TradingEngine(AssetPair p, final Exchange outer) {
+    /**
+     * Construct a trading engine for an asset pair
+     * @param pair The AssetPair obect to create the tradinge engine for
+     * @param outer Outer class - points to an Exchange object thins trading 
+     * engine belongs to.
+     */
+    TradingEngine(AssetPair pair, final Exchange outer) {
         this.outer = outer;
-        assetpair = p;
+        assetpair = pair;
         reset();
     }
 
-    protected AssetPair getAssetPair() {
+    @Override
+    public AssetPair getAssetPair() {
         return assetpair;
     }
     IDGenerator id_generator = new IDGenerator();
@@ -79,6 +86,8 @@ class TradingEngine implements TradingAPI {
         SortedSet<Order> ask = order_books.get(Order.Type.SELLLIMIT);
         SortedSet<Order> ul_buy = order_books.get(Order.Type.BUY);
         SortedSet<Order> ul_sell = order_books.get(Order.Type.SELL);
+        
+        
         double volume_total = 0;
         double money_total = 0;
         while (true) {
@@ -234,6 +243,9 @@ class TradingEngine implements TradingAPI {
         }
         return o;
     }
+    
+    
+    
     HashSet<FiringEvent> book_listener = new HashSet<>();
 
     @Override
@@ -241,18 +253,33 @@ class TradingEngine implements TradingAPI {
         book_listener.add(new FiringEvent(listener));
     }
 
-    protected Set getOrderBook(Order.Type type) {
-        return Collections.unmodifiableSet(order_books.get(type));
+    @Override
+    public Set getOrderBook(Order.Type type) {
+        switch (type){
+            case BUYLIMIT:
+            case BUY:
+                return Collections.unmodifiableSet(bidbook);
+            case SELLLIMIT:
+            case SELL:
+                return Collections.unmodifiableSet(askbook);
+  
+                
+        }
+        return null;
+//        return Collections.unmodifiableSet(order_books.get(type));
     }
 
     @Override
     public Set getBidBook() {
-        return getOrderBook(Order.Type.BUY);
+        return getOrderBook(Order.Type.BUYLIMIT);
     }
 
     @Override
     public Set getAskBook() {
         return getOrderBook(Order.Type.SELL);
     }
+
+ 
     
+  
 }
