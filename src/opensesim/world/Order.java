@@ -66,6 +66,9 @@ public class Order implements Comparable<Order> {
 
     }
 
+    /**
+     * Definition of order status
+     */
     public static enum Status {
         OPEN, PARTIALLY_EXECUTED, CLOSED, CANCELED
     }
