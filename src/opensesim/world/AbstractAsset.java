@@ -45,6 +45,10 @@ public abstract class AbstractAsset implements GetJson {
     private double decimals_df;
     private DecimalFormat formatter;
 
+    public DecimalFormat getFormatter() {
+        return formatter;
+    }
+
     /**
      * Constructor
      *
