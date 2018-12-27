@@ -27,18 +27,13 @@ package opensesim.gui.orderbook;
 
 import opensesim.gui.Globals;
 import opensesim.gui.util.NummericCellRenderer;
-import java.awt.Component;
-import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import opensesim.gui.SeSimApplication.GodWorldEvent;
 import opensesim.world.AssetPair;
 import opensesim.world.Exchange;
 import opensesim.world.GodWorld;
@@ -46,7 +41,6 @@ import opensesim.world.Order;
 
 import opensesim.world.TradingAPI;
 import opensesim.world.scheduler.Event;
-import opensesim.world.scheduler.FiringEvent;
 import opensesim.world.scheduler.EventListener;
 
 /**
@@ -62,9 +56,7 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
 
     @Override
     public long receive(Event task) {
-        
 
-        
         System.out.printf("There is an o event \n");
 
         synchronized (this) {
@@ -81,30 +73,6 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
         return 0;
     }
 
-    class Renderer extends DefaultTableCellRenderer {
-
-        private final DecimalFormat formatter = new DecimalFormat("#.0000");
-
-        Renderer() {
-            super();
-            this.setHorizontalAlignment(RIGHT);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(
-                JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column) {
-
-            // First format the cell value as required
-            value = formatter.format((Number) value);
-
-            // And pass it on to parent class
-            return super.getTableCellRendererComponent(
-                    table, value, isSelected, hasFocus, row, column);
-        }
-    }
-
-//    OrderType type = OrderType.BUYLIMIT;
     int depth = 40;
 
     public void setGodMode(boolean on) {
@@ -124,28 +92,6 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
         }
     }
 
-    /**
-     * Bla
-     */
-    /*    @Override
-    public final void cfgChanged() {
-        boolean gm = Globals.prefs.get(Globals.CfgStrings.GODMODE, "false").equals("true");
-        setGodMode(gm);
-        list.invalidate();
-        list.repaint();
-    }
-     */
-
- /*    
-    public void setType(OrderType type) {
-        this.type = type;
-        Globals.se.addBookReceiver(type, this);
-    }
-     */
- /*   public OrderBookPanel() {
-        initComponents();
-    }
-*/
     GodWorld godworld;
 
     public void setGodWorld(GodWorld godworld) {
@@ -161,11 +107,18 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
         api.addOrderBookListener(this);
 
     }
-    
-    
-    public void init(GodWorld godworld,Exchange ex, AssetPair pair){
+
+    public void init(GodWorld godworld, Exchange ex, AssetPair pair) {
         api = ex.getAPI(pair);
-        api.addOrderBookListener(this);        
+        api.addOrderBookListener(this);
+
+        model = (DefaultTableModel) this.list.getModel();
+        trader_column = list.getColumnModel().getColumn(0);
+        list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(api.getAssetPair().getCurrency().getDecimals()));
+        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(api.getAssetPair().getAsset().getDecimals()));
+
+        this.oupdater();
+
     }
 
     /**
@@ -174,25 +127,6 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
     public OrderBookPanel() {
 
         initComponents();
-
-        if (Globals.world == null) {
-//            return;
-        }
-
-  //      this.godworld = godworld;
-
-  //      Exchange ex = godworld.getDefaultExchange();
-   //     AssetPair ap = godworld.getDefaultAssetPair();
-   //     api = ex.getAPI(ap);
-   //     api.addOrderBookListener(this);
-
-        model = (DefaultTableModel) this.list.getModel();
-        trader_column = list.getColumnModel().getColumn(0);
-        list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
-        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));
-//        cfgChanged();
-//        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
-//        Globals.addCfgListener(this);
 
         new Timer().schedule(new TimerTask() {
             @Override
@@ -208,12 +142,11 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
     boolean new_oupdate = false;
 
     long ouctr = 0;
+    Order.Type type;
 
     void oupdater() {
-//        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
+        Collection<Order> ob = api.getOrderBook(type);
 
-        Collection<Order> ob = api.getBidBook();
-        
         model.setRowCount(ob.size());
         int row = 0;
         for (Order ob1 : ob) {
