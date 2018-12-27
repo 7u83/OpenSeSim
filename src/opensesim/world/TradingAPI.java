@@ -33,12 +33,21 @@ import opensesim.world.scheduler.EventListener;
  * @author tube
  */
 public interface TradingAPI {
-    
+
     public void addOrderBookListener(EventListener listener);
-    
+
     public Order createOrder(Account account, Order.Type type, double volume, double limit);
 
-      
     public Set getBidBook();
+
     public Set getAskBook();
+
+    public Set getOrderBook(Order.Type type);
+
+    /**
+     * Get the AssetPair this trading API is associated with
+     * @return the AssetPair object
+     */
+    public AssetPair getAssetPair();
+
 }
