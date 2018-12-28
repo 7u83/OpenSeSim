@@ -25,7 +25,6 @@
  */
 package opensesim.gui.util;
 
-import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -64,13 +63,7 @@ public class EscDialog extends javax.swing.JDialog {
         addEscListener();
     }
 
-/*    public EscDialog(Dialog parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
-        addEscListener();
-    }
-*/
-    
+   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
