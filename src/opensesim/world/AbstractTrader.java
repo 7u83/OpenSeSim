@@ -25,7 +25,7 @@
  */
 package opensesim.world;
 
-import java.util.HashSet;
+
 import org.json.JSONObject;
 
 /**
@@ -100,7 +100,13 @@ public abstract class AbstractTrader implements Trader {
 
     public AbstractTrader(World world, JSONObject cfg) {
         this.world=world;
+        this.account = new Account();
         
+        AssetPack pack;
+        pack = new AssetPack(this.world.getDefaultAssetPair().getCurrency(),1000);
+        this.account.add(pack);
+        pack = new AssetPack(this.world.getDefaultAssetPair().getAsset(),2000);
+        this.account.add(pack);        
     }
 
     protected void log(String s){
@@ -111,4 +117,8 @@ public abstract class AbstractTrader implements Trader {
         
     }
 
+    @Override
+    public Account getAccount(){
+        return account;
+    }
 }

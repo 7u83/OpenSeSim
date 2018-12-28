@@ -48,6 +48,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import opensesim.gui.AssetPairEditor.NewJDialog;
 import static opensesim.gui.Globals.getWorld;
+import opensesim.gui.account.AccountDialog;
 
 import opensesim.gui.exchangeeditor.ExchangeListDialog;
 import org.json.JSONArray;
@@ -65,10 +66,9 @@ import opensesim.world.Order;
 import opensesim.world.Trader;
 import opensesim.world.TradingAPI;
 import opensesim.world.World;
-import opensesim.world.scheduler.Event;
-import opensesim.world.scheduler.FiringEvent;
-
-import opensesim.world.scheduler.EventListener;
+import opensesim.util.scheduler.Event;
+import opensesim.util.scheduler.FiringEvent;
+import opensesim.util.scheduler.EventListener;
 
 /**
  *
@@ -605,6 +605,8 @@ public class SeSimApplication extends javax.swing.JFrame {
                 + "}");
         Trader t = godworld.createTrader(cfg);
         t.start();
+       
+        AccountDialog.runDialog(this, t.getAccount());
 
         updateGodWorld(godworld);
 
@@ -614,7 +616,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         TradingAPI api = ex.getAPI(p);
 
  
-        opensesim.world.scheduler.Scheduler s = godworld.getScheduler();
+        opensesim.util.scheduler.Scheduler s = godworld.getScheduler();
 
         class MyListener implements EventListener {
 
@@ -625,7 +627,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
 
             @Override
-            public long receive(opensesim.world.scheduler.Event task) {
+            public long receive(opensesim.util.scheduler.Event task) {
 
                 System.out.printf("Received an Event %d\n", Thread.currentThread().getId());
                 //   e.count++;
@@ -972,7 +974,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
 
-        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to clear all data?", "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult != JOptionPane.YES_OPTION) {
             return;
         }

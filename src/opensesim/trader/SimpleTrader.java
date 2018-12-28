@@ -32,9 +32,8 @@ import opensesim.world.Exchange;
 import opensesim.world.Order;
 import opensesim.world.TradingAPI;
 import opensesim.world.World;
-import opensesim.world.scheduler.Event;
-import opensesim.world.scheduler.FiringEvent;
-import opensesim.world.scheduler.EventListener;
+import opensesim.util.scheduler.Event;
+import opensesim.util.scheduler.EventListener;
 import org.json.JSONObject;
 
 /**
@@ -104,12 +103,15 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         
         ex = getWorld().getDefaultExchange();
         api = ex.getAPI(p);        
-        Order o = api.createOrder(account, Order.Type.BUY, 100, 200);        
-        
+        Order o = api.createOrder(account, Order.Type.BUYLIMIT, 13, 10.0);    
+      Order ou = api.createOrder(account, Order.Type.BUY, 1500, 10.0);         
+        Order o2 = api.createOrder(account, Order.Type.SELLLIMIT, 200, 278);   
+        Order o1 = api.createOrder(account, Order.Type.SELLLIMIT, 250, 278);        
+   
 
         long delay = (long) (1000.0f * getWorld().randNextFloat(3.0f, 12.7f));
         setStatus(String.format("Initial delay: Sleeping for %d seconds.", delay));
-        getWorld().schedule(this, delay);
+     //   getWorld().schedule(this, delay);
 
         //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
         //    setStatus("Inital delay: %d", delay);

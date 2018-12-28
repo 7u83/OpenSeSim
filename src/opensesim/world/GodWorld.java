@@ -38,10 +38,9 @@ import java.util.logging.Logger;
 import opensesim.sesim.interfaces.GetJson;
 
 import opensesim.util.SeSimException;
-import opensesim.world.scheduler.Event;
-import opensesim.world.scheduler.EventListener;
-
-import opensesim.world.scheduler.Scheduler;
+import opensesim.util.scheduler.Event;
+import opensesim.util.scheduler.EventListener;
+import opensesim.util.scheduler.Scheduler;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -25,17 +25,10 @@
  */
 package opensesim.world;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import opensesim.sesim.interfaces.Configurable;
 import opensesim.sesim.interfaces.GetJson;
-import opensesim.util.idgenerator.IDGenerator;
-import opensesim.world.scheduler.FiringEvent;
-import opensesim.world.scheduler.EventListener;
 import org.json.JSONObject;
 
 /**

@@ -25,6 +25,7 @@
  */
 package opensesim.old_sesim;
 
+import opensesim.util.idgenerator.LongIDGenerator;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -124,7 +125,7 @@ public class Exchange {
         return shares_formatter;
     }
 
-    IDGenerator account_id_generator = new IDGenerator();
+    LongIDGenerator account_id_generator = new LongIDGenerator();
     //public static Timer timer = new Timer();
 
     public Scheduler timer; // = new Scheduler();
@@ -299,7 +300,7 @@ public class Exchange {
 
     }
 
-    IDGenerator order_id_generator = new IDGenerator();
+    LongIDGenerator order_id_generator = new LongIDGenerator();
 
     final void initExchange() {
 

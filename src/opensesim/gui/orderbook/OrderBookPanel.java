@@ -28,6 +28,7 @@ package opensesim.gui.orderbook;
 import opensesim.gui.Globals;
 import opensesim.gui.util.NummericCellRenderer;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
@@ -40,10 +41,11 @@ import opensesim.world.GodWorld;
 import opensesim.world.Order;
 
 import opensesim.world.TradingAPI;
-import opensesim.world.scheduler.Event;
-import opensesim.world.scheduler.EventListener;
+import opensesim.util.scheduler.Event;
+import opensesim.util.scheduler.EventListener;
 
 /**
+ * Displays an orderbook
  *
  * @author 7u83 <7u83@mail.ru>
  */
@@ -56,8 +58,6 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
 
     @Override
     public long receive(Event task) {
-
-        System.out.printf("There is an o event \n");
 
         synchronized (this) {
             if (oupdate) {
@@ -109,6 +109,7 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
     }
 
     public void init(GodWorld godworld, Exchange ex, AssetPair pair) {
+
         api = ex.getAPI(pair);
         api.addOrderBookListener(this);
 
@@ -116,7 +117,7 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
         trader_column = list.getColumnModel().getColumn(0);
         list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(api.getAssetPair().getCurrency().getDecimals()));
         list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(api.getAssetPair().getAsset().getDecimals()));
-
+        this.setGodMode(true);
         this.oupdater();
 
     }
@@ -144,17 +145,45 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
     long ouctr = 0;
     Order.Type type;
 
-    void oupdater() {
-        Collection<Order> ob = api.getOrderBook(type);
-
-        model.setRowCount(ob.size());
+    private void drawBookSimple(Collection<Order> orderbook) {
+        model.setRowCount(orderbook.size());
         int row = 0;
-        for (Order ob1 : ob) {
+        for (Order order : orderbook) {
+
 //            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
-            model.setValueAt(ob1.getLimit(), row, 1);
-            model.setValueAt(ob1.getVolume(), row, 2);
+
+            model.setValueAt(order.getID(), row, 0);
+            model.setValueAt(order.getLimit(), row, 1);
+            model.setValueAt(order.getVolume(), row, 2);
             row++;
         }
+    }
+
+    private void drawBookCmplex(Collection<Order> orderbook){
+                model.setRowCount(orderbook.size());
+
+        int row = 0;
+
+        double volume = 0.0;
+        double limit = 0.0;
+        Iterator<Order> it;
+
+        for (Order order : orderbook) {
+
+//            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
+            model.setValueAt(order.getLimit(), row, 1);
+            model.setValueAt(order.getVolume(), row, 2);
+            row++;
+        }
+
+    }
+    
+    void oupdater() {
+        // get order book from API
+        Collection<Order> orderbook = api.getOrderBook(type);
+
+        this.drawBookSimple(orderbook);
+        
 
         synchronized (this) {
             oupdate = new_oupdate;

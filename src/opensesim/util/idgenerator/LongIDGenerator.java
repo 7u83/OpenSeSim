@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, tohe
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,12 +23,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package opensesim.gui;
+package opensesim.util.idgenerator;
 
 /**
+ * Implementation of a simple ID generator to create unique IDs of type long
  *
- * @author tohe
+ * @author 7u83 <7u83@mail.ru>
  */
-public interface AdmInterface {
+public class LongIDGenerator {
+
+    private long next_id;
+    private long start_id;
+
+    /**
+     * Initialize the ID generator
+     *
+     * @param start ID value to start with
+     */
+    public LongIDGenerator(long start) {
+        start_id=start;
+        reset();
+    }
+
+    /**
+     * Initialize ID Generator with start ID = 0
+     */
+    public LongIDGenerator() {
+        this(0);
+    }
     
+    /**
+     * Reset the ID generator
+     */
+    public final void reset(){
+        next_id = start_id;
+    }
+
+    /**
+     * Get the next ID
+     *
+     * @return the next generated ID
+     */
+    public synchronized long getNext() {
+        return next_id++;
+    }
 }

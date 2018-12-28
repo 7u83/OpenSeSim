@@ -23,9 +23,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="orderBookPanel1" max="32767" attributes="0"/>
+              <Component id="bidbook" min="-2" pref="293" max="-2" attributes="0"/>
+              <EmptySpace pref="91" max="32767" attributes="0"/>
+              <Component id="askbook" min="-2" pref="315" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -34,14 +36,19 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="orderBookPanel1" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="bidbook" pref="326" max="32767" attributes="0"/>
+                  <Component id="askbook" max="32767" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="opensesim.gui.orderbook.OrderBookPanel" name="orderBookPanel1">
+    <Component class="opensesim.gui.orderbook.OrderBookPanel" name="bidbook">
+    </Component>
+    <Component class="opensesim.gui.orderbook.OrderBookPanel" name="askbook">
     </Component>
   </SubComponents>
 </Form>

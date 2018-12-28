@@ -25,16 +25,21 @@
  */
 package opensesim.util.idgenerator;
 
+import java.util.function.Supplier;
+
 /**
- * Implementation of a simple ID generator to create uniqe IDs of type long
+ * Implementation of a simple ID generator to create unique IDs 
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class IDGenerator {
+public class IDGenerator<T extends Number> {
 
-    private Long next_id;
+    private Long next_id ;
     private Long start_id;
 
+    
+     
+    
     /**
      * Initialize the ID generator
      *
@@ -50,6 +55,7 @@ public class IDGenerator {
      */
     public IDGenerator() {
         this(0L);
+        
     }
 
     /**
@@ -65,6 +71,6 @@ public class IDGenerator {
      * @return the next generated ID
      */
     public synchronized Id getNext() {
-        return new Id<>(next_id++);
+        return new Id<Long>(next_id++);
     }
 }

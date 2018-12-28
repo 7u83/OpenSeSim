@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, tube
+ * Copyright (c) 2018, 7u83
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import opensesim.util.idgenerator.IDGenerator;
-import opensesim.world.scheduler.EventListener;
-import opensesim.world.scheduler.FiringEvent;
+import opensesim.util.scheduler.EventListener;
+import opensesim.util.scheduler.FiringEvent;
 
 /**
  *
- * @author tube
+ * @author 7u83
  */
 class TradingEngine implements TradingAPI {
 
@@ -46,7 +46,7 @@ class TradingEngine implements TradingAPI {
     /**
      * Construct a trading engine for an asset pair
      *
-     * @param pair The AssetPair obect to create the tradinge engine for
+     * @param pair The AssetPair obect to create the trading engine for
      * @param outer Outer class - points to an Exchange object thins trading
      * engine belongs to.
      */
@@ -62,19 +62,24 @@ class TradingEngine implements TradingAPI {
     }
     IDGenerator id_generator = new IDGenerator();
     private HashMap<Order.Type, SortedSet<Order>> order_books;
-    private SortedSet<Order> bidbook;
-    private SortedSet<Order> askbook;
+    private SortedSet<Order> bidbook, askbook;
+    private SortedSet<Order> ul_buy,ul_sell;
     AssetPair assetpair;
 
     protected final void reset() {
-        order_books = new HashMap();
+        order_books = new HashMap<>();
+      
         // Create an order book for each order type
         for (Order.Type type : Order.Type.values()) {
             order_books.put(type, new TreeSet<>());
         }
-        // Save bidbook and askboo for quicker access
+        // Save order books to variables for quicker access
         bidbook = order_books.get(Order.Type.BUYLIMIT);
         askbook = order_books.get(Order.Type.SELLLIMIT);
+        ul_buy=order_books.get(Order.Type.BUY);
+        ul_sell=order_books.get(Order.Type.SELL);        
+        
+        
         //  quoteHistory = new TreeSet();
         //  ohlc_data = new HashMap();
     }
@@ -83,10 +88,6 @@ class TradingEngine implements TradingAPI {
      *
      */
     private void executeOrders() {
-        SortedSet<Order> bid = order_books.get(Order.Type.BUYLIMIT);
-        SortedSet<Order> ask = order_books.get(Order.Type.SELLLIMIT);
-        SortedSet<Order> ul_buy = order_books.get(Order.Type.BUY);
-        SortedSet<Order> ul_sell = order_books.get(Order.Type.SELL);
 
         double volume_total = 0;
         double money_total = 0;
@@ -127,13 +128,14 @@ class TradingEngine implements TradingAPI {
             this.checkSLOrders(price);
             }
              */
+            
             // Match limited orders against limited orders
-            if (bid.isEmpty() || ask.isEmpty()) {
+            if (bidbook.isEmpty() || askbook.isEmpty()) {
                 // there is nothing to do
                 break;
             }
-            Order b = bid.first();
-            Order a = ask.first();
+            Order b = bidbook.first();
+            Order a = askbook.first();
             if (b.limit < a.limit) {
                 break;
             }
@@ -156,7 +158,7 @@ class TradingEngine implements TradingAPI {
         //   addQuoteToHistory(q);
     }
 
-    protected void addOrderToBook(Order o) {
+/*    protected void addOrderToBook(Order o) {
         order_books.get(o.type).add(o);
         switch (o.type) {
             case BUY:
@@ -167,10 +169,14 @@ class TradingEngine implements TradingAPI {
                 break;
         }
     }
-
+*/
+    
+    
     public Double getBestPrice() {
         SortedSet<Order> bid = order_books.get(Order.Type.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(Order.Type.SELLLIMIT);
+        
+
         Quote lq = null; //this.getLastQuoete();
         Order b = null;
         Order a = null;
@@ -310,6 +316,8 @@ class TradingEngine implements TradingAPI {
             synchronized (this) {
                 order_books.get(o.type).add(o);
             }
+            
+            executeOrders();
 
             for (FiringEvent e : book_listener) {
                 e.fire();

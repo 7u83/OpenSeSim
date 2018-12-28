@@ -30,8 +30,9 @@ import java.awt.Frame;
 import opensesim.world.AssetPair;
 import opensesim.world.Exchange;
 import opensesim.world.GodWorld;
-import opensesim.world.scheduler.Event;
-import opensesim.world.scheduler.EventListener;
+import opensesim.world.Order;
+import opensesim.util.scheduler.Event;
+import opensesim.util.scheduler.EventListener;
 
 /**
  *
@@ -52,7 +53,11 @@ public class OrderBookDialog extends javax.swing.JDialog implements EventListene
     
     void init(){
         this.setTitle(asset_pair.getSymbol()+" on "+ex.getSymbol());
-        this.orderBookPanel1.init(godworld, ex, asset_pair);
+        this.bidbook.type=Order.Type.BUYLIMIT;
+        this.bidbook.init(godworld, ex, asset_pair);
+        this.askbook.type=Order.Type.SELLLIMIT;
+        this.askbook.init(godworld, ex, asset_pair);
+
     }
     
     AssetPair asset_pair;
@@ -83,7 +88,8 @@ public class OrderBookDialog extends javax.swing.JDialog implements EventListene
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        orderBookPanel1 = new opensesim.gui.orderbook.OrderBookPanel();
+        bidbook = new opensesim.gui.orderbook.OrderBookPanel();
+        askbook = new opensesim.gui.orderbook.OrderBookPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -91,16 +97,20 @@ public class OrderBookDialog extends javax.swing.JDialog implements EventListene
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(orderBookPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bidbook, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                .addComponent(askbook, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(orderBookPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bidbook, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(askbook, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -150,7 +160,8 @@ public class OrderBookDialog extends javax.swing.JDialog implements EventListene
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private opensesim.gui.orderbook.OrderBookPanel orderBookPanel1;
+    private opensesim.gui.orderbook.OrderBookPanel askbook;
+    private opensesim.gui.orderbook.OrderBookPanel bidbook;
     // End of variables declaration//GEN-END:variables
 
     @Override

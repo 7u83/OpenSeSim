@@ -26,7 +26,7 @@
 package opensesim.world;
 
 import java.util.Set;
-import opensesim.world.scheduler.EventListener;
+import opensesim.util.scheduler.EventListener;
 
 /**
  *
