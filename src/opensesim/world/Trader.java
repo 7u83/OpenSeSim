@@ -35,4 +35,10 @@ public interface Trader {
     public void start();
     public String getStatus();
 
+    /**
+     *
+     * @return
+     */
+    public Account getAccount();
+
 }
