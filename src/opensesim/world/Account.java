@@ -26,8 +26,8 @@
 package opensesim.world;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONObject;
 
 /**
@@ -35,8 +35,9 @@ import org.json.JSONObject;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Account {
-    ConcurrentHashMap <AbstractAsset,Double> assets = new ConcurrentHashMap<>();
-    
+    HashMap <AbstractAsset,Double> assets = new HashMap<>();
+    HashMap <AbstractAsset,Double> assets_avail = new HashMap<>();
+     
     Trader owner;
     Exchange exchange=null;
 
@@ -62,6 +63,7 @@ public class Account {
     
     void add(AssetPack pack){
         assets.put( pack.asset, get(pack.asset)+pack.volume);
+        assets_avail.put( pack.asset, get(pack.asset)+pack.volume);        
     }
     
     public double get(AbstractAsset asset){
