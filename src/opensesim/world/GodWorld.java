@@ -38,8 +38,6 @@ import java.util.logging.Logger;
 import opensesim.sesim.interfaces.GetJson;
 
 import opensesim.util.SeSimException;
-import opensesim.util.idgenerator.IDGenerator;
-import opensesim.world.TradingEngine;
 import opensesim.world.scheduler.Event;
 import opensesim.world.scheduler.EventListener;
 
