@@ -32,42 +32,51 @@ import org.json.JSONObject;
 
 /**
  * Class to hold account data of traders
+ *
  * @author 7u83 <7u83@mail.ru>
  */
 public class Account {
-    HashMap <AbstractAsset,Double> assets = new HashMap<>();
-    HashMap <AbstractAsset,Double> assets_avail = new HashMap<>();
-     
-    Trader owner;
-    Exchange exchange=null;
 
-    public Map<AbstractAsset,Double> getAssets() {
-       return  Collections.unmodifiableMap(assets);
+    HashMap<AbstractAsset, Double> assets = new HashMap<>();
+    HashMap<AbstractAsset, Double> assets_avail = new HashMap<>();
+
+    Trader owner;
+    Exchange exchange = null;
+
+    public Map<AbstractAsset, Double> getAssets() {
+        return Collections.unmodifiableMap(assets);
+    }
+
+    public Map<AbstractAsset, Double> getAssetsAavail() {
+        return Collections.unmodifiableMap(assets_avail);
     }
 
     public Trader getOwner() {
         return owner;
     }
-    
-    protected Account(Exchange exchange){
+
+    protected Account(Exchange exchange) {
         this.exchange = exchange;
     }
-    
-    protected Account(Exchange exchange, JSONObject cfg){
+
+    protected Account(Exchange exchange, JSONObject cfg) {
         this.exchange = exchange;
     }
-    
-    Account(){
-        
+
+    Account() {
+
     }
-    
-    void add(AssetPack pack){
-        assets.put( pack.asset, get(pack.asset)+pack.volume);
-        assets_avail.put( pack.asset, get(pack.asset)+pack.volume);        
+
+    void add(AssetPack pack) {
+        assets.put(pack.asset, get(pack.asset) + pack.volume);
+        assets_avail.put(pack.asset, getAvail(pack.asset) + pack.volume);
     }
-    
-    public double get(AbstractAsset asset){
-        return assets.getOrDefault(asset, 0.0);        
+
+    public double get(AbstractAsset asset) {
+        return assets.getOrDefault(asset, 0.0);
     }
-     
+
+    public double getAvail(AbstractAsset asset) {
+        return assets_avail.getOrDefault(asset, 0.0);
+    }
 }
