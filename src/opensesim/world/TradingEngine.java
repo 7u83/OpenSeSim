@@ -137,8 +137,9 @@ class TradingEngine implements TradingAPI {
     }
 
     private void finishTrade(Order b, Order a, double price, double volume) {
+
         // Transfer money and shares
-        transferMoneyAndShares(b.account, a.account, volume * price, -volume);
+        transferMoneyAndShares(b.account, a.account, volume * price, volume);
 
         // Update volume
         b.volume -= volume;
@@ -149,6 +150,10 @@ class TradingEngine implements TradingAPI {
 
         removeOrderIfExecuted(a);
         removeOrderIfExecuted(b);
+
+        a.account.notfiyListeners();
+        b.account.notfiyListeners();
+
     }
 
     private void removeOrderIfExecuted(Order o) {
@@ -168,7 +173,7 @@ class TradingEngine implements TradingAPI {
         //      o.status = OrderStatus.CLOSED;
         //      o.account.update(o);
     }
-    Quote last_quote;
+    Quote last_quote = null;
 
     /**
      *
@@ -187,9 +192,12 @@ class TradingEngine implements TradingAPI {
                 Order b = ul_buy.first();
                 Double price = getBestPrice();
 
-                //            if (price == null) {
-                //               break;
-                //    }
+                if (price == null) {
+                    // Threre is no price available, we can't  match, we
+                    // have to wait until some limited orders come in
+                    break;
+                }
+
                 //         double volume = b.volume >= a.volume ? a.volume : b.volume;
                 // finishTrade(b, a, price, volume);
                 //       volume_total += volume;
@@ -260,21 +268,7 @@ class TradingEngine implements TradingAPI {
             double avdiff = b.limit * volume - price * volume;
             b.account.addAvail(assetpair.getCurrency(), avdiff);
 
-            // Transfer money and shares
-            transferMoneyAndShares(b.account, a.account, volume * price, volume);
-
-            // Update order volume
-            b.volume -= volume;
-            a.volume -= volume;
-
-            b.cost += price * volume;
-            a.cost += price * volume;
-
-            a.account.notfiyListeners();
-            b.account.notfiyListeners();
-
-            removeOrderIfExecuted(a);
-            removeOrderIfExecuted(b);
+            finishTrade(b, a, price, volume);
 
             if (!compact_history) {
                 q = new Quote(quote_id_generator.getNext());
@@ -385,8 +379,8 @@ class TradingEngine implements TradingAPI {
             return last_quote.price;
         }
 
-       // Both bid and ask are not present, return last quote.
-       // The case that last_quote is null can never happen here.
+        // Both bid and ask are not present, return last quote.
+        // The case that last_quote is null can never happen here.
         return last_quote.price;
 
     }
