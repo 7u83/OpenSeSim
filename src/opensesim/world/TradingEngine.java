@@ -70,6 +70,7 @@ class TradingEngine implements TradingAPI {
     AssetPair assetpair;
 
     TreeSet<Quote> quote_history;
+    Quote last_quote;
 
     protected final void reset() {
         order_books = new HashMap<>();
@@ -85,6 +86,12 @@ class TradingEngine implements TradingAPI {
         ul_sell = order_books.get(Order.Type.SELL);
 
         quote_history = new TreeSet<>();
+
+        last_quote = null;
+
+        Quote q = new Quote(-1);
+        q.price = 17.0;
+        last_quote = q;
 
         //  ohlc_data = new HashMap();
     }
@@ -173,7 +180,6 @@ class TradingEngine implements TradingAPI {
         //      o.status = OrderStatus.CLOSED;
         //      o.account.update(o);
     }
-    Quote last_quote = null;
 
     /**
      *
@@ -285,8 +291,8 @@ class TradingEngine implements TradingAPI {
             //        statistics.trades++;
             //        this.checkSLOrders(price);
         }
-        if (volume_total
-                == 0) {
+
+        if (volume_total == 0) {
             return;
         }
 
@@ -386,66 +392,39 @@ class TradingEngine implements TradingAPI {
     }
 
     @Override
-    public Order
-            createOrder(Account account,
-                    Order.Type type,
-                    double volume,
-                    double limit
-            ) {
+    public Order createOrder(Account account, Order.Type type,
+            double volume, double limit) {
+
         Order o;
 
         synchronized (account) {
-
             // Round volume 
-            double v
-                    = assetpair
-                            .getAsset().roundToDecimals(volume
-                            );
+            double v = assetpair.getAsset().roundToDecimals(volume);
 
             // Order volume must be grater than 0.0.
-            if (v
-                    <= 0.0) {
+            if (v <= 0.0) {
                 return null;
-
             }
 
             // Round currency (limit)
-            double l
-                    = assetpair
-                            .getCurrency().roundToDecimals(limit
-                            );
+            double l = assetpair.getCurrency().roundToDecimals(limit);
 
             double order_limit;
 
             switch (type) {
                 case BUYLIMIT: {
                     // verfify available currency for a buy limit order
-                    AbstractAsset currency
-                            = this.assetpair
-                                    .getCurrency();
-                    Double avail
-                            = account
-                                    .getAvail(currency
-                                    );
+                    AbstractAsset currency = this.assetpair.getCurrency();
+                    Double avail = account.getAvail(currency);
 
                     // return if not enough money is available
-                    if (avail
-                            < v
-                            * l) {
+                    if (avail < v * l) {
                         return null;
-
                     }
 
                     // reduce the available money 
-                    account.assets_avail
-                            .put(currency,
-                                    avail
-                                    - v
-                                    * l
-                            );
-                    order_limit
-                            = l;
-
+                    account.assets_avail.put(currency, avail - v * l);
+                    order_limit = l;
                     break;
 
                 }
@@ -453,29 +432,19 @@ class TradingEngine implements TradingAPI {
                 case BUY: {
                     // For an unlimited by order there is nothing to check
                     // other than currency is > 0.0
-                    AbstractAsset currency
-                            = this.assetpair
-                                    .getCurrency();
-                    Double avail
-                            = account
-                                    .getAvail(currency
-                                    );
+                    AbstractAsset currency = this.assetpair.getCurrency();
+                    Double avail = account.getAvail(currency);
 
-                    if (avail
-                            <= 0.0) {
+                    if (avail <= 0.0) {
                         return null;
 
                     }
 
                     // All available monney is assigned to this unlimited order
-                    account.assets_avail
-                            .put(currency,
-                                    0.0);
+                    account.assets_avail.put(currency, 0.0);
                     // we "mis"use order_limit to memorize occupied ammount \
                     // of currency
-                    order_limit
-                            = avail;
-
+                    order_limit = avail;
                     break;
 
                 }
@@ -484,28 +453,16 @@ class TradingEngine implements TradingAPI {
                 case SELL: {
 
                     // verfiy sell limit
-                    AbstractAsset asset
-                            = this.assetpair
-                                    .getAsset();
-                    Double avail
-                            = account
-                                    .getAvail(asset
-                                    );
+                    AbstractAsset asset = this.assetpair.getAsset();
+                    Double avail = account.getAvail(asset);
 
-                    if (avail
-                            < v) {
+                    if (avail < v) {
                         // not enough items of asset (shares) available
                         return null;
-
                     }
                     account.assets_avail
-                            .put(asset,
-                                    avail
-                                    - v
-                            );
-                    order_limit
-                            = l;
-
+                            .put(asset, avail - v);
+                    order_limit = l;
                     break;
 
                 }
@@ -515,70 +472,44 @@ class TradingEngine implements TradingAPI {
 
             }
 
-            o
-                    = new opensesim.world.Order(this, account,
-                            type,
-                            v,
-                            order_limit
-                    );
+            o = new Order(this, account, type, v, order_limit);
 
-            System.out
-                    .printf("The new Order has: volume: %f limit: %f\n", o
-                            .getVolume(), o
-                                    .getLimit());
+            //System.out.printf("The new Order has: volume: %f limit: %f\n", o.getVolume(), o.getLimit());
             synchronized (this) {
-                order_books
-                        .get(o.type
-                        ).add(o
-                        );
+                order_books.get(o.type).add(o);
 
             }
         }
         executeOrders();
 
-        for (FiringEvent e
-                : book_listener) {
-            e
-                    .fire();
-
+        for (FiringEvent e : book_listener) {
+            e.fire();
         }
         return o;
 
     }
 
-    HashSet<FiringEvent> book_listener
-            = new HashSet<>();
+    HashSet<FiringEvent> book_listener = new HashSet<>();
 
     @Override
-    public void addOrderBookListener(EventListener listener
-    ) {
-        book_listener
-                .add(new FiringEvent(listener
-                ));
+    public void addOrderBookListener(EventListener listener) {
+        book_listener.add(new FiringEvent(listener));
 
     }
 
     @Override
-    public Set
-            getOrderBook(Order.Type type
-            ) {
+    public Set getOrderBook(Order.Type type) {
         switch (type) {
             case BUYLIMIT:
             case BUY:
-                return Collections
-                        .unmodifiableSet(bidbook
-                        );
+                return Collections.unmodifiableSet(bidbook);
 
             case SELLLIMIT:
             case SELL:
-                return Collections
-                        .unmodifiableSet(askbook
-                        );
+                return Collections.unmodifiableSet(askbook);
 
         }
         return null;
-//        return Collections.unmodifiableSet(order_books.get(type));
-
     }
 
     @Override
