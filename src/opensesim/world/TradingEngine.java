@@ -90,7 +90,7 @@ class TradingEngine implements TradingAPI {
         last_quote = null;
 
         Quote q = new Quote(-1);
-        q.price = 17.0;
+        q.price = 100.0;
         last_quote = q;
 
         //  ohlc_data = new HashMap();
@@ -193,7 +193,7 @@ class TradingEngine implements TradingAPI {
         while (true) {
 
             // Match unlimited sell orders against unlimited buy orders
-            if (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
+            while (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
                 Order a = ul_sell.first();
                 Order b = ul_buy.first();
                 Double price = getBestPrice();
@@ -204,10 +204,26 @@ class TradingEngine implements TradingAPI {
                     break;
                 }
 
-                //         double volume = b.volume >= a.volume ? a.volume : b.volume;
-                // finishTrade(b, a, price, volume);
-                //       volume_total += volume;
-                //      money_total += price * volume;
+                // calculate volume by best fit
+                double volume = b.volume >= a.volume ? a.volume : b.volume;
+
+                double avdiff = b.limit - price * volume;
+                b.account.addAvail(assetpair.getCurrency(), avdiff);
+
+                finishTrade(b, a, price, volume);
+                volume_total += volume;
+                money_total += price * volume;
+
+                Order.Type type = Order.Type.BUYLIMIT;
+                if (!compact_history) {
+                    q = new Quote(quote_id_generator.getNext());
+                    q.price = price;
+                    q.volume = volume;
+                    q.time = outer.world.currentTimeMillis();
+                       q.type = type;
+                    addQuoteToHistory(q);
+                }
+
                 //this.checkSLOrders(price);
             }
 
