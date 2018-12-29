@@ -136,6 +136,21 @@ class TradingEngine implements TradingAPI {
          */
     }
 
+    private void finishTrade(Order b, Order a, double price, double volume) {
+        // Transfer money and shares
+        transferMoneyAndShares(b.account, a.account, volume * price, -volume);
+
+        // Update volume
+        b.volume -= volume;
+        a.volume -= volume;
+
+        b.cost += price * volume;
+        a.cost += price * volume;
+
+        removeOrderIfExecuted(a);
+        removeOrderIfExecuted(b);
+    }
+
     private void removeOrderIfExecuted(Order o) {
 
         if (o.volume != 0) {
@@ -165,20 +180,24 @@ class TradingEngine implements TradingAPI {
         double volume_total = 0;
         double money_total = 0;
         while (true) {
-            /*           // Match unlimited sell orders against unlimited buy orders
+
+            // Match unlimited sell orders against unlimited buy orders
             if (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
-            Order a = ul_sell.first();
-            Order b = ul_buy.first();
-            Double price = getBestPrice(stock);
-            if (price == null) {
-            break;
+                Order a = ul_sell.first();
+                Order b = ul_buy.first();
+                Double price = getBestPrice();
+
+                //            if (price == null) {
+                //               break;
+                //    }
+                //         double volume = b.volume >= a.volume ? a.volume : b.volume;
+                // finishTrade(b, a, price, volume);
+                //       volume_total += volume;
+                //      money_total += price * volume;
+                //this.checkSLOrders(price);
             }
-            double volume = b.volume >= a.volume ? a.volume : b.volume;
-            finishTrade(b, a, price, volume);
-            volume_total += volume;
-            money_total += price * volume;
-            this.checkSLOrders(price);
-            }
+
+            /*
             while (!ul_buy.isEmpty() && !ask.isEmpty()) {
             Order a = ask.first();
             Order b = ul_buy.first();
@@ -201,7 +220,6 @@ class TradingEngine implements TradingAPI {
             this.checkSLOrders(price);
             }
              */
-
             //
             // Match limited orders against limited orders
             //
@@ -231,7 +249,7 @@ class TradingEngine implements TradingAPI {
                 type = Order.Type.SELL;
             } else {
                 price = a.limit;
-                type=Order.Type.BUY;
+                type = Order.Type.BUY;
             }
 
             // The volume is calculated by best fit
@@ -263,7 +281,7 @@ class TradingEngine implements TradingAPI {
                 q.price = price;
                 q.volume = volume;
                 q.time = outer.world.currentTimeMillis();
-                q.type=type;
+                q.type = type;
                 addQuoteToHistory(q);
             }
 
@@ -296,134 +314,89 @@ class TradingEngine implements TradingAPI {
 
     }
 
-//
-    public Double
-            getBestPrice() {
-        SortedSet<Order> bid
-                = order_books
-                        .get(Order.Type.BUYLIMIT
-                        );
-        SortedSet<Order> ask
-                = order_books
-                        .get(Order.Type.SELLLIMIT
-                        );
+    public Double getBestPrice() {
 
-        Quote lq
-                = null; //this.getLastQuoete();
-        Order b
-                = null;
-        Order a
-                = null;
+        Order b;
+        Order a;
 
-        if (!bid
-                .isEmpty()) {
-            b
-                    = bid
-                            .first();
+        // Get first limited orders from bid and ask, 
+        // assign null if no order is present
+        b = !bidbook.isEmpty() ? bidbook.first() : null;
+        a = !askbook.isEmpty() ? askbook.first() : null;
 
-        }
-        if (!ask
-                .isEmpty()) {
-            a
-                    = ask
-                            .first();
-
-        }
-        // If there is neither bid nor ask and no last quote
-        // we can't return a quote
-        if (lq
-                == null && b
-                == null && a
-                == null) {
+        // If there is neither bid nor ask and also no last quote
+        // we can't return a price
+        if (last_quote == null && b == null && a == null) {
             return null;
-
         }
-        // there is bid and ask
-        if (a
-                != null && b
-                != null) {
-            Quote q
-                    = new Quote(-1);
-            System.out
-                    .printf("aaaaa bbbbb %f %f \n", a.limit,
-                             b.limit
-                    );
-            // if there is no last quote calculate from bid and ask
-            //if (lq == null) {
 
-            double rc
-                    = (bid
-                            .first().limit
-                    + ask
-                            .first().limit) / 2.0;
-            System.out
-                    .printf("RCRC2.0: %f\n", rc
-                    );
+        // Both limited bid and ask are present
+        if (a != null && b != null) {
 
-            return rc;
-// }
-
-            /*
-            if (lq.price < b.limit) {
-            return b.limit;
+            // if there is no last quote, we calculate the prpice 
+            // from bid and ask by simply averaging the limits
+            if (last_quote == null) {
+                return (bidbook.first().limit + askbook.first().limit) / 2.0;
             }
-            if (lq.price > a.limit) {
-            return a.limit;
-            }
-            return lq.price;
-             */
-        }
-        if (a
-                != null) {
-            Quote q
-                    = new Quote(-1);
 
-            if (lq
-                    == null) {
-                return a.limit;
-
-            }
-            if (lq.price
-                    > a.limit) {
-                return a.limit;
-
-            }
-            return lq.price;
-
-        }
-        if (b
-                != null) {
-            Quote q
-                    = new Quote(-1);
-
-            if (lq
-                    == null) {
+            // Last quote is below bid, so the best price is the
+            // current bid
+            if (last_quote.price < b.limit) {
                 return b.limit;
+            }
+
+            // Last price is grater ask, so return the current ask
+            if (last_quote.price > a.limit) {
+                return a.limit;
+            }
+
+            // Last price is somewhere between bid and ask, 
+            // we return the last price
+            return last_quote.price;
+
+        }
+
+        // There is no limited ask, but limited bid
+        if (a != null) {
+
+            // retrun last quote if present or lower than ask,
+            // otherwise return the current ask
+            if (last_quote == null) {
+                return a.limit;
+            }
+            if (last_quote.price > a.limit) {
+                return a.limit;
 
             }
-            if (lq.price
+            return last_quote.price;
+
+        }
+
+        // No bid, but ask is present
+        // Same as a !=null like before but reversed 
+        if (b != null) {
+            if (last_quote == null) {
+                return b.limit;
+            }
+            if (last_quote.price
                     < b.limit) {
                 return b.limit;
-
             }
-            return lq.price;
-
+            return last_quote.price;
         }
-        if (lq
-                == null) {
-            return null;
 
-        }
-        return lq.price;
+       // Both bid and ask are not present, return last quote.
+       // The case that last_quote is null can never happen here.
+        return last_quote.price;
 
     }
 
     @Override
     public Order
             createOrder(Account account,
-                     Order.Type type,
-                     double volume,
-                     double limit
+                    Order.Type type,
+                    double volume,
+                    double limit
             ) {
         Order o;
 
@@ -472,7 +445,7 @@ class TradingEngine implements TradingAPI {
                     // reduce the available money 
                     account.assets_avail
                             .put(currency,
-                                     avail
+                                    avail
                                     - v
                                     * l
                             );
@@ -503,7 +476,7 @@ class TradingEngine implements TradingAPI {
                     // All available monney is assigned to this unlimited order
                     account.assets_avail
                             .put(currency,
-                                     0.0);
+                                    0.0);
                     // we "mis"use order_limit to memorize occupied ammount \
                     // of currency
                     order_limit
@@ -533,7 +506,7 @@ class TradingEngine implements TradingAPI {
                     }
                     account.assets_avail
                             .put(asset,
-                                     avail
+                                    avail
                                     - v
                             );
                     order_limit
@@ -550,9 +523,9 @@ class TradingEngine implements TradingAPI {
 
             o
                     = new opensesim.world.Order(this, account,
-                             type,
-                             v,
-                             order_limit
+                            type,
+                            v,
+                            order_limit
                     );
 
             System.out
