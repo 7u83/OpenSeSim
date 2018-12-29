@@ -27,6 +27,8 @@ package opensesim.gui.account;
 
 import java.util.Map;
 import javax.swing.table.DefaultTableModel;
+import opensesim.util.scheduler.Event;
+import opensesim.util.scheduler.EventListener;
 import opensesim.world.AbstractAsset;
 import opensesim.world.Account;
 
@@ -34,7 +36,7 @@ import opensesim.world.Account;
  *
  * @author tube
  */
-public class AccountPanel extends javax.swing.JPanel {
+public class AccountPanel extends javax.swing.JPanel implements EventListener{
 
     /**
      * Creates new form AccountPanel
@@ -123,4 +125,10 @@ public class AccountPanel extends javax.swing.JPanel {
     private javax.swing.JTable assetTable;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public long receive(Event task) {
+        this.update();
+        return 0;
+    }
 }
