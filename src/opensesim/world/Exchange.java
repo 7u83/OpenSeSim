@@ -37,7 +37,7 @@ import org.json.JSONObject;
  */
 public class Exchange implements Configurable, GetJson {
 
-    private GodWorld world;
+    protected GodWorld world;
     private String name;
     private String symbol;
 
