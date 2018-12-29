@@ -63,13 +63,12 @@ class TradingEngine implements TradingAPI {
     }
     IDGenerator id_generator = new IDGenerator();
     LongIDGenerator quote_id_generator = new LongIDGenerator();
-    
-    
+
     private HashMap<Order.Type, SortedSet<Order>> order_books;
     private SortedSet<Order> bidbook, askbook;
     private SortedSet<Order> ul_buy, ul_sell;
     AssetPair assetpair;
-    
+
     TreeSet<Quote> quote_history;
 
     protected final void reset() {
@@ -85,14 +84,13 @@ class TradingEngine implements TradingAPI {
         ul_buy = order_books.get(Order.Type.BUY);
         ul_sell = order_books.get(Order.Type.SELL);
 
-         quote_history = new TreeSet<>();
-         
+        quote_history = new TreeSet<>();
+
         //  ohlc_data = new HashMap();
     }
-    
-    
-        void addQuoteToHistory(Quote q) {
-    /*    if (statistics.heigh == null) {
+
+    void addQuoteToHistory(Quote q) {
+        /*    if (statistics.heigh == null) {
             statistics.heigh = q.price;
         } else if (statistics.heigh < q.price) {
             statistics.heigh = q.price;
@@ -102,12 +100,15 @@ class TradingEngine implements TradingAPI {
         } else if (statistics.low > q.price) {
             statistics.low = q.price;
         }
-*/
+         */
 //        Stock stock = getDefaultStock();
-//        stock.quoteHistory.add(q);
+        quote_history.add(q);
 //        stock.updateOHLCData(q);
- //       updateQuoteReceivers(q);
+        //       updateQuoteReceivers(q);
     }
+
+    boolean compact_history = false;
+    boolean compact_last = true;
 
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
 //        src.money -= money;
@@ -145,20 +146,21 @@ class TradingEngine implements TradingAPI {
         }
 
 //        o.account.orders.remove(o.id);
-
         SortedSet book = order_books.get(o.type);
 
         book.remove(book.first());
 
-  //      o.status = OrderStatus.CLOSED;
-  //      o.account.update(o);
-
+        //      o.status = OrderStatus.CLOSED;
+        //      o.account.update(o);
     }
+    Quote last_quote;
 
     /**
      *
      */
     private void executeOrders() {
+
+        Quote q = null;
 
         double volume_total = 0;
         double money_total = 0;
@@ -222,16 +224,24 @@ class TradingEngine implements TradingAPI {
             // The price is set by the order with lower ID because the
             // order with lower ID was placed first. Also the order with
             // the lower id is maker, while the higher ID is the taker.
-            double price = b.id.compareTo(a.id) < 0 ? b.limit : a.limit;
+            double price;
+            Order.Type type;
+            if (b.id.compareTo(a.id) < 0) {
+                price = b.limit;
+                type = Order.Type.SELL;
+            } else {
+                price = a.limit;
+                type=Order.Type.BUY;
+            }
 
             // The volume is calculated by best fit
             double volume = b.volume >= a.volume ? a.volume : b.volume;
 
             // Update available currency for the buyer.
             // For sellers there is no need to update.
-            double avdiff = b.limit * volume -  price * volume;
-            b.account.addAvail(assetpair.getCurrency(),avdiff);
-            
+            double avdiff = b.limit * volume - price * volume;
+            b.account.addAvail(assetpair.getCurrency(), avdiff);
+
             // Transfer money and shares
             transferMoneyAndShares(b.account, a.account, volume * price, volume);
 
@@ -241,61 +251,118 @@ class TradingEngine implements TradingAPI {
 
             b.cost += price * volume;
             a.cost += price * volume;
-            
+
             a.account.notfiyListeners();
             b.account.notfiyListeners();
 
             removeOrderIfExecuted(a);
             removeOrderIfExecuted(b);
 
- 
+            if (!compact_history) {
+                q = new Quote(quote_id_generator.getNext());
+                q.price = price;
+                q.volume = volume;
+                q.time = outer.world.currentTimeMillis();
+                q.type=type;
+                addQuoteToHistory(q);
+            }
+
             volume_total += volume;
             money_total += price * volume;
+
             //        statistics.trades++;
             //        this.checkSLOrders(price);
         }
-        if (volume_total == 0) {
+        if (volume_total
+                == 0) {
             return;
         }
-        Quote q = new Quote(quote_id_generator.getNext());
-        q.price = money_total / volume_total;
-        q.volume = volume_total;
-        q.time = outer.world.currentTimeMillis();
-        
-        //     q.time = timer.currentTimeMillis();
-        //   addQuoteToHistory(q);
+
+        Quote qc;
+        qc = new Quote(quote_id_generator.getNext());
+        qc.price = money_total / volume_total;
+        qc.volume = volume_total;
+        qc.time = outer.world.currentTimeMillis();
+
+        if (compact_history) {
+            addQuoteToHistory(qc);
+        }
+
+        if (compact_last) {
+            last_quote = qc;
+        } else {
+            last_quote = q;
+        }
+
     }
 
- 
-    //
-    public Double getBestPrice() {
-        SortedSet<Order> bid = order_books.get(Order.Type.BUYLIMIT);
-        SortedSet<Order> ask = order_books.get(Order.Type.SELLLIMIT);
+//
+    public Double
+            getBestPrice() {
+        SortedSet<Order> bid
+                = order_books
+                        .get(Order.Type.BUYLIMIT
+                        );
+        SortedSet<Order> ask
+                = order_books
+                        .get(Order.Type.SELLLIMIT
+                        );
 
-        Quote lq = null; //this.getLastQuoete();
-        Order b = null;
-        Order a = null;
-        if (!bid.isEmpty()) {
-            b = bid.first();
+        Quote lq
+                = null; //this.getLastQuoete();
+        Order b
+                = null;
+        Order a
+                = null;
+
+        if (!bid
+                .isEmpty()) {
+            b
+                    = bid
+                            .first();
+
         }
-        if (!ask.isEmpty()) {
-            a = ask.first();
+        if (!ask
+                .isEmpty()) {
+            a
+                    = ask
+                            .first();
+
         }
         // If there is neither bid nor ask and no last quote
         // we can't return a quote
-        if (lq == null && b == null && a == null) {
+        if (lq
+                == null && b
+                == null && a
+                == null) {
             return null;
+
         }
         // there is bid and ask
-        if (a != null && b != null) {
-            Quote q = new Quote(-1);
-            System.out.printf("aaaaa bbbbb %f %f \n", a.limit, b.limit);
+        if (a
+                != null && b
+                != null) {
+            Quote q
+                    = new Quote(-1);
+            System.out
+                    .printf("aaaaa bbbbb %f %f \n", a.limit,
+                             b.limit
+                    );
             // if there is no last quote calculate from bid and ask
             //if (lq == null) {
-            double rc = (bid.first().limit + ask.first().limit) / 2.0;
-            System.out.printf("RCRC2.0: %f\n", rc);
+
+            double rc
+                    = (bid
+                            .first().limit
+                    + ask
+                            .first().limit) / 2.0;
+            System.out
+                    .printf("RCRC2.0: %f\n", rc
+                    );
+
             return rc;
-            // }
+// }
+
             /*
             if (lq.price < b.limit) {
             return b.limit;
@@ -306,99 +373,174 @@ class TradingEngine implements TradingAPI {
             return lq.price;
              */
         }
-        if (a != null) {
-            Quote q = new Quote(-1);
-            if (lq == null) {
+        if (a
+                != null) {
+            Quote q
+                    = new Quote(-1);
+
+            if (lq
+                    == null) {
                 return a.limit;
+
             }
-            if (lq.price > a.limit) {
+            if (lq.price
+                    > a.limit) {
                 return a.limit;
+
             }
             return lq.price;
+
         }
-        if (b != null) {
-            Quote q = new Quote(-1);
-            if (lq == null) {
+        if (b
+                != null) {
+            Quote q
+                    = new Quote(-1);
+
+            if (lq
+                    == null) {
                 return b.limit;
+
             }
-            if (lq.price < b.limit) {
+            if (lq.price
+                    < b.limit) {
                 return b.limit;
+
             }
             return lq.price;
+
         }
-        if (lq == null) {
+        if (lq
+                == null) {
             return null;
+
         }
         return lq.price;
+
     }
 
     @Override
-    public Order createOrder(Account account, Order.Type type, double volume, double limit) {
+    public Order
+            createOrder(Account account,
+                     Order.Type type,
+                     double volume,
+                     double limit
+            ) {
         Order o;
+
         synchronized (account) {
 
             // Round volume 
-            double v = assetpair.getAsset().roundToDecimals(volume);
+            double v
+                    = assetpair
+                            .getAsset().roundToDecimals(volume
+                            );
 
             // Order volume must be grater than 0.0.
-            if (v <= 0.0) {
+            if (v
+                    <= 0.0) {
                 return null;
+
             }
 
             // Round currency (limit)
-            double l = assetpair.getCurrency().roundToDecimals(limit);
+            double l
+                    = assetpair
+                            .getCurrency().roundToDecimals(limit
+                            );
 
             double order_limit;
 
             switch (type) {
                 case BUYLIMIT: {
                     // verfify available currency for a buy limit order
-                    AbstractAsset currency = this.assetpair.getCurrency();
-                    Double avail = account.getAvail(currency);
+                    AbstractAsset currency
+                            = this.assetpair
+                                    .getCurrency();
+                    Double avail
+                            = account
+                                    .getAvail(currency
+                                    );
 
                     // return if not enough money is available
-                    if (avail < v * l) {
+                    if (avail
+                            < v
+                            * l) {
                         return null;
+
                     }
 
                     // reduce the available money 
-                    account.assets_avail.put(currency, avail - v * l);
-                    order_limit = l;
+                    account.assets_avail
+                            .put(currency,
+                                     avail
+                                    - v
+                                    * l
+                            );
+                    order_limit
+                            = l;
+
                     break;
+
                 }
 
                 case BUY: {
                     // For an unlimited by order there is nothing to check
                     // other than currency is > 0.0
-                    AbstractAsset currency = this.assetpair.getCurrency();
-                    Double avail = account.getAvail(currency);
-                    if (avail <= 0.0) {
+                    AbstractAsset currency
+                            = this.assetpair
+                                    .getCurrency();
+                    Double avail
+                            = account
+                                    .getAvail(currency
+                                    );
+
+                    if (avail
+                            <= 0.0) {
                         return null;
+
                     }
 
                     // All available monney is assigned to this unlimited order
-                    account.assets_avail.put(currency, 0.0);
+                    account.assets_avail
+                            .put(currency,
+                                     0.0);
                     // we "mis"use order_limit to memorize occupied ammount \
                     // of currency
-                    order_limit = avail;
+                    order_limit
+                            = avail;
 
                     break;
+
                 }
 
                 case SELLLIMIT:
                 case SELL: {
 
                     // verfiy sell limit
-                    AbstractAsset asset = this.assetpair.getAsset();
-                    Double avail = account.getAvail(asset);
+                    AbstractAsset asset
+                            = this.assetpair
+                                    .getAsset();
+                    Double avail
+                            = account
+                                    .getAvail(asset
+                                    );
 
-                    if (avail < v) {
+                    if (avail
+                            < v) {
                         // not enough items of asset (shares) available
                         return null;
+
                     }
-                    account.assets_avail.put(asset, avail - v);
-                    order_limit = l;
+                    account.assets_avail
+                            .put(asset,
+                                     avail
+                                    - v
+                            );
+                    order_limit
+                            = l;
+
                     break;
+
                 }
 
                 default:
@@ -406,57 +548,93 @@ class TradingEngine implements TradingAPI {
 
             }
 
-            o = new opensesim.world.Order(this, account, type, v, order_limit);
+            o
+                    = new opensesim.world.Order(this, account,
+                             type,
+                             v,
+                             order_limit
+                    );
 
-            System.out.printf("The new Order has: volume: %f limit: %f\n", o.getVolume(), o.getLimit());
+            System.out
+                    .printf("The new Order has: volume: %f limit: %f\n", o
+                            .getVolume(), o
+                                    .getLimit());
             synchronized (this) {
-                order_books.get(o.type).add(o);
+                order_books
+                        .get(o.type
+                        ).add(o
+                        );
+
             }
         }
         executeOrders();
 
-        for (FiringEvent e : book_listener) {
-            e.fire();
+        for (FiringEvent e
+                : book_listener) {
+            e
+                    .fire();
+
         }
         return o;
 
     }
 
-    HashSet<FiringEvent> book_listener = new HashSet<>();
+    HashSet<FiringEvent> book_listener
+            = new HashSet<>();
 
     @Override
-    public void addOrderBookListener(EventListener listener) {
-        book_listener.add(new FiringEvent(listener));
+    public void addOrderBookListener(EventListener listener
+    ) {
+        book_listener
+                .add(new FiringEvent(listener
+                ));
+
     }
 
     @Override
-    public Set getOrderBook(Order.Type type) {
+    public Set
+            getOrderBook(Order.Type type
+            ) {
         switch (type) {
             case BUYLIMIT:
             case BUY:
-                return Collections.unmodifiableSet(bidbook);
+                return Collections
+                        .unmodifiableSet(bidbook
+                        );
+
             case SELLLIMIT:
             case SELL:
-                return Collections.unmodifiableSet(askbook);
+                return Collections
+                        .unmodifiableSet(askbook
+                        );
 
         }
         return null;
 //        return Collections.unmodifiableSet(order_books.get(type));
+
     }
 
     @Override
-    public Set getBidBook() {
-        return getOrderBook(Order.Type.BUYLIMIT);
+    public Set
+            getBidBook() {
+        return getOrderBook(Order.Type.BUYLIMIT
+        );
+
     }
 
     @Override
-    public Set getAskBook() {
-        return getOrderBook(Order.Type.SELL);
+    public Set
+            getAskBook() {
+        return getOrderBook(Order.Type.SELL
+        );
+
     }
 
     @Override
     public Set<Quote> getQuoteHistory() {
-        return Collections.unmodifiableSet(quote_history);
+        return Collections
+                .unmodifiableSet(quote_history
+                );
     }
 
 }
