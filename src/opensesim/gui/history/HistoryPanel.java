@@ -25,17 +25,50 @@
  */
 package opensesim.gui.history;
 
+import java.util.Set;
+import javax.swing.table.DefaultTableModel;
+import opensesim.util.scheduler.Event;
+import opensesim.util.scheduler.EventListener;
+import opensesim.world.Quote;
+import opensesim.world.TradingAPI;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class HistoryPanel extends javax.swing.JPanel {
+public class HistoryPanel extends javax.swing.JPanel implements EventListener {
 
     /**
      * Creates new form HistoryPanel
      */
     public HistoryPanel() {
         initComponents();
+    }
+
+    TradingAPI api;
+
+    void update() {
+        DefaultTableModel model;
+        model = (DefaultTableModel) this.historytable.getModel();
+
+        Set<Quote> h = api.getQuoteHistory();
+
+        int row = 0;
+        model.setRowCount(h.size());
+        for (Quote q : h) {
+            //Double val = account.get(a);
+            //Double avail = account.getAvail(a);
+            //String astr = val.toString() + "/" + avail.toString();
+
+//            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
+            model.setValueAt(q.price, row, 0);
+            model.setValueAt(q.volume, row, 1);
+            model.setValueAt(((Long) q.time).toString(), row, 2);
+            model.setValueAt(q.type.toString(), row, 3);    
+            
+            row++;
+        }
+
     }
 
     /**
@@ -95,4 +128,10 @@ public class HistoryPanel extends javax.swing.JPanel {
     private javax.swing.JTable historytable;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public long receive(Event task) {
+        update();
+        return 0;
+    }
 }
