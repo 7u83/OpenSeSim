@@ -250,11 +250,12 @@ class TradingEngine implements TradingAPI {
             this.checkSLOrders(price);
             }
              */
+            
             //
             // Match limited orders against limited orders
             //
             if (bidbook.isEmpty() || askbook.isEmpty()) {
-                // no orders at all, nothing to do
+                // no limit orders at all, nothing to do
                 break;
             }
 

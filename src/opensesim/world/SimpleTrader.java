@@ -25,23 +25,8 @@
  */
 package opensesim.world;
 
-import opensesim.world.AbstractAsset;
-import opensesim.world.AbstractTrader;
-import opensesim.world.AssetPair;
-import opensesim.world.Exchange;
-import opensesim.world.Order;
-import opensesim.world.TradingAPI;
-import opensesim.world.World;
 import opensesim.util.scheduler.Event;
 import opensesim.util.scheduler.EventListener;
-import opensesim.world.AbstractAsset;
-import opensesim.world.AbstractTrader;
-import opensesim.world.Account;
-import opensesim.world.AssetPair;
-import opensesim.world.Exchange;
-import opensesim.world.Order;
-import opensesim.world.TradingAPI;
-import opensesim.world.World;
 import org.json.JSONObject;
 
 /**
@@ -125,8 +110,8 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         api = ex.getAPI(p);   
         
 
-    Order oa = api.createOrder(account_b, Order.Type.BUY, 200, 0);
-    Order ob = api.createOrder(account_s, Order.Type.SELL, 100, 0);
+    Order oa = api.createOrder(account_b, Order.Type.BUYLIMIT, 200, 100);
+    Order ob = api.createOrder(account_s, Order.Type.SELLLIMIT, 200,200);
 
     
      //   Order oa = api.createOrder(account_b, Order.Type.BUYLIMIT, 100, 10.0); 
