@@ -80,8 +80,14 @@ public class Order implements Comparable<Order> {
         BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
     }
 
+    public static enum Addition {
+        NONE, MARGIN_CALL, FILL_OR_KILL
+    }
+
+    Addition addition;
     protected Status status;
     protected Type type;
+
     protected double limit;
     protected double volume;
 
@@ -95,7 +101,7 @@ public class Order implements Comparable<Order> {
     GodWorld world;
 
     Order(opensesim.world.TradingEngine engine, Account account, Type type,
-            double volume, double limit) {
+            double volume, double limit, Addition addition) {
 
         AssetPair pair = engine.getAssetPair();
 
@@ -133,6 +139,12 @@ public class Order implements Comparable<Order> {
         //  id = world.
         //   id = world.orderIdGenerator.getNext();
         id = engine.id_generator.getNext();
+        this.addition = addition;
+    }
+
+    Order(opensesim.world.TradingEngine engine, Account account, Type type,
+            double volume, double limit) {
+        this(engine, account, type, volume, limit, Addition.NONE);
     }
 
     public Id getID() {
