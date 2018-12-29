@@ -26,7 +26,7 @@
 package opensesim.world;
 
 /**
- *
+ * Asset interface
  * @author 7u83 <7u83@mail.ru>
  */
 public interface Asset {
@@ -36,5 +36,29 @@ public interface Asset {
      * @return number of decimals
      */
     public int getDecimals();
+    
+    /**
+     * Get the type name of asset. eg. Currency, Future or Stock
+     * @return type name
+     */
+    public  String getTypeName();
+    
+    /**
+     * Get symbol for this asset. eg. USD
+     * @return symbol
+     */
+    public  String getSymbol();
+    
+    /**
+     * Determine if this asset can be used as currency
+     * @return true if asset can act as currency, false if not.
+     */
+    public boolean isCurrency();
+    
+    /**
+     * Can this asset act as asset?
+     * @return true if yes, false if not
+     */
+    public boolean isAsset();
     
 }
