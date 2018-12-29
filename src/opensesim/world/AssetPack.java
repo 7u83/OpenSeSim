@@ -38,6 +38,10 @@ public class AssetPack {
         this.volume=volume;
     }
     
+    public AssetPack(AbstractAsset asset){
+        this.asset=asset;
+    }
+    
     public AssetPack(World world, String symbol,double volume){
         this(world.getAssetBySymbol(symbol),volume);
     }
