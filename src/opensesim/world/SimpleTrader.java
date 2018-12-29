@@ -115,7 +115,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         account_b = new Account();
         
         AssetPack pack;
-        pack = new AssetPack(p.getAsset(),2000);
+        pack = new AssetPack(p.getAsset(),200);
         account_s.add(pack);
         
         pack = new AssetPack(p.getCurrency(),10000);
@@ -125,9 +125,17 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         api = ex.getAPI(p);   
         
 
-        Order o2 = api.createOrder(account_s, Order.Type.SELLLIMIT, 50, 5.0); 
+    Order oa = api.createOrder(account_b, Order.Type.BUY, 200, 0);
+    Order ob = api.createOrder(account_s, Order.Type.SELL, 100, 0);
+
+    
+     //   Order oa = api.createOrder(account_b, Order.Type.BUYLIMIT, 100, 10.0); 
+     //   Order ob = api.createOrder(account_b, Order.Type.BUYLIMIT, 100, 9.0);         
+     //   Order oc = api.createOrder(account_b, Order.Type.BUYLIMIT, 100, 8.0);                 
         
-        Order o = api.createOrder(account_b, Order.Type.BUYLIMIT, 100, 10.0);    
+     // Order o2 = api.createOrder(account_s, Order.Type.SELLLIMIT, 300, 1.0);   
+        
+    
         //Order ou = api.createOrder(account_b, Order.Type.BUYLIMIT, 30, 10.0);         
  
         
