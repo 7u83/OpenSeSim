@@ -49,5 +49,7 @@ public interface TradingAPI {
      * @return the AssetPair object
      */
     public AssetPair getAssetPair();
+    
+    public Set<Quote> getQuoteHistory();
 
 }
