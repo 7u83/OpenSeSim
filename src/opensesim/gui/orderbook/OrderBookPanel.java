@@ -139,8 +139,7 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
 
     }
 
-    boolean oupdate = false;
-    boolean new_oupdate = false;
+
 
     long ouctr = 0;
     Order.Type type;
@@ -177,7 +176,9 @@ public class OrderBookPanel extends javax.swing.JPanel implements EventListener 
         }
 
     }
-    
+
+    boolean oupdate = false;
+    boolean new_oupdate = false;    
     void oupdater() {
         // get order book from API
         Collection<Order> orderbook = api.getOrderBook(type);
