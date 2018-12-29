@@ -69,6 +69,7 @@ import opensesim.world.World;
 import opensesim.util.scheduler.Event;
 import opensesim.util.scheduler.FiringEvent;
 import opensesim.util.scheduler.EventListener;
+import opensesim.world.SimpleTrader;
 
 /**
  *
@@ -601,12 +602,13 @@ public class SeSimApplication extends javax.swing.JFrame {
     void startSim() {
 
         JSONObject cfg = new JSONObject("{"
-                + "strategy: opensesim.trader.SimpleTrader"
+                + "strategy: opensesim.world.SimpleTrader"
                 + "}");
         Trader t = godworld.createTrader(cfg);
         t.start();
        
-        AccountDialog.runDialog(this, t.getAccount());
+        AccountDialog.runDialog(this, ((SimpleTrader)t).account_b);
+        AccountDialog.runDialog(this, ((SimpleTrader)t).account_s);        
 
         updateGodWorld(godworld);
 
