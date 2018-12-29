@@ -40,6 +40,12 @@ public class Quote implements Comparable {
     public double volume;
     public long time;
     
+    public long id;
+    
+    Quote (long id){
+        this.id=id;
+    }
+    
 //    Locker lock = new Locker();
 
     public void print() {
@@ -54,7 +60,7 @@ public class Quote implements Comparable {
 
     }
     
-    public long id;
+
 
     @Override
     public int compareTo(Object o) {
