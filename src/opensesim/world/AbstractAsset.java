@@ -90,16 +90,19 @@ public abstract class AbstractAsset implements GetJson, Asset {
         formatter = new DecimalFormat(fs);
     }
 
+    @Override
     public final int getDecimals() {
         return decimals;
     }
 
+    @Override
     public abstract String getTypeName();
 
     protected void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public final String getSymbol() {
         return symbol;
     }
@@ -120,10 +123,12 @@ public abstract class AbstractAsset implements GetJson, Asset {
         return description;
     }
 
+    @Override
     public boolean isCurrency() {
         return false;
     }
 
+    @Override
     public boolean isAsset() {
         return false;
     }
