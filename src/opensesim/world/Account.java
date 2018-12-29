@@ -27,7 +27,10 @@ package opensesim.world;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import opensesim.util.scheduler.Event;
+import opensesim.util.scheduler.EventListener;
 import org.json.JSONObject;
 
 /**
@@ -67,16 +70,41 @@ public class Account {
 
     }
 
-    void add(AssetPack pack) {
+    synchronized void add(AssetPack pack) {
         assets.put(pack.asset, get(pack.asset) + pack.volume);
         assets_avail.put(pack.asset, getAvail(pack.asset) + pack.volume);
     }
 
+    synchronized void sub(AssetPack pack) {
+        assets.put(pack.asset, get(pack.asset) - pack.volume);
+     //   assets_avail.put(pack.asset, getAvail(pack.asset) - pack.volume);
+    }
+
+    
+    
+    
     public double get(AbstractAsset asset) {
         return assets.getOrDefault(asset, 0.0);
     }
 
     public double getAvail(AbstractAsset asset) {
         return assets_avail.getOrDefault(asset, 0.0);
+    }
+
+    public void addAvail(AbstractAsset asset, double val) {
+        double avail = getAvail(asset);
+        assets_avail.put(asset, avail+val);
+    }    
+    
+    HashSet<EventListener> listeners = new HashSet<>();
+    public void addListener(EventListener l){
+        listeners.add(l);
+    }
+    
+    public void notfiyListeners(){
+        Event e = new Event() {};
+        for(EventListener l: listeners){
+            l.receive(e);
+        }
     }
 }
