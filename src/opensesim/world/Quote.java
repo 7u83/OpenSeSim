@@ -39,6 +39,7 @@ public class Quote implements Comparable {
     public double price;
     public double volume;
     public long time;
+    public Order.Type type;
     
     public long id;
     
