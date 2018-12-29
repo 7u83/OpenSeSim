@@ -34,7 +34,7 @@ import org.json.JSONObject;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AbstractAsset implements GetJson {
+public abstract class AbstractAsset implements GetJson, Asset {
 
     GodWorld world;
 
@@ -74,7 +74,7 @@ public abstract class AbstractAsset implements GetJson {
         return Math.floor(val * decimals_df) / decimals_df;
     }
 
-    protected void setDecimals(int n) {
+    protected final void setDecimals(int n) {
         decimals = n;
         decimals_df = Math.pow(10, n);
 
