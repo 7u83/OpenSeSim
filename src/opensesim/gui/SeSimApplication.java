@@ -51,6 +51,7 @@ import static opensesim.gui.Globals.getWorld;
 import opensesim.gui.account.AccountDialog;
 
 import opensesim.gui.exchangeeditor.ExchangeListDialog;
+import opensesim.gui.history.HistoryDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -609,7 +610,7 @@ public class SeSimApplication extends javax.swing.JFrame {
        
         AccountDialog.runDialog(this, ((SimpleTrader)t).account_b);
         AccountDialog.runDialog(this, ((SimpleTrader)t).account_s);        
-
+        
         updateGodWorld(godworld);
 
         AssetPair p = godworld.getDefaultAssetPair();
@@ -617,6 +618,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         opensesim.world.Exchange ex = godworld.getDefaultExchange();
         TradingAPI api = ex.getAPI(p);
 
+        HistoryDialog.runDialog(this, api);
  
         opensesim.util.scheduler.Scheduler s = godworld.getScheduler();
 
