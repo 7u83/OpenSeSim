@@ -36,14 +36,14 @@ import opensesim.world.Account;
  *
  * @author tube
  */
-public class AccountPanel extends javax.swing.JPanel implements EventListener{
+public class AccountPanel extends javax.swing.JPanel implements EventListener {
 
     /**
      * Creates new form AccountPanel
      */
     public AccountPanel() {
         initComponents();
-                assetTable.setAutoCreateRowSorter(true);
+        assetTable.setAutoCreateRowSorter(true);
         assetTable.getTableHeader().setReorderingAllowed(false);
     }
 
@@ -54,17 +54,22 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener{
         model = (DefaultTableModel) this.assetTable.getModel();
 
         Map<AbstractAsset, Double> am = account.getAssets();
-        
+
         int row = 0;
         model.setRowCount(am.size());
         for (AbstractAsset a : am.keySet()) {
             Double val = account.get(a);
             Double avail = account.getAvail(a);
-            String astr = val.toString()+"/"+avail.toString();
-            
+            String astr = val.toString() + "/" + avail.toString();
+
+           Double mval = account.getMargin(a);
+              Double mavail = account.getAvail(a);
+            String mastr = mval.toString(); // + "/" + mavail.toString();
+
 //            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
             model.setValueAt(a.getSymbol(), row, 0);
             model.setValueAt(astr, row, 1);
+            model.setValueAt(mastr, row, 2);
             row++;
         }
 
@@ -84,18 +89,18 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener{
 
         assetTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Asset", "Ammount"
+                "Asset", "Ammount", "Margin"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
