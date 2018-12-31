@@ -44,7 +44,18 @@ public class Account {
     HashMap<AbstractAsset, Double> assets_avail = new HashMap<>();
 
     Trader owner;
-    Exchange exchange = null;
+    //public Exchange exchange = null;
+    private World world;
+
+    private double leverage = 0.0;
+
+    public double getLeverage() {
+        return leverage;
+    }
+    
+    protected void setLeverage(double leverage){
+        this.leverage=leverage;
+    }
 
     public Map<AbstractAsset, Double> getAssets() {
         return Collections.unmodifiableMap(assets);
@@ -58,18 +69,23 @@ public class Account {
         return owner;
     }
 
-    protected Account(Exchange exchange) {
-        this.exchange = exchange;
+    protected Account(World world) {
+        this.world = world;
     }
 
-    protected Account(Exchange exchange, JSONObject cfg) {
-        this.exchange = exchange;
+    protected Account(World world, JSONObject cfg) {
+        this.world = world;
     }
 
-    Account() {
 
-    }
+    public Double getMargin(AbstractAsset currency) {
+        return this.getValue()
+                * this.leverage
+                + this.get(currency);
 
+    }   ;
+    
+  
     synchronized void add(AssetPack pack) {
         assets.put(pack.asset, get(pack.asset) + pack.volume);
         assets_avail.put(pack.asset, getAvail(pack.asset) + pack.volume);
@@ -77,12 +93,9 @@ public class Account {
 
     synchronized void sub(AssetPack pack) {
         assets.put(pack.asset, get(pack.asset) - pack.volume);
-     //   assets_avail.put(pack.asset, getAvail(pack.asset) - pack.volume);
+        //   assets_avail.put(pack.asset, getAvail(pack.asset) - pack.volume);
     }
 
-    
-    
-    
     public double get(AbstractAsset asset) {
         return assets.getOrDefault(asset, 0.0);
     }
@@ -93,18 +106,53 @@ public class Account {
 
     public void addAvail(AbstractAsset asset, double val) {
         double avail = getAvail(asset);
-        assets_avail.put(asset, avail+val);
-    }    
-    
+        assets_avail.put(asset, (avail + val));
+    }
+
     HashSet<EventListener> listeners = new HashSet<>();
-    public void addListener(EventListener l){
+
+    public void addListener(EventListener l) {
         listeners.add(l);
     }
-    
-    public void notfiyListeners(){
-        Event e = new Event() {};
-        for(EventListener l: listeners){
+
+    public void notfiyListeners() {
+        Event e = new Event() {
+        };
+        for (EventListener l : listeners) {
             l.receive(e);
         }
+    }
+
+    public Double getFreeMargin(AbstractAsset asset) {
+
+        return 0.0;
+    }
+
+    public Double getValue( Exchange ex, AbstractAsset currency) {
+
+        Double result = get(currency);
+        for (AbstractAsset a : assets.keySet()) {
+            Double v;
+            if (a.equals(currency)) {
+                continue;
+            }
+            AssetPair pair = world.getAssetPair(a, currency);
+            if (pair == null) {
+                continue;
+            }
+            TradingEngine api = (TradingEngine) ex.getAPI(pair);
+            v = get(a) * api.last_quote.price;
+
+            result = result + v;
+        }
+        return result;
+    }
+    
+    public Double getValue(AbstractAsset currency){
+        return getValue(world.getDefaultExchange(),currency);
+    }
+
+    public Double getValue(){
+        return getValue(world.getDefaultAssetPair().getCurrency());
     }
 }
