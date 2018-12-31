@@ -100,7 +100,7 @@ public abstract class AbstractTrader implements Trader {
 
     public AbstractTrader(World world, JSONObject cfg) {
         this.world=world;
-        this.account = new Account();
+        this.account = new Account(world);
         
         AssetPack pack;
         pack = new AssetPack(this.world.getDefaultAssetPair().getCurrency(),1000);
