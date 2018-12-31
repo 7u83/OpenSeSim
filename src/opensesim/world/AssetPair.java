@@ -51,12 +51,12 @@ public class AssetPair {
         return buildSymbol(asset.getSymbol(),currency.getSymbol());
     }
 
-    public AssetPair(AbstractAsset asset, AbstractAsset currency) {
+    AssetPair(AbstractAsset asset, AbstractAsset currency) {
         this.asset = asset;
         this.currency = currency;
     }
     
-    public AssetPair(World world, String asset, String currency){
+    AssetPair(World world, String asset, String currency){
         this.asset = world.getAssetBySymbol(asset);
         this.currency = world.getAssetBySymbol(currency);
     }
