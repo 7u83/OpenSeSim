@@ -51,4 +51,6 @@ public interface World {
     public float randNextFloat(float min, float max);
     
     public long currentTimeMillis();
+    
+    public AssetPair getAssetPair(AbstractAsset asset, AbstractAsset currency);
 }
