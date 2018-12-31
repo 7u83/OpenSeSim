@@ -220,7 +220,7 @@ class TradingEngine implements TradingAPI {
                     q.price = price;
                     q.volume = volume;
                     q.time = outer.world.currentTimeMillis();
-                       q.type = type;
+                    q.type = type;
                     addQuoteToHistory(q);
                 }
 
@@ -250,7 +250,6 @@ class TradingEngine implements TradingAPI {
             this.checkSLOrders(price);
             }
              */
-            
             //
             // Match limited orders against limited orders
             //
@@ -290,6 +289,8 @@ class TradingEngine implements TradingAPI {
             // For sellers there is no need to update.
             double avdiff = b.limit * volume - price * volume;
             b.account.addAvail(assetpair.getCurrency(), avdiff);
+            
+          //  b.account.addMarginAvail(assetpair.getCurrency(), avdiff/b.account.getLeverage());
 
             finishTrade(b, a, price, volume);
 
@@ -432,15 +433,21 @@ class TradingEngine implements TradingAPI {
                 case BUYLIMIT: {
                     // verfify available currency for a buy limit order
                     AbstractAsset currency = this.assetpair.getCurrency();
-                    Double avail = account.getAvail(currency);
+                    Double avail = 0.0; ///account.getMarginAvail(currency);
 
+                    
+                  Double margin = account.getValue(assetpair.getCurrency());
+                    
                     // return if not enough money is available
-                    if (avail < v * l) {
-                        return null;
+                    if (avail * account.getLeverage() < v * l) {
+             //           return null;
                     }
 
                     // reduce the available money 
-                    account.assets_avail.put(currency, avail - v * l);
+//                  account.assets_avail.put(currency, avail - v * l);
+account.addAvail(currency, -(v * l));
+                    
+//account.addMarginAvail(currency, -((v * l)/account.getLeverage()));
                     order_limit = l;
                     break;
 
@@ -477,8 +484,7 @@ class TradingEngine implements TradingAPI {
                         // not enough items of asset (shares) available
                         return null;
                     }
-                    account.assets_avail
-                            .put(asset, avail - v);
+                    account.assets_avail.put(asset, avail - v);
                     order_limit = l;
                     break;
 
@@ -498,7 +504,7 @@ class TradingEngine implements TradingAPI {
             }
         }
         executeOrders();
-
+last_quote.price=200;
         for (FiringEvent e : book_listener) {
             e.fire();
         }
