@@ -51,5 +51,5 @@ public interface TradingAPI {
     public AssetPair getAssetPair();
     
     public Set<Quote> getQuoteHistory();
-
+    
 }
