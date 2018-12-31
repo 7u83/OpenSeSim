@@ -52,9 +52,9 @@ public class Account {
     public double getLeverage() {
         return leverage;
     }
-    
-    protected void setLeverage(double leverage){
-        this.leverage=leverage;
+
+    protected void setLeverage(double leverage) {
+        this.leverage = leverage;
     }
 
     public Map<AbstractAsset, Double> getAssets() {
@@ -77,13 +77,14 @@ public class Account {
         this.world = world;
     }
 
-
     public Double getMargin(AbstractAsset currency) {
-        return this.getValue()
+        return this.getFinalBalance()
                 * this.leverage
                 + this.get(currency);
 
-    }   ;
+    }
+
+    ;
     
   
     synchronized void add(AssetPack pack) {
@@ -128,7 +129,36 @@ public class Account {
         return 0.0;
     }
 
-    public Double getValue( Exchange ex, AbstractAsset currency) {
+    public Double getAssetDebt(Exchange ex, AbstractAsset currency) {
+        Double result = 0.0;
+        for (AbstractAsset a : assets.keySet()) {
+            if (a.equals(currency)) {
+                continue;
+            }
+            AssetPair pair = world.getAssetPair(a, currency);
+            if (pair == null) {
+                continue;
+            }
+
+            TradingEngine api = (TradingEngine) ex.getAPI(pair);
+            Double v = get(a) * api.last_quote.price;
+
+            result = result + Math.abs(v);
+
+        }
+        return result;
+    }
+
+    /**
+     * Determine final balance of this account, as if all assets would be sold
+     * on exchange ex against given currency asset.
+     *
+     * @param ex Exchange to operate on
+     * @param currency Currency against the assets should be sold.
+     * @return final balance
+     *
+     */
+    public Double getFinalBalance(Exchange ex, AbstractAsset currency) {
 
         Double result = get(currency);
         for (AbstractAsset a : assets.keySet()) {
@@ -147,12 +177,27 @@ public class Account {
         }
         return result;
     }
-    
-    public Double getValue(AbstractAsset currency){
-        return getValue(world.getDefaultExchange(),currency);
+
+    /**
+     * Get the final balance as if all assets would be sold ob the default
+     * exchange against given currency.
+     * {@link #getFinalBalance(opensesim.world.Exchange, opensesim.world.AbstractAsset)}
+     *
+     * @param currency Currency for final balance
+     * @return final balance
+     */
+    public Double getFinalBalance(AbstractAsset currency) {
+        return getFinalBalance(world.getDefaultExchange(), currency);
     }
 
-    public Double getValue(){
-        return getValue(world.getDefaultAssetPair().getCurrency());
+    /**
+     * Determine final balance 
+     * {@link #getFinalBalance(opensesim.world.Exchange, opensesim.world.AbstractAsset) }
+     *
+     * @see DoublegetFinalBalance( Exchange ex, AbstractAsset currency)
+     * @return Balance
+     */
+    public Double getFinalBalance() {
+        return getFinalBalance(world.getDefaultAssetPair().getCurrency());
     }
 }
