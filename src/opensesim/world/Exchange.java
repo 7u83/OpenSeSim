@@ -71,7 +71,7 @@ public class Exchange implements Configurable, GetJson {
     private HashSet<Account> accounts = new HashSet<>();
 
     Account createAccount() {
-        Account a = new Account(this);
+        Account a = new Account(this.world);
         accounts.add(a);
         return a;
     }
