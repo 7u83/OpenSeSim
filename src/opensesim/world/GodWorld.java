@@ -271,6 +271,11 @@ public class GodWorld implements GetJson, World {
     public AssetPair getDefaultAssetPair() {
         return default_asset_pair;
     }
+    
+    public AssetPair getAssetPair(AbstractAsset asset, AbstractAsset currency){
+        String s = AssetPair.buildSymbol(asset.getSymbol(), currency.getSymbol());
+        return asset_pairs.getOrDefault(s, null);
+    }
 
 
     /*    public AbstractAsset createAsset(long key, JSONObject cfg) throws SeSimException{
