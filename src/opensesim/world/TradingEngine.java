@@ -289,9 +289,8 @@ class TradingEngine implements TradingAPI {
             // For sellers there is no need to update.
             double avdiff = b.limit * volume - price * volume;
             b.account.addAvail(assetpair.getCurrency(), avdiff);
-            
-          //  b.account.addMarginAvail(assetpair.getCurrency(), avdiff/b.account.getLeverage());
 
+            //  b.account.addMarginAvail(assetpair.getCurrency(), avdiff/b.account.getLeverage());
             finishTrade(b, a, price, volume);
 
             if (!compact_history) {
@@ -433,20 +432,18 @@ class TradingEngine implements TradingAPI {
                 case BUYLIMIT: {
                     // verfify available currency for a buy limit order
                     AbstractAsset currency = this.assetpair.getCurrency();
-                    Double avail = 0.0; ///account.getMarginAvail(currency);
 
-                    
-                  Double margin = account.getValue(assetpair.getCurrency());
-                    
+                    Double avail = account.getMargin(assetpair.getCurrency());
+
                     // return if not enough money is available
-                    if (avail * account.getLeverage() < v * l) {
-             //           return null;
+                    if (avail < v * l) {
+                 //       return null;
                     }
 
                     // reduce the available money 
 //                  account.assets_avail.put(currency, avail - v * l);
-account.addAvail(currency, -(v * l));
-                    
+                    account.addAvail(currency, -(v * l));
+
 //account.addMarginAvail(currency, -((v * l)/account.getLeverage()));
                     order_limit = l;
                     break;
@@ -482,7 +479,7 @@ account.addAvail(currency, -(v * l));
 
                     if (avail < v) {
                         // not enough items of asset (shares) available
-                        return null;
+                    //    return null;
                     }
                     account.assets_avail.put(asset, avail - v);
                     order_limit = l;
@@ -504,7 +501,7 @@ account.addAvail(currency, -(v * l));
             }
         }
         executeOrders();
-last_quote.price=200;
+      //  last_quote.price = 200;
         for (FiringEvent e : book_listener) {
             e.fire();
         }
