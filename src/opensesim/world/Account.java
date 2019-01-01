@@ -78,9 +78,8 @@ public class Account {
     }
 
     public Double getMargin(AbstractAsset currency) {
-        return this.getFinalBalance()
-                * this.leverage
-                + this.get(currency);
+        return this.getFinalBalance(currency) * getLeverage()
+                - this.getAssetDebt(world.getDefaultExchange(), currency);
 
     }
 
@@ -199,5 +198,30 @@ public class Account {
      */
     public Double getFinalBalance() {
         return getFinalBalance(world.getDefaultAssetPair().getCurrency());
+    }
+
+    public Double calcStopLoss(Exchange ex, AbstractAsset asset, AbstractAsset currency) {
+        Double e = (get(currency));
+        for (AbstractAsset a : assets.keySet()) {
+            if (a.equals(asset)) {
+                continue;
+            }
+
+            AssetPair pair = world.getAssetPair(a, currency);
+            if (pair == null) {
+                continue;
+            }
+
+            TradingEngine api = (TradingEngine) ex.getAPI(pair);
+            Double v = get(a) * api.last_quote.price;
+            e = e+v;
+            
+        }
+        
+        return -(double)e / (double)get(asset);
+    }
+
+    public Double calcStopLoss(AbstractAsset asset){
+        return calcStopLoss(world.getDefaultExchange(),asset,world.getDefaultAssetPair().getCurrency());
     }
 }
