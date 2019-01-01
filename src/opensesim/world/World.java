@@ -30,13 +30,22 @@ import java.util.Collection;
 import opensesim.util.scheduler.EventListener;
 
 /**
- *
+ * The interface to the world. Used by traders. And others.
  * @author 7u83 <7u83@mail.ru>
  */
 public interface World {
 
+    /**
+     * Get available assets in this world.
+     * @return Collection of {@link opensesim.world.Asset}s
+     */
     public Collection<AbstractAsset> getAssetCollection();
 
+    /**
+     * Return asset by symbol
+     * @param symbol symbol to find
+     * @return asset
+     */
     public AbstractAsset getAssetBySymbol(String symbol);
 
     Collection<Exchange> getExchangeCollection();
