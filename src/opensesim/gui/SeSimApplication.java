@@ -94,6 +94,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         cfg = new JSONObject(Globals.prefs.get("world", "{}"));
         godworld = new GodWorld(cfg);
         godworld.addAssetPair("AAPL", "EUR");
+        godworld.addAssetPair("MSFT", "EUR");
 
         // Get default screen and place our window
         // to the center of this screen
@@ -608,8 +609,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         Trader t = godworld.createTrader(cfg);
         t.start();
        
-        AccountDialog.runDialog(this, ((SimpleTrader)t).account_b);
-        AccountDialog.runDialog(this, ((SimpleTrader)t).account_s);        
+        AccountDialog.runDialog(this, ((SimpleTrader)t).account_1);
+        AccountDialog.runDialog(this, ((SimpleTrader)t).account_10);        
         
         updateGodWorld(godworld);
 
@@ -929,7 +930,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         AssetPair ap = godworld.getDefaultAssetPair();
         opensesim.world.Exchange ex = godworld.getDefaultExchange();
         opensesim.gui.orderbook.OrderBookDialog.runDialog(this, godworld, ex, ap);
-
+        
+        AbstractAsset eu = godworld.getAssetBySymbol("EUR");
+        AssetPair ap2 = godworld.getAssetPair(godworld.getAssetBySymbol("MSFT"), eu);
+        opensesim.gui.orderbook.OrderBookDialog.runDialog(this, godworld, ex, ap2);
 
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
 
