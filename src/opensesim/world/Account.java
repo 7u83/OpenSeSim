@@ -45,7 +45,22 @@ public class Account {
 
     Trader owner;
     //public Exchange exchange = null;
+   
+    
     private World world;
+    
+    
+    
+    private boolean unlimited = false;
+
+    public boolean isUnlimied() {
+        return unlimited;
+    }
+
+    void setUnlimied(boolean unlimied) {
+        this.unlimited = unlimied;
+    }
+    
 
     private double leverage = 0.0;
 
@@ -81,10 +96,7 @@ public class Account {
         return this.getFinalBalance(currency) * getLeverage()
                 - this.getAssetDebt(world.getDefaultExchange(), currency);
 
-    }
-
-    ;
-    
+    }    
   
     synchronized void add(AssetPack pack) {
         assets.put(pack.asset, get(pack.asset) + pack.volume);

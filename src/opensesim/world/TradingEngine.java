@@ -428,131 +428,244 @@ class TradingEngine implements TradingAPI {
 
             double order_limit;
 
-            switch (type) {
-                case BUYLIMIT: {
-                    // verfify available currency for a buy limit order
-                    AbstractAsset currency = this.assetpair.getCurrency();
+            if (account.isUnlimied()) {
+                order_limit = l;
+            } else {
+                switch (type) {
+                    case BUYLIMIT: {
 
-                    Double avail = account.getMargin(assetpair.getCurrency());
+                        // verfify available currency for a buy limit order
+                        AbstractAsset currency = this.assetpair.getCurrency();
 
-                    // return if not enough money is available
-                    if (avail < v * l) {
-                 //       return null;
-                    }
+                        Double avail = account.getMargin(assetpair.getCurrency());
 
-                    // reduce the available money 
+                        // return if not enough money is available
+                        if (avail < v * l) {
+                            //       return null;
+                        }
+
+                        // reduce the available money 
 //                  account.assets_avail.put(currency, avail - v * l);
-                    account.addAvail(currency, -(v * l));
+                        account.addAvail(currency, -(v * l));
 
 //account.addMarginAvail(currency, -((v * l)/account.getLeverage()));
-                    order_limit = l;
-                    break;
+                        order_limit = l;
+                        break;
 
-                }
+                    }
 
-                case BUY: {
-                    // For an unlimited by order there is nothing to check
-                    // other than currency is > 0.0
-                    AbstractAsset currency = this.assetpair.getCurrency();
-                    Double avail = account.getAvail(currency);
+                    case BUY: {
+                        // For an unlimited by order there is nothing to check
+                        // other than currency is > 0.0
+                        AbstractAsset currency = this.assetpair.getCurrency();
+                        Double avail = account.getAvail(currency);
 
-                    if (avail <= 0.0) {
+                        if (avail <= 0.0) {
+                            return null;
+
+                        }
+
+                        // All available monney is assigned to this unlimited order
+                        account.assets_avail.put(currency, 0.0);
+                        // we "mis"use order_limit to memorize occupied ammount \
+                        // of currency
+                        order_limit = avail;
+                        break;
+
+                    }
+
+                    case SELLLIMIT:
+                    case SELL: {
+
+                        // verfiy sell limit
+                        AbstractAsset asset = this.assetpair.getAsset();
+                        Double avail = account.getAvail(asset);
+
+                        if (avail < v) {
+                            // not enough items of asset (shares) available
+                            //    return null;
+                        }
+                        account.assets_avail.put(asset, avail - v);
+                        order_limit = l;
+                        break;
+
+                    }
+
+                    default:
                         return null;
 
-                    }
-
-                    // All available monney is assigned to this unlimited order
-                    account.assets_avail.put(currency, 0.0);
-                    // we "mis"use order_limit to memorize occupied ammount \
-                    // of currency
-                    order_limit = avail;
-                    break;
-
                 }
-
-                case SELLLIMIT:
-                case SELL: {
-
-                    // verfiy sell limit
-                    AbstractAsset asset = this.assetpair.getAsset();
-                    Double avail = account.getAvail(asset);
-
-                    if (avail < v) {
-                        // not enough items of asset (shares) available
-                    //    return null;
-                    }
-                    account.assets_avail.put(asset, avail - v);
-                    order_limit = l;
-                    break;
-
-                }
-
-                default:
-                    return null;
-
             }
+        
+        o = new Order(this, account, type, v, order_limit);
 
-            o = new Order(this, account, type, v, order_limit);
+        //System.out.printf("The new Order has: volume: %f limit: %f\n", o.getVolume(), o.getLimit());
+        synchronized (this) {
+            order_books.get(o.type).add(o);
 
-            //System.out.printf("The new Order has: volume: %f limit: %f\n", o.getVolume(), o.getLimit());
-            synchronized (this) {
-                order_books.get(o.type).add(o);
-
-            }
         }
-        executeOrders();
-      //  last_quote.price = 200;
-        for (FiringEvent e : book_listener) {
+    }
+
+    executeOrders();
+    //  last_quote.price = 200;
+    for (FiringEvent e : book_listener
+
+    
+        ) {
             e.fire();
-        }
-        return o;
-
     }
+    return o ;
 
-    HashSet<FiringEvent> book_listener = new HashSet<>();
+}
+
+HashSet
+
+<FiringEvent
+
+> book_listener 
+
+= new HashSet
+
+<>();
 
     @Override
-    public void addOrderBookListener(EventListener listener) {
-        book_listener.add(new FiringEvent(listener));
+        public 
 
-    }
+void addOrderBookListener
+
+(EventListener 
+
+listener
+
+) {
+        book_listener
+
+.add
+
+(new FiringEvent
+
+(listener
+
+));
+
+    
+
+}
 
     @Override
-    public Set getOrderBook(Order.Type type) {
-        switch (type) {
-            case BUYLIMIT:
-            case BUY:
-                return Collections.unmodifiableSet(bidbook);
+        public Set 
 
-            case SELLLIMIT:
-            case SELL:
-                return Collections.unmodifiableSet(askbook);
+getOrderBook
 
-        }
+(Order
+
+.Type 
+
+type
+
+) {
+        switch (type
+
+) {
+            case BUYLIMIT
+
+:
+            case BUY
+
+:
+                return Collections
+
+.unmodifiableSet
+
+(bidbook
+
+);
+
+            
+
+case SELLLIMIT
+
+:
+            case SELL
+
+:
+                return Collections
+
+.unmodifiableSet
+
+(askbook
+
+);
+
+        
+
+}
         return null;
-    }
+    
+
+}
 
     @Override
-    public Set
-            getBidBook() {
-        return getOrderBook(Order.Type.BUYLIMIT
-        );
+        public Set
+            
 
-    }
+getBidBook
+
+() {
+        return getOrderBook
+
+(Order
+
+.Type
+
+.BUYLIMIT
+        
+
+);
+
+    
+
+}
 
     @Override
-    public Set
-            getAskBook() {
-        return getOrderBook(Order.Type.SELL
-        );
+        public Set
+            
 
-    }
+getAskBook
+
+() {
+        return getOrderBook
+
+(Order
+
+.Type
+
+.SELL
+        
+
+);
+
+    
+
+}
 
     @Override
-    public Set<Quote> getQuoteHistory() {
+        public Set
+
+<Quote
+
+> getQuoteHistory
+
+() {
         return Collections
-                .unmodifiableSet(quote_history
-                );
+                
+
+.unmodifiableSet
+
+(quote_history
+                
+
+);
     }
 
 }

@@ -62,6 +62,11 @@ public class GodWorld implements GetJson, World {
         return scheduler.currentTimeMillis();
     }
 
+    @Override
+    public AbstractAsset getDefaultCurrency() {
+        return null;
+    }
+
     public static final class JKEYS {
 
         public static final String ASSETS = "assets";

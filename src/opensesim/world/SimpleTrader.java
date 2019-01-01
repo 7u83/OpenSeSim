@@ -49,7 +49,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         if (cfg == null) {
             return;
         }
-        
+
     }
 
     public SimpleTrader() {
@@ -74,8 +74,8 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         return 0;
     }
 
-    public Account account_s, account_b;
-    
+    public Account account_10, account_1;
+
     @Override
     public void start() {
         setVerbose(true);
@@ -92,54 +92,50 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
             setStatus("Stopped.");
             return;
         }
-        AbstractAsset c,a;
+        AbstractAsset c, a;
 
         AssetPair p = getWorld().getDefaultAssetPair();
-        
-        account_s = new Account(getWorld());
-        account_b = new Account(getWorld());
-        
+
+        account_10 = new Account(getWorld());
+        account_1 = new Account(getWorld());
+
         AssetPack pack;
-        pack = new AssetPack(p.getAsset(),200);
-        account_s.add(pack);
-        
-        pack = new AssetPack(p.getCurrency(),0);
-        account_b.add(pack);
-        
-        pack = new AssetPack(p.getCurrency(),1000);
-        account_b.add(pack);
-        account_b.setLeverage(0.0);
-        
+        pack = new AssetPack(p.getAsset(), 0);
+        account_10.add(pack);
+
+        pack = new AssetPack(p.getCurrency(), 1000);
+        account_10.add(pack);
+    account_10.setLeverage(10);
+
+        pack = new AssetPack(p.getCurrency(), 100000);
+        account_1.add(pack);
+        account_1.setLeverage(1.0);
+
         ex = getWorld().getDefaultExchange();
-        api = ex.getAPI(p);   
-        
+        api = ex.getAPI(p);
 
- 
-    Order oa = api.createOrder(account_b, Order.Type.BUYLIMIT, 50, 100);
-  //  Order ob = api.createOrder(account_s, Order.Type.SELLLIMIT, 200,100);
+AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"), 
+        getWorld().getAssetBySymbol("EUR"));
+    TradingAPI mapi = ex.getAPI(msftp);
+        
+       Order ob = api.createOrder(account_10, Order.Type.BUYLIMIT, 20, 100);
+      Order mob = mapi.createOrder(account_10, Order.Type.SELLLIMIT, 80, 100);
+       
+     Order oa = api.createOrder(account_1, Order.Type.SELLLIMIT, 100, 100);
+   Order oaaa = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
+      
 
+//Order oax = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
 
-
-    
-     //   Order oa = api.createOrder(account_b, Order.Type.BUYLIMIT, 100, 10.0); 
-     //   Order ob = api.createOrder(account_b, Order.Type.BUYLIMIT, 100, 9.0);         
-     //   Order oc = api.createOrder(account_b, Order.Type.BUYLIMIT, 100, 8.0);                 
-        
-     // Order o2 = api.createOrder(account_s, Order.Type.SELLLIMIT, 300, 1.0);   
-        
-    
-        //Order ou = api.createOrder(account_b, Order.Type.BUYLIMIT, 30, 10.0);         
- 
-        
-        
-        
-        
-      //  Order o1 = api.createOrder(account, Order.Type.SELLLIMIT, 250, 278);        
-   
-
+        //   Order oa = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 10.0); 
+        //   Order ob = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 9.0);         
+        //   Order oc = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 8.0);                 
+        // Order o2 = api.createOrder(account_10, Order.Type.SELLLIMIT, 300, 1.0);   
+        //Order ou = api.createOrder(account_1, Order.Type.BUYLIMIT, 30, 10.0);         
+        //  Order o1 = api.createOrder(account, Order.Type.SELLLIMIT, 250, 278);        
         long delay = (long) (1000.0f * getWorld().randNextFloat(3.0f, 12.7f));
         setStatus(String.format("Initial delay: Sleeping for %d seconds.", delay));
-     //   getWorld().schedule(this, delay);
+        //   getWorld().schedule(this, delay);
 
         //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
         //    setStatus("Inital delay: %d", delay);
@@ -150,9 +146,6 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
     double limit = 253.871239;
 
-
-
-
     @Override
     public long receive(Event task) {
         //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
@@ -162,14 +155,14 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
         System.out.printf("Here we are: %d - [%d]\n", Thread.currentThread().getId(), diff);
         getWorld().schedule(this, 1000);
-        
-                AssetPair p = getWorld().getDefaultAssetPair();
-        
+
+        AssetPair p = getWorld().getDefaultAssetPair();
+
         ex = getWorld().getDefaultExchange();
-        api = ex.getAPI(p);        
-        Order o = api.createOrder(account, Order.Type.BUY, 112.987123, limit);       
+        api = ex.getAPI(p);
+        Order o = api.createOrder(account, Order.Type.BUY, 112.987123, limit);
         limit += 12;
-        
+
         return -1;
     }
 
