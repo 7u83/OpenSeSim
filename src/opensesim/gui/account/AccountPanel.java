@@ -66,13 +66,18 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener {
               Double mavail = account.getAvail(a);
             String mastr = mval.toString(); // + "/" + mavail.toString();
 
+           
+           Double sl = account.calcStopLoss(a);
+            
 //            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
             model.setValueAt(a.getSymbol(), row, 0);
             model.setValueAt(astr, row, 1);
             model.setValueAt(mastr, row, 2);
+            model.setValueAt(sl.toString(), row, 3);
             row++;
         }
 
+        this.finalbalance.setText(account.getFinalBalance().toString());
     }
 
     /**
@@ -86,21 +91,23 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         assetTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        finalbalance = new javax.swing.JLabel();
 
         assetTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Asset", "Ammount", "Margin"
+                "Asset", "Ammount", "Margin", "SL"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -113,21 +120,39 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener {
         });
         jScrollPane1.setViewportView(assetTable);
 
+        jLabel1.setText("Final:");
+
+        finalbalance.setText("jLabel2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(finalbalance)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(finalbalance))
+                .addGap(0, 32, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable assetTable;
+    private javax.swing.JLabel finalbalance;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
