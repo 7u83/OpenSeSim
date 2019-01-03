@@ -69,9 +69,21 @@ public class Order implements Comparable<Order> {
      * Definition of order status
      */
     public static enum Status {
-        OPEN, PARTIALLY_EXECUTED, CLOSED, CANCELED
+        OPEN, PARTIALLY_EXECUTED, CLOSED, CANCELED, ERROR
+    }
+    
+    String message="";
+
+    public String getMessage() {
+        return message;
     }
 
+    private void setMessage(String message) {
+        this.message = message;
+    }
+
+    
+    
     /**
      * Definition of order types
      */

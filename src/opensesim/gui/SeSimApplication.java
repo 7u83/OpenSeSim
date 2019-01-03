@@ -610,7 +610,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         t.start();
        
         AccountDialog.runDialog(this, ((SimpleTrader)t).account_1);
-        AccountDialog.runDialog(this, ((SimpleTrader)t).account_10);        
+        AccountDialog.runDialog(this, ((SimpleTrader)t).account_b);        
         
         updateGodWorld(godworld);
 

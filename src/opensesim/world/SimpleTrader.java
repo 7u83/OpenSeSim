@@ -74,7 +74,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         return 0;
     }
 
-    public Account account_10, account_1;
+    public Account account_b, account_1;
 
     @Override
     public void start() {
@@ -96,20 +96,21 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
         AssetPair p = getWorld().getDefaultAssetPair();
 
-        account_10 = new Account(getWorld());
+        account_b = new Account(getWorld());
         account_1 = new Account(getWorld());
 
         AssetPack pack;
         pack = new AssetPack(p.getAsset(), 0);
-        account_10.add(pack);
+        account_b.add(pack);
 
         pack = new AssetPack(p.getCurrency(), 1000);
-        account_10.add(pack);
-    account_10.setLeverage(10);
+        account_b.add(pack);
+        account_b.setLeverage(10.0);
 
-        pack = new AssetPack(p.getCurrency(), 100000);
+        pack = new AssetPack(p.getCurrency(), 1234567890);
         account_1.add(pack);
-        account_1.setLeverage(1.0);
+        account_1.setLeverage(0.0);
+        account_1.setUnlimied(true);
 
         ex = getWorld().getDefaultExchange();
         api = ex.getAPI(p);
@@ -118,11 +119,12 @@ AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"),
         getWorld().getAssetBySymbol("EUR"));
     TradingAPI mapi = ex.getAPI(msftp);
         
-       Order ob = api.createOrder(account_10, Order.Type.BUYLIMIT, 20, 100);
-      Order mob = mapi.createOrder(account_10, Order.Type.SELLLIMIT, 80, 100);
+        Order ob = api.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
+
+        //Order mob = mapi.createOrder(account_b, Order.Type.SELLLIMIT, 80, 100);
        
-     Order oa = api.createOrder(account_1, Order.Type.SELLLIMIT, 100, 100);
-   Order oaaa = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
+   Order oa = api.createOrder(account_1, Order.Type.SELLLIMIT, 100, 100);
+   //Order oaaa = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
       
 
 //Order oax = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);

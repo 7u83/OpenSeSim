@@ -42,6 +42,7 @@ public class Account {
 
     HashMap<AbstractAsset, Double> assets = new HashMap<>();
     HashMap<AbstractAsset, Double> assets_avail = new HashMap<>();
+    HashMap<AbstractAsset, Double> stop_los = new HashMap<>();
     
     public double margin_bound=0.0;
 
@@ -95,7 +96,7 @@ public class Account {
     }
 
     public Double getMargin(AbstractAsset currency) {
-        return this.getFinalBalance(currency) * getLeverage() + this.getFinalBalance(currency) 
+        return this.getFinalBalance(currency) * getLeverage() //+ this.getFinalBalance(currency) 
                 - this.getAssetDebt(world.getDefaultExchange(), currency);
 
     }    

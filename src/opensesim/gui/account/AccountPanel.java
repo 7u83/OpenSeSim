@@ -63,8 +63,8 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener {
             String astr = val.toString() + "/" + avail.toString();
 
            Double mval = account.getMargin(a);
-              Double mavail = account.getAvail(a);
-            String mastr = mval.toString(); // + "/" + mavail.toString();
+           Double mavail = account.getMargin(a)-account.margin_bound;
+            String mastr = mval.toString()+ "/" + mavail.toString();
 
            
            Double sl = account.calcStopLoss(a);

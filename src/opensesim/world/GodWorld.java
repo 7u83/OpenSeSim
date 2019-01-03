@@ -64,7 +64,7 @@ public class GodWorld implements GetJson, World {
 
     @Override
     public AbstractAsset getDefaultCurrency() {
-        return null;
+        return getDefaultAssetPair().getCurrency();
     }
 
     public static final class JKEYS {
@@ -261,6 +261,9 @@ public class GodWorld implements GetJson, World {
     }
 
     public void add(AssetPair pair) {
+        if (pair.getAsset()==null || pair.getCurrency()==null){
+            return;
+        }
         asset_pairs.put(pair.getSymbol(), pair);
         if (default_asset_pair == null) {
             default_asset_pair = pair;
