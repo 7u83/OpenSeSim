@@ -112,10 +112,35 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         account_1.setLeverage(0.0);
         account_1.setUnlimied(true);
 
-        ex = getWorld().getDefaultExchange();
+        long delay = (long) (1000.0f * getWorld().randNextFloat(15.0f, 15.7f));
+        setStatus(String.format("Initial delay: Sleeping for %d seconds.", delay));
+        
+        
+        getWorld().schedule(this, delay);
+
+        //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
+        //    setStatus("Inital delay: %d", delay);
+        //   timerTask = se.timer.startTimerTask(this, delay);
+    }
+
+    long last_time = 0;
+
+    double limit = 253.871239;
+
+    @Override
+    public long receive(Event task) {
+        //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
+
+        long diff = getWorld().currentTimeMillis() - last_time;
+        last_time = getWorld().currentTimeMillis();
+        
+      AssetPair p = getWorld().getDefaultAssetPair();
+  
+        
+                ex = getWorld().getDefaultExchange();
         api = ex.getAPI(p);
 
-AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"), 
+        AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"), 
         getWorld().getAssetBySymbol("EUR"));
     TradingAPI mapi = ex.getAPI(msftp);
         
@@ -135,25 +160,10 @@ AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"),
         // Order o2 = api.createOrder(account_10, Order.Type.SELLLIMIT, 300, 1.0);   
         //Order ou = api.createOrder(account_1, Order.Type.BUYLIMIT, 30, 10.0);         
         //  Order o1 = api.createOrder(account, Order.Type.SELLLIMIT, 250, 278);        
-        long delay = (long) (1000.0f * getWorld().randNextFloat(3.0f, 12.7f));
-        setStatus(String.format("Initial delay: Sleeping for %d seconds.", delay));
-        //   getWorld().schedule(this, delay);
 
-        //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-        //    setStatus("Inital delay: %d", delay);
-        //   timerTask = se.timer.startTimerTask(this, delay);
-    }
-
-    long last_time = 0;
-
-    double limit = 253.871239;
-
-    @Override
-    public long receive(Event task) {
-        //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
-
-        long diff = getWorld().currentTimeMillis() - last_time;
-        last_time = getWorld().currentTimeMillis();
+        
+        
+   /*     
 
         System.out.printf("Here we are: %d - [%d]\n", Thread.currentThread().getId(), diff);
         getWorld().schedule(this, 1000);
@@ -164,7 +174,7 @@ AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"),
         api = ex.getAPI(p);
         Order o = api.createOrder(account, Order.Type.BUY, 112.987123, limit);
         limit += 12;
-
+*/
         return -1;
     }
 

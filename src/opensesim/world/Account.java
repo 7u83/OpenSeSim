@@ -96,7 +96,14 @@ public class Account {
     }
 
     public Double getMargin(AbstractAsset currency) {
-        return this.getFinalBalance(currency) * getLeverage() //+ this.getFinalBalance(currency) 
+     /*   Double d = this.getAssetDebt(world.getDefaultExchange(), currency);
+
+        Double f = this.getFinalBalance(currency) * getLeverage() ;
+        System.out.printf("Debth %f - Final: %f Return margin %f\n", d,f, f-d);
+        
+        return f-d;*/
+     
+        return this.getFinalBalance(currency) * getLeverage() + this.getFinalBalance(currency) 
                 - this.getAssetDebt(world.getDefaultExchange(), currency);
 
     }    
@@ -145,6 +152,7 @@ public class Account {
 
     public Double getAssetDebt(Exchange ex, AbstractAsset currency) {
         Double result = 0.0;
+        System.out.printf("Enter depth rechner %f\n", result);
         for (AbstractAsset a : assets.keySet()) {
             if (a.equals(currency)) {
                 continue;
@@ -156,10 +164,17 @@ public class Account {
 
             TradingEngine api = (TradingEngine) ex.getAPI(pair);
             Double v = get(a) * api.last_quote.price;
-
-            result = result + Math.abs(v);
+            Double sl = this.calcStopLoss(a);
+            Double n = get(a);
+     
+            System.out.printf("Asset: %s - %f %f %f\n", a.getSymbol(),n, v, sl*n);
+            
+            
+            result = result + (v-sl*n);
+            System.out.printf("Result is now %f\n", result);
 
         }
+        System.out.printf("Return Dresult %f\n", result);
         return result;
     }
 
@@ -238,5 +253,13 @@ public class Account {
 
     public Double calcStopLoss(AbstractAsset asset){
         return calcStopLoss(world.getDefaultExchange(),asset,world.getDefaultAssetPair().getCurrency());
+    }
+
+    /**
+     * Return the world this account belongs to
+     * @return world
+     */
+    public World getWorld(){
+        return world;
     }
 }

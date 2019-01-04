@@ -607,11 +607,12 @@ public class SeSimApplication extends javax.swing.JFrame {
                 + "strategy: opensesim.world.SimpleTrader"
                 + "}");
         Trader t = godworld.createTrader(cfg);
-        t.start();
        
+         t.start();    
         AccountDialog.runDialog(this, ((SimpleTrader)t).account_1);
         AccountDialog.runDialog(this, ((SimpleTrader)t).account_b);        
-        
+       
+   
         updateGodWorld(godworld);
 
         AssetPair p = godworld.getDefaultAssetPair();

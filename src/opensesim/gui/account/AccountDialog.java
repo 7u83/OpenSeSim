@@ -47,6 +47,7 @@ public class AccountDialog extends javax.swing.JDialog {
         d=new AccountDialog(parent, false);
         d.accountPanel1.account=account;
         d.accountPanel1.update();
+        account.addListener(d.accountPanel1);
         d.setVisible(true);
     }
 

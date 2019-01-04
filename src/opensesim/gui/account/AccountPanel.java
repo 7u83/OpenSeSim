@@ -72,12 +72,18 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener {
 //            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
             model.setValueAt(a.getSymbol(), row, 0);
             model.setValueAt(astr, row, 1);
-            model.setValueAt(mastr, row, 2);
+         //   model.setValueAt(mastr, row, 2);
             model.setValueAt(sl.toString(), row, 3);
             row++;
         }
 
-        this.finalbalance.setText(account.getFinalBalance().toString());
+        String fb;
+        Double margin = account.getMargin(account.getWorld().getDefaultCurrency());
+        fb = account.getFinalBalance().toString() + " Margin: " +
+                margin.toString();
+        
+        this.finalbalance.setText(fb);
+        
     }
 
     /**

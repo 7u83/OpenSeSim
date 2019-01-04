@@ -459,7 +459,7 @@ class TradingEngine implements TradingAPI {
                            o.status=Order.Status.ERROR;
                            
                            System.out.printf("Error order no funds\n");
-                           return o;
+                    //       return o;
                         }
 
                         account.margin_bound+=v*l;
@@ -525,13 +525,15 @@ class TradingEngine implements TradingAPI {
     }
 
     executeOrders();
-    last_quote.price = 200; //75-12.5;
+  last_quote.price = 150; //75-12.5;
     for (FiringEvent e : book_listener
 
     
         ) {
             e.fire();
     }
+    
+    account.notfiyListeners();
     return o ;
 
 }
