@@ -52,4 +52,6 @@ public interface TradingAPI {
     
     public Set<Quote> getQuoteHistory();
     
+    public Quote getLastQuote();
+    
 }

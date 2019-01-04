@@ -289,9 +289,9 @@ class TradingEngine implements TradingAPI {
             // For sellers there is no need to update.
             double avdiff = b.limit * volume - price * volume;
             b.account.addAvail(assetpair.getCurrency(), avdiff);
-            if (b.account.getLeverage()>0.0){
+            if (b.account.getLeverage() > 0.0) {
                 //b.account.margin_bound-=avdiff;
-                b.account.margin_bound-=b.limit*volume;
+                b.account.margin_bound -= b.limit * volume;
             }
 
             //  b.account.addMarginAvail(assetpair.getCurrency(), avdiff/b.account.getLeverage());
@@ -438,31 +438,29 @@ class TradingEngine implements TradingAPI {
                 switch (type) {
                     case BUYLIMIT: {
                         Double avail;
-  
+
                         // verfify available currency for a buy limit order
                         AbstractAsset currency = this.assetpair.getCurrency();
-                        if (account.getLeverage()==0.0){
+                        if (account.getLeverage() == 0.0) {
                             avail = account.getAvail(currency);
                             account.addAvail(currency, -(v * l));
 
-                        }
-                        else{
-
+                        } else {
 
                             avail = account.getMargin(assetpair.getCurrency());
-                                
-                        }
-                        
-                        // return if not enough funds are available
-                        if (avail < v * l) {
-                           o = new Order(this, account, type, v, l);
-                           o.status=Order.Status.ERROR;
-                           
-                           System.out.printf("Error order no funds\n");
-                    //       return o;
+
                         }
 
-                        account.margin_bound+=v*l;
+                        // return if not enough funds are available
+                        if (avail < v * l) {
+                            o = new Order(this, account, type, v, l);
+                            o.status = Order.Status.ERROR;
+
+                            System.out.printf("Error order no funds\n");
+                            //       return o;
+                        }
+
+                        account.margin_bound += v * l;
                         // reduce the available money 
 //                  account.assets_avail.put(currency, avail - v * l);
 
@@ -514,178 +512,85 @@ class TradingEngine implements TradingAPI {
 
                 }
             }
-        
-        o = new Order(this, account, type, v, order_limit);
 
-        //System.out.printf("The new Order has: volume: %f limit: %f\n", o.getVolume(), o.getLimit());
-        synchronized (this) {
-            order_books.get(o.type).add(o);
+            o = new Order(this, account, type, v, order_limit);
+
+            //System.out.printf("The new Order has: volume: %f limit: %f\n", o.getVolume(), o.getLimit());
+            synchronized (this) {
+                order_books.get(o.type).add(o);
+
+            }
+        }
+
+        executeOrders();
+        last_quote.price = 150; //75-12.5;
+        for (FiringEvent e : book_listener) {
+            e.fire();
+        }
+
+        account.notfiyListeners();
+        return o;
+
+    }
+
+    HashSet<FiringEvent> book_listener
+            = new HashSet<>();
+
+    @Override
+    public void addOrderBookListener(EventListener listener
+    ) {
+        book_listener
+                .add(new FiringEvent(listener
+                ));
+
+    }
+
+    @Override
+    public Set
+            getOrderBook(Order.Type type
+            ) {
+        switch (type) {
+            case BUYLIMIT:
+            case BUY:
+                return Collections
+                        .unmodifiableSet(bidbook
+                        );
+
+            case SELLLIMIT:
+            case SELL:
+                return Collections
+                        .unmodifiableSet(askbook
+                        );
 
         }
-    }
-
-    executeOrders();
-  last_quote.price = 150; //75-12.5;
-    for (FiringEvent e : book_listener
-
-    
-        ) {
-            e.fire();
-    }
-    
-    account.notfiyListeners();
-    return o ;
-
-}
-
-HashSet
-
-<FiringEvent
-
-> book_listener 
-
-= new HashSet
-
-<>();
-
-    @Override
-        public 
-
-void addOrderBookListener
-
-(EventListener 
-
-listener
-
-) {
-        book_listener
-
-.add
-
-(new FiringEvent
-
-(listener
-
-));
-
-    
-
-}
-
-    @Override
-        public Set 
-
-getOrderBook
-
-(Order
-
-.Type 
-
-type
-
-) {
-        switch (type
-
-) {
-            case BUYLIMIT
-
-:
-            case BUY
-
-:
-                return Collections
-
-.unmodifiableSet
-
-(bidbook
-
-);
-
-            
-
-case SELLLIMIT
-
-:
-            case SELL
-
-:
-                return Collections
-
-.unmodifiableSet
-
-(askbook
-
-);
-
-        
-
-}
         return null;
-    
 
-}
-
-    @Override
-        public Set
-            
-
-getBidBook
-
-() {
-        return getOrderBook
-
-(Order
-
-.Type
-
-.BUYLIMIT
-        
-
-);
-
-    
-
-}
+    }
 
     @Override
-        public Set
-            
+    public Set
+            getBidBook() {
+        return getOrderBook(Order.Type.BUYLIMIT
+        );
 
-getAskBook
-
-() {
-        return getOrderBook
-
-(Order
-
-.Type
-
-.SELL
-        
-
-);
-
-    
-
-}
+    }
 
     @Override
-        public Set
+    public Set
+            getAskBook() {
+        return getOrderBook(Order.Type.SELL
+        );
 
-<Quote
+    }
 
-> getQuoteHistory
+    @Override
+    public Set<Quote> getQuoteHistory() {
+        return Collections.unmodifiableSet(quote_history);
+    }
 
-() {
-        return Collections
-                
-
-.unmodifiableSet
-
-(quote_history
-                
-
-);
+    @Override
+    public Quote getLastQuote() {
+        return this.last_quote;
     }
 
 }

@@ -123,7 +123,18 @@ public class Account {
     }
 
     public double getAvail(AbstractAsset asset) {
-        return assets_avail.getOrDefault(asset, 0.0);
+        if (this.getLeverage()>0){
+            Double margin = this.getMargin(world.getDefaultCurrency());
+            
+            AssetPair ap = world.getAssetPair(asset, world.getDefaultCurrency());
+            
+            
+            return margin / world.getDefaultExchange().getAPI(ap).getLastQuote().price;
+        }
+        
+        return 0.0;
+        
+        //return assets_avail.getOrDefault(asset, 0.0);
     }
 
     public void addAvail(AbstractAsset asset, double val) {
@@ -166,6 +177,8 @@ public class Account {
             Double v = get(a) * api.last_quote.price;
             Double sl = this.calcStopLoss(a);
             Double n = get(a);
+            if (n==0.0)
+                continue;
      
             System.out.printf("Asset: %s - %f %f %f\n", a.getSymbol(),n, v, sl*n);
             
@@ -199,10 +212,15 @@ public class Account {
             if (pair == null) {
                 continue;
             }
+            v = get(a);
+            if (v==0.0)
+                continue;
+            
+            
             TradingEngine api = (TradingEngine) ex.getAPI(pair);
-            v = get(a) * api.last_quote.price;
+            //v = get(a) * api.last_quote.price;
 
-            result = result + v;
+            result = result + v*api.last_quote.price;
         }
         return result;
     }
