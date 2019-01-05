@@ -41,19 +41,21 @@ import org.json.JSONObject;
 public class Account {
 
     HashMap<AbstractAsset, Double> assets = new HashMap<>();
-    HashMap<AbstractAsset, Double> assets_avail = new HashMap<>();
+    HashMap<AbstractAsset, Double> assets_bound = new HashMap<>();
     HashMap<AbstractAsset, Double> stop_los = new HashMap<>();
-    
-    public double margin_bound=0.0;
+
+    public double margin_bound = 0.0;
 
     Trader owner;
     //public Exchange exchange = null;
-   
-    
-    private World world;
-    
-    
-    
+
+    private RealWorld world;
+    private Exchange exchange;
+
+    public Exchange getExchange() {
+        return exchange;
+    }
+
     private boolean unlimited = false;
 
     public boolean isUnlimied() {
@@ -63,7 +65,6 @@ public class Account {
     void setUnlimied(boolean unlimied) {
         this.unlimited = unlimied;
     }
-    
 
     private double leverage = 0.0;
 
@@ -80,7 +81,7 @@ public class Account {
     }
 
     public Map<AbstractAsset, Double> getAssetsAavail() {
-        return Collections.unmodifiableMap(assets_avail);
+        return Collections.unmodifiableMap(assets_bound);
     }
 
     public Trader getOwner() {
@@ -88,34 +89,40 @@ public class Account {
     }
 
     protected Account(World world) {
-        this.world = world;
+        this(world, null, null);
     }
 
-    protected Account(World world, JSONObject cfg) {
-        this.world = world;
+    protected Account(World world, Exchange exchange, JSONObject cfg) {
+        this.world = (RealWorld) world;
+        if (exchange == null) {
+            this.exchange = world.getDefaultExchange();
+        }
+        if (cfg == null) {
+            return;
+        }
     }
 
     public Double getMargin(AbstractAsset currency) {
-     /*   Double d = this.getAssetDebt(world.getDefaultExchange(), currency);
+        /*   Double d = this.getAssetDebt(world.getDefaultExchange(), currency);
 
         Double f = this.getFinalBalance(currency) * getLeverage() ;
         System.out.printf("Debth %f - Final: %f Return margin %f\n", d,f, f-d);
         
         return f-d;*/
-     
-        return this.getFinalBalance(currency) * getLeverage() + this.getFinalBalance(currency) 
+
+        return this.getFinalBalance(currency) * getLeverage() + this.getFinalBalance(currency)
                 - this.getAssetDebt(world.getDefaultExchange(), currency);
 
-    }    
-  
+    }
+
     synchronized void add(AssetPack pack) {
         assets.put(pack.asset, get(pack.asset) + pack.volume);
-        assets_avail.put(pack.asset, getAvail(pack.asset) + pack.volume);
+        assets_bound.put(pack.asset, getAvail(pack.asset) + pack.volume);
     }
 
     synchronized void sub(AssetPack pack) {
         assets.put(pack.asset, get(pack.asset) - pack.volume);
-        //   assets_avail.put(pack.asset, getAvail(pack.asset) - pack.volume);
+        //   assets_bound.put(pack.asset, getAvail(pack.asset) - pack.volume);
     }
 
     public double get(AbstractAsset asset) {
@@ -123,23 +130,22 @@ public class Account {
     }
 
     public double getAvail(AbstractAsset asset) {
-        if (this.getLeverage()>0){
+        if (this.getLeverage() > 0) {
             Double margin = this.getMargin(world.getDefaultCurrency());
-            
+
             AssetPair ap = world.getAssetPair(asset, world.getDefaultCurrency());
-            
-            
+
             return margin / world.getDefaultExchange().getAPI(ap).getLastQuote().price;
         }
-        
+
         return 0.0;
-        
-        //return assets_avail.getOrDefault(asset, 0.0);
+
+        //return assets_bound.getOrDefault(asset, 0.0);
     }
 
     public void addAvail(AbstractAsset asset, double val) {
         double avail = getAvail(asset);
-        assets_avail.put(asset, (avail + val));
+        assets_bound.put(asset, (avail + val));
     }
 
     HashSet<EventListener> listeners = new HashSet<>();
@@ -163,7 +169,7 @@ public class Account {
 
     public Double getAssetDebt(Exchange ex, AbstractAsset currency) {
         Double result = 0.0;
-        System.out.printf("Enter depth rechner %f\n", result);
+
         for (AbstractAsset a : assets.keySet()) {
             if (a.equals(currency)) {
                 continue;
@@ -177,17 +183,16 @@ public class Account {
             Double v = get(a) * api.last_quote.price;
             Double sl = this.calcStopLoss(a);
             Double n = get(a);
-            if (n==0.0)
+            if (n == 0.0) {
                 continue;
-     
-            System.out.printf("Asset: %s - %f %f %f\n", a.getSymbol(),n, v, sl*n);
-            
-            
-            result = result + (v-sl*n);
-            System.out.printf("Result is now %f\n", result);
+            }
+
+//            System.out.printf("Asset: %s - %f %f %f\n", a.getSymbol(), n, v, sl * n);
+            result = result + (v - sl * n);
+            //          System.out.printf("Result is now %f\n", result);
 
         }
-        System.out.printf("Return Dresult %f\n", result);
+        //    System.out.printf("Return Dresult %f\n", result);
         return result;
     }
 
@@ -200,7 +205,8 @@ public class Account {
      * @return final balance
      *
      */
-    public Double getFinalBalance(Exchange ex, AbstractAsset currency) {
+    public Double getFinalBalance(Exchange ex, AbstractAsset currency, 
+            boolean bound) {
 
         Double result = get(currency);
         for (AbstractAsset a : assets.keySet()) {
@@ -212,17 +218,24 @@ public class Account {
             if (pair == null) {
                 continue;
             }
-            v = get(a);
-            if (v==0.0)
+            v = get(a) + (bound ? getBound(a) : 0.0);
+            
+            if (v == 0.0) {
                 continue;
-            
-            
-            TradingEngine api = (TradingEngine) ex.getAPI(pair);
-            //v = get(a) * api.last_quote.price;
+            }
 
-            result = result + v*api.last_quote.price;
+            TradingEngine api = (TradingEngine) ex.getAPI(pair);
+            result = result + v * api.last_quote.price;
         }
         return result;
+    }
+    
+    Double getBound(AbstractAsset asset){
+        return assets_bound.getOrDefault(asset, 0.0);
+    }
+    
+    void addBound(AbstractAsset asset, Double vol){
+        assets_bound.put(asset, getBound(asset)+vol);
     }
 
     /**
@@ -234,7 +247,7 @@ public class Account {
      * @return final balance
      */
     public Double getFinalBalance(AbstractAsset currency) {
-        return getFinalBalance(world.getDefaultExchange(), currency);
+        return getFinalBalance(this.getExchange(), currency, false);
     }
 
     /**
@@ -262,22 +275,58 @@ public class Account {
 
             TradingEngine api = (TradingEngine) ex.getAPI(pair);
             Double v = get(a) * api.last_quote.price;
-            e = e+v;
-            
+            e = e + v;
+
         }
-        
-        return -(double)e / (double)get(asset);
+
+        return -(double) e / (double) get(asset);
     }
 
-    public Double calcStopLoss(AbstractAsset asset){
-        return calcStopLoss(world.getDefaultExchange(),asset,world.getDefaultAssetPair().getCurrency());
+    public Double calcStopLoss(AbstractAsset asset) {
+        return calcStopLoss(world.getDefaultExchange(), asset, world.getDefaultAssetPair().getCurrency());
     }
 
     /**
      * Return the world this account belongs to
+     *
      * @return world
      */
-    public World getWorld(){
+    public World getWorld() {
         return world;
     }
+
+    private boolean isLeveraged() {
+        return getLeverage() > 0.0;
+    }
+
+    boolean isCovered(AssetPair pair, double volume, double limit) {
+        if (this.isUnlimied()) {
+            return true;
+        }
+
+        if (!this.isLeveraged()) {
+            if (limit == 0.0) {
+                // an unlimited order is always considered to be
+                // covereable. When the trade comes to execution, 
+                // the limits will be checked.
+                return true;
+            }
+            if (volume < 0) {
+                // It's a limited sell order, we have just to check
+                // if a sufficient amount of assets is available 
+                return getAvail(pair.getAsset()) + volume > 0;
+            }
+            // Check if enough money is available to cover the 
+            // entiere volume to by
+            return getAvail(pair.getCurrency()) >= limit * volume;
+        }
+
+        
+        Double margin = this.getMargin(pair.getCurrency());
+        System.out.printf("Margin: %f > %f\n", margin, Math.abs(volume * limit));
+
+        return margin > 0; //Math.abs(volume * limit);
+
+    }
+
 }

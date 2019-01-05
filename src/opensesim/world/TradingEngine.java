@@ -437,32 +437,24 @@ class TradingEngine implements TradingAPI {
             } else {
                 switch (type) {
                     case BUYLIMIT: {
-                        Double avail;
-
-                        // verfify available currency for a buy limit order
-                        AbstractAsset currency = this.assetpair.getCurrency();
-                        if (account.getLeverage() == 0.0) {
-                            avail = account.getAvail(currency);
-                            account.addAvail(currency, -(v * l));
-
-                        } else {
-
-                            avail = account.getMargin(assetpair.getCurrency());
-
+                        
+                        if (!account.isCovered(assetpair, volume, limit)){
+                            System.out.printf("Not enough funds\n");
+                            return null;
                         }
-
+                        
                         // return if not enough funds are available
-                        if (avail < v * l) {
-                            o = new Order(this, account, type, v, l);
-                            o.status = Order.Status.ERROR;
+//                        if (avail < v * l) {
+//                            o = new Order(this, account, type, v, l);
+//                            o.status = Order.Status.ERROR;
 
-                            System.out.printf("Error order no funds\n");
+//                            System.out.printf("Error order no funds\n");
                             //       return o;
-                        }
+  //                      }
 
                         account.margin_bound += v * l;
                         // reduce the available money 
-//                  account.assets_avail.put(currency, avail - v * l);
+//                  account.assets_bound.put(currency, avail - v * l);
 
 //account.addMarginAvail(currency, -((v * l)/account.getLeverage()));
                         order_limit = l;
@@ -482,7 +474,7 @@ class TradingEngine implements TradingAPI {
                         }
 
                         // All available monney is assigned to this unlimited order
-                        account.assets_avail.put(currency, 0.0);
+                        account.assets_bound.put(currency, 0.0);
                         // we "mis"use order_limit to memorize occupied ammount \
                         // of currency
                         order_limit = avail;
@@ -501,7 +493,7 @@ class TradingEngine implements TradingAPI {
                             // not enough items of asset (shares) available
                             //    return null;
                         }
-                        account.assets_avail.put(asset, avail - v);
+                        account.assets_bound.put(asset, avail - v);
                         order_limit = l;
                         break;
 

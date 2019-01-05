@@ -105,17 +105,16 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
         pack = new AssetPack(p.getCurrency(), 1000);
         account_b.add(pack);
-        account_b.setLeverage(10.0);
+        account_b.setLeverage(9.0);
 
         pack = new AssetPack(p.getCurrency(), 1234567890);
         account_1.add(pack);
         account_1.setLeverage(0.0);
         account_1.setUnlimied(true);
 
-        long delay = (long) (1000.0f * getWorld().randNextFloat(15.0f, 15.7f));
+        long delay = (long) (1000.0f * getWorld().randNextFloat(5.0f, 5.7f));
         setStatus(String.format("Initial delay: Sleeping for %d seconds.", delay));
-        
-        
+
         getWorld().schedule(this, delay);
 
         //  long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
@@ -133,37 +132,30 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
         long diff = getWorld().currentTimeMillis() - last_time;
         last_time = getWorld().currentTimeMillis();
-        
-      AssetPair p = getWorld().getDefaultAssetPair();
-  
-        
-                ex = getWorld().getDefaultExchange();
+
+        AssetPair p = getWorld().getDefaultAssetPair();
+
+        ex = getWorld().getDefaultExchange();
         api = ex.getAPI(p);
 
-        AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"), 
-        getWorld().getAssetBySymbol("EUR"));
-    TradingAPI mapi = ex.getAPI(msftp);
-        
+        AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"),
+                getWorld().getAssetBySymbol("EUR"));
+        TradingAPI mapi = ex.getAPI(msftp);
+
         Order ob = api.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
 
         //Order mob = mapi.createOrder(account_b, Order.Type.SELLLIMIT, 80, 100);
-       
-   Order oa = api.createOrder(account_1, Order.Type.SELLLIMIT, 100, 100);
-   //Order oaaa = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
-      
+        Order oa = api.createOrder(account_1, Order.Type.SELLLIMIT, 100, 200);
+        //Order oaaa = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
 
 //Order oax = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
-
         //   Order oa = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 10.0); 
         //   Order ob = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 9.0);         
         //   Order oc = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 8.0);                 
         // Order o2 = api.createOrder(account_10, Order.Type.SELLLIMIT, 300, 1.0);   
         //Order ou = api.createOrder(account_1, Order.Type.BUYLIMIT, 30, 10.0);         
         //  Order o1 = api.createOrder(account, Order.Type.SELLLIMIT, 250, 278);        
-
-        
-        
-   /*     
+        /*     
 
         System.out.printf("Here we are: %d - [%d]\n", Thread.currentThread().getId(), diff);
         getWorld().schedule(this, 1000);
@@ -174,7 +166,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         api = ex.getAPI(p);
         Order o = api.createOrder(account, Order.Type.BUY, 112.987123, limit);
         limit += 12;
-*/
+         */
         return -1;
     }
 
