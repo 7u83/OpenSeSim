@@ -100,11 +100,11 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         account_1 = new Account(getWorld());
 
         AssetPack pack;
-        pack = new AssetPack(p.getAsset(), 0);
-        account_b.add(pack);
+      //  pack = new AssetPack(p.getAsset(), 0);
+      //  account_b.add(pack);
 
         pack = new AssetPack(p.getCurrency(), 1000);
-        account_b.add(pack);
+       account_b.add(pack);
         account_b.setLeverage(9.0);
 
         pack = new AssetPack(p.getCurrency(), 1234567890);
@@ -128,7 +128,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
     @Override
     public long receive(Event task) {
-        //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
+       //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
 
         long diff = getWorld().currentTimeMillis() - last_time;
         last_time = getWorld().currentTimeMillis();
@@ -142,31 +142,11 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
                 getWorld().getAssetBySymbol("EUR"));
         TradingAPI mapi = ex.getAPI(msftp);
 
-        Order ob = api.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
+        Order ob = mapi.createOrder(account_b, Order.Type.SELLLIMIT, 50, 100);
+             Order oba = api.createOrder(account_b, Order.Type.BUYLIMIT, 50, 100);
 
-        //Order mob = mapi.createOrder(account_b, Order.Type.SELLLIMIT, 80, 100);
-        Order oa = api.createOrder(account_1, Order.Type.SELLLIMIT, 100, 200);
-        //Order oaaa = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
 
-//Order oax = mapi.createOrder(account_1, Order.Type.BUYLIMIT, 100, 100);
-        //   Order oa = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 10.0); 
-        //   Order ob = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 9.0);         
-        //   Order oc = api.createOrder(account_1, Order.Type.BUYLIMIT, 100, 8.0);                 
-        // Order o2 = api.createOrder(account_10, Order.Type.SELLLIMIT, 300, 1.0);   
-        //Order ou = api.createOrder(account_1, Order.Type.BUYLIMIT, 30, 10.0);         
-        //  Order o1 = api.createOrder(account, Order.Type.SELLLIMIT, 250, 278);        
-        /*     
 
-        System.out.printf("Here we are: %d - [%d]\n", Thread.currentThread().getId(), diff);
-        getWorld().schedule(this, 1000);
-
-        AssetPair p = getWorld().getDefaultAssetPair();
-
-        ex = getWorld().getDefaultExchange();
-        api = ex.getAPI(p);
-        Order o = api.createOrder(account, Order.Type.BUY, 112.987123, limit);
-        limit += 12;
-         */
         return -1;
     }
 

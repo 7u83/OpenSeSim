@@ -58,8 +58,8 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener {
         int row = 0;
         model.setRowCount(am.size());
         for (AbstractAsset a : am.keySet()) {
-            Double val = account.get(a);
-            Double avail = account.getAvail(a);
+            Double val = account.get(a,false);
+            Double avail = account.getBound(a);
             String astr = val.toString() + "/" + avail.toString();
 
            Double mval = account.getMargin(a);

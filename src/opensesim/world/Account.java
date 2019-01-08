@@ -112,12 +112,13 @@ public class Account {
 
         return this.getFinalBalance(currency) * getLeverage() + this.getFinalBalance(currency)
                 - this.getAssetDebt(world.getDefaultExchange(), currency);
+        // + this.get(currency);
 
     }
 
     synchronized void add(AssetPack pack) {
         assets.put(pack.asset, get(pack.asset) + pack.volume);
-        assets_bound.put(pack.asset, getAvail(pack.asset) + pack.volume);
+        //  assets_bound.put(pack.asset, getAvail(pack.asset) + pack.volume);
     }
 
     synchronized void sub(AssetPack pack) {
@@ -125,11 +126,16 @@ public class Account {
         //   assets_bound.put(pack.asset, getAvail(pack.asset) - pack.volume);
     }
 
-    public double get(AbstractAsset asset) {
-        return assets.getOrDefault(asset, 0.0);
+    public double get(AbstractAsset asset, boolean bound) {
+        return assets.getOrDefault(asset, 0.0)
+                + (bound ? this.getBound(asset) : 0.0);
     }
 
-    public double getAvail(AbstractAsset asset) {
+    public double get(AbstractAsset asset) {
+        return get(asset, true);
+    }
+
+    /*public double getAvail(AbstractAsset asset) {
         if (this.getLeverage() > 0) {
             Double margin = this.getMargin(world.getDefaultCurrency());
 
@@ -142,12 +148,12 @@ public class Account {
 
         //return assets_bound.getOrDefault(asset, 0.0);
     }
-
-    public void addAvail(AbstractAsset asset, double val) {
+     */
+ /*  public void addAvail(AbstractAsset asset, double val) {
         double avail = getAvail(asset);
-        assets_bound.put(asset, (avail + val));
+      //  assets_bound.put(asset, (avail + val));
     }
-
+     */
     HashSet<EventListener> listeners = new HashSet<>();
 
     public void addListener(EventListener l) {
@@ -170,6 +176,8 @@ public class Account {
     public Double getAssetDebt(Exchange ex, AbstractAsset currency) {
         Double result = 0.0;
 
+        boolean bound = true;
+
         for (AbstractAsset a : assets.keySet()) {
             if (a.equals(currency)) {
                 continue;
@@ -188,7 +196,9 @@ public class Account {
             }
 
 //            System.out.printf("Asset: %s - %f %f %f\n", a.getSymbol(), n, v, sl * n);
-            result = result + (v - sl * n);
+            Double sld = v - sl * n;
+
+            result = result + Math.abs(v); // - sl * n);
             //          System.out.printf("Result is now %f\n", result);
 
         }
@@ -205,21 +215,23 @@ public class Account {
      * @return final balance
      *
      */
-    public Double getFinalBalance(Exchange ex, AbstractAsset currency, 
+    public Double getFinalBalance(Exchange ex, AbstractAsset currency,
             boolean bound) {
 
-        Double result = get(currency);
+        Double result = 0.0; //get(currency);
         for (AbstractAsset a : assets.keySet()) {
             Double v;
             if (a.equals(currency)) {
+                v = get(a,bound);
+                result += v;
                 continue;
             }
             AssetPair pair = world.getAssetPair(a, currency);
             if (pair == null) {
                 continue;
             }
-            v = get(a) + (bound ? getBound(a) : 0.0);
-            
+            v = get(a,bound);
+
             if (v == 0.0) {
                 continue;
             }
@@ -229,13 +241,20 @@ public class Account {
         }
         return result;
     }
-    
-    Double getBound(AbstractAsset asset){
+
+    /**
+     * Return the amount of bound assets
+     *
+     * @param asset Asset to check
+     * @return amount
+     */
+    public Double getBound(AbstractAsset asset) {
         return assets_bound.getOrDefault(asset, 0.0);
     }
-    
-    void addBound(AbstractAsset asset, Double vol){
-        assets_bound.put(asset, getBound(asset)+vol);
+
+    void addBound(AbstractAsset asset, Double vol) {
+        assets.put(asset, get(asset,false));
+        assets_bound.put(asset, getBound(asset) + vol);
     }
 
     /**
@@ -247,7 +266,7 @@ public class Account {
      * @return final balance
      */
     public Double getFinalBalance(AbstractAsset currency) {
-        return getFinalBalance(this.getExchange(), currency, false);
+        return getFinalBalance(this.getExchange(), currency, true);
     }
 
     /**
@@ -299,7 +318,7 @@ public class Account {
         return getLeverage() > 0.0;
     }
 
-    boolean isCovered(AssetPair pair, double volume, double limit) {
+    boolean bind(AssetPair pair, double volume, double limit) {
         if (this.isUnlimied()) {
             return true;
         }
@@ -314,18 +333,36 @@ public class Account {
             if (volume < 0) {
                 // It's a limited sell order, we have just to check
                 // if a sufficient amount of assets is available 
-                return getAvail(pair.getAsset()) + volume > 0;
+                return get(pair.getAsset()) - volume >= 0;
             }
             // Check if enough money is available to cover the 
             // entiere volume to by
-            return getAvail(pair.getCurrency()) >= limit * volume;
+            return get(pair.getCurrency()) >= limit * volume;
         }
 
+
+        // we are dealing here with a leveraged account
+
+        System.out.printf("Add %f %f\n",volume,-volume*limit);
+        
+        // bind asset and currecy
+        this.addBound(pair.getAsset(), volume);
+        this.addBound(pair.getCurrency(), -(volume * limit));
+
+        Double fb = this.getFinalBalance();
+        
+        System.out.printf("FB: %f\n",fb);
+        
+        
         
         Double margin = this.getMargin(pair.getCurrency());
-        System.out.printf("Margin: %f > %f\n", margin, Math.abs(volume * limit));
-
-        return margin > 0; //Math.abs(volume * limit);
+        if (margin >= 0)
+            return true;
+        
+        // Unbind asset and currency
+        this.addBound(pair.getAsset(), -volume);
+        this.addBound(pair.getCurrency(), (volume * limit));
+        return false;
 
     }
 

@@ -208,7 +208,7 @@ class TradingEngine implements TradingAPI {
                 double volume = b.volume >= a.volume ? a.volume : b.volume;
 
                 double avdiff = b.limit - price * volume;
-                b.account.addAvail(assetpair.getCurrency(), avdiff);
+//                b.account.addAvail(assetpair.getCurrency(), avdiff);
 
                 finishTrade(b, a, price, volume);
                 volume_total += volume;
@@ -288,7 +288,7 @@ class TradingEngine implements TradingAPI {
             // Update available currency for the buyer.
             // For sellers there is no need to update.
             double avdiff = b.limit * volume - price * volume;
-            b.account.addAvail(assetpair.getCurrency(), avdiff);
+//            b.account.addAvail(assetpair.getCurrency(), avdiff);
             if (b.account.getLeverage() > 0.0) {
                 //b.account.margin_bound-=avdiff;
                 b.account.margin_bound -= b.limit * volume;
@@ -432,77 +432,67 @@ class TradingEngine implements TradingAPI {
 
             double order_limit;
 
-            if (account.isUnlimied()) {
-                order_limit = l;
-            } else {
-                switch (type) {
-                    case BUYLIMIT: {
-                        
-                        if (!account.isCovered(assetpair, volume, limit)){
-                            System.out.printf("Not enough funds\n");
-                            return null;
-                        }
-                        
-                        // return if not enough funds are available
+            switch (type) {
+                case BUYLIMIT: {
+
+                    if (!account.bind(assetpair, volume, limit)) {
+                        System.out.printf("Not enough funds\n");
+                        return null;
+                    }
+
+                    // return if not enough funds are available
 //                        if (avail < v * l) {
 //                            o = new Order(this, account, type, v, l);
 //                            o.status = Order.Status.ERROR;
-
 //                            System.out.printf("Error order no funds\n");
-                            //       return o;
-  //                      }
-
-                        account.margin_bound += v * l;
-                        // reduce the available money 
+                    //       return o;
+                    //                      }
+                    //              account.margin_bound += v * l;
+                    // reduce the available money 
 //                  account.assets_bound.put(currency, avail - v * l);
-
 //account.addMarginAvail(currency, -((v * l)/account.getLeverage()));
-                        order_limit = l;
-                        break;
-
-                    }
-
-                    case BUY: {
-                        // For an unlimited by order there is nothing to check
-                        // other than currency is > 0.0
-                        AbstractAsset currency = this.assetpair.getCurrency();
-                        Double avail = account.getAvail(currency);
-
-                        if (avail <= 0.0) {
-                            return null;
-
-                        }
-
-                        // All available monney is assigned to this unlimited order
-                        account.assets_bound.put(currency, 0.0);
-                        // we "mis"use order_limit to memorize occupied ammount \
-                        // of currency
-                        order_limit = avail;
-                        break;
-
-                    }
-
-                    case SELLLIMIT:
-                    case SELL: {
-
-                        // verfiy sell limit
-                        AbstractAsset asset = this.assetpair.getAsset();
-                        Double avail = account.getAvail(asset);
-
-                        if (avail < v) {
-                            // not enough items of asset (shares) available
-                            //    return null;
-                        }
-                        account.assets_bound.put(asset, avail - v);
-                        order_limit = l;
-                        break;
-
-                    }
-
-                    default:
-                        return null;
+                    order_limit = l;
+                    break;
 
                 }
+
+                case BUY: {
+                    // For an unlimited by order there is nothing to check
+                    // other than currency is > 0.0
+                    AbstractAsset currency = this.assetpair.getCurrency();
+//                        Double avail = account.getAvail(currency);
+                    Double avail = 1000.0;
+                    //                  if (avail <= 0.0) {
+                    //               return null;
+
+                    
+                    
+                    //      }
+                    // All available monney is assigned to this unlimited order
+                    account.assets_bound.put(currency, 0.0);
+                    // we "mis"use order_limit to memorize occupied ammount \
+                    // of currency
+                    order_limit = avail;
+                    break;
+
+                }
+
+                case SELLLIMIT:
+                case SELL: {
+                    if (!account.bind(assetpair, -volume, limit)) {
+                        System.out.printf("Not enough funds\n");
+                        return null;
+                    }                    
+
+
+                    order_limit = l;
+                    break;
+
+                }
+
+                default:
+                    return null;
+
             }
 
             o = new Order(this, account, type, v, order_limit);
@@ -515,7 +505,7 @@ class TradingEngine implements TradingAPI {
         }
 
         executeOrders();
-        last_quote.price = 150; //75-12.5;
+        //last_quote.price = 90; //75-12.5;
         for (FiringEvent e : book_listener) {
             e.fire();
         }
@@ -529,11 +519,8 @@ class TradingEngine implements TradingAPI {
             = new HashSet<>();
 
     @Override
-    public void addOrderBookListener(EventListener listener
-    ) {
-        book_listener
-                .add(new FiringEvent(listener
-                ));
+    public void addOrderBookListener(EventListener listener) {
+        book_listener.add(new FiringEvent(listener));
 
     }
 
