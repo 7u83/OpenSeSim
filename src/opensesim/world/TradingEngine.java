@@ -513,7 +513,7 @@ class TradingEngine implements TradingAPI {
         }
 
         executeOrders();
-        //last_quote.price = 90; //75-12.5;
+        last_quote.price = 90; //75-12.5;
         for (FiringEvent e : book_listener) {
             e.fire();
         }

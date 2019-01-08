@@ -119,12 +119,12 @@ public class Account {
     }
 
     synchronized void add(AssetPack pack) {
-        assets.put(pack.asset, get(pack.asset) + pack.volume);
+        assets.put(pack.asset, get(pack.asset,false) + pack.volume);
         //  assets_bound.put(pack.asset, getAvail(pack.asset) + pack.volume);
     }
 
     synchronized void sub(AssetPack pack) {
-        assets.put(pack.asset, get(pack.asset) - pack.volume);
+        assets.put(pack.asset, get(pack.asset,false) - pack.volume);
         //   assets_bound.put(pack.asset, getAvail(pack.asset) - pack.volume);
     }
 
@@ -290,7 +290,7 @@ public class Account {
      * @return
      */
     public Double calcStopLoss(Exchange ex, AbstractAsset asset, AbstractAsset currency) {
-        Double e = (get(currency));
+        Double e = (get(currency,false));
         for (AbstractAsset a : assets.keySet()) {
             if (a.equals(asset)) {
                 continue;
@@ -302,7 +302,7 @@ public class Account {
             }
 
             TradingEngine api = (TradingEngine) ex.getAPI(pair);
-            Double v = get(a) * api.last_quote.price;
+            Double v = get(a,false) * api.last_quote.price;
             e = e + v;
 
         }

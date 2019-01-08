@@ -105,7 +105,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
         pack = new AssetPack(p.getCurrency(), 1000);
        account_b.add(pack);
-        account_b.setLeverage(0.1);
+        account_b.setLeverage(9);
 
         pack = new AssetPack(p.getCurrency(), 10000);
         account_1.add(pack);
@@ -142,10 +142,12 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
                 getWorld().getAssetBySymbol("EUR"));
         TradingAPI mapi = ex.getAPI(msftp);
 
-        Order ob = api.createOrder(account_b, Order.Type.SELLLIMIT, 10, 100);
+        Order ob = api.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
+      Order obm = mapi.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
              
 
-Order oba = api.createOrder(account_1, Order.Type.BUYLIMIT, 10, 100);
+Order oba = api.createOrder(account_1, Order.Type.SELLLIMIT, 10, 100);
+Order obam = mapi.createOrder(account_1, Order.Type.SELLLIMIT, 20, 100);
 
 
 
