@@ -289,11 +289,19 @@ class TradingEngine implements TradingAPI {
             // For sellers there is no need to update.
             double avdiff = b.limit * volume - price * volume;
 //            b.account.addAvail(assetpair.getCurrency(), avdiff);
-            if (b.account.getLeverage() > 0.0) {
-                //b.account.margin_bound-=avdiff;
-                b.account.margin_bound -= b.limit * volume;
-            }
 
+            // Unbind 
+            
+            double bound = b.account.getBound(assetpair.getCurrency());
+            double addbound = volume*b.limit;
+            
+            b.account.addBound(assetpair.getCurrency(), volume*b.limit);
+            b.account.addBound(assetpair.getAsset(), -volume);
+
+            a.account.addBound(assetpair.getCurrency(), -volume*b.limit);
+            a.account.addBound(assetpair.getAsset(), volume);
+            
+ 
             //  b.account.addMarginAvail(assetpair.getCurrency(), avdiff/b.account.getLeverage());
             finishTrade(b, a, price, volume);
 

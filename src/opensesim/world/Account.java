@@ -109,6 +109,8 @@ public class Account {
         System.out.printf("Debth %f - Final: %f Return margin %f\n", d,f, f-d);
         
         return f-d;*/
+        if (!this.isLeveraged())
+            return 0.0;
 
         return this.getFinalBalance(currency) * getLeverage() + this.getFinalBalance(currency)
                 - this.getAssetDebt(world.getDefaultExchange(), currency);
@@ -222,7 +224,7 @@ public class Account {
         for (AbstractAsset a : assets.keySet()) {
             Double v;
             if (a.equals(currency)) {
-                v = get(a,bound);
+                v = get(a, bound);
                 result += v;
                 continue;
             }
@@ -230,7 +232,7 @@ public class Account {
             if (pair == null) {
                 continue;
             }
-            v = get(a,bound);
+            v = get(a, bound);
 
             if (v == 0.0) {
                 continue;
@@ -253,7 +255,7 @@ public class Account {
     }
 
     void addBound(AbstractAsset asset, Double vol) {
-        assets.put(asset, get(asset,false));
+        assets.put(asset, get(asset, false));
         assets_bound.put(asset, getBound(asset) + vol);
     }
 
@@ -280,6 +282,13 @@ public class Account {
         return getFinalBalance(world.getDefaultCurrency());
     }
 
+    /**
+     *
+     * @param ex
+     * @param asset
+     * @param currency
+     * @return
+     */
     public Double calcStopLoss(Exchange ex, AbstractAsset asset, AbstractAsset currency) {
         Double e = (get(currency));
         for (AbstractAsset a : assets.keySet()) {
@@ -318,11 +327,27 @@ public class Account {
         return getLeverage() > 0.0;
     }
 
+    /**
+     * Bind asset which will be locked in an order.
+     *
+     * @param pair
+     * @param volume
+     * @param limit
+     * @return true if asset could be bound, false if assets couldn't be bound
+     */
     boolean bind(AssetPair pair, double volume, double limit) {
+
+        // Bind asset and currecy
+        this.addBound(pair.getAsset(), volume);
+        this.addBound(pair.getCurrency(), -(volume * limit));
+
         if (this.isUnlimied()) {
+            // in case it is an unlimited account we can return 
+            // true without further checks
             return true;
         }
 
+        // checks for leveraged account
         if (!this.isLeveraged()) {
             if (limit == 0.0) {
                 // an unlimited order is always considered to be
@@ -333,32 +358,35 @@ public class Account {
             if (volume < 0) {
                 // It's a limited sell order, we have just to check
                 // if a sufficient amount of assets is available 
-                return get(pair.getAsset()) - volume >= 0;
+
+                if (get(pair.getAsset()) >= 0) {
+                    return true;
+                }
+
+                // unbind and return false
+                this.addBound(pair.getAsset(), -volume);
+                this.addBound(pair.getCurrency(), (volume * limit));
+                return false;
+
             }
             // Check if enough money is available to cover the 
             // entiere volume to by
-            return get(pair.getCurrency()) >= limit * volume;
+            if (get(pair.getCurrency()) >= 0) {
+                return true;
+            }
+            // unbind and return false
+            this.addBound(pair.getAsset(), -volume);
+            this.addBound(pair.getCurrency(), (volume * limit));
+            return false;
+
         }
 
-
         // we are dealing here with a leveraged account
-
-        System.out.printf("Add %f %f\n",volume,-volume*limit);
-        
-        // bind asset and currecy
-        this.addBound(pair.getAsset(), volume);
-        this.addBound(pair.getCurrency(), -(volume * limit));
-
-        Double fb = this.getFinalBalance();
-        
-        System.out.printf("FB: %f\n",fb);
-        
-        
-        
         Double margin = this.getMargin(pair.getCurrency());
-        if (margin >= 0)
+        if (margin >= 0) {
             return true;
-        
+        }
+
         // Unbind asset and currency
         this.addBound(pair.getAsset(), -volume);
         this.addBound(pair.getCurrency(), (volume * limit));
