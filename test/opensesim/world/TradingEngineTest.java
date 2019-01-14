@@ -110,7 +110,7 @@ public class TradingEngineTest {
         
      //   AbstractAsset currency =  gdworld.createAsset(cfg);
         
-        Account account = new Account();
+        AccountImpl account = new AccountImpl();
         
         
         Order.Type type = null;

@@ -25,7 +25,7 @@
  */
 package opensesim.gui.account;
 
-import opensesim.world.Account;
+import opensesim.world.AccountImpl;
 
 /**
  *
@@ -42,7 +42,7 @@ public class AccountDialog extends javax.swing.JDialog {
     }
     
     
-    public static void runDialog(java.awt.Frame parent, Account account){
+    public static void runDialog(java.awt.Frame parent, AccountImpl account){
         AccountDialog d;
         d=new AccountDialog(parent, false);
         d.accountPanel1.account=account;

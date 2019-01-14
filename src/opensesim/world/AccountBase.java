@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2019, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,42 +25,28 @@
  */
 package opensesim.world;
 
-import java.util.Collection;
-
-import opensesim.util.scheduler.EventListener;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The interface to the world. Used by traders. And others.
+ *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface World {
+public abstract class AccountBase implements Account {
 
-    /**
-     * Get available assets in this world.
-     * @return Collection of {@link opensesim.world.Asset}s
-     */
-    public Collection<AbstractAsset> getAssetCollection();
+    HashMap<Asset, Double> assets = new HashMap<>();
 
-    /**
-     * Return asset by symbol
-     * @param symbol symbol to find
-     * @return asset
-     */
-    public AbstractAsset getAssetBySymbol(String symbol);
+    @Override
+    public Map<Asset, Double> getAssets() {
+        return Collections.unmodifiableMap(assets);
+    }
 
-    Collection<Exchange> getExchangeCollection();
-    
-    public Exchange getDefaultExchange();
-    public AssetPair getDefaultAssetPair();
-    public AbstractAsset getDefaultCurrency();
-    
-    Collection<Trader> getTradersCollection();
+    Exchange exchange;
 
-    public void schedule(EventListener listener, long t);
+    @Override
+    public Exchange getExchange() {
+        return exchange;
+    }
 
-    public float randNextFloat(float min, float max);
-    
-    public long currentTimeMillis();
-    
-    public AssetPair getAssetPair(Asset asset, Asset currency);
 }

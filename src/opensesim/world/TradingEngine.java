@@ -117,7 +117,7 @@ class TradingEngine implements TradingAPI {
     boolean compact_history = false;
     boolean compact_last = true;
 
-    private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
+    private void transferMoneyAndShares(AccountImpl src, AccountImpl dst, double money, double shares) {
 //        src.money -= money;
 
         AssetPack pack;
@@ -421,7 +421,7 @@ class TradingEngine implements TradingAPI {
     }
 
     @Override
-    public Order createOrder(Account account, Order.Type type,
+    public Order createOrder(AccountImpl account, Order.Type type,
             double volume, double limit) {
 
         Order o;
@@ -513,7 +513,7 @@ class TradingEngine implements TradingAPI {
         }
 
         executeOrders();
-        last_quote.price = 90; //75-12.5;
+    //    last_quote.price = 90; //75-12.5;
         for (FiringEvent e : book_listener) {
             e.fire();
         }

@@ -280,7 +280,7 @@ public class GodWorld implements GetJson, World {
         return default_asset_pair;
     }
     
-    public AssetPair getAssetPair(AbstractAsset asset, AbstractAsset currency){
+    public AssetPair getAssetPair(Asset asset, Asset currency){
         String s = AssetPair.buildSymbol(asset.getSymbol(), currency.getSymbol());
         return asset_pairs.getOrDefault(s, null);
     }

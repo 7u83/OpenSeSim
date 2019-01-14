@@ -30,7 +30,8 @@ import javax.swing.table.DefaultTableModel;
 import opensesim.util.scheduler.Event;
 import opensesim.util.scheduler.EventListener;
 import opensesim.world.AbstractAsset;
-import opensesim.world.Account;
+import opensesim.world.AccountImpl;
+import opensesim.world.Asset;
 
 /**
  *
@@ -47,27 +48,27 @@ public class AccountPanel extends javax.swing.JPanel implements EventListener {
         assetTable.getTableHeader().setReorderingAllowed(false);
     }
 
-    public Account account;
+    public AccountImpl account;
 
     void update() {
         DefaultTableModel model;
         model = (DefaultTableModel) this.assetTable.getModel();
 
-        Map<AbstractAsset, Double> am = account.getAssets();
+        Map<Asset, Double> am = account.getAssets();
 
         int row = 0;
         model.setRowCount(am.size());
-        for (AbstractAsset a : am.keySet()) {
-            Double val = account.get(a,false);
-            Double avail = account.getBound(a);
+        for (Asset a : am.keySet()) {
+            Double val = account.get((AbstractAsset) a,false);
+            Double avail = account.getBound((AbstractAsset) a);
             String astr = val.toString() + "/" + avail.toString();
 
-           Double mval = account.getMargin(a);
-           Double mavail = account.getMargin(a)-account.margin_bound;
-            String mastr = mval.toString()+ "/" + mavail.toString();
+           Double mval = account.getMargin((AbstractAsset) a);
+     //      Double mavail = account.getMargin((AbstractAsset) a)-account.margin_bound;
+            String mastr = "xxx" ; //Double(0.0(.toString()+ "/" + mavail.toString();
 
            
-           Double sl = account.calcStopLoss(a);
+           Double sl = account.calcStopLoss((AbstractAsset) a);
             
 //            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
             model.setValueAt(a.getSymbol(), row, 0);

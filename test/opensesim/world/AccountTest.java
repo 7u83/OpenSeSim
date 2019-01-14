@@ -66,7 +66,7 @@ public class AccountTest {
     /*   @Test
     public void testGetAssets() {
         System.out.println("getAssets");
-        Account instance = new Account();
+        AccountImpl instance = new AccountImpl();
         Map<AbstractAsset, Double> expResult = null;
         Map<AbstractAsset, Double> result = instance.getAssets();
         assertEquals(expResult, result);
@@ -75,12 +75,12 @@ public class AccountTest {
     }
      */
     /**
-     * Test of getOwner method, of class Account.
+     * Test of getOwner method, of class AccountImpl.
      */
     @Test
     public void testGetOwner() {
         System.out.println("getOwner");
-        Account instance = new Account();
+        AccountImpl instance = new AccountImpl();
         Trader expResult = null;
         Trader result = instance.getOwner();
         assertEquals(expResult, result);
@@ -89,7 +89,7 @@ public class AccountTest {
     }
 
     /**
-     * Test of add method, of class Account.
+     * Test of add method, of class AccountImpl.
      */
     @Test
     public void testAdd() {
@@ -100,7 +100,7 @@ public class AccountTest {
 
         Double expResult = 123.0;
         AssetPack pack = new AssetPack(c, expResult);
-        Account account = new Account();
+        AccountImpl account = new AccountImpl();
         
         account.add(pack);
         Double result;

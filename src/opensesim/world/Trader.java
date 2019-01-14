@@ -39,6 +39,6 @@ public interface Trader {
      *
      * @return
      */
-    public Account getAccount();
+    public AccountImpl getAccount();
 
 }

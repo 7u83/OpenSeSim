@@ -89,11 +89,11 @@ public class ExchangeTest {
         AssetPair ap = new AssetPair(world,"EUR","AAPL");
         
         Exchange instance = new Exchange(null, (JSONObject) null);
-        Account expResult = null;
+        AccountImpl expResult = null;
         
         
         
-        Account result = instance.createAccount();
+        AccountImpl result = instance.createAccount();
      //   assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
    //     fail("The test case is a prototype.");

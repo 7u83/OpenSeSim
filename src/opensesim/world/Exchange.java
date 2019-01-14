@@ -68,15 +68,15 @@ public class Exchange implements Configurable, GetJson {
         return symbol;
     }
 
-    private HashSet<Account> accounts = new HashSet<>();
+    private HashSet<AccountImpl> accounts = new HashSet<>();
 
-    Account createAccount() {
-        Account a = new Account(this.world);
+    AccountImpl createAccount() {
+        AccountImpl a = new AccountImpl(this.world);
         accounts.add(a);
         return a;
     }
 
-    public Order createOrder(Account account, AssetPair pair, Order.Type type, double volume, double limit) {
+    public Order createOrder(AccountImpl account, AssetPair pair, Order.Type type, double volume, double limit) {
 
 //        Order o = new Order(world,account,assetpair,type,volume,limit);
         return null;

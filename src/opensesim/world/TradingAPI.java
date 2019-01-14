@@ -36,7 +36,7 @@ public interface TradingAPI {
 
     public void addOrderBookListener(EventListener listener);
 
-    public Order createOrder(Account account, Order.Type type, double volume, double limit);
+    public Order createOrder(AccountImpl account, Order.Type type, double volume, double limit);
 
     public Set getBidBook();
 

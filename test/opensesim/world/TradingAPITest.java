@@ -78,7 +78,7 @@ public class TradingAPITest {
     @Test
     public void testCreateOrder() {
         System.out.println("createOrder");
-        Account account = null;
+        AccountImpl account = null;
         Order.Type type = null;
         double volume = 0.0;
         double limit = 0.0;
@@ -152,7 +152,7 @@ public class TradingAPITest {
         public void addOrderBookListener(EventListener listener) {
         }
 
-        public Order createOrder(Account account, Order.Type type, double volume, double limit) {
+        public Order createOrder(AccountImpl account, Order.Type type, double volume, double limit) {
             return null;
         }
 

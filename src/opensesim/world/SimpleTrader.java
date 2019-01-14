@@ -74,7 +74,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         return 0;
     }
 
-    public Account account_b, account_1;
+    public AccountImpl account_b, account_1;
 
     @Override
     public void start() {
@@ -96,8 +96,8 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
         AssetPair p = getWorld().getDefaultAssetPair();
 
-        account_b = new Account(getWorld());
-        account_1 = new Account(getWorld());
+        account_b = new AccountImpl(getWorld());
+        account_1 = new AccountImpl(getWorld());
 
         AssetPack pack;
       //  pack = new AssetPack(p.getAsset(), 0);
@@ -146,7 +146,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
       Order obm = mapi.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
              
 
-Order oba = api.createOrder(account_1, Order.Type.SELLLIMIT, 10, 100);
+Order oba = api.createOrder(account_1, Order.Type.SELLLIMIT, 20, 100);
 Order obam = mapi.createOrder(account_1, Order.Type.SELLLIMIT, 20, 100);
 
 

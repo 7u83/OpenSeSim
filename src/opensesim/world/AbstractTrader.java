@@ -37,7 +37,7 @@ public abstract class AbstractTrader implements Trader {
     private String name = "Unnamed";
     private String status;
     private World world;
-    protected Account account;
+    protected AccountImpl account;
     
     /**
      * @return the world
@@ -100,7 +100,7 @@ public abstract class AbstractTrader implements Trader {
 
     public AbstractTrader(World world, JSONObject cfg) {
         this.world=world;
-        this.account = new Account(world);
+        this.account = new AccountImpl(world);
         
         AssetPack pack;
         pack = new AssetPack(this.world.getDefaultAssetPair().getCurrency(),1000);
@@ -118,7 +118,7 @@ public abstract class AbstractTrader implements Trader {
     }
 
     @Override
-    public Account getAccount(){
+    public AccountImpl getAccount(){
         return account;
     }
 }

@@ -25,7 +25,7 @@
  */
 package opensesim.gui.account;
 
-import opensesim.world.Account;
+import opensesim.world.AccountImpl;
 
 /**
  *
@@ -40,14 +40,14 @@ public class StatusPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public StatusPanel(Account account) {
+    public StatusPanel(AccountImpl account) {
         this();
         setAccount(account);
     }
 
-    private Account account;
+    private AccountImpl account;
 
-    public void setAccount(Account account) {
+    public void setAccount(AccountImpl account) {
         this.account = account;
     }
 

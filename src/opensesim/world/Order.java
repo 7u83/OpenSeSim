@@ -106,12 +106,12 @@ public class Order implements Comparable<Order> {
     protected final Id id;
     protected final long created;
 
-    protected final Account account;
+    protected final AccountImpl account;
 
     double cost;
     GodWorld world;
 
-    Order(TradingEngine engine, Account account, Type type,
+    Order(TradingEngine engine, AccountImpl account, Type type,
             double volume, double limit, Addition addition) {
  
         // Assign volume and initial volume
@@ -132,7 +132,7 @@ public class Order implements Comparable<Order> {
         this.addition = addition;
     }
 
-    Order(opensesim.world.TradingEngine engine, Account account, Type type,
+    Order(opensesim.world.TradingEngine engine, AccountImpl account, Type type,
             double volume, double limit) {
         this(engine, account, type, volume, limit, Addition.NONE);
     }
@@ -173,7 +173,7 @@ public class Order implements Comparable<Order> {
         return cost / e;
     }
 
-    public Account getAccount() {
+    public AccountImpl getAccount() {
         return account;
     }
 

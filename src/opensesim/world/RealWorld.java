@@ -86,7 +86,7 @@ public class RealWorld implements World {
     }
 
     @Override
-    public AssetPair getAssetPair(AbstractAsset asset, AbstractAsset currency) {
+    public AssetPair getAssetPair(Asset asset, Asset currency) {
         return godworld.getAssetPair(asset, currency);
     }
 
