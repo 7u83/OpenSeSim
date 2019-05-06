@@ -100,11 +100,11 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         account_1 = new AccountImpl(getWorld());
 
         AssetPack pack;
-      //  pack = new AssetPack(p.getAsset(), 0);
-      //  account_b.add(pack);
+        //  pack = new AssetPack(p.getAsset(), 0);
+        //  account_b.add(pack);
 
         pack = new AssetPack(p.getCurrency(), 1000);
-       account_b.add(pack);
+        account_b.add(pack);
         account_b.setLeverage(9);
 
         pack = new AssetPack(p.getCurrency(), 10000);
@@ -128,7 +128,7 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
 
     @Override
     public long receive(Event task) {
-       //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
+        //   System.out.printf("Here we are !!! %f\n", getWorld().randNextFloat(12f, 27f));
 
         long diff = getWorld().currentTimeMillis() - last_time;
         last_time = getWorld().currentTimeMillis();
@@ -138,18 +138,17 @@ public class SimpleTrader extends AbstractTrader implements EventListener {
         ex = getWorld().getDefaultExchange();
         api = ex.getAPI(p);
 
-        AssetPair msftp = getWorld().getAssetPair(getWorld().getAssetBySymbol("MSFT"),
+        AssetPair msftp = getWorld().getAssetPair(
+                getWorld().getAssetBySymbol("MSFT"),
                 getWorld().getAssetBySymbol("EUR"));
+
         TradingAPI mapi = ex.getAPI(msftp);
 
         Order ob = api.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
-      Order obm = mapi.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
-             
+        Order obm = mapi.createOrder(account_b, Order.Type.BUYLIMIT, 20, 100);
 
-Order oba = api.createOrder(account_1, Order.Type.SELLLIMIT, 20, 100);
-Order obam = mapi.createOrder(account_1, Order.Type.SELLLIMIT, 20, 100);
-
-
+        Order oba = api.createOrder(account_1, Order.Type.SELLLIMIT, 20, 100);
+        Order obam = mapi.createOrder(account_1, Order.Type.SELLLIMIT, 20, 100);
 
         return -1;
     }
