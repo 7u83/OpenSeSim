@@ -50,7 +50,7 @@ public interface Asset {
     public  String getSymbol();
     
     /**
-     * Determine if this asset can be used as currency
+     * Determine if this asset can be used as currency. 
      * @return true if asset can act as currency, false if not.
      */
     public boolean isCurrency();

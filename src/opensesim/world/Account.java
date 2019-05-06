@@ -32,7 +32,15 @@ import java.util.Map;
  * @author 7u83 <7u83@mail.ru>
  */
 public interface Account {
+    /**
+     * Get a list of assets in this account
+     * @return Map of assets
+     */
     public Map<Asset, Double> getAssets();
+    /**
+     * Get the exchange this accounts belongs to
+     * @return Exchange
+     */
     public Exchange getExchange() ;
     
 

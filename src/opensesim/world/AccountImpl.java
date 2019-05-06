@@ -42,7 +42,7 @@ public class AccountImpl extends AccountBase {
 
     
     HashMap<AbstractAsset, Double> assets_bound = new HashMap<>();
-    HashMap<AbstractAsset, Double> stop_loss = new HashMap<>();
+    HashMap<AbstractAsset, Order> stop_loss = new HashMap<>();
 
    
     Trader owner;
