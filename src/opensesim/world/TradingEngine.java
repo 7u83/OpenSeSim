@@ -42,17 +42,17 @@ import opensesim.util.scheduler.FiringEvent;
  */
 class TradingEngine implements TradingAPI {
 
-    private final Exchange outer;
+    private final Exchange exchange;
 
     /**
      * Construct a trading engine for an asset pair
      *
      * @param pair The AssetPair object to create the trading engine for
-     * @param outer Outer class - points to an Exchange object this trading
+     * @param exchange Outer class - points to an Exchange object this trading
      * engine belongs to.
      */
-    TradingEngine(AssetPair pair, final Exchange outer) {
-        this.outer = outer;
+    TradingEngine(AssetPair pair, final Exchange exchange) {
+        this.exchange = exchange;
         assetpair = pair;
         reset();
     }
@@ -219,7 +219,7 @@ class TradingEngine implements TradingAPI {
                     q = new Quote(quote_id_generator.getNext());
                     q.price = price;
                     q.volume = volume;
-                    q.time = outer.world.currentTimeMillis();
+                    q.time = exchange.world.currentTimeMillis();
                     q.type = type;
                     addQuoteToHistory(q);
                 }
@@ -310,7 +310,7 @@ class TradingEngine implements TradingAPI {
                 q = new Quote(quote_id_generator.getNext());
                 q.price = price;
                 q.volume = volume;
-                q.time = outer.world.currentTimeMillis();
+                q.time = exchange.world.currentTimeMillis();
                 q.type = type;
                 addQuoteToHistory(q);
             }
@@ -330,7 +330,7 @@ class TradingEngine implements TradingAPI {
         qc = new Quote(quote_id_generator.getNext());
         qc.price = money_total / volume_total;
         qc.volume = volume_total;
-        qc.time = outer.world.currentTimeMillis();
+        qc.time = exchange.world.currentTimeMillis();
 
         if (compact_history) {
             addQuoteToHistory(qc);
