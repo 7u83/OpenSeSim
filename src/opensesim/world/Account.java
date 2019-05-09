@@ -33,10 +33,11 @@ import java.util.Map;
  */
 public interface Account {
     /**
-     * Get a list of assets in this account
+     * Get a list of assets accumulated in this account
      * @return Map of assets
      */
     public Map<Asset, Double> getAssets();
+    
     /**
      * Get the exchange this accounts belongs to
      * @return Exchange

@@ -48,7 +48,7 @@ class TradingEngine implements TradingAPI {
      * Construct a trading engine for an asset pair
      *
      * @param pair The AssetPair object to create the trading engine for
-     * @param outer Outer class - points to an Exchange object thins trading
+     * @param outer Outer class - points to an Exchange object this trading
      * engine belongs to.
      */
     TradingEngine(AssetPair pair, final Exchange outer) {
@@ -287,8 +287,9 @@ class TradingEngine implements TradingAPI {
 
             // Update available currency for the buyer.
             // For sellers there is no need to update.
-            double avdiff = b.limit * volume - price * volume;
+            double avdiff;
 //            b.account.addAvail(assetpair.getCurrency(), avdiff);
+            avdiff = b.limit * volume - price * volume;
 
             // Unbind 
             
@@ -374,7 +375,7 @@ class TradingEngine implements TradingAPI {
                 return b.limit;
             }
 
-            // Last price is grater ask, so return the current ask
+            // Last price is greater than ask, so return the current ask
             if (last_quote.price > a.limit) {
                 return a.limit;
             }
