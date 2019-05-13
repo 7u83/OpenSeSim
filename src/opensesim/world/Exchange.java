@@ -41,10 +41,10 @@ public class Exchange implements Configurable, GetJson {
     private String name;
     private String symbol;
 
-    public void setName(String name) {
+  /*  public void setName(String name) {
         this.name = name;
     }
-
+*/
     private final HashMap<AssetPair, TradingAPI> asset_pairs = new HashMap<>();
 
     Exchange(GodWorld world, String symbol) {
