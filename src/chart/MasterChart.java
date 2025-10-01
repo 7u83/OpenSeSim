@@ -26,22 +26,19 @@
 package chart;
 
 import chart.painter.CandleStickChartPainter;
-import chart.painter.ChartPainter;
 import chart.painter.XLegendPainter;
 import chart.painter.ChartCrossPainter;
 import chart.painter.LineChartPainter;
 import chart.painter.OHLCChartPainter;
 import chart.painter.YLegendPainter;
 import gui.Globals;
-import java.util.ArrayList;
 import sesim.Exchange.QuoteReceiver;
-import sesim.Indicator;
 import sesim.MinMax;
 import sesim.OHLCData;
 import sesim.OHLCDataItem;
 import sesim.Quote;
 import indicators.SMAIndicator;
-import java.util.Objects;
+import java.awt.Color;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButtonMenuItem;
 import org.json.JSONObject;
@@ -125,6 +122,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         chartDef = new ChartDef();
         chartDef.x_unit_width = 3.0;
         chartDef.mainChart=this.chart;
+        chartDef.mainChart.setBackground(Color.orange);
 
         if (Globals.se == null) {
             return;
