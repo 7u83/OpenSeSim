@@ -25,7 +25,7 @@
  */
 package chart.painter;
 
-import sesim.ChartDef;
+import chart.ChartDef;
 import sesim.ChartPanel;
 import java.awt.Graphics2D;
 import java.awt.Point;

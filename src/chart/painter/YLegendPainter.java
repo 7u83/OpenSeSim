@@ -27,7 +27,7 @@ package chart.painter;
 
 import chart.Chart;
 import java.awt.Color;
-import sesim.ChartDef;
+import chart.ChartDef;
 import sesim.ChartPanel;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
