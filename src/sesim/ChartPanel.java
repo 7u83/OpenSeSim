@@ -1,5 +1,6 @@
 package sesim;
 
+import chart.ChartDef;
 import chart.painter.ChartPainter;
 import gui.Globals;
 

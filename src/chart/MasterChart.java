@@ -25,7 +25,6 @@
  */
 package chart;
 
-import sesim.ChartDef;
 import chart.painter.CandleStickChartPainter;
 import chart.painter.ChartPainter;
 import chart.painter.XLegendPainter;

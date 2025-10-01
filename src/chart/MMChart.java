@@ -42,7 +42,6 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import sesim.ChartDef;
 import sesim.ChartPanel;
 import sesim.OHLCData;
 import sesim.Stock;

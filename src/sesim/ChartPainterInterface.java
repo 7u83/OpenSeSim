@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import chart.ChartDef;
 import java.awt.Graphics2D;
 
 /**
