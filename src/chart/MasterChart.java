@@ -386,6 +386,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         }
 
         int s = mydata.size();
+                 System.out.printf("MasterSize %d\n",s);
         this.xScrollBar.setMaximum(s);
         repaint();
     }

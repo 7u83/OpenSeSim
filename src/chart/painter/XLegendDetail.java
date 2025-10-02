@@ -69,7 +69,7 @@ public class XLegendDetail extends XLegendPainter {
         int x = def.mainChart.mouse.x;
 
         long t = this.x2Time(p, def, x);
-        System.out.printf("CFR: %s\n", Scheduler.formatTimeMillis(t));
+//        System.out.printf("CFR: %s\n", Scheduler.formatTimeMillis(t));
 
         g.drawLine(mouse.x, 0, mouse.x, p.getSize().height);
 
@@ -84,7 +84,7 @@ public class XLegendDetail extends XLegendPainter {
         g.drawRect(x - rd / 2, em_size, rd, em_size * 2);
         g.drawString(ts, (int) x - sw / 2, 0 + em_size * 3);
 
-        System.out.printf("Detail Mous X: %d\n", x);
+//        System.out.printf("Detail Mous X: %d\n", x);
 //        super.drawChart(g, p, def); //To change body of generated methods, choose Tools | Templates.
     }
 

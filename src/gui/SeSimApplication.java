@@ -594,6 +594,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 //       this.orderBookPanel.invalidate();
 //        this.orderBookPanel.repaint();
 
+        this.mMChart2.reset();
+
     }
 
 
