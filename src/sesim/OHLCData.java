@@ -111,6 +111,8 @@ public class OHLCData {
      * @return MinMax found
      */
     public MinMax getVolMinMax(int first, int last) {
+              if (data.isEmpty())
+            return new MinMax(0,0);
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
@@ -180,6 +182,7 @@ public class OHLCData {
                 this.min = price;
                 this.max = price;
             }
+            
 
             long last_frame_start = current_frame_start;
             current_frame_start = getFrameStart(time);

@@ -59,6 +59,7 @@ public class YLegendPainter extends OHLCChartPainter {
         int first_bar = getFirstBar(master);
         int last_bar = first_bar + getBars(master, def);
         MinMax minmax = this.getData().getMinMax(first_bar, last_bar);
+        
 
         this.initGetY(minmax, dim);
 

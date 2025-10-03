@@ -41,7 +41,7 @@ public class ChartDef {
     public double x_unit_width=1.0;
     
     public ChartPanel mainChart;
-    public ChartPanel xLegend;
+  //  public ChartPanel xLegend;
     
     public ChartDef(){
         

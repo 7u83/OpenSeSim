@@ -29,6 +29,7 @@ import chart.painter.CandleStickChartPainter;
 import chart.painter.ChartCrossPainter;
 import chart.painter.ChartPainter;
 import chart.painter.OHLCChartPainter;
+import chart.painter.VolChartPainter;
 import chart.painter.XLegendDetail;
 import chart.painter.XLegendPainter;
 import chart.painter.YLegendPainter;
@@ -182,7 +183,8 @@ public class MMChart extends JPanel  implements QuoteReceiver{
         
         mainChart.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         
-        OHLCChartPainter pc = new CandleStickChartPainter();
+        //OHLCChartPainter pc = new CandleStickChartPainter();
+        OHLCChartPainter pc = new VolChartPainter();
         //pc.setDataProvider(this);
         pc.setOHLCData(mydata);
 
@@ -211,7 +213,6 @@ public class MMChart extends JPanel  implements QuoteReceiver{
         setupYLegend();
         setupXLegend();
 
-        java.awt.GridBagConstraints gbConstraints;
 
         mainChart = new ChartPanel();
         mainChart.setPreferredSize(new Dimension(100, 40));

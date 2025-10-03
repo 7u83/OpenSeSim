@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2025, tube
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,73 +23,50 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package chart.painter;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import sesim.MinMax;
+import sesim.OHLCDataItem;
 
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tube
  */
-public class MinMax {
+public class VolChartPainter extends OHLCChartPainter {
 
-    protected float min;
-    protected float max;
-    protected float min_log;
-    protected float max_log;    
-    
-    private boolean log;
-
-    MinMax(float min, float max) {
-        this.min = min;
-        this.max = max;
-        this.log = false;
+    @Override
+    protected MinMax getMinMax(int first_bar, int last_bar) {
+        MinMax m = data.getVolMinMax(first_bar, last_bar);
+        m.setMin(0);
+        m.setMax(m.getMax()+m.getMax()/10);
+        return m;
     }
 
-    public float getDiff() {
+    @Override
+    void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+       
+        g.setColor(Color.GRAY);
+
+        g.drawLine(x, (int) getY(0), x, (int) (getY(i.volume)));
         
-        return getMax()-getMin();
-        //return !log ? max - min : max_log - min_log;
-    }
-
-    
-    public float getMin() {
+    //   g.fillRect(x, (int) getY(0), 10, (int) (getY(i.volume)));
+   
+        g.fillRect(x,(int) (getY(i.volume)), (int)this.iwidth, (int) getY(0)-(int) (getY(i.volume)));
         
-        return min;
-        //return !log ? min : min_log;
-    }
-    
-    public float getMin(boolean plog) {
-        return getMin();
-        //return !plog ? min : min_log;
-    }
-  
+  //g.fillR
+   
+    //    g.fillRect(0, 0, 100, 20);
+        
+      //  System.out.printf("THE VOLUME Y0:%d Y:%d\n", (int)getY(0),(int) (getY(i.volume)));
+        System.out.printf("THE VOLUME:%f \n", i.volume);
+        
 
-    public float getMax() {
-        return max;
-//        return !log ? max : max_log;
-    }
 
-    public float getMax(boolean plog) {
-        return getMax();
-//        return !plog ? max : max_log;
-    }
-    
-    
-    public void setLog(boolean log){
-        min_log = (float) Math.log(min);
-        max_log = (float) Math.log(max);
-        this.log=log;
-    }
-    
-    public void setMin(float min){
-        this.min=min;
-    }
-    
-    public void setMax(float max){
-        this.max=max;
-    }
-
-    public boolean isLog(){
-        return log;
+   //     Rectangle r = ctx.rect;
+    //    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

@@ -193,6 +193,10 @@ public abstract class OHLCChartPainter extends ChartPainter {
         y_min = minmax.getMin();
     }
 */
+
+     protected MinMax getMinMax(int first_bar,int last_bar){
+        return data.getMinMax(first_bar, last_bar);
+    }
     
     @Override
     public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
@@ -213,7 +217,7 @@ public abstract class OHLCChartPainter extends ChartPainter {
 
         int last_bar = first_bar + bars + 1;
 
-        MinMax minmax = data.getMinMax(first_bar, last_bar);
+        MinMax minmax = getMinMax(first_bar, last_bar);
 
         this.initGetY(minmax, dim);
 
