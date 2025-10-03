@@ -30,9 +30,9 @@ import chart.painter.ChartCrossPainter;
 import chart.painter.ChartPainter;
 import chart.painter.OHLCChartPainter;
 import chart.painter.VolChartPainter;
-import chart.painter.XLegendDetail;
-import chart.painter.XLegendPainter;
-import chart.painter.YLegendPainter;
+import chart.painter.XScaleDetailPainter;
+import chart.painter.XScalePainter;
+import chart.painter.YScalePainter;
 import gui.Globals;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -41,10 +41,10 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseListener;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import sesim.ChartPanel;
 import sesim.Exchange.QuoteReceiver;
 import sesim.OHLCData;
 import sesim.Quote;
@@ -54,18 +54,28 @@ import sesim.Stock;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class MMChart extends JPanel  implements QuoteReceiver{
+public class MMChart extends JPanel implements QuoteReceiver {
 
     Stock stock;
-        OHLCData mydata;
+    OHLCData mydata;
+    private int scaleWidth;    
+    private int padding;
 
     /**
      * Creates new form MMChart
      */
     public MMChart() {
-        stock = Globals.se.getDefaultStock();
+
         initComponents();
-        this.em_width = 10;
+        
+        if (Globals.se==null){
+            return;
+        }
+        stock = Globals.se.getDefaultStock();
+        this.em_width =  this.getFontMetrics(this.getFont()).getHeight();
+        this.scaleWidth=this.em_width*7;
+        this.padding=(int) (this.em_width*0.3);
+    
         reset();
 
     }
@@ -73,45 +83,48 @@ public class MMChart extends JPanel  implements QuoteReceiver{
     ChartPanel xLegend;
     ChartPanel yLegend;
     ChartPanel mainChart;
-    
-    private int compression=60000;
-    
+
+    private int compression = 60000;
+
+                       
+
     public void reset() {
-        mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(),60000*1);
+        mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(), 60000 * 1);
         setupLayout();
-   
+        
 
     }
-    
 
-    private void setupYLegend() {
+    private void setupMainYLegend(int currentGridRow) {
         yLegend = new ChartPanel();
         Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
         yLegend.setBorder(redborder);
-        yLegend.setPreferredSize(new Dimension(this.em_width * 10, 110));
-        yLegend.setMinimumSize(new Dimension(em_width * 10, 110));
+
+        yLegend.setPreferredSize(new Dimension(this.scaleWidth, 110));
+        yLegend.setMinimumSize(new Dimension(this.scaleWidth, 110));
+        yLegend.setMaximumSize(new Dimension(this.scaleWidth, 110));
 
         GridBagConstraints gbConstraints;
         gbConstraints = new java.awt.GridBagConstraints();
         gbConstraints.gridx = 1;
-        gbConstraints.gridy = 0;
+        gbConstraints.gridy = currentGridRow;
         gbConstraints.fill = GridBagConstraints.BOTH;
         gbConstraints.weightx = 0.0;
         gbConstraints.weighty = 1.0;
 
         add(yLegend, gbConstraints);
         this.addMouseMotionListener(yLegend);
-        
-        OHLCChartPainter ylp = new YLegendPainter(/*null*/);
+
+        OHLCChartPainter ylp = new YScalePainter(/*null*/);
 //        OHLCData mydata = stock.getOHLCdata(compression);
 
         ylp.setOHLCData(mydata);
         yLegend.setChartDef(chartDef);
         yLegend.addChartPainter(ylp);
-        
+
     }
 
-    private void setupXLegend() {
+    private void setupXLegend(int gridRow) {
         xLegend = new ChartPanel();
         //     xLegend.setBackground(Color.blue);
 
@@ -123,7 +136,7 @@ public class MMChart extends JPanel  implements QuoteReceiver{
         GridBagConstraints gbConstraints;
         gbConstraints = new java.awt.GridBagConstraints();
         gbConstraints.gridx = 0;
-        gbConstraints.gridy = 1;
+        gbConstraints.gridy = gridRow;
         gbConstraints.fill = GridBagConstraints.BOTH;
         gbConstraints.weightx = 1.0;
         gbConstraints.weighty = 0.0;
@@ -131,14 +144,14 @@ public class MMChart extends JPanel  implements QuoteReceiver{
         add(xLegend, gbConstraints);
 
         OHLCChartPainter p;
- //       OHLCData mydata = stock.getOHLCdata(compression);
+        //       OHLCData mydata = stock.getOHLCdata(compression);
 
         // this.xScrollBar.setMaximum(0);
-        p = new XLegendPainter();
+        p = new XScalePainter();
         p.setOHLCData(mydata);
         xLegend.addChartPainter(p);
 
-        p = new XLegendDetail();
+        p = new XScaleDetailPainter();
         p.setOHLCData(mydata);
         xLegend.addChartPainter(p);
 
@@ -158,7 +171,7 @@ public class MMChart extends JPanel  implements QuoteReceiver{
         });
     }
 
-    private void setupMainChart() {
+    private void setupMainChart(int currentGridRow) {
         mainChart = new ChartPanel();
         mainChart.setDoubleBuffered(true);
         mainChart.setBackground(Color.yellow);
@@ -166,7 +179,7 @@ public class MMChart extends JPanel  implements QuoteReceiver{
 
         GridBagConstraints gbConstraints;
         gbConstraints = new java.awt.GridBagConstraints();
-        gbConstraints.gridx = 0;
+        gbConstraints.gridx = currentGridRow;
         gbConstraints.gridy = 0;
         gbConstraints.fill = GridBagConstraints.BOTH;
         gbConstraints.weightx = 1.0;
@@ -174,23 +187,96 @@ public class MMChart extends JPanel  implements QuoteReceiver{
 
         add(mainChart, gbConstraints);
 
-        ChartPainter p0;
-        p0 = new ChartCrossPainter();
-        mainChart.addChartPainter(p0);
-        
+
+
         this.addMouseMotionListener(mainChart);
-        
-        
+
         mainChart.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-        
-        //OHLCChartPainter pc = new CandleStickChartPainter();
-        OHLCChartPainter pc = new VolChartPainter();
-        //pc.setDataProvider(this);
+
+        OHLCChartPainter pc = new CandleStickChartPainter();
         pc.setOHLCData(mydata);
 
         mainChart.addChartPainter(pc);
         
+                ChartPainter p0;
+        p0 = new ChartCrossPainter();
+        mainChart.addChartPainter(p0);
+
         Globals.se.addQuoteReceiver(this);
+
+    }
+    
+    private void setupVolYLegend(int gridRow) {
+        ChartPanel cp = new ChartPanel();
+     //   Border redborder = javax.swing.BorderFactory.createLineBorder(Color.BLACK));
+     //   cp.setBorder(redborder);
+        
+        cp.setPreferredSize(new Dimension(this.scaleWidth, 110));
+        cp.setMinimumSize(new Dimension(this.scaleWidth, 110));
+        cp.setMaximumSize(new Dimension(this.scaleWidth, 110));
+
+        GridBagConstraints gbConstraints;
+        gbConstraints = new java.awt.GridBagConstraints();
+        gbConstraints.gridx = 1;
+        gbConstraints.gridy = gridRow;
+        gbConstraints.fill = GridBagConstraints.BOTH;
+        gbConstraints.weightx = 0.0;
+        gbConstraints.weighty = 0.0;
+        gbConstraints.insets = new java.awt.Insets((int) (padding), 0, 0, 0); 
+        add(cp, gbConstraints);
+        this.addMouseMotionListener(cp);
+
+        OHLCChartPainter ylp = new chart.painter.YVolScalePainter();
+        ylp.setOHLCData(mydata);
+        cp.setChartDef(chartDef);
+        cp.addChartPainter(ylp);       
+        cp.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+
+    }
+
+    
+    private ChartPanel setupVolChart(int gridRow) {
+        ChartPanel cp = new ChartPanel();
+        cp.setDoubleBuffered(true);
+     //   cp.setBackground(Color.lightGray);
+        cp.setChartDef(chartDef);
+        
+        int emHeight = cp.getFontMetrics(mainChart.getFont()).getHeight();        
+            
+        int fixedHeight = 6 * emHeight;
+     
+
+        cp.setPreferredSize(new Dimension(em_width * 2, em_width * 6));
+        cp.setMinimumSize(new Dimension(em_width * 2, em_width * 6));
+        cp.setMaximumSize(new Dimension(em_width * 2, em_width * 6));  
+        
+        GridBagConstraints gbConstraints;
+        gbConstraints = new java.awt.GridBagConstraints();
+        gbConstraints.gridx = 0;
+        gbConstraints.gridy = gridRow;
+        gbConstraints.fill = GridBagConstraints.BOTH;
+        gbConstraints.weightx = 1.0;
+        gbConstraints.weighty = 0.0;
+        gbConstraints.insets = new java.awt.Insets((int) (padding), 0, 0, 0); 
+
+        add(cp, gbConstraints);
+
+        OHLCChartPainter pc = new chart.painter.VolChartPainter();
+        pc.setOHLCData(mydata);
+        cp.addChartPainter(pc);
+        
+        cp.addChartPainter(new ChartCrossPainter());
+
+        this.addMouseMotionListener(cp);
+
+        cp.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+       
+        cp.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+
+      //  Globals.se.addQuoteReceiver(this);
+
+        
+        return cp;
 
     }
 
@@ -198,25 +284,23 @@ public class MMChart extends JPanel  implements QuoteReceiver{
 
     private void setupLayout() {
         removeAll();
-
-        Border redborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0));
-        Border blueborder = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255));
-
-        GridBagLayout layout = new GridBagLayout();
-        setLayout(layout);
+        
+        setLayout(new GridBagLayout());
 
         chartDef = new ChartDef();
         chartDef.x_unit_width = 3.0;
 
-        setupMainChart();
+        setupMainChart(0);
+        setupMainYLegend(0);
+
         chartDef.mainChart = mainChart;
-        setupYLegend();
-        setupXLegend();
+        
+        this.setupVolChart(1);
+        this.setupVolYLegend(1);
+
+        setupXLegend(2);
 
 
-        mainChart = new ChartPanel();
-        mainChart.setPreferredSize(new Dimension(100, 40));
-        mainChart.setBackground(Color.blue);
     }
 
     int em_width;
@@ -225,6 +309,11 @@ public class MMChart extends JPanel  implements QuoteReceiver{
     public void paint(Graphics g) {
         em_width = g.getFontMetrics().stringWidth("M");
         // this.removeAll();
+        
+        if (xLegend==null){
+            super.paint(g);
+            return;
+        }
 
         // repaint();
         //  setupLayout();
@@ -265,9 +354,9 @@ public class MMChart extends JPanel  implements QuoteReceiver{
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-     //   System.out.printf("Mouse Moved\n");
+        //   System.out.printf("Mouse Moved\n");
         // mainChart.repaint();
-  //      xLegend.revalidate();
+        //      xLegend.revalidate();
         xLegend.repaint();
     }//GEN-LAST:event_formMouseMoved
 
@@ -287,10 +376,12 @@ public class MMChart extends JPanel  implements QuoteReceiver{
     @Override
     public void UpdateQuote(Quote q) {
 
-                mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(),60000*1);
-                int s = mydata.size();
-                System.out.printf("Size %d\n",s);
-       repaint();
+        mydata = Globals.se.getOHLCdata(Globals.se.getDefaultStock(), 60000 * 1);
+        int s = mydata.size();
+        System.out.printf("Size %d\n", s);
+        repaint();
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+
 }

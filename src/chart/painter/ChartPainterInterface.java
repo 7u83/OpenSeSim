@@ -25,69 +25,18 @@
  */
 package chart.painter;
 
+import chart.ChartPanel;
+import chart.ChartDef;
 import chart.ChartDef;
 import chart.ChartPanel;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
-import sesim.MinMax;
-import sesim.OHLCData;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-abstract public class ChartPainter implements ChartPainterInterface{
-
-    protected int em_size;
-
-    /**
-     *
-     */
-    protected JPanel parent;
-    
-    /**
-     *
-     * @param p
-     */
-    @Override
-    public void setParent(JPanel p){
-        parent=p;
-        
-    }
-   
-/*    public abstract interface DataProvider {
-
-        abstract OHLCData get();
-    }
-
-    DataProvider dataProvider = null;
-
-    public void setDataProvider(DataProvider dataProvider) {
-        this.dataProvider = dataProvider;
-    }
-*/
-
-    /**
-     * Init method scould be called before painting the chart
-     *
-     * @param g Graphics context
-     */
-    protected final void init(Graphics2D g) {
-
-        // Calculate the number of pixels for 1 em
-        em_size = g.getFontMetrics().stringWidth("M");
-
-    }
-
- //   protected float y_scaling;
-//   protected int y_height;
-//    protected float y_min;
-//   protected float y_max;
-
-
-
-    @Override
+public interface ChartPainterInterface {
     abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
-
+    abstract public void setParent(JPanel parent);
 }

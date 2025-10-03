@@ -26,11 +26,11 @@
 package chart;
 
 import chart.painter.CandleStickChartPainter;
-import chart.painter.XLegendPainter;
+import chart.painter.XScalePainter;
 import chart.painter.ChartCrossPainter;
 import chart.painter.LineChartPainter;
 import chart.painter.OHLCChartPainter;
-import chart.painter.YLegendPainter;
+import chart.painter.YScalePainter;
 import gui.Globals;
 import sesim.Exchange.QuoteReceiver;
 import sesim.MinMax;
@@ -153,7 +153,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
         this.xScrollBar.setMaximum(0);
 
-        p = new XLegendPainter();
+        p = new XScalePainter();
         p.setOHLCData(mydata);
 
         xLegend.addChartPainter(p);
@@ -190,7 +190,7 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         p.setOHLCData(mysma2);
         chart.addChartPainter(p);
 
-        OHLCChartPainter yp = new YLegendPainter(/*chart*/);
+        OHLCChartPainter yp = new YScalePainter(/*chart*/);
 //        yp.setDataProvider(this);
         yp.setOHLCData(mydata);
 
@@ -210,9 +210,9 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
         ctxMenu = new javax.swing.JPopupMenu();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
-        chart = new sesim.ChartPanel();
-        yLegend = new sesim.ChartPanel();
-        xLegend = new sesim.ChartPanel();
+        chart = new chart.ChartPanel();
+        yLegend = new chart.ChartPanel();
+        xLegend = new chart.ChartPanel();
         xScrollBar = new javax.swing.JScrollBar();
 
         jMenu1.setText("jMenu1");
@@ -366,13 +366,13 @@ public class MasterChart extends javax.swing.JPanel implements QuoteReceiver {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private sesim.ChartPanel chart;
+    private chart.ChartPanel chart;
     private javax.swing.JPopupMenu ctxMenu;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
-    private sesim.ChartPanel xLegend;
+    private chart.ChartPanel xLegend;
     private javax.swing.JScrollBar xScrollBar;
-    private sesim.ChartPanel yLegend;
+    private chart.ChartPanel yLegend;
     // End of variables declaration//GEN-END:variables
 
     @Override

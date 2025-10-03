@@ -26,7 +26,7 @@
 package chart.painter;
 
 import chart.ChartDef;
-import sesim.ChartPanel;
+import chart.ChartPanel;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import sesim.OHLCData;
@@ -37,7 +37,7 @@ import sesim.OHLCDataItem;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class XLegendPainter extends OHLCChartPainter {
+public class XScalePainter extends OHLCChartPainter {
 
     private String getTimeStrAt(OHLCData data, int unit) {
 

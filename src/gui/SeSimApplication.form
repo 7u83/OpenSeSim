@@ -45,6 +45,21 @@
         </Container>
       </SubComponents>
     </Container>
+    <Container class="javax.swing.JFrame" name="jFrame1">
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="400" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="300" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+    </Container>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="fileMenu">
@@ -302,7 +317,7 @@
                   <Component id="jButton2" min="-2" pref="67" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="stopButton" min="-2" pref="63" max="-2" attributes="0"/>
-                  <EmptySpace pref="375" max="32767" attributes="0"/>
+                  <EmptySpace pref="384" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="clock" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
@@ -434,13 +449,6 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="chart.MasterChart" name="chart">
-              <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
-                  <JSplitPaneConstraints position="left"/>
-                </Constraint>
-              </Constraints>
-            </Component>
           </SubComponents>
         </Container>
         <Component class="gui.orderbook.QuoteVertical" name="quoteVertical1">
@@ -450,7 +458,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Container class="javax.swing.JSplitPane" name="jSplitPane5">
+        <Container class="javax.swing.JSplitPane" name="pnunf">
           <Properties>
             <Property name="orientation" type="int" value="0"/>
           </Properties>
@@ -469,6 +477,17 @@
                 </Constraint>
               </Constraints>
             </Component>
+            <Container class="chart.MMChart" name="mmchart">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+                  <JSplitPaneConstraints position="right"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+                <Property name="useNullLayout" type="boolean" value="true"/>
+              </Layout>
+            </Container>
           </SubComponents>
         </Container>
       </SubComponents>

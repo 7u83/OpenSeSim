@@ -26,7 +26,7 @@
 package chart.painter;
 
 import chart.ChartDef;
-import sesim.ChartPanel;
+import chart.ChartPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -156,6 +156,12 @@ public abstract class OHLCChartPainter extends ChartPainter {
         y_scaling = dim.height / minmax.getDiff();
         y_min = minmax.getMin();
         y_max = minmax.getMax();
+        
+            y_min = minmax.getMin();
+    y_max = minmax.getMax();
+    y_height = dim.height;
+    y_scaling = (float) y_height / (y_max - y_min);  // Pixel pro Einheit
+        
 
     }
    
@@ -169,7 +175,9 @@ public abstract class OHLCChartPainter extends ChartPainter {
         }
          */
 //        return (dim.height - ((y - minmax.getMin()) * y_scaling));
-        return (y_height - ((y - y_min) * y_scaling));
+        //return (y_height - ((y - y_min) * y_scaling));
+        
+           return y_height - (y - y_min) * y_scaling;
 
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 7u83 <7u83@mail.ru>
+ * Copyright (c) 2025, tube
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,15 +23,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package chart.painter;
 
 import chart.ChartDef;
+import chart.ChartPanel;
 import java.awt.Graphics2D;
+import sesim.MinMax;
 
 /**
  *
- * @author 7u83 <7u83@mail.ru>
+ * @author tube
  */
-public interface ChartPainterInterface {
-    abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
+public class YVolScalePainter extends YScalePainter {
+
+    @Override
+    protected MinMax getMinMax(int first_bar, int last_bar) {
+        MinMax m = data.getVolMinMax(first_bar, last_bar);
+        m.setMin(0);
+        m.setMax(m.getMax() + m.getMax() / 10);
+    //    m.setMax(100);
+        return m;
+    }
+
+        @Override
+public void drawChart(Graphics2D g, ChartPanel p, ChartDef def){
+    super.drawChart(g, p, def);
+}
+    
 }

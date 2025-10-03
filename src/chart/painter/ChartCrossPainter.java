@@ -26,7 +26,7 @@
 package chart.painter;
 
 import chart.ChartDef;
-import sesim.ChartPanel;
+import chart.ChartPanel;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import sesim.OHLCDataItem;

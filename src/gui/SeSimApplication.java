@@ -173,6 +173,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane2 = new javax.swing.JSplitPane();
         orderBookNew1 = new gui.orderbook.OrderBook();
+        jFrame1 = new javax.swing.JFrame();
         jPanel2 = new javax.swing.JPanel();
         stopButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
@@ -183,11 +184,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
         orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
-        chart = new chart.MasterChart();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
-        jSplitPane5 = new javax.swing.JSplitPane();
+        pnunf = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
-        mMChart2 = new chart.MMChart();
+        mmchart = new chart.MMChart();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -227,6 +227,17 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane2.setLeftComponent(orderBookNew1);
 
         jSplitPane1.setTopComponent(jSplitPane2);
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(640, 480));
@@ -290,7 +301,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 375, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 384, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(clock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -319,16 +330,15 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane4.setDividerLocation(300);
         jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane4.setBottomComponent(orderBooksHorizontal1);
-        jSplitPane4.setLeftComponent(chart);
 
         jSplitPane3.setRightComponent(jSplitPane4);
         jSplitPane3.setLeftComponent(quoteVertical1);
 
-        jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane5.setTopComponent(statistics1);
-        jSplitPane5.setRightComponent(mMChart2);
+        pnunf.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        pnunf.setTopComponent(statistics1);
+        pnunf.setRightComponent(mmchart);
 
-        jSplitPane3.setLeftComponent(jSplitPane5);
+        jSplitPane3.setLeftComponent(pnunf);
 
         getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
 
@@ -588,13 +598,17 @@ public class SeSimApplication extends javax.swing.JFrame {
         Globals.se.terminate();
         Globals.se.reset();
 //        chart.initChart();
-        chart.reset();
-        chart.invalidate();
-        chart.repaint();
+//        chart.reset();
+//        chart.invalidate();
+        //chart.repaint();
 //       this.orderBookPanel.invalidate();
 //        this.orderBookPanel.repaint();
 
-        this.mMChart2.reset();
+        //this.mMChart2.reset();
+        //this.mmchart=new chart.MMChart();
+        //((chart.MMChart)this.mmchart).reset();
+        //this.mMChart1.reset();
+        this.mmchart.reset();
 
     }
 
@@ -921,7 +935,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JSpinner accelSpinner;
-    private chart.MasterChart chart;
     private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;
     private javax.swing.JMenuItem closeMenuItem;
@@ -934,6 +947,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel2;
@@ -946,14 +960,14 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JSplitPane jSplitPane4;
-    private javax.swing.JSplitPane jSplitPane5;
     private javax.swing.JTextArea jTextArea1;
-    private chart.MMChart mMChart2;
     private javax.swing.JMenuBar menuBar;
+    private chart.MMChart mmchart;
     private javax.swing.JMenuItem openMenuItem;
     private gui.orderbook.OrderBook orderBookNew1;
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
     private javax.swing.JMenuItem pasteMenuItem;
+    private javax.swing.JSplitPane pnunf;
     private gui.orderbook.QuoteVertical quoteVertical1;
     private javax.swing.JMenuItem resetToDefaultsMenuItem;
     private javax.swing.JButton runButton;

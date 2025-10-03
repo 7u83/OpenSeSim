@@ -29,16 +29,16 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import chart.ChartDef;
-import sesim.ChartPanel;
+import chart.ChartPanel;
 import sesim.Scheduler;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class XLegendDetail extends XLegendPainter {
+public class XScaleDetailPainter extends XScalePainter {
 
-    public XLegendDetail() {
+    public XScaleDetailPainter() {
 
     }
 

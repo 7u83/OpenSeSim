@@ -26,7 +26,6 @@
 package chart;
 
 import javax.swing.JScrollBar;
-import sesim.ChartPanel;
 
 /**
  *

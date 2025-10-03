@@ -1,4 +1,4 @@
-package sesim;
+package chart;
 
 import chart.ChartDef;
 import chart.painter.ChartPainter;
@@ -14,26 +14,38 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 
 import java.util.ArrayList;
+import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener {
+public class ChartPanel extends JPanel implements AdjustmentListener {
 
     public JScrollBar x_scrollbar = null;
     ChartDef chartDef;
     public boolean mouseEntered = false;
 
     /**
-     * Creates new form Chart1
+     * Constructs a new ChartPanel and initializes its components.
+     *
+     * This constructor sets up the default UI elements and prepares the panel
+     * for adding chart painters.
+     * 
      */
     public ChartPanel() {
         initComponents();
+    }
 
-        //setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-
+    /**
+     * Returns the height of one "em" in pixels for the current font of this
+     * component.
+     *
+     * @return he height of one "em" in pixels
+     */
+    public int getEmHeight() {
+        return this.getFontMetrics(this.getFont()).getHeight();
     }
 
     /**
@@ -62,7 +74,9 @@ public class ChartPanel extends javax.swing.JPanel implements AdjustmentListener
      * @param p
      */
     public void addChartPainter(ChartPainter p) {
+        p.setParent(this);        
         chartPainters.add(p);
+       
     }
 
     public void deleteAllChartPinters() {
