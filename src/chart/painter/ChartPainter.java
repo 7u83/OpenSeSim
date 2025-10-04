@@ -44,15 +44,15 @@ abstract public class ChartPainter implements ChartPainterInterface{
     /**
      *
      */
-    protected JPanel parent;
+    protected ChartPanel cparent;
     
     /**
      *
      * @param p
      */
     @Override
-    public void setParent(JPanel p){
-        parent=p;
+    public void setParent(ChartPanel p){
+        cparent=p;
         
     }
    

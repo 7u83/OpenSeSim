@@ -38,5 +38,5 @@ import javax.swing.JPanel;
  */
 public interface ChartPainterInterface {
     abstract public void drawChart(Graphics2D g, ChartPanel p, ChartDef def);
-    abstract public void setParent(JPanel parent);
+    abstract public void setParent(ChartPanel parent);
 }

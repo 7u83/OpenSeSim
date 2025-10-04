@@ -48,7 +48,7 @@ public class VolChartPainter extends OHLCChartPainter {
     @Override
     void drawItem(Graphics2D g, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
        
-        g.setColor(Color.GRAY);
+        g.setColor(Color.BLUE);
 
         g.drawLine(x, (int) getY(0), x, (int) (getY(i.volume)));
         
@@ -60,8 +60,6 @@ public class VolChartPainter extends OHLCChartPainter {
    
     //    g.fillRect(0, 0, 100, 20);
         
-      //  System.out.printf("THE VOLUME Y0:%d Y:%d\n", (int)getY(0),(int) (getY(i.volume)));
-        System.out.printf("THE VOLUME:%f \n", i.volume);
         
 
 

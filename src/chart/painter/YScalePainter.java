@@ -61,8 +61,8 @@ public void drawChart(Graphics2D g, ChartPanel p, ChartDef def) {
 
     OHLCData da = getData();
 
-    Dimension adim = def.mainChart.getSize();
-    Dimension dim = this.parent.getSize();
+    //Dimension adim = def.mainChart.getSize();
+    Dimension dim = this.cparent.getSize();
     int first_bar = getFirstBar(master);
     int last_bar = first_bar + getBars(master, def);
     MinMax minmax = this.getMinMax(first_bar, last_bar);

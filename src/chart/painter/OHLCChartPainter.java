@@ -62,8 +62,11 @@ public abstract class OHLCChartPainter extends ChartPainter {
     }
 
     protected int getFirstBar(ChartPanel p) {
-        if (p.x_scrollbar != null) {
-            return p.x_scrollbar.getValue();
+        if (cparent.x_scrollbar != null) {
+            
+            int v = cparent.x_scrollbar.getValue();
+            return v;
+            
         }
         return 0;
     }
@@ -94,7 +97,7 @@ public abstract class OHLCChartPainter extends ChartPainter {
      * @return Number of bars
      */
     protected int getBars(ChartPanel p, ChartDef def) {
-        Dimension dim = p.getSize();
+        Dimension dim = cparent.getSize();
         return (int) (dim.width / (def.x_unit_width * em_size));
     }
 
@@ -216,6 +219,8 @@ public abstract class OHLCChartPainter extends ChartPainter {
         init(g);
 
         iwidth = (float) ((def.x_unit_width * em_size) * 0.9f);
+        
+        
 
         int first_bar = getFirstBar(p);
 
@@ -225,6 +230,8 @@ public abstract class OHLCChartPainter extends ChartPainter {
 
         int last_bar = first_bar + bars + 1;
 
+        System.out.printf("DRAW FROM %d %d\n",first_bar,last_bar);
+        
         MinMax minmax = getMinMax(first_bar, last_bar);
 
         this.initGetY(minmax, dim);

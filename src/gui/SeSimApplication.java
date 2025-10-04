@@ -184,10 +184,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
         orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
+        mMChart1 = new chart.MMChart();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         pnunf = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
-        mmchart = new chart.MMChart();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -330,13 +330,13 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane4.setDividerLocation(300);
         jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane4.setBottomComponent(orderBooksHorizontal1);
+        jSplitPane4.setLeftComponent(mMChart1);
 
         jSplitPane3.setRightComponent(jSplitPane4);
         jSplitPane3.setLeftComponent(quoteVertical1);
 
         pnunf.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         pnunf.setTopComponent(statistics1);
-        pnunf.setRightComponent(mmchart);
 
         jSplitPane3.setLeftComponent(pnunf);
 
@@ -608,7 +608,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         //this.mmchart=new chart.MMChart();
         //((chart.MMChart)this.mmchart).reset();
         //this.mMChart1.reset();
-        this.mmchart.reset();
+        this.mMChart1.reset();
 
     }
 
@@ -961,8 +961,8 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JSplitPane jSplitPane4;
     private javax.swing.JTextArea jTextArea1;
+    private chart.MMChart mMChart1;
     private javax.swing.JMenuBar menuBar;
-    private chart.MMChart mmchart;
     private javax.swing.JMenuItem openMenuItem;
     private gui.orderbook.OrderBook orderBookNew1;
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
