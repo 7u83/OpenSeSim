@@ -40,7 +40,7 @@ public class MainChart extends chart.Chart {
 
       //xl_bgcolor = Color.ORANGE;
       //  xl_color = Color.RED;
-        this.xl_height = 3;
+        //this.xl_height = 3;
 
     }
 
@@ -52,7 +52,7 @@ public class MainChart extends chart.Chart {
         main.height = 0.8f;
         main.type = this.chart_type;
         main.data = data;
-       // main.bgcolor = Color.BLUE;
+        main.bgcolor = Color.YELLOW;
         main.padding_top = 0.02f;
         main.log = logMenu.isSelected();
         addChart(main);
@@ -64,7 +64,7 @@ public class MainChart extends chart.Chart {
         vol.data = data;
       //  vol.bgcolor = Color.GRAY;
 
-        addChart(vol);
+ //       addChart(vol);
     }
 
     private void showCtxMenu(java.awt.event.MouseEvent evt) {
@@ -266,13 +266,15 @@ public class MainChart extends chart.Chart {
 
     private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
         double n = evt.getPreciseWheelRotation() * (-1.0);
-
+        double u = this.getXUnitWidth();
+        
         if (n < 0) {
-            if (this.x_unit_width > 0.3) {
-                this.x_unit_width += 0.1 * n;
+            if (u > 0.3) {
+                this.setXUnitWidth(u + 0.1 * n);
             }
         } else {
-            this.x_unit_width += 0.1 * n;
+            //this.x_unit_width += 0.1 * n;
+            this.setXUnitWidth(u + 0.1 * n);
         }
 
         this.invalidate();
