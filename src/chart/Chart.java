@@ -562,6 +562,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             ctx.c_mm.setLog(d.log);
 
             Graphics2D g2 = (Graphics2D) g.create();
+            ctx.g=g2;
+            g2.translate(this.leftYAxisAreaWidth * this.emWidth, 0);
+            g2.setClip(clip.x, clip.y, w, (int)(this.xAxisAreaHight*this.emWidth));
             drawMainChart(g2, ctx);
 
             h1 = h1 + subchartwin_height;
@@ -640,6 +643,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         super.paintComponent(g);
+        
+        this.setDoubleBuffered(true);
 
         // Calculate the number of pixels for 1 em
     //    emWidth = g.getFontMetrics().stringWidth("M");
