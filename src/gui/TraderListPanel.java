@@ -34,6 +34,8 @@ import java.util.TimerTask;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -62,7 +64,6 @@ public class TraderListPanel extends javax.swing.JPanel {
         sesim.Quote q = Globals.se.getLastQuoete();
         double price = q == null ? 0 : q.price;
 
-   
         int size = Globals.se.traders.size();
         model.setRowCount(size);
         for (int i = 0; i < size; i++) {
@@ -77,7 +78,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             model.setValueAt(wealth, i, 4);
         }
         List l = list.getRowSorter().getSortKeys();
-        if (l.size() > 0) {
+        if (!l.isEmpty()) {
             list.getRowSorter().allRowsChanged();
         } else {
             model.fireTableDataChanged();
@@ -109,7 +110,17 @@ public class TraderListPanel extends javax.swing.JPanel {
         };
         list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(3));
         list.getColumnModel().getColumn(3).setCellRenderer(new NummericCellRenderer(0));
-        list.getColumnModel().getColumn(4).setCellRenderer(new NummericCellRenderer(3));        
+        list.getColumnModel().getColumn(4).setCellRenderer(new NummericCellRenderer(3));
+
+        // ID-Spalte zentrieren
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        list.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+
+        // ID-Spalte schmaler machen
+        list.getColumnModel().getColumn(0).setPreferredWidth(50); // z.B. 50 Pixel
+        list.getColumnModel().getColumn(0).setMinWidth(30);
+        list.getColumnModel().getColumn(0).setMaxWidth(70);
         timer.schedule(updater, 0, 1000);
 
     }
@@ -195,7 +206,7 @@ public class TraderListPanel extends javax.swing.JPanel {
                 {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Name", "Money", "Shares", "Wealth"
+                "ID", "Name", "Cash", "Shares", "Total"
             }
         ) {
             Class[] types = new Class [] {

@@ -554,7 +554,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
              */
             // Caclulate the top padding 
             int pad_top = (int) (subchartwin_height * d.paddingTop);
-            ctx.rect = new Rectangle(0, pad_top, pwidth, subchartwin_height - pad_top);
+            pad_top = this.emWidth;
+            int pad_bot = this.emWidth;
+            ctx.rect = new Rectangle(0, pad_top, pwidth, subchartwin_height - pad_top - pad_bot);
 //            ctx.scaling = (float) ctx.rect.height / (c_mm.getMax() - c_mm.getMin());
 //            ctx.min = c_mm.getMin();
             //ctx.g = g;

@@ -138,7 +138,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             System.out.printf("Base %s\n", base);
             Integer count = t.getInt("Count");
             Double shares = t.getDouble("Shares");
-            Double money = t.getDouble("Money");
+            Double money = t.getDouble("Cash");
 
             Boolean enabled = t.getBoolean("Enabled");
             if (!enabled) {
@@ -150,7 +150,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
 
-                trader = this.createTraderNew(Globals.se, id, t.getString("Name") + i1, money, shares, strategy);
+                trader = this.createTraderNew(Globals.se, id, t.getString("Name")+"-" + i1, money, shares, strategy);
 
                 Globals.se.traders.add(trader);
 
@@ -201,6 +201,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
+        clock1 = new gui.Clock();
+        traderListPanel1 = new gui.TraderListPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -353,6 +355,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane5.setTopComponent(statistics1);
+        jSplitPane5.setRightComponent(clock1);
+        jSplitPane5.setBottomComponent(traderListPanel1);
 
         jSplitPane3.setLeftComponent(jSplitPane5);
 
@@ -926,6 +930,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JScrollPane chartSrollPane;
     private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;
+    private gui.Clock clock1;
     private javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JMenuItem editExchangeMenuItem;
@@ -965,6 +970,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem simMenuStop;
     private gui.Statistics statistics1;
     private javax.swing.JButton stopButton;
+    private gui.TraderListPanel traderListPanel1;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JCheckBoxMenuItem viewTraderListCheckBox;
     // End of variables declaration//GEN-END:variables

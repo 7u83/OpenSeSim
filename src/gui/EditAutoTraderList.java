@@ -145,7 +145,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             if (!e) {
                 continue;
             }
-            money += (Double) list.getValueAt(r, list.getColumn("Money").getModelIndex());
+            money += (Double) list.getValueAt(r, list.getColumn("Cash").getModelIndex());
             shares += (Double) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
 //            System.out.printf("Row: %d %f %f\n", r, money, shares);
         }
@@ -208,7 +208,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
                 {"Bob",  new Integer(1), null,  new Double(1000.0),  new Double(100.0),  new Boolean(true)}
             },
             new String [] {
-                "Name", "Count", "Strategy", "Money", "Shares", "Enabled"
+                "Name", "Count", "Strategy", "Cash", "Shares", "Enabled"
             }
         ) {
             Class[] types = new Class [] {
@@ -220,6 +220,9 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(list);
+        if (list.getColumnModel().getColumnCount() > 0) {
+            list.getColumnModel().getColumn(1).setPreferredWidth(30);
+        }
 
         summary.setText("jLabel1");
 

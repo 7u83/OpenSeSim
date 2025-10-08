@@ -61,6 +61,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -90,6 +91,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
         return se;
     }
 
+    @Override
     public abstract void start();
 
 }
