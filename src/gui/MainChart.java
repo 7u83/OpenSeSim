@@ -49,25 +49,28 @@ public class MainChart extends chart.Chart {
     protected void setupSubCharts() {
         //  charts = new ArrayList<>();
         Chart.SubChartDef main = new Chart.SubChartDef();
-        main.height = 1.0f;
+        main.height = 0.8f;
         main.type = this.chart_type;
         main.data = data;
-        main.bgcolor = null; //Color.YELLOW;
+        main.bgcolor = Color.WHITE;
         main.paddingTop = 0.02f;
         //main.rightYData(data);
         main.log = logMenu.isSelected();
         main.rightYData=data;
+        main.rightYColor=Color.WHITE;
         
         addChart(main);
 
-/*        Chart.SubChartDef vol = new Chart.SubChartDef();
+        Chart.SubChartDef vol = new Chart.SubChartDef();
         vol.height = 0.2f;
         vol.paddingTop = 0.08f;
-        vol.type = ChartType.VOL;
-        vol.data = data;*/
-      //  vol.bgcolor = Color.GRAY;
+       vol.type = ChartType.VOL;
+        vol.data = data;
+        vol.bgcolor = Color.WHITE;
+           vol.rightYData=data;
+    vol.rightYColor=Color.WHITE;
 
- //       addChart(vol);
+       addChart(vol);
     }
 
     private void showCtxMenu(java.awt.event.MouseEvent evt) {

@@ -28,13 +28,11 @@ import sesim.MinMax;
  */
 public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollable {
 
-
     private int emWidth;
 
     // hight of x-axis area in em 
     private int xAxisAreaHight = 3;
 
-    
     private double x_unit_width = 1.0;
 
     private float candleWidth = (float) ((x_unit_width * emWidth) * 0.9f);
@@ -335,9 +333,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     private void drawBarItem(DrawCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
         Graphics2D g = ctx.g;
-        g.setColor(Color.BLACK);
+        g.setColor(Color.gray);
 
         g.drawLine(x, (int) ctx.getY(0), x, (int) ctx.getY(i.volume));
+             float w = candleWidth;
+            //float h = (int) (ctx.getY(0) - ctx.getY(i.close));
+      g.fillRect(x,(int) ctx.getY(i.volume),(int)w, (int) ctx.getY(0) );
 
         Rectangle r = ctx.rect;
     }
@@ -373,10 +374,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         Graphics2D g = ctx.g;
         Rectangle clip = g.getClipBounds();
-        
-        
-        
-                // Draw background
+
+        // Draw background
         if (d.bgcolor != null) {
             Color cur = ctx.g.getColor();
             ctx.g.setColor(d.rightYColor);
@@ -384,7 +383,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             //g.drawRect(clip_bounds.x, h1, clip.width, subchartwin_height);
             ctx.g.setColor(cur);
         }
-        
 
         Rectangle dim;
         dim = clip; //this.clip_bounds;
@@ -397,7 +395,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         float y1 = ctx.getY(ctx.c_mm.getMin(false));
         float y2 = ctx.getY(ctx.c_mm.getMax(false));
         float ydiff = y1 - y2;
-//        System.out.printf("%s y1: %f, y2: %f, diff %f\n", Boolean.toString(c_mm.isLog()), y1, y2, ydiff);
 
         for (int yp = (int) y2; yp < y1; yp += emWidth * 5) {
             g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + emWidth, yp);
@@ -424,27 +421,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             Color cur = ctx.g.getColor();
             ctx.g.setColor(d.bgcolor);
             ctx.g.fillRect(clip.x, clip.y, clip.width, clip.height);
+           ctx.g.setColor(Color.BLACK);
+            ctx.g.drawLine(clip.x, clip.y, clip.x+clip.width, clip.y);
             //g.drawRect(clip_bounds.x, h1, clip.width, subchartwin_height);
             ctx.g.setColor(cur);
         }
 
         ctx.c_yscaling = ctx.rect.height / ctx.c_mm.getDiff();
-//        ctx.g.setClip(null);
-        // ctx.g.setColor(Color.ORANGE);
-        //     ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);
-        //   ctx.g.drawRect(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);     
-        
-        
-        
-    //  this.drawYLegend(ctx);
-        ///  ctx.g.setColor(Color.ORANGE);
 
-     //   ctx.g.setClip(clip_bounds.x, clip_bounds.y, clip_bounds.width - yw, clip_bounds.height);
-        //       ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width-yw, ctx.rect.height);
-
-        //       first_bar = (int) (clip.x / (this.x_unit_width * this.emWidth));
-        //      last_bar = 1 + (int) ((clip.x + clip.width - (this.rightYAxisAreaWidth * emWidth)) / (this.x_unit_width * this.emWidth));
-        //       g.translate(this.leftYAxisAreaWidth*this.emWidth, 0);
         OHLCDataItem prev = null;
         for (int i = first_bar; i < last_bar && i < data.size(); i++) {
             OHLCDataItem di = data.get(i);
@@ -489,10 +473,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         public boolean leftYAxis = false;
         public boolean righYAxis = true;
-        
+
         public OHLCData rightYData = null;
-        public Color rightYColor=Color.GREEN;
-        
+        public Color rightYColor = Color.GREEN;
+
         public OHLCData lefttYData = null;
 
         /**
@@ -514,12 +498,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     void drawAll(Graphics2D g) {
 
-        DrawCtx ctx = new DrawCtx();
+    
         Rectangle clip = g.getClipBounds();
-        
-        for (SubChartDef d : charts){
-            
-            
+
+        for (SubChartDef d : charts) {
+
         }
 
         int w = (int) (clip.width - (this.leftYAxisAreaWidth * this.emWidth + this.rightYAxisAreaWidth * this.emWidth));
@@ -534,10 +517,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         //    this.setPreferredSize(new Dimension(pwidth, gdim.height));
         //    this.revalidate();
-        int h1 = 0;
+        int h1 =0;
 
         for (SubChartDef d : charts) {
-
+    DrawCtx ctx = new DrawCtx();
             if (d.data == null) {
                 System.out.printf("Data is null\n");
                 System.exit(0);
@@ -571,7 +554,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
              */
             // Caclulate the top padding 
             int pad_top = (int) (subchartwin_height * d.paddingTop);
-            ctx.rect = new Rectangle(0, h1 + pad_top, pwidth, subchartwin_height - pad_top);
+            ctx.rect = new Rectangle(0, pad_top, pwidth, subchartwin_height - pad_top);
 //            ctx.scaling = (float) ctx.rect.height / (c_mm.getMax() - c_mm.getMin());
 //            ctx.min = c_mm.getMin();
             //ctx.g = g;
@@ -583,25 +566,23 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             Graphics2D g2 = (Graphics2D) g.create();
             ctx.g = g2;
-            g2.translate(this.leftYAxisAreaWidth * this.emWidth, 0);
-            g2.setClip(clip.x, clip.y, w, subchartwin_height);
+            g2.translate(this.leftYAxisAreaWidth * this.emWidth, h1);
+           g2.setClip(clip.x, clip.y, w, subchartwin_height);
+         //   g2.setClip(0, 0, w, subchartwin_height);
+            if (d.bgcolor==Color.WHITE){
+                System.out.print("White");
+            }
             drawMainChart(ctx, d);
             g2.dispose();
-            
-            
+
             ctx.c_yscaling = ctx.rect.height / ctx.c_mm.getDiff();
-//        ctx.g.setClip(null);
-        // ctx.g.setColor(Color.ORANGE);
-        //     ctx.g.setClip(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);
-        //   ctx.g.drawRect(ctx.rect.x, ctx.rect.y, ctx.rect.width, ctx.rect.height);     
-        
-        
-            g2 = (Graphics2D)g.create();
+
+            g2 = (Graphics2D) g.create();
             ctx.g = g2;
-            ctx.g.translate(this.leftYAxisAreaWidth*this.emWidth+w,0);
-            ctx.g.setClip(clip.x,clip.y, this.rightYAxisAreaWidth*this.emWidth, subchartwin_height);
-        
-          this.drawYLegend(ctx,d);
+            ctx.g.translate(this.leftYAxisAreaWidth * this.emWidth + w, h1);
+            ctx.g.setClip(clip.x, clip.y, this.rightYAxisAreaWidth * this.emWidth, subchartwin_height);
+
+            this.drawYLegend(ctx, d);
             g2.dispose();
 
             h1 = h1 + subchartwin_height;
@@ -626,38 +607,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             return;
         }
 
-        /*    int pwidth = (int) (emWidth * x_unit_width * (num_bars + 1)) + clip_bounds.width;
-        
-     
-
-        this.setPreferredSize(new Dimension(pwidth, gdim.height));
-         this.revalidate();
-
-        int bww = (int) (data.size() * (this.x_unit_width * this.emWidth));
-        int p0 = pwidth - clip_bounds.width - (clip_bounds.width - (int) (13 * emWidth));
-        if (p0 < 0) {
-            p0 = 0;
-        }*/
- /*    JViewport vp = (JViewport) this.getParent();
-        Point pp = vp.getViewPosition();
-        Point cp = vp.getViewPosition();
-        
-        
-
-        if (autoScroll && this.lastvpos != cp.x) {
-            autoScroll = false;
-        }
-
-        if (!autoScroll && cp.x >= p0) {
-            autoScroll = true;
-        }
-
-        if (autoScroll) {
-            vp.setViewPosition(new Point(p0, 0));
-            lastvpos = p0;
-
-        }
-         */
         this.charts = new ArrayList<>();
         setupSubCharts();
 
@@ -698,11 +647,53 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.emWidth));
         last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.rightYAxisAreaWidth * emWidth)) / (this.x_unit_width * this.emWidth));
 
-//        num_bars = data.size(); // + (int) (clip_bounds.width / (this.x_unit_width * this.em_width))+5;
-//        num_bars=1;
         c_font_height = g.getFontMetrics().getHeight();
 
         draw((Graphics2D) g);
+    }
+
+    private int lastMaxPos = 0;
+
+    void updateView() {
+        JViewport vp = (JViewport) this.getParent();
+        Rectangle clip = vp.getViewRect();
+
+        Point pp = vp.getViewPosition();
+
+        JScrollPane scrollPane = (JScrollPane) vp.getParent();
+
+        // 3. Zugriff auf die horizontale JScrollBar
+        JScrollBar hsb = scrollPane.getHorizontalScrollBar();
+
+        int maxPos;
+        maxPos = this.getPreferredSize().width - vp.getWidth();
+
+        int pwidth = (int) (x_unit_width * (emWidth * (num_bars + 1)) + emWidth * (20 + this.leftYAxisAreaWidth));
+        if (pwidth < clip.width) {
+            pwidth = clip.width;
+        }
+
+        Dimension gdim;
+        gdim = this.getParent().getSize();
+        this.setPreferredSize(new Dimension(pwidth, gdim.height));
+
+        if (autoScroll) {
+            System.out.printf("LASTMAX: %d, MAX:%d,PPX: %d\n", lastMaxPos, maxPos, pp.x);
+            if (pp.x == lastMaxPos || pp.x == maxPos) {
+                lastMaxPos = pwidth - vp.getWidth();
+                int currentYPos = vp.getViewPosition().y;
+                vp.setViewPosition(new Point(lastMaxPos, currentYPos));
+            }
+        }
+
+    }
+
+    @Override
+    public void UpdateQuote(Quote q) {
+        updateView();
+
+        this.revalidate();
+        this.repaint();
     }
 
     /**
@@ -731,77 +722,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private int lastMaxPos = 0;
-
-    void updateView() {
-        JViewport vp = (JViewport) this.getParent();
-        Rectangle clip = vp.getViewRect();
-
-        Point pp = vp.getViewPosition();
-
-        JScrollPane scrollPane = (JScrollPane) vp.getParent();
-
-        // 3. Zugriff auf die horizontale JScrollBar
-        JScrollBar hsb = scrollPane.getHorizontalScrollBar();
-
-        // 4. Die maximale Verschiebungsposition (MaxScrollPos)
-        //    ist der Maximum-Wert (Gesamtbreite) minus der Extent (sichtbare Breite).
-        //    Dieser Wert ist identisch mit hsb.getMaximum() - hsb.getExtent().
-        int maxPos = hsb.getMaximum();
-        maxPos = this.getPreferredSize().width - vp.getWidth();
-
-        // Da hsb.getValue() immer zwischen hsb.getMinimum()
-        /*        
-
-        if (autoScroll && this.lastvpos != cp.x) {
-            autoScroll = false;
-        }
-
-        if (!autoScroll && cp.x >= p0) {
-            autoScroll = true;
-        }
-
-        if (autoScroll) {
-            vp.setViewPosition(new Point(p0, 0));
-            lastvpos = p0;
-
-        }
-         */
-  //      clip.width = clip.width - this.emWidth * (this.leftYAxisAreaWidth + this.rightYAxisAreaWidth);
-
-        int pwidth = (int) (x_unit_width * (emWidth * (num_bars + 1)) + emWidth * (20 + this.leftYAxisAreaWidth));
-        if (pwidth < clip.width) {
-            pwidth = clip.width;
-        }
-
-        //System.out.printf("SETUP: UNITW:%f EM:%d BARS%d, CLIP: %d, PWIDT %d\n",x_unit_width,emWidth,num_bars,clip.width, pwidth);
-//        System.out.printf("GET PWIDTH: %d, VIEW POS: %d, Scroll MAX: %d\n",pwidth-vp.getWidth(),pp.x, maxPos);
-//        System.out.printf("VIEW RECT: X:%d, W: %d PP-X: %d\n", clip.x,clip.width, pp.x-clip.width);
-        Dimension gdim;
-        gdim = this.getParent().getSize();
-        this.setPreferredSize(new Dimension(pwidth, gdim.height));
-
-        if (autoScroll) {
-            System.out.printf("LASTMAX: %d, MAX:%d,PPX: %d\n", lastMaxPos, maxPos, pp.x);
-            if (pp.x == lastMaxPos || pp.x == maxPos) {
-                lastMaxPos = pwidth - vp.getWidth();
-                int currentYPos = vp.getViewPosition().y;
-                vp.setViewPosition(new Point(lastMaxPos, currentYPos));
-            }
-        }
-
-    }
-
-    @Override
-    public void UpdateQuote(Quote q) {
-        updateView();
-
-        this.revalidate();
-        this.repaint();
-    }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
