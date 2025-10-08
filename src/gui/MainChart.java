@@ -49,19 +49,22 @@ public class MainChart extends chart.Chart {
     protected void setupSubCharts() {
         //  charts = new ArrayList<>();
         Chart.SubChartDef main = new Chart.SubChartDef();
-        main.height = 0.8f;
+        main.height = 1.0f;
         main.type = this.chart_type;
         main.data = data;
-        main.bgcolor = Color.YELLOW;
-        main.padding_top = 0.02f;
+        main.bgcolor = null; //Color.YELLOW;
+        main.paddingTop = 0.02f;
+        //main.rightYData(data);
         main.log = logMenu.isSelected();
+        main.rightYData=data;
+        
         addChart(main);
 
-        Chart.SubChartDef vol = new Chart.SubChartDef();
+/*        Chart.SubChartDef vol = new Chart.SubChartDef();
         vol.height = 0.2f;
-        vol.padding_top = 0.08f;
+        vol.paddingTop = 0.08f;
         vol.type = ChartType.VOL;
-        vol.data = data;
+        vol.data = data;*/
       //  vol.bgcolor = Color.GRAY;
 
  //       addChart(vol);
