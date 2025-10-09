@@ -57,6 +57,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+//import sesim.Logger;
 
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
@@ -74,29 +75,22 @@ public class SeSimApplication extends javax.swing.JFrame {
     public SeSimApplication() {
 
         initComponents();
-        
+
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] screens = ge.getScreenDevices();
 
         //Window w = screens[1].getFullScreenWindow();
-            
 //            JFrame dummy = new JFrame(screens[1].getDefaultConfiguration());
-            
-  //          setLocationRelativeTo(dummy);
-  //          dummy.dispose();
-        
-        for (GraphicsDevice gd:screens){
+        //          setLocationRelativeTo(dummy);
+        //          dummy.dispose();
+        for (GraphicsDevice gd : screens) {
             //Window w = gd.getFullScreenWindow();
 
-            
-            
         }
-        
-        
-        
+
         setTitle("");
         boolean init = Globals.prefs.getBoolean("initilized", false);
-        if (!init){
+        if (!init) {
             resetToDefaults();
             Globals.prefs.putBoolean("initilized", true);
         }
@@ -151,7 +145,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
 
-                trader = this.createTraderNew(Globals.se, id, t.getString("Name")+"-" + i1, money, shares, strategy);
+                trader = this.createTraderNew(Globals.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
 
                 Globals.se.traders.add(trader);
 
@@ -615,7 +609,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         chart.initChart();
         chart.invalidate();
         chart.repaint();
-     //   this.chartPanel.reset();
+        //   this.chartPanel.reset();
 //       this.orderBookPanel.invalidate();
 //        this.orderBookPanel.repaint();
 
@@ -770,7 +764,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
 
-    private void resetToDefaults(){
+    private void resetToDefaults() {
         InputStream is = getClass().getResourceAsStream("/resources/files/defaultcfg.json");
         String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
 
@@ -780,9 +774,9 @@ public class SeSimApplication extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         }
-        
+
     }
-    
+
     private void resetToDefaultsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetToDefaultsMenuItemActionPerformed
 
         int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
@@ -886,8 +880,10 @@ public class SeSimApplication extends javax.swing.JFrame {
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
- //JPopupMenu.setDefaultLightWeightPopupEnabled(false);
-        System.out.printf("Main called\n");
+        //JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+        
+        sesim.Logger.debug("Starting application on the new SesimLogger");
+
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
         GraphicsDevice[] gs = ge.getScreenDevices();
@@ -895,11 +891,9 @@ public class SeSimApplication extends javax.swing.JFrame {
             System.out.printf("ID %s\n", d.getIDstring());
 
         }
-        //System.exit(0);
 
-        //System.exit(0);
         Globals.initGlobals();
-        //System.exit(0);
+
         Globals.se = new Exchange();
 
         Class<?> c = sesim.Exchange.class;
@@ -907,22 +901,21 @@ public class SeSimApplication extends javax.swing.JFrame {
         Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
 
         Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
-
         JDialog.setDefaultLookAndFeelDecorated(true);
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                System.out.printf("In run method now\n");
-
-                String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
+ /*               String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
                         .getCodeSource()
                         .getLocation()
-                        .getPath()).toString(); //.getName();
+                        .getPath()).toString(); //.getName();*/
 
                 System.out.printf("Creating Application\n");
-                
-                new SeSimApplication().setVisible(true);
+
+                SeSimApplication app = new SeSimApplication();
+                app.setLocationRelativeTo(null);
+                app.setVisible(true);
             }
         });
     }

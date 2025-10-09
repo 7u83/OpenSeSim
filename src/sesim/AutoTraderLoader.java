@@ -25,7 +25,6 @@
  */
 package sesim;
 
-import gui.Globals;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -75,15 +74,15 @@ public class AutoTraderLoader {
 
         do {
             for (Class<?> i : cls.getInterfaces()) {
-                Globals.LOGGER.info(String.format("Interface: %s", i.getCanonicalName()));
+                sesim.Logger.info("Interface: %s", i.getCanonicalName());
 
                 String cn = AutoTraderInterface.class.getCanonicalName();
-                Globals.LOGGER.info(String.format("Interface1: %s", cn));
+                sesim.Logger.info("Interface1: %s", cn);
 
                 //  if (i == (AutoTraderInterface.class)) {
                 if (cn.endsWith(i.getCanonicalName())) {
 
-                    Globals.LOGGER.info("YEEEEA");
+                    //Globals.LOGGER.info("YEEEEA");
 
                     return true;
                 }
@@ -101,11 +100,11 @@ public class AutoTraderLoader {
         Thread.currentThread().setContextClassLoader(cl);
         
         AutoTraderInterface ai;
-        Globals.LOGGER.info("Going to load");
+ //       Globals.LOGGER.info("Going to load");
         try {
             ai = (AutoTraderInterface)cls.newInstance();
         } catch (InstantiationException | IllegalAccessException ex) {
-            Globals.LOGGER.info("Ist was passiert");
+   //         Globals.LOGGER.info("Ist was passiert");
             Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
             ai=null;
         }
@@ -117,8 +116,8 @@ public class AutoTraderLoader {
 
     Class<AutoTraderInterface> loadAutoTraderClass(String filename, String classname) {
 
-        System.out.printf("Comming in width %s %s", filename, classname);
-        Globals.LOGGER.info(String.format("Comming in width %s %s\n", filename, classname));
+        //System.out.printf("Comming in width %s %s", filename, classname);
+    //    sesim.Logger.info("Comming in width %s %s\n", filename, classname);
 
         if (classname == null) {
             System.out.printf("Calssname is null\n");
@@ -137,7 +136,7 @@ public class AutoTraderLoader {
             Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        Globals.LOGGER.info(String.format("URL: %s", url.toString()));
+  //      Globals.LOGGER.info(String.format("URL: %s", url.toString()));
 
         URL[] urls = new URL[]{url};
 
@@ -152,32 +151,32 @@ public class AutoTraderLoader {
         
 
         try {
-            Globals.LOGGER.info("try cl");
+ //          Globals.LOGGER.info("try cl");
             //          Class<?> cls = cl.loadClass(clnam);
             Class<?> c = cl.loadClass(clnam);
             if (c == null) {
-                Globals.LOGGER.info("loader c was null");
+ //               Globals.LOGGER.info("loader c was null");
             }
-            Globals.LOGGER.info("Ccast");
+ //           Globals.LOGGER.info("Ccast");
             Class<AutoTraderInterface> cls = (Class<AutoTraderInterface>) c; // cl.loadClass(clnam);
             //   return cls;
             if (cls == null) {
 
             }
 
-            System.out.printf("Check Class: %s\n", cls.getCanonicalName());
-            Globals.LOGGER.info(String.format("Class prope %s", cls.getCanonicalName()));
+  //          System.out.printf("Check Class: %s\n", cls.getCanonicalName());
+ //           Globals.LOGGER.info(String.format("Class prope %s", cls.getCanonicalName()));
 
             if (isAutoTrader(cls)) {
-                Globals.LOGGER.info("We have found an autotrader interface");
+    //            Globals.LOGGER.info("We have found an autotrader interface");
                 Class<AutoTraderInterface> claa;
                 claa = (Class<AutoTraderInterface>) cls;
 
                 if (claa == null) {
-                    Globals.LOGGER.info("claa = null");
+  //                  Globals.LOGGER.info("claa = null");
                 }
 
-                Globals.LOGGER.info("return ok");
+   //             Globals.LOGGER.info("return ok");
                 return claa;
                 //return (Class<AutoTraderInterface>) cls;
                 //return (Class<AutoTraderInterface>) cls;
@@ -185,8 +184,8 @@ public class AutoTraderLoader {
 
         } catch (ClassNotFoundException ex) {
             // something wnet wrong, but we ignore it
-            System.out.printf("Class not found\n");
-            Globals.LOGGER.info("Class not loadable");
+ //           System.out.printf("Class not found\n");
+ //           Globals.LOGGER.info("Class not loadable");
         }
         return null;
 
@@ -209,13 +208,13 @@ public class AutoTraderLoader {
 
         for (String classpathEntry : pathlist) {
 
-            Globals.LOGGER.info(String.format("Here we ar looking now %s", classpathEntry));
+ //           Globals.LOGGER.info(String.format("Here we ar looking now %s", classpathEntry));
 
             Consumer<? super Path> pf = (Object t) -> {
 
                 String fn = ((Path) t).toString();
 //                System.out.printf("Checking out file %s\n", fn);
-                Globals.LOGGER.info(String.format("Checking out file %s\n", fn));
+ //               Globals.LOGGER.info(String.format("Checking out file %s\n", fn));
 
                 if (fn.toLowerCase().endsWith(".class")) {
                     String cl = fn.substring(classpathEntry.length());
@@ -228,8 +227,8 @@ public class AutoTraderLoader {
                     traders.add(cls);
                 }
                 if (fn.toLowerCase().endsWith(".jar")) {
-                    System.out.printf("Its a jar!\n");
-                    Globals.LOGGER.info("Its a jar");
+  //                  System.out.printf("Its a jar!\n");
+  //                  Globals.LOGGER.info("Its a jar");
 
                     JarInputStream is = null;
                     try {
@@ -237,18 +236,18 @@ public class AutoTraderLoader {
                         is = new JarInputStream(new FileInputStream(jar));
                         JarEntry entry;
 
-                        Globals.LOGGER.info("starting entries");
+ //                       Globals.LOGGER.info("starting entries");
                         while ((entry = is.getNextJarEntry()) != null) {
-                            Globals.LOGGER.info(String.format("Jar entry: %s", entry));
+//                            Globals.LOGGER.info(String.format("Jar entry: %s", entry));
 
                             if (entry.getName().endsWith(".class")) {
 
-                                System.out.printf("Entry: %s\n", entry.getName());
+ //                               System.out.printf("Entry: %s\n", entry.getName());
 
                                 String fn0 = entry.getName();
                                 Class<AutoTraderInterface> cls = loadAutoTraderClass(fn, "/" + entry.getName());
                                 if (cls != null) {
-                                    Globals.LOGGER.info("Class is not null!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+ //                                   Globals.LOGGER.info("Class is not null!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
                                     traders.add(cls);
                                 }
                                 //Globals.LOGGER.info("clas was null");
@@ -256,7 +255,7 @@ public class AutoTraderLoader {
                             }
                         }
                     } catch (IOException ex) {
-                        Globals.LOGGER.info("ioeception");
+  //                      Globals.LOGGER.info("ioeception");
                         Logger.getLogger(AutoTraderLoader.class.getName()).log(Level.SEVERE, null, ex);
                     } finally {
                         try {
@@ -280,7 +279,7 @@ public class AutoTraderLoader {
         }
         traders_cache = traders;
         
-        Globals.LOGGER.info(String.format("We hav found %d traders", traders.size()));
+ //       Globals.LOGGER.info(String.format("We hav found %d traders", traders.size()));
         
         return traders;
 
@@ -304,7 +303,7 @@ public class AutoTraderLoader {
                 }
                 ret.add(ac.getClass().getCanonicalName());
             } catch (Exception e) {
-                System.out.printf("Can't load \n");
+ //               System.out.printf("Can't load \n");
 
             }
 
@@ -321,10 +320,10 @@ public class AutoTraderLoader {
         ArrayList<Class<AutoTraderInterface>> traders = this.getTraders();
         for (int i = 0; i < traders.size(); i++) {
             try {
-                Globals.LOGGER.info(String.format("Making lll instance of %s", traders.get(i).getCanonicalName()));
+ //               Globals.LOGGER.info(String.format("Making lll instance of %s", traders.get(i).getCanonicalName()));
                 
                 if (traders.get(i)==null){
-                    Globals.LOGGER.info("We have null");
+ //                   Globals.LOGGER.info("We have null");
                 }
                 
 //                AutoTraderInterface ac = traders.get(i).newInstance();
@@ -339,7 +338,7 @@ public class AutoTraderLoader {
                     //     return ac;}
                 }
             } catch (Exception ex) {
-                Globals.LOGGER.info(String.format("Instance failed %s", ex.getMessage()));
+//                Globals.LOGGER.info(String.format("Instance failed %s", ex.getMessage()));
             }
         }
 
