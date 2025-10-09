@@ -294,10 +294,10 @@ public class Scheduler extends Thread {
 //        if (evtime == null) {
 //            return;
 //        }
-        System.out.printf("Cancel my %d\n", e.id);
+//        System.out.printf("Cancel my %d\n", e.id);
         SortedSet<TimerTaskDef> s = event_queue.get(e.curevtime);
         if (s == null) {
-            System.out.printf("My not found\n");    
+//            System.out.printf("My not found\n");    
             return;
         }
 
