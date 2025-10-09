@@ -98,7 +98,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     @Override
     public String getDisplayName() {
-        return null;
+        return "Random Trader (A)";
     }
 
     @Override

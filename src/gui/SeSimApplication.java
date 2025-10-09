@@ -40,10 +40,12 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.TimerTask;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -127,10 +129,10 @@ public class SeSimApplication extends javax.swing.JFrame {
             String strategy_name = t.getString("Strategy");
             JSONObject strategy = Globals.getStrategy(strategy_name);
             String base = strategy.getString("base");
-            AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
+        //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
 
-            System.out.printf("Load Strat: %s\n", strategy_name);
-            System.out.printf("Base %s\n", base);
+       //     System.out.printf("Load Strat: %s\n", strategy_name);
+      //      System.out.printf("Base %s\n", base);
             Integer count = t.getInt("Count");
             Double shares = t.getDouble("Shares");
             Double money = t.getDouble("Cash");
@@ -140,7 +142,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                 continue;
             }
 
-            System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
+      //      System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
 
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
@@ -617,7 +619,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
 
     private void editPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesActionPerformed
-        Globals.LOGGER.info("Edit prefs...");
+  //      Globals.LOGGER.info("Edit prefs...");
 
         Dialog d = new gui.EditPreferencesDialog(this, rootPaneCheckingEnabled);
         d.setVisible(rootPaneCheckingEnabled);
@@ -881,6 +883,19 @@ public class SeSimApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
         //JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+        
+        Logger rootLogger = sesim.Logger.getLogger();
+        
+        // ConsoleHandler erzeugen
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel(Level.ALL); // alles loggen
+        consoleHandler.setFormatter(new SimpleFormatter()); // lesbare Ausgabe
+
+        // Handler anhängen
+        rootLogger.addHandler(consoleHandler);
+        rootLogger.setLevel(Level.ALL); 
+        
+        
         
         sesim.Logger.debug("Starting application on the new SesimLogger");
 

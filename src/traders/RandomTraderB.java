@@ -89,7 +89,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     @Override
     public String getDisplayName() {
-        return null;
+        return "Random Trader B";
     }
 
     @Override

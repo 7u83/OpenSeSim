@@ -142,7 +142,7 @@ public class Globals {
     static void initGlobals() {
        String[] a = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
         ArrayList pathlist = new ArrayList<>(Arrays.asList(a));
-        System.out.printf("Init tloader\n");
+  //      System.out.printf("Init tloader\n");
 
         pathlist = new ArrayList<>();
         String dp = new java.io.File(SeSimApplication.class.getProtectionDomain()
@@ -151,7 +151,7 @@ public class Globals {
                 .getPath()).toString();
 
         pathlist.add(dp);
-        LOGGER.info(String.format("Path %s", dp));
+
         tloader = new AutoTraderLoader(pathlist);
 
     }

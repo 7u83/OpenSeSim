@@ -68,7 +68,7 @@ public class LoggerDialog extends javax.swing.JDialog {
 
         }
         LogHandler handler = new LogHandler();
-        Globals.LOGGER.addHandler(handler);
+    //    Globals.LOGGER.addHandler(handler);
         
         
 

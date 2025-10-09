@@ -84,7 +84,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     @Override
     public String getDisplayName() {
-        return null;
+        return "Human Trader";
     }
 
     @Override

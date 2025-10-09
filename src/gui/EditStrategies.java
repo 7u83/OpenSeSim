@@ -25,7 +25,7 @@
  */
 package gui;
 
-import static gui.Globals.LOGGER;
+//import static gui.Globals.LOGGER;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +78,7 @@ public final class EditStrategies extends javax.swing.JDialog {
                 .getLocation()
                 .getPath()).toString();
 
-        LOGGER.info(String.format("Path %s",dp));
+ //       LOGGER.info(String.format("Path %s",dp));
         
         
         this.setLocationRelativeTo(this.getParent());
@@ -282,12 +282,12 @@ public final class EditStrategies extends javax.swing.JDialog {
 
         }
 
-        Globals.LOGGER.info(String.format("Base %s\n", base));
+        //Globals.LOGGER.info(String.format("Base %s\n", base));
 
         ac = Globals.tloader.getStrategyBase(base);
         if (ac == null) {
-            System.out.print("BASE IST NULL\n");
-            Globals.LOGGER.info(String.format("Can't load: %s\n", base));
+          //  System.out.print("BASE IST NULL\n");
+          //  Globals.LOGGER.info(String.format("Can't load: %s\n", base));
             //System.exit(0);
 
             return;

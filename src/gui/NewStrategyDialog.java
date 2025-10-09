@@ -26,35 +26,65 @@
 package gui;
 
 import java.util.ArrayList;
+import sesim.AutoTraderInterface;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-//public class NewStrategyDialog extends javax.swing.JDialog {
 public class NewStrategyDialog extends EscDialog {
+
+    class Result {
+
+        public String displayName;
+        public String base;
+        public String name;
+
+        @Override
+        public String toString() {
+            return displayName;  // Damit im JComboBox der Name angezeigt wird
+        }
+    }
+
+    Result result = null;
 
     /**
      * Creates new form NewStrategyDialog
+     *
+     * @param parent
      */
     public NewStrategyDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(this.getParent());
+
         boolean devel = Globals.prefs.get(Globals.DEVELSTATUS, "false").equals("true");
-        ArrayList <String> names = Globals.tloader.getDefaultStrategyNames(devel);
+        ArrayList<String> names = Globals.tloader.getDefaultStrategyNames(devel);
         this.jStrategyComboBox.removeAllItems();
-        names.stream().forEach((s) -> {
-            this.jStrategyComboBox.addItem(s);
-        });
+
+        for (String name : names) {
+            AutoTraderInterface ac = Globals.tloader.getStrategyBase(name);
+
+            Result r = new Result();
+            r.base = name;
+            r.displayName = ac.getDisplayName()+ (ac.getDevelStatus() ? "  (Experimenatl)" : "");
+
+            this.jStrategyComboBox.addItem(r);
+        }
     }
-    
-    class Result{
-        String base;
-        String name;
+
+    private void saveResult() {
+        String name = this.jTextField1.getText();
+        if (name.equals("")) {
+            return;
+        }
+
+        this.result = (Result) this.jStrategyComboBox.getSelectedItem();
+        this.result.name = name;
+
+        this.dispose();
+
     }
-    
-    Result result=null;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -67,7 +97,7 @@ public class NewStrategyDialog extends EscDialog {
 
         jStrategyComboBox = new javax.swing.JComboBox<>();
         jOkButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jCancelButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -75,7 +105,7 @@ public class NewStrategyDialog extends EscDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create Strategy");
 
-        jStrategyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jStrategyComboBox.setModel(new javax.swing.DefaultComboBoxModel<Result>());
 
         jOkButton.setText("Ok");
         jOkButton.addActionListener(new java.awt.event.ActionListener() {
@@ -84,12 +114,12 @@ public class NewStrategyDialog extends EscDialog {
             }
         });
 
-        jButton2.setMnemonic('c');
-        jButton2.setText("Cancel");
-        jButton2.setToolTipText("");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jCancelButton.setMnemonic('c');
+        jCancelButton.setText("Cancel");
+        jCancelButton.setToolTipText("");
+        jCancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jCancelButtonActionPerformed(evt);
             }
         });
 
@@ -114,7 +144,7 @@ public class NewStrategyDialog extends EscDialog {
                         .addGap(0, 268, Short.MAX_VALUE)
                         .addComponent(jOkButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
+                        .addComponent(jCancelButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -139,7 +169,7 @@ public class NewStrategyDialog extends EscDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jOkButton)
-                    .addComponent(jButton2))
+                    .addComponent(jCancelButton))
                 .addContainerGap())
         );
 
@@ -150,75 +180,23 @@ public class NewStrategyDialog extends EscDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void saveResult(){
-        String name = this.jTextField1.getText();
-        if (name.equals("")){
-            return;
-        }
-        
-        this.result = new Result();
-        this.result.base = (String) this.jStrategyComboBox.getSelectedItem();
-        this.result.name = name;
-        this.dispose();
-                
-    }
 
     private void jOkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jOkButtonActionPerformed
         this.saveResult();
     }//GEN-LAST:event_jOkButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void jCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCancelButtonActionPerformed
+        this.result=null;
+        this.dispose();
+    }//GEN-LAST:event_jCancelButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewStrategyDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewStrategyDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewStrategyDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewStrategyDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                NewStrategyDialog dialog = new NewStrategyDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jCancelButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JButton jOkButton;
-    private javax.swing.JComboBox<String> jStrategyComboBox;
+    private javax.swing.JComboBox<Result> jStrategyComboBox;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
