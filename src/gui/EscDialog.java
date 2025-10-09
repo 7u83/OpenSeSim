@@ -39,10 +39,11 @@ public class EscDialog extends javax.swing.JDialog {
         initComponents();
         System.out.printf("Adding Key Listener\n", "");
         addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 formKeyReleased(evt);
-            }        
-            });
+            }
+        });
         this.setLocationRelativeTo(parent);
     }
 
@@ -56,9 +57,6 @@ public class EscDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addKeyListener(new java.awt.event.KeyAdapter() {
@@ -67,36 +65,15 @@ public class EscDialog extends javax.swing.JDialog {
             }
         });
 
-        jToggleButton1.setText("jToggleButton1");
-
-        jToolBar1.setRollover(true);
-
-        jButton1.setText("jButton1");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(jToggleButton1)
-                .addContainerGap(155, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
-                .addComponent(jToggleButton1)
-                .addGap(36, 36, 36))
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         pack();
@@ -149,9 +126,6 @@ public class EscDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JPopupMenu jPopupMenu1;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }

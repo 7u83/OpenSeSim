@@ -161,7 +161,7 @@ public class OHLCData {
 
     public boolean realTimeAdd(long time, float price, float volume) {
 
-        System.out.printf("REALTIME ADD QUOTE time: %d, vol:%f\n",time,volume);
+       // System.out.printf("REALTIME ADD QUOTE time: %d, vol:%f\n",time,volume);
 
         if (data.isEmpty()) {
             //System.out.printf("Data ist empty\n");

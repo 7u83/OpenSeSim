@@ -563,7 +563,7 @@ public class Exchange {
     }
 
     public Double getBestPrice() {
-        System.out.printf("Get BP\n");
+  //      System.out.printf("Get BP\n");
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -585,11 +585,11 @@ public class Exchange {
         // there is bid and ask
         if (a != null && b != null) {
             Quote q = new Quote();
-            System.out.printf("aaaaa bbbbb %f %f \n", a.limit, b.limit);
+       //     System.out.printf("aaaaa bbbbb %f %f \n", a.limit, b.limit);
             // if there is no last quote calculate from bid and ask
             //if (lq == null) {
             double rc = (bid.first().limit + ask.first().limit) / 2.0;
-            System.out.printf("RCRC2.0: %f\n", rc);
+        //    System.out.printf("RCRC2.0: %f\n", rc);
             return rc;
 
             // }
@@ -814,7 +814,7 @@ public class Exchange {
                 Order o = it.next();
                 //   System.out.print(o.volume);
                 if (o.volume <= 0) {
-                    System.out.printf("Volume < 0\n");
+            //        System.out.printf("Volume < 0\n");
                     System.exit(0);
                 }
                 ret.add(o);
@@ -987,7 +987,7 @@ public class Exchange {
             statistics.low=q.price;
         }
         
-        System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
+   //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
         quoteHistory.add(q);
         updateOHLCData(q);
         updateQuoteReceivers(q);
