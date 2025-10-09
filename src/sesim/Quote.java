@@ -41,7 +41,6 @@ public class Quote implements Comparable {
     public long time;
     public long id;
 
-    Locker lock = new Locker();
 
     public void print() {
         System.out.print("Quote ("
