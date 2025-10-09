@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package chart;
 
 import chart.Chart;
+import gui.Globals;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -13,6 +14,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import sesim.Exchange;
 import sesim.OHLCData;
 
@@ -41,7 +44,8 @@ public class MainChart extends chart.Chart {
       //xl_bgcolor = Color.ORANGE;
       //  xl_color = Color.RED;
         //this.xl_height = 3;
-
+        
+      
     }
 
     //OHLCData data;
@@ -95,6 +99,14 @@ public class MainChart extends chart.Chart {
     };
 
     private final Integer default_cmopression = 60 * 60 * 1000;
+    
+    
+    
+    abstract class PopupMenuAdapter implements PopupMenuListener {
+    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+    public void popupMenuCanceled(PopupMenuEvent e) {}
+}
 
     private void initCtxMenu() {
         ButtonGroup group = new ButtonGroup();
@@ -111,6 +123,28 @@ public class MainChart extends chart.Chart {
             });
             this.compMenu.add(item);
         }
+        
+        ctxMenu.addPopupMenuListener(new PopupMenuAdapter() {
+    @Override public void popupMenuWillBecomeInvisible(PopupMenuEvent e) { repaint(); }
+});
+
+        
+      /*      ctxMenu.addPopupMenuListener(new PopupMenuListener() {
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+            // nichts nötig
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            repaint();  // Chart neu zeichnen, sobald das Menü zugeht
+        }
+
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent e) {
+            repaint();
+        }
+    });*/
     }
 
     protected final void setCompression0(int timeFrame) {
@@ -205,7 +239,6 @@ public class MainChart extends chart.Chart {
         typeMenu.setText("Chart Type");
 
         typeButtonGroup.add(lineTypeItem);
-        lineTypeItem.setMnemonic('l');
         lineTypeItem.setText("Line");
         lineTypeItem.setActionCommand("LINE");
         lineTypeItem.addItemListener(new java.awt.event.ItemListener() {
@@ -221,7 +254,6 @@ public class MainChart extends chart.Chart {
         typeMenu.add(lineTypeItem);
 
         typeButtonGroup.add(candleTypeMEnuItem);
-        candleTypeMEnuItem.setMnemonic('c');
         candleTypeMEnuItem.setText("Candle Stick");
         candleTypeMEnuItem.setActionCommand("CNADLESTICK");
         candleTypeMEnuItem.addItemListener(new java.awt.event.ItemListener() {
@@ -234,7 +266,6 @@ public class MainChart extends chart.Chart {
         ctxMenu.add(typeMenu);
         ctxMenu.add(jSeparator1);
 
-        logMenu.setMnemonic('l');
         logMenu.setText("Log Scale");
         logMenu.setToolTipText("");
         logMenu.addItemListener(new java.awt.event.ItemListener() {
@@ -312,7 +343,7 @@ public class MainChart extends chart.Chart {
     private void candleTypeMEnuItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_candleTypeMEnuItemItemStateChanged
        if (this.candleTypeMEnuItem.isSelected()){
             this.chart_type=ChartType.CANDLESTICK;
-            System.out.printf("Set Set Candlestick\n");
+            //System.out.printf("Set Set Candlestick\n");
         }
        doRedraw();
     }//GEN-LAST:event_candleTypeMEnuItemItemStateChanged

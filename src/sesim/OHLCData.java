@@ -45,12 +45,14 @@ public class OHLCData {
 
     /**
      * Create an OHLCData object that stores OHLCDataItems
-     * 
+     *
      * @param frame_size Time frame stored in one OHLCDataItem
      */
     public OHLCData(int frame_size) {
 
         this.frame_size = frame_size;
+        this.current_frame_start = 0;
+        this.current_frame_end = frame_size;
     }
 
     public float getMax() {
@@ -66,7 +68,7 @@ public class OHLCData {
     }
 
     /**
-     * 
+     *
      * @return Time frame of OHLCDataItem
      */
     public int getFrameSize() {
@@ -75,6 +77,7 @@ public class OHLCData {
 
     /**
      * Get the minimum and maximum value between two OHLCDataItems
+     *
      * @param first Position of first OHLCDataItem
      * @param last Position of last OHCLDataItem
      * @return MinMax object containing the calculated values
@@ -154,31 +157,78 @@ public class OHLCData {
     // Start and end of current frame
     private long current_frame_end = 0;
     private long current_frame_start = 0;
+    private float last_price = 0;
 
     public boolean realTimeAdd(long time, float price, float volume) {
 
-        if (time >= current_frame_end) {
+        System.out.printf("REALTIME ADD QUOTE time: %d, vol:%f\n",time,volume);
+
+        if (data.isEmpty()) {
+            //System.out.printf("Data ist empty\n");
+            if (time < frame_size) {
+                //System.out.printf("Adding Qute to frame 0\n");
+                data.add(new OHLCDataItem(0, price, volume));
+                last_price = price;
+                return true;
+            }
+        }
+
+        long nFrame = (data.size()) * frame_size;
+        //System.out.printf("nFrame is: %d, data.size(): %d\n", nFrame, data.size());
+        if (time < nFrame) {
+            last_price = price;
+            this.updateMinMax(price);
+
+            OHLCDataItem d = data.get(data.size() - 1);
+            //System.out.printf("Regular update at data.size()-1: %d, %d\n", data.size()-1, d.time);
+            return d.update(price, volume);
+
+        }
+
+        while (time > nFrame+frame_size ) {
+
+            data.add(new OHLCDataItem(nFrame, last_price, 0));
+          //  System.out.printf("Add empty frame %d\n", nFrame);            
+            nFrame += frame_size;
+        }
+
+        //System.out.printf("Add a new Frame %d\n", nFrame);
+        data.add(new OHLCDataItem(nFrame, price, volume));
+        last_price = price;
+        return true;
+
+        /*    if (time >= current_frame_end) {
             if (current_frame_end == 0) {
 
                 this.min = price;
                 this.max = price;
             }
 
-            long last_frame_start = current_frame_start;
-            current_frame_start = getFrameStart(time);
+            //        long last_frame_start = current_frame_start;
+            long next_frame = getFrameStart(time);
+
+            //       current_frame_start += frame_size;
+            while (current_frame_start < next_frame) {
+                System.out.printf("Adding FRAME %d\n", current_frame_start);
+                data.add(new OHLCDataItem(current_frame_start, last_price, 0));
+                current_frame_start += frame_size;
+            }
+            current_frame_start = next_frame; //getFrameStart(time);
 
             current_frame_end = current_frame_start + frame_size;
 
             //System.out.printf("TA %d TE %d\n",this.current_frame_start,this.current_frame_end);
             data.add(new OHLCDataItem(this.current_frame_start, price, volume));
             this.updateMinMax(price);
+            last_price = price;
             return true;
         }
-
+        last_price = price;
         this.updateMinMax(price);
 
         OHLCDataItem d = data.get(data.size() - 1);
         boolean rc = d.update(price, volume);
         return rc;
+         */
     }
 }

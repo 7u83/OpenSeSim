@@ -1,7 +1,7 @@
 {
     "traders": [
         {
-            "Money": "1000000.0",
+            "Cash": "1000000.0",
             "Strategy": "SimpleRandom",
             "Enabled": "true",
             "Count": "1",
@@ -9,7 +9,7 @@
             "Name": "Alice"
         },
         {
-            "Money": "10000.0",
+            "Cash": "10000.0",
             "Strategy": "SimpleRandom",
             "Enabled": "true",
             "Count": "1",

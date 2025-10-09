@@ -49,6 +49,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
@@ -197,7 +198,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane4 = new javax.swing.JSplitPane();
         orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
         chartSrollPane = new javax.swing.JScrollPane();
-        chart = new gui.MainChart();
+        chart = new chart.MainChart();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
@@ -248,7 +249,6 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/stop.gif"))); // NOI18N
         stopButton.setText("Stop");
-        stopButton.setFocusable(false);
         stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         stopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         stopButton.addActionListener(new java.awt.event.ActionListener() {
@@ -261,7 +261,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/run.gif"))); // NOI18N
         runButton.setText("Run sim!");
         runButton.setToolTipText("Run the simmulation");
-        runButton.setFocusable(false);
         runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         runButton.addActionListener(new java.awt.event.ActionListener() {
@@ -272,7 +271,6 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pause.gif"))); // NOI18N
         jButton2.setText("Pause");
-        jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -612,6 +610,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         chart.initChart();
         chart.invalidate();
         chart.repaint();
+     //   this.chartPanel.reset();
 //       this.orderBookPanel.invalidate();
 //        this.orderBookPanel.repaint();
 
@@ -882,7 +881,7 @@ public class SeSimApplication extends javax.swing.JFrame {
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
-
+ //JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         System.out.printf("Main called\n");
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
@@ -926,7 +925,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JSpinner accelSpinner;
-    private gui.MainChart chart;
+    private chart.MainChart chart;
     private javax.swing.JScrollPane chartSrollPane;
     private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;

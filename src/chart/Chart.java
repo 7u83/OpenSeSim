@@ -168,6 +168,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     void drawXLegend_r(Graphics2D g, XLegendDef xld) {
 
         Rectangle clip = g.getClipBounds();
+        
+        clip = getVisibleRect();
 
         Color cur = g.getColor(); // save current color
 
@@ -205,7 +207,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         } while (btl < xxx);
 
-        for (n = 0, x = 0; x < dim.width; x += emWidth * x_unit_width) {
+        for (n = first_bar, x = emWidth * x_unit_width * first_bar; n< last_bar && x < dim.width; x += emWidth * x_unit_width) {
 
             if (n % big_tick == 1) {
                 g.drawLine((int) x, clip.y, (int) x, clip.y + emWidth);
@@ -232,6 +234,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     void drawXLegend(Graphics2D g, XLegendDef xld) {
 
         Rectangle clip = g.getClipBounds();
+        clip = this.getVisibleRect();
 
         //    System.out.printf("X: %d, Y:%d, W: %d, H:%d\b", clip.x, clip.y, clip.width, clip.height);
         Graphics2D g2 = (Graphics2D) g.create();
@@ -415,6 +418,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     void drawMainChart(DrawCtx ctx, SubChartDef d) {
 
         Rectangle clip = ctx.g.getClipBounds();
+        clip = this.getVisibleRect();
 
         // Draw background
         if (d.bgcolor != null) {
@@ -500,6 +504,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     
         Rectangle clip = g.getClipBounds();
+        clip = this.getVisibleRect();
 
         for (SubChartDef d : charts) {
 
@@ -572,7 +577,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
            g2.setClip(clip.x, clip.y, w, subchartwin_height);
          //   g2.setClip(0, 0, w, subchartwin_height);
             if (d.bgcolor==Color.WHITE){
-                System.out.print("White");
+               //System.out.print("White");
             }
             drawMainChart(ctx, d);
             g2.dispose();
@@ -628,14 +633,24 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     @Override
     public final void paintComponent(Graphics g) {
+      //  System.out.print("PaintComponent\n");
+        
         if (Globals.se == null) {
             return;
         }
 
         super.paintComponent(g);
+        
+        this.updateView();
 
-        this.setDoubleBuffered(true);
+     this.setDoubleBuffered(true);
+    //    this.revalidate();
+        
+      //  updateView();
 
+       // this.revalidate();
+      //  this.repaint();
+       // this.repaint();
         // Calculate the number of pixels for 1 em
         //    emWidth = g.getFontMetrics().stringWidth("M");
         //      this.gdim = this.getParent().getSize(gdim);
@@ -645,19 +660,44 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         //this.clip_bounds=g.getClipBounds();
         this.clip_bounds = vp.getViewRect();
+     //   this.clip_bounds = g.getClipBounds();
+        
+                 Rectangle visible = this.getVisibleRect();
+    this.clip_bounds = visible;
+    /*         System.out.printf("PaintComponent %d %d %d %d\n",
+                     this.clip_bounds.x,
+                     this.clip_bounds.y,
+                     this.clip_bounds.width,
+                     this.clip_bounds.height
+             );*/
 
         first_bar = (int) (clip_bounds.x / (this.x_unit_width * this.emWidth));
         last_bar = 1 + (int) ((clip_bounds.x + clip_bounds.width - (this.rightYAxisAreaWidth * emWidth)) / (this.x_unit_width * this.emWidth));
 
         c_font_height = g.getFontMetrics().getHeight();
 
+        
+
         draw((Graphics2D) g);
+       // updateView();
     }
+    
+
 
     private int lastMaxPos = 0;
+    
+   
+
+    @Override
+    public void repaint() {
+        updateView();
+        super.repaint(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
 
     void updateView() {
         JViewport vp = (JViewport) this.getParent();
+        if (vp==null)
+            return;
         Rectangle clip = vp.getViewRect();
 
         Point pp = vp.getViewPosition();
@@ -680,7 +720,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         this.setPreferredSize(new Dimension(pwidth, gdim.height));
 
         if (autoScroll) {
-            System.out.printf("LASTMAX: %d, MAX:%d,PPX: %d\n", lastMaxPos, maxPos, pp.x);
+            //System.out.printf("LASTMAX: %d, MAX:%d,PPX: %d\n", lastMaxPos, maxPos, pp.x);
             if (pp.x == lastMaxPos || pp.x == maxPos) {
                 lastMaxPos = pwidth - vp.getWidth();
                 int currentYPos = vp.getViewPosition().y;

@@ -118,11 +118,9 @@ public class Exchange {
             return data;
         }
 
-        Iterator<Quote> it = quoteHistory.iterator();
-        while (it.hasNext()) {
-            Quote q = it.next();
+        System.out.printf("--- build quote hostory for tf: %d\n", timeFrame);
+        for (Quote q : quoteHistory) {
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
-
         }
 
         return data;
@@ -180,9 +178,7 @@ public class Exchange {
     }
 
     void updateOHLCData(Quote q) {
-        Iterator<OHLCData> it = ohlc_data.values().iterator();
-        while (it.hasNext()) {
-            OHLCData data = it.next();
+        for (OHLCData data : ohlc_data.values()) {
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
         }
     }
@@ -406,16 +402,16 @@ public class Exchange {
     /**
      * Histrory of quotes
      */
-    public TreeSet<Quote> quoteHistory; // = new TreeSet<>();
+    public List<Quote> quoteHistory; // = new TreeSet<>();
 
     final void initExchange() {
         buy_orders = 0;
         sell_orders = 0;
         timer = new Scheduler();         //  timer = new Scheduler();
         //       random = new Random(12);
-        random = new Random();
+        random = new Random(12);
 
-        quoteHistory = new TreeSet();
+        quoteHistory = new ArrayList();
         accounts = new ConcurrentHashMap<>();
 
         traders = new ArrayList();
@@ -540,7 +536,7 @@ public class Exchange {
         }
     }
      */
-    public SortedSet<Quote> getQuoteHistory(long start) {
+ /*   public SortedSet<Quote> getQuoteHistory(long start) {
 
         Quote s = new Quote();
         s.time = start * 1000;
@@ -551,7 +547,7 @@ public class Exchange {
 
         return result;
 
-    }
+    }*/
 
     public final String CFG_MONEY_DECIMALS = "money_decimals";
     public final String CFG_SHARES_DECIMALS = "shares_decimals";
@@ -833,7 +829,8 @@ public class Exchange {
             return null;
         }
 
-        return this.quoteHistory.last();
+        return quoteHistory.get(quoteHistory.size() - 1);
+    //    return this.quoteHistory.last();
     }
 
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
@@ -990,6 +987,7 @@ public class Exchange {
             statistics.low=q.price;
         }
         
+        System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
         quoteHistory.add(q);
         updateOHLCData(q);
         updateQuoteReceivers(q);
@@ -1155,7 +1153,7 @@ public class Exchange {
                     buy_failed++;
                     break;
             }
-            System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
+            //System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
         
 
             return -1;

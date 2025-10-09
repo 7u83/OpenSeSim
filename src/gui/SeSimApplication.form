@@ -333,7 +333,6 @@
               <Image iconType="3" name="/resources/icons/stop.gif"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Stop"/>
-            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
@@ -353,7 +352,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Run sim!"/>
             <Property name="toolTipText" type="java.lang.String" value="Run the simmulation"/>
-            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
@@ -367,7 +365,6 @@
               <Image iconType="3" name="/resources/icons/pause.gif"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Pause"/>
-            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
@@ -436,7 +433,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Container class="gui.MainChart" name="chart">
+                <Container class="chart.MainChart" name="chart">
 
                   <Layout>
                     <DimensionLayout dim="0">

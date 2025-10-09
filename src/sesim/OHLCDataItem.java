@@ -56,7 +56,7 @@ public class OHLCDataItem {
             low = price;
             ret = true;
         }
-        this.volume = this.volume + volume;
+        this.volume += volume;
         this.close = price;
         return ret;
     }

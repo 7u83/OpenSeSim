@@ -391,7 +391,7 @@ public class Scheduler extends Thread {
 
             while (!set_tasks.isEmpty()) {
                 TimerTaskDef td = set_tasks.poll();
-                System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
+                //System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
                 
                 this.cancelMy(td);
                 this.addTimerTask(td);
