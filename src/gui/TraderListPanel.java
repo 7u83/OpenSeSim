@@ -58,17 +58,17 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        if (Globals.sim.se.traders == null) {
+        if (Globals.sim.traders == null) {
             return;
         }
 
         sesim.Quote q = Globals.sim.se.getLastQuoete();
         double price = q == null ? 0 : q.price;
 
-        int size = Globals.sim.se.traders.size();
+        int size = Globals.sim.traders.size();
         model.setRowCount(size);
         for (int i = 0; i < size; i++) {
-            AutoTraderInterface at = Globals.sim.se.traders.get(i);
+            AutoTraderInterface at = Globals.sim.traders.get(i);
             Account a = at.getAccount();
             model.setValueAt(i, i, 0);
             model.setValueAt(at.getName(), i, 1);
@@ -253,7 +253,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             Integer tid = (Integer) model.getValueAt(index, 0);
             // System.out.printf("Trader ID %d\n", tid);
 
-            JDialog console = Globals.sim.se.traders.get(tid).getGuiConsole();
+            JDialog console = Globals.sim.traders.get(tid).getGuiConsole();
             if (console == null) {
                 return;
             }

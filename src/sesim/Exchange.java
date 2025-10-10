@@ -20,9 +20,9 @@ public class Exchange {
     ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
     private double money_df = 10000;
-    private int money_decimals=2;
+    private int money_decimals = 2;
     DecimalFormat money_formatter;
-    
+
     /**
      * Set the number of decimals used with money
      *
@@ -30,12 +30,12 @@ public class Exchange {
      */
     public void setMoneyDecimals(int n) {
         money_df = Math.pow(10, n);
-        money_decimals=n;
-        money_formatter=getFormatter(n);
+        money_decimals = n;
+        money_formatter = getFormatter(n);
     }
 
     private double shares_df = 1;
-    private double shares_decimals=0;
+    private double shares_decimals = 0;
     private DecimalFormat shares_formatter;
 
     /**
@@ -45,7 +45,7 @@ public class Exchange {
      */
     public void setSharesDecimals(int n) {
         shares_df = Math.pow(10, n);
-        shares_decimals=n;
+        shares_decimals = n;
         shares_formatter = getFormatter(n);
     }
 
@@ -60,8 +60,8 @@ public class Exchange {
     public double roundMoney(double money) {
         return roundToDecimals(money, money_df);
     }
-    
-    public DecimalFormat getFormatter(int n){
+
+    public DecimalFormat getFormatter(int n) {
         DecimalFormat formatter;
         String s = "#0.";
         if (n == 0) {
@@ -71,17 +71,16 @@ public class Exchange {
                 s = s + "0";
             }
         }
-        return new DecimalFormat(s);        
+        return new DecimalFormat(s);
     }
-    
-    public DecimalFormat getMoneyFormatter(){
+
+    public DecimalFormat getMoneyFormatter() {
         return money_formatter;
     }
-    
-    public DecimalFormat getSharesFormatter(){
+
+    public DecimalFormat getSharesFormatter() {
         return shares_formatter;
     }
-    
 
     /**
      * Definition of order types
@@ -95,7 +94,7 @@ public class Exchange {
 
     public Scheduler timer; // = new Scheduler();
 
-    public ArrayList<AutoTraderInterface> traders;
+    public ArrayList<AutoTraderInterface> traders_old;
 
     /**
      *
@@ -126,33 +125,6 @@ public class Exchange {
         return data;
     }
 
-/*    public void injectMoney() {
-
-        accounts.forEach(new BiConsumer() {
-            @Override
-            public void accept(Object t, Object u) {
-                Account a = (Account) u;
-                a.money += 20000.0;
-
-            }
-
-        });
-
-    } */
-
-/*    public void pointZero() {
-        accounts.forEach(new BiConsumer() {
-            @Override
-            public void accept(Object t, Object u) {
-                Account a = (Account) u;
-                a.money = 20000.0;
-
-            }
-
-        });
-
-    }
-*/
     
     public OHLCData getOHLCdata(Integer timeFrame) {
         OHLCData data; //=new OHLCData(timeFrame);
@@ -166,15 +138,7 @@ public class Exchange {
         }
 
         return data;
-        /*        try {
-            data = ohlc_data.get(timeFrame);
-        } catch (Exception e) {
-            data = null;
-        }
-        if (data == null) {
-            data = buildOHLCData(timeFrame);
-        }
-         */
+
 
     }
 
@@ -184,91 +148,6 @@ public class Exchange {
         }
     }
 
-    /**
-     * Implements a trading account
-     */
-    
-/*    
-    public class old_Account implements Comparable {
-        Exchange se;
-        private AccountListener listener = null;
-
-        private final double id;
-        private double shares;
-        private double money;
-        protected AutoTraderInterface owner;
-
-        private final ConcurrentHashMap<Long, Order> orders;
-
-        @Override
-        public int compareTo(Object a) {
-            Account account = (Account) a;
-            return this.id - account.id < 0 ? -1 : 1;
-        }
-
-        Account(Exchange se, double money, double shares) {
-            this.se=se;
-            id = (random.nextDouble() + (account_id.getNext()));
-            orders = new ConcurrentHashMap();
-            this.money = money;
-            this.shares = shares;
-        }
-
-        public double getID() {
-            return id;
-        }
-
-        public double getShares() {
-            return shares;
-        }
-
-        public double getMoney() {
-            return money;
-        }
-
-        public AutoTraderInterface getOwner() {
-            return owner;
-        }
-
-        public ConcurrentHashMap<Long, Order> getOrders() {
-            return orders;
-        }
-
-        public void setListener(AccountListener al) {
-            this.listener = al;
-        }
-
-        public void update(Order o) {
-            if (listener == null) {
-                return;
-            }
-            listener.accountUpdated(this, o);
-        }
-
-    }
-*/
-    public void createTraders(JSONArray traderdefs) {
-        for (int i = 0; i < traderdefs.length(); i++) {
-            JSONObject o = traderdefs.getJSONObject(i);
-
-        }
-
-        //    this.traders.add(randt);
-        //    randt.setName("Bob");
-        //    randt.start();
-    }
-
-    // private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
-    //ConcurrentHashMap<Double, Account> accounts;
-
-/*    public Account createAccount(double money, double shares) {
-
-        Account a = new Account(money, shares);
-        
-        //accounts.put(a.id, a);
-        //return a.id;
-        return a;
-    }*/
 
     public enum OrderStatus {
         OPEN,
@@ -420,9 +299,9 @@ public class Exchange {
         quoteHistory = new ArrayList();
 //        accounts = new ConcurrentHashMap<>();
 
-        traders = new ArrayList();
+      //  traders = new ArrayList();
 
-        statistics = new Statistics(); 
+        statistics = new Statistics();
         //num_trades = 0;
 
         this.ohlc_data = new HashMap();
@@ -455,8 +334,8 @@ public class Exchange {
 
         public final void reset() {
             trades = 0;
-            heigh=null;
-            low=null;
+            heigh = null;
+            low = null;
 
         }
 
@@ -470,14 +349,13 @@ public class Exchange {
 
 //    long num_trades = 0;
 //    long num_orders = 0;
-
     public Statistics getStatistics() {
         return statistics;
-/*        Statistics s = new Statistics();
+        /*        Statistics s = new Statistics();
         s.trades = num_trades;
         s.orders = num_orders;
         return s;
-*/        
+         */
 
     }
 
@@ -554,7 +432,6 @@ public class Exchange {
         return result;
 
     }*/
-
     public final String CFG_MONEY_DECIMALS = "money_decimals";
     public final String CFG_SHARES_DECIMALS = "shares_decimals";
 
@@ -569,7 +446,7 @@ public class Exchange {
     }
 
     public Double getBestPrice() {
-  //      System.out.printf("Get BP\n");
+        //      System.out.printf("Get BP\n");
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -591,11 +468,11 @@ public class Exchange {
         // there is bid and ask
         if (a != null && b != null) {
             Quote q = new Quote();
-       //     System.out.printf("aaaaa bbbbb %f %f \n", a.limit, b.limit);
+            //     System.out.printf("aaaaa bbbbb %f %f \n", a.limit, b.limit);
             // if there is no last quote calculate from bid and ask
             //if (lq == null) {
             double rc = (bid.first().limit + ask.first().limit) / 2.0;
-        //    System.out.printf("RCRC2.0: %f\n", rc);
+            //    System.out.printf("RCRC2.0: %f\n", rc);
             return rc;
 
             // }
@@ -673,12 +550,12 @@ public class Exchange {
                 Quote q = new Quote();
 
                 // if there is no last quote calculate from bid and ask
-                     if (lq == null) {
-                q.price = (bid.first().limit + ask.first().limit) / 2.0;
-                return q;
-                      }
+                if (lq == null) {
+                    q.price = (bid.first().limit + ask.first().limit) / 2.0;
+                    return q;
+                }
 
-                 if (lq.price < b.limit) {
+                if (lq.price < b.limit) {
                     q.price = b.limit;
                     return q;
                 }
@@ -687,7 +564,7 @@ public class Exchange {
                     return q;
                 }
                 return lq;
-                             }
+            }
 
             if (a != null) {
                 Quote q = new Quote();
@@ -800,8 +677,7 @@ public class Exchange {
     //double theprice = 12.9;
 //    long orderid = 1;
     //double lastprice = 100.0;
-  //  long lastsvolume;
-
+    //  long lastsvolume;
     // private final Locker tradelock = new Locker();
     public ArrayList<Order> getOrderBook(OrderType type, int depth) {
 
@@ -820,7 +696,7 @@ public class Exchange {
                 Order o = it.next();
                 //   System.out.print(o.volume);
                 if (o.volume <= 0) {
-            //        System.out.printf("Volume < 0\n");
+                    //        System.out.printf("Volume < 0\n");
                     System.exit(0);
                 }
                 ret.add(o);
@@ -836,7 +712,7 @@ public class Exchange {
         }
 
         return quoteHistory.get(quoteHistory.size() - 1);
-    //    return this.quoteHistory.last();
+        //    return this.quoteHistory.last();
     }
 
     private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
@@ -976,30 +852,26 @@ public class Exchange {
         removeOrderIfExecuted(b);
     }
 
+    void addQuoteToHistory(Quote q) {
+        if (statistics.heigh == null) {
+            statistics.heigh = q.price;
+        } else if (statistics.heigh < q.price) {
+            statistics.heigh = q.price;
+        }
+        if (statistics.low == null) {
+            statistics.low = q.price;
+        } else if (statistics.low > q.price) {
+            statistics.low = q.price;
+        }
 
-    
-    
-    void addQuoteToHistory(Quote q){
-        if (statistics.heigh==null){
-            statistics.heigh=q.price;
-        }
-        else if (statistics.heigh<q.price){
-            statistics.heigh=q.price;
-        }
-        if (statistics.low==null){
-            statistics.low=q.price;
-        }
-        else if(statistics.low>q.price){
-            statistics.low=q.price;
-        }
-        
-   //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
+        statistics.trades++;
+
+        //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
         quoteHistory.add(q);
         updateOHLCData(q);
         updateQuoteReceivers(q);
     }
-    
-    
+
     /**
      *
      */
@@ -1096,13 +968,11 @@ public class Exchange {
         q.volume = volume_total;
         q.time = timer.currentTimeMillis();
 
-        
         addQuoteToHistory(q);
-        
+
         //this.quoteHistory.add(q);
         //this.updateOHLCData(q);
         //this.updateQuoteReceivers(q);
-
     }
 
     long buy_orders = 0;
@@ -1126,7 +996,6 @@ public class Exchange {
 
     long buy_failed = 0;
     long sell_failed = 0;
- 
 
     /**
      *
@@ -1138,13 +1007,11 @@ public class Exchange {
      */
     public long createOrder(Account a, OrderType type, double volume, double limit) {
 
-    //    Account a = accounts.get(account_id);
+        //    Account a = accounts.get(account_id);
         if (a == null) {
             System.out.printf("Order not places account\n");
             return -1;
         }
-        
-
 
         Order o = new Order(a, type, volume, limit);
         if (o.volume <= 0 || o.limit <= 0) {
@@ -1160,7 +1027,6 @@ public class Exchange {
                     break;
             }
             //System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
-        
 
             return -1;
         }
@@ -1170,7 +1036,7 @@ public class Exchange {
 
             //num_orders++;
             statistics.orders++;
-            
+
             addOrderToBook(o);
             a.orders.put(o.id, o);
             a.update(o);
@@ -1196,36 +1062,18 @@ public class Exchange {
     }
 
     public int getNumberOfOpenOrders(Account a) {
-    //    Account a = accounts.get(account_id);
+        //    Account a = accounts.get(account_id);
         if (a == null) {
             return 0;
         }
         return a.orders.size();
     }
 
-/*    public Account getAccount(double account_id) {
+    /*    public Account getAccount(double account_id) {
         return accounts.get(account_id);
     }
-  */  
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    /*public AccountData getAccountData(double account_id) {
+     */
+ /*public AccountData getAccountData(double account_id) {
         tradelock.lock();
         Account a = accounts.get(account_id);
         tradelock.unlock();

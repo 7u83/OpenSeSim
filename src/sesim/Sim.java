@@ -25,7 +25,6 @@
  */
 package sesim;
 
-import gui.Globals;
 import gui.SeSimApplication;
 import java.util.ArrayList;
 import java.util.Random;
@@ -70,7 +69,15 @@ public class Sim {
     public Sim() {
         se = new Exchange();
         initAutoTraderLoader();
+        reset();
     }
+    
+     public ArrayList<AutoTraderInterface> traders;
+     
+     public final void reset(){
+         traders = new ArrayList();
+         se.reset();
+     }
 
     /**
      *
@@ -119,8 +126,65 @@ public class Sim {
         return traders;
     }
 
-    static public final void putTraders(JSONObject cfg,JSONArray traders) {
+    static public final void putTraders(JSONObject cfg, JSONArray traders) {
         cfg.put(CfgKeys.TRADERS, traders);
+    }
+
+    static public JSONObject getStrategy(JSONObject cfg, String name) {
+        return getStrategies(cfg).getJSONObject(name);
+    }
+
+    public void startTraders(JSONObject cfg) {
+
+        //   Globals.sim.se.setMoneyDecimals(8);
+        //    Globals.sim.se.setSharesDecimals(0);        
+        JSONArray tlist = Sim.getTraders(cfg);
+
+        Double moneyTotal = 0.0;
+        Double sharesTotal = 0.0;
+        long id = 0;
+        for (int i = 0; i < tlist.length(); i++) {
+            JSONObject t = tlist.getJSONObject(i);
+            String strategy_name = t.getString("Strategy");
+            JSONObject strategy = getStrategy(cfg, strategy_name);
+            String base = strategy.getString("base");
+            //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
+
+            //     System.out.printf("Load Strat: %s\n", strategy_name);
+            //      System.out.printf("Base %s\n", base);
+            Integer count = t.getInt("Count");
+            Double shares = t.getDouble("Shares");
+            Double money = t.getDouble("Cash");
+
+            Boolean enabled = t.getBoolean("Enabled");
+            if (!enabled) {
+                continue;
+            }
+
+            //      System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
+            for (int i1 = 0; i1 < count; i1++) {
+                AutoTraderInterface trader;
+
+                trader = this.createTraderNew(this.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
+
+                this.traders.add(trader);
+
+                moneyTotal += money;
+                sharesTotal += shares;
+
+            }
+
+        }
+
+        this.se.fairValue = moneyTotal / sharesTotal;
+
+        //  Globals.sim.se.fairValue = 1.0;
+        System.out.printf("Failr Value is %f\n", se.fairValue);
+
+        for (int i = 0; i < traders.size(); i++) {
+            traders.get(i).start();
+        }
+
     }
 
 }

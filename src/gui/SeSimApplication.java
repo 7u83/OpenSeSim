@@ -113,8 +113,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         return ac;
     }
 */
-    
+    /*
     public void startTraders() {
+        
+        Globals.sim.startTraders(Globals.getConfig());
 
         WaitBox wb = new WaitBox();
 
@@ -168,7 +170,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             Globals.sim.se.traders.get(i).start();
         }
 
-    }
+    } */
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -577,7 +579,9 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.clock.invalidate();
         this.clock.repaint();
 
-        this.startTraders();
+        //this.startTraders();
+        
+        Globals.sim.startTraders(Globals.getConfig());
 
         Globals.sim.se.timer.setPause(false);
         Globals.sim.se.timer.start();
@@ -609,7 +613,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     void resetSim() {
         Globals.sim.se.terminate();
-        Globals.sim.se.reset();
+        Globals.sim.reset();
         chart.initChart();
         chart.invalidate();
         chart.repaint();
