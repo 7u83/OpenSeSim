@@ -36,37 +36,27 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
      * Implements a trading account
      */
-    public class Account implements Comparable {
-        private Exchange se;
+    public class Account  {
+     //   private Exchange se;
         private Exchange.AccountListener listener = null;
 
-        final double id;
+  
         double shares;
         double money;
         protected AutoTraderInterface owner;
 
         final ConcurrentHashMap<Long, Exchange.Order> orders;
 
-        @Override
-        public int compareTo(Object a) {
-            Account account = (Account) a;
-            
-            return this.id - account.id < 0 ? -1 : 1;
-        }
+       
+        Account(double money, double shares) {
+          //  this.se = se;
 
-        Account(Exchange se, double money, double shares) {
-            this.se = se;
-           id = (Sim.random.nextDouble() + (se.account_id.getNext()));
             orders = new ConcurrentHashMap();
             this.money = money;
             this.shares = shares;
         }
 
-        public double getID() {
-            return 1;
-            //return id;
-        }
-
+  
         public double getShares() {
             return shares;
         }

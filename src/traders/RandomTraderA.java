@@ -374,16 +374,16 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     public boolean doBuy() {
 
 //        AccountData ad = this.se.getAccountData(account_id);
-        Account ad = account_id;
+        Account account = account_id;
 
         Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
 
-        if (ad == null) {
+        if (account == null) {
             return false;
         }
 
         // how much money we ant to invest?
-        double money = getRandomAmmount(ad.getMoney(), buy_volume);
+        double money = getRandomAmmount(account.getMoney(), buy_volume);
 
         Quote q = se.getBestPrice_0();
         //q=se.getLastQuoete();
@@ -404,7 +404,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 //            System.out.printf("Buy Order wont work\n");
         //        return false;
         //    }
-        long rc = se.createOrder(account_id, type, volume, limit);
+        long rc = se.createOrder(account, type, volume, limit);
 
         if (rc == -1) {
 
@@ -421,12 +421,12 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         //   RandomTraderConfig myoldconfig = (RandomTraderConfig) this.oldconfig;
         //AccountData ad = this.se.getAccountData(account_id);
 
-        Account ad = account_id;
+        Account account = account_id;
 
         Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
 
         // how much shares we ant to sell?
-        double volume = getRandomAmmount(ad.getShares(), sell_volume);
+        double volume = getRandomAmmount(account.getShares(), sell_volume);
         volume = se.roundShares(volume);
 
         //    double lp = 100.0; //se.getBestLimit(type);
@@ -444,7 +444,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         //        return false;
         //    }
 //        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
-        long rc = se.createOrder(account_id, type, volume, limit);
+        long rc = se.createOrder(account, type, volume, limit);
         return rc != -1;
 
     }

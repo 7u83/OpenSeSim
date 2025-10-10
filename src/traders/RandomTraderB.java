@@ -82,7 +82,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     @Override
     public long timerTask() {
-        sesim.Account a = account_id;
+  //      sesim.Account account = account_id;
         long rc = this.doTrade();
         return rc;
 
@@ -273,16 +273,16 @@ public class RandomTraderB extends AutoTraderBase {
 
 //        AccountData ad = this.se.getAccountData(account_id);
 
-        sesim.Account ad = account_id;
+        sesim.Account account = account_id;
 
         Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
 
-        if (ad == null) {
+        if (account == null) {
             return false;
         }
 
         // how much money we ant to invest?
-        double money = getRandomAmmount(ad.getMoney(), buy_volume);
+        double money = getRandomAmmount(account.getMoney(), buy_volume);
     
         Quote q = se.getBestPrice_0();
         //q=se.getLastQuoete();
@@ -303,7 +303,7 @@ public class RandomTraderB extends AutoTraderBase {
             return false;
         }
 
-        se.createOrder(account_id, type, volume, limit);
+        se.createOrder(account, type, volume, limit);
 
         return true;
 
@@ -313,13 +313,13 @@ public class RandomTraderB extends AutoTraderBase {
         //   RandomTraderConfig myoldconfig = (RandomTraderConfig) this.oldconfig;
         //AccountData ad = this.se.getAccountData(account_id);
         
-        Account ad = account_id;
+        Account account = account_id;
 
         Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
 
                
         // how much shares we ant to sell?
-        double volume = getRandomAmmount(ad.getShares(), sell_volume);
+        double volume = getRandomAmmount(account.getShares(), sell_volume);
         volume = se.roundShares(volume);
         
 
@@ -341,7 +341,7 @@ public class RandomTraderB extends AutoTraderBase {
             return false;
         }
 
-        se.createOrder(account_id, type, volume, limit);
+        se.createOrder(account, type, volume, limit);
         
         return true;
 

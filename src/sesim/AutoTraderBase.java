@@ -81,7 +81,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
 
     @Override
     public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
-        this.account_id = se.createAccount(money, shares);
+        this.account_id = new Account(money,shares); // se.createAccount(money, shares);
  //       se.getAccount(account_id).owner = this;
     this.account_id.owner=this;
         this.se = se;

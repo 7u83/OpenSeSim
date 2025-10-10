@@ -261,14 +261,14 @@ public class Exchange {
     // private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
     //ConcurrentHashMap<Double, Account> accounts;
 
-    public Account createAccount(double money, double shares) {
+/*    public Account createAccount(double money, double shares) {
 
-        Account a = new Account(this,money, shares);
+        Account a = new Account(money, shares);
         
         //accounts.put(a.id, a);
         //return a.id;
         return a;
-    }
+    }*/
 
     public enum OrderStatus {
         OPEN,
