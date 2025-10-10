@@ -58,7 +58,7 @@ public class NewStrategyDialog extends EscDialog {
         initComponents();
         this.setLocationRelativeTo(this.getParent());
 
-        boolean devel = Globals.prefs.get(Globals.DEVELSTATUS, "false").equals("true");
+        boolean devel = Globals.prefs_new.get(Globals.DEVELSTATUS, "false").equals("true");
         ArrayList<String> names = Globals.tloader.getDefaultStrategyNames(devel);
         this.jStrategyComboBox.removeAllItems();
 

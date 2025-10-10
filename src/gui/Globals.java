@@ -93,10 +93,11 @@ public class Globals {
         public static final String SESIMVERSION = "version";
         public static final String STRATEGIES = "strategies";
         public static final String TRADERS = "traders";
+        public static final String CONFIG = "sesimconfig";
 
     }
 
-    static public Preferences prefs;
+    static public Preferences prefs_new;
 
     public static class CfgStrings {
 
@@ -160,28 +161,41 @@ public class Globals {
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
 
     static public final JSONArray getTraders() {
-        String traders_json = Globals.prefs.get(PrefKeys.TRADERS, "[]");
+        String traders_json = Globals.prefs_new.get(PrefKeys.TRADERS, "[]");
         JSONArray traders = new JSONArray(traders_json);
         return traders;
     }
 
     static public final JSONObject getStrategies() {
-        String cfglist = Globals.prefs.get(PrefKeys.STRATEGIES, "{}");
+        String cfglist = Globals.prefs_new.get(PrefKeys.STRATEGIES, "{}");
+        JSONObject cfgs = new JSONObject(cfglist);
+        return cfgs;
+    }
+    
+    static public final JSONObject getConfig() {
+        String cfglist = Globals.prefs_new.get(PrefKeys.CONFIG, "{}");
         JSONObject cfgs = new JSONObject(cfglist);
         return cfgs;
     }
 
+
     static public final void putStrategies(JSONObject strategies) {
-        Globals.prefs.put(Globals.PrefKeys.STRATEGIES, strategies.toString());
+        Globals.prefs_new.put(Globals.PrefKeys.STRATEGIES, strategies.toString());
     }
 
     static public final void putTraders(JSONArray traders) {
-        Globals.prefs.put(Globals.PrefKeys.TRADERS, traders.toString());
+        Globals.prefs_new.put(Globals.PrefKeys.TRADERS, traders.toString());
+    }
+    
+     static public final void putConfig(JSONObject cfg) {
+        Globals.prefs_new.put(Globals.PrefKeys.CONFIG, cfg.toString());
     }
 
     static public JSONObject getStrategy(String name) {
         return getStrategies().getJSONObject(name);
     }
+    
+   
 
     static public void getStrategiesIntoComboBox(JComboBox comboBox) {
         TreeMap stm = getStrategiesAsTreeMap();
@@ -210,7 +224,7 @@ public class Globals {
     static public final void saveStrategy(String name, JSONObject cfg) {
         JSONObject cfgs = getStrategies();
         cfgs.put(name, cfg);
-        prefs.put(PrefKeys.STRATEGIES, cfgs.toString());
+        prefs_new.put(PrefKeys.STRATEGIES, cfgs.toString());
     }
 
     public static void saveFile(File f) throws FileNotFoundException {
@@ -244,6 +258,7 @@ public class Globals {
 
         putStrategies(strategies);
         putTraders(traders);
+        putConfig(sobj);
 
     }
 

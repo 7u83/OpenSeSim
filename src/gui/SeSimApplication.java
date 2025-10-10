@@ -91,16 +91,16 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
 
         setTitle("");
-        boolean init = Globals.prefs.getBoolean("initilized", false);
+        boolean init = Globals.prefs_new.getBoolean("initilized", false);
         if (!init) {
             resetToDefaults();
-            Globals.prefs.putBoolean("initilized", true);
+            Globals.prefs_new.putBoolean("initilized", true);
         }
         //this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         //this.setLocationRelativeTo(null);
     }
 
-    AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
+  /*  AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
 
         String base = cfg.getString("base");
         AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
@@ -112,7 +112,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         return ac;
     }
-
+*/
+    
     public void startTraders() {
 
         WaitBox wb = new WaitBox();
@@ -147,7 +148,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
 
-                trader = this.createTraderNew(Globals.sim.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
+                trader = Globals.sim.createTraderNew(Globals.sim.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
 
                 Globals.sim.se.traders.add(trader);
 
@@ -566,7 +567,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     void startSim() {
 
         resetSim();
-        JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", "{}"));
+        JSONObject jo = new JSONObject(Globals.prefs_new.get("Exchange", "{}"));
         Globals.sim.se.putConfig(jo);
 
         this.stopButton.setEnabled(true);
@@ -656,8 +657,8 @@ public class SeSimApplication extends javax.swing.JFrame {
                 File f = fc.getSelectedFile();
                 Globals.loadFile(f);
                 String workdir = fc.getCurrentDirectory().getAbsolutePath();
-                Globals.prefs.put(Globals.PrefKeys.WORKDIR, workdir);
-                Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, f.getAbsolutePath());
+                Globals.prefs_new.put(Globals.PrefKeys.WORKDIR, workdir);
+                Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, f.getAbsolutePath());
                 setTitle(f.getName());
                 return;
 
@@ -672,7 +673,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private JFileChooser getFileChooser() {
         JFileChooser fc = new JFileChooser();
 
-        String workdir = Globals.prefs.get(Globals.PrefKeys.WORKDIR, "");
+        String workdir = Globals.prefs_new.get(Globals.PrefKeys.WORKDIR, "");
         fc.setCurrentDirectory(new File(workdir));
 
         FileNameExtensionFilter sesim_filter = new FileNameExtensionFilter("SeSim Files", Globals.SESIM_FILEEXTENSION);
@@ -695,7 +696,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         FileFilter sesim_filter = fc.getFileFilter();
 
         while (true) {
-            String current_file = Globals.prefs.get(Globals.PrefKeys.CURRENTFILE, "");
+            String current_file = Globals.prefs_new.get(Globals.PrefKeys.CURRENTFILE, "");
             File fobj;
 
             if (saveAs || "".equals(current_file)) {
@@ -718,7 +719,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             File f = fc.getSelectedFile();
             String workdir = fc.getCurrentDirectory().getAbsolutePath();
-            Globals.prefs.put(Globals.PrefKeys.WORKDIR, workdir);
+            Globals.prefs_new.put(Globals.PrefKeys.WORKDIR, workdir);
             String fn = f.getAbsolutePath();
 
             if (f.exists() && saveAs) {
@@ -740,7 +741,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             try {
                 Globals.saveFile(f);
-                Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, fn);
+                Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, fn);
                 setTitle(f.getName());
                 return;
 
@@ -864,7 +865,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_saveMenuItemActionPerformed
 
     private void closeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeMenuItemActionPerformed
-        Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
+        Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, "");
         setTitle("");
     }//GEN-LAST:event_closeMenuItemActionPerformed
 
@@ -904,10 +905,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         Globals.sim = new sesim.Sim();
 
                 
-        Globals.prefs = Preferences.userRoot().node("/opensesim");
-        Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
+        Globals.prefs_new = Preferences.userRoot().node("/opensesim");
+        Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, "");
 
-        Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
+        Globals.setLookAndFeel(Globals.prefs_new.get("laf", "Nimbus"));
         
         JDialog.setDefaultLookAndFeelDecorated(true);
         JFrame.setDefaultLookAndFeelDecorated(false);

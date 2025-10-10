@@ -60,13 +60,13 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         for (UIManager.LookAndFeelInfo lafInfo1 : lafInfo) {
             lafComboBox.addItem(lafInfo1.getName());
         }
-        lafComboBox.setSelectedItem(Globals.prefs.get("laf", "Nimbus"));
+        lafComboBox.setSelectedItem(Globals.prefs_new.get("laf", "Nimbus"));
 
         String selstr;
-        selstr = Globals.prefs.get(Globals.DEVELSTATUS, "false");
+        selstr = Globals.prefs_new.get(Globals.DEVELSTATUS, "false");
         this.jDevleopmentFeaturesCheckBox.setSelected(selstr.equals("true"));
 
-        selstr = Globals.prefs.get(Globals.GODMODE, "false");
+        selstr = Globals.prefs_new.get(Globals.GODMODE, "false");
         this.godmodeCheckBox.setSelected(selstr.equals("true"));
         
     
@@ -243,12 +243,12 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         this.applyButtonActionPerformed(evt);
         String selected = (String) this.lafComboBox.getSelectedItem();
-        Globals.prefs.put("laf", selected);
+        Globals.prefs_new.put("laf", selected);
         String sel;
         sel = this.jDevleopmentFeaturesCheckBox.isSelected() == true ? "true" : "false";
-        Globals.prefs.put(Globals.DEVELSTATUS, sel);
+        Globals.prefs_new.put(Globals.DEVELSTATUS, sel);
         sel = this.godmodeCheckBox.isSelected() == true ? "true" : "false";
-        Globals.prefs.put(Globals.GODMODE, sel);
+        Globals.prefs_new.put(Globals.GODMODE, sel);
                 Globals.notifyCfgListeners();
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed

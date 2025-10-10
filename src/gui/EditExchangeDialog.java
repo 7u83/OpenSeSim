@@ -40,7 +40,7 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(parent);
-        JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", Globals.DEFAULT_EXCHANGE_CFG));
+        JSONObject jo = new JSONObject(Globals.prefs_new.get("Exchange", Globals.DEFAULT_EXCHANGE_CFG));
 
             this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_MONEY_DECIMALS));
             this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_SHARES_DECIMALS));
@@ -145,7 +145,7 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         jo.put(Globals.sim.se.CFG_MONEY_DECIMALS, (Integer) this.moneyDecimalsSpinner.getValue());
         jo.put(Globals.sim.se.CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
         System.out.printf("EC: %s\n", jo.toString(3));
-        Globals.prefs.put("Exchange", jo.toString());
+        Globals.prefs_new.put("Exchange", jo.toString());
         dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 

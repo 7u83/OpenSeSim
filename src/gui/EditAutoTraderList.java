@@ -79,7 +79,10 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             ja.put(jo);
         }
 
-        Globals.prefs.put(Globals.PrefKeys.TRADERS, ja.toString());
+//        Globals.prefs.put(Globals.PrefKeys.TRADERS, ja.toString());
+// TUBE GLOB
+        Globals.putTraders(ja);
+        
 
     }
 

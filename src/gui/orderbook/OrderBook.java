@@ -101,7 +101,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
      */
     @Override
     public final void cfgChanged() {
-        boolean gm = Globals.prefs.get(Globals.CfgStrings.GODMODE, "false").equals("true");
+        boolean gm = Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true");
         setGodMode(gm);
         list.invalidate();
         list.repaint();

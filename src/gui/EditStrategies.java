@@ -259,8 +259,10 @@ public final class EditStrategies extends javax.swing.JDialog {
 
     private void jComboBoxStrategySelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxStrategySelectorActionPerformed
 
-        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
-        JSONObject cfgs = new JSONObject(cfglist);
+        //String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
+        //JSONObject cfgs = new JSONObject(cfglist);
+        // TUBE GLOB
+        JSONObject cfgs =  Globals.getStrategies();
         String item = (String) this.jComboBoxStrategySelector.getSelectedItem();
 
 
@@ -352,12 +354,15 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
             item = item + " - " + d.getName();
         }
 
-        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
-        JSONObject cfgs = new JSONObject(cfglist);
+//        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
+//        JSONObject cfgs = new JSONObject(cfglist);
+// TUBE GLOB
+        JSONObject cfgs = Globals.getStrategies();
         
         cfgs.put(item, o);
         
-        Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
+//        Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
+        Globals.putStrategies(cfgs);
 
         //this.reloadStrategyConfigs();
         this.initComboBox();
@@ -379,14 +384,18 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
         String selected = (String) this.jComboBoxStrategySelector.getSelectedItem();
         System.out.printf("Selected: %s\n", selected);
 
-        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
-        JSONObject cfgs = new JSONObject(cfglist);
+//        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
+//        JSONObject cfgs = new JSONObject(cfglist);
+
+        JSONObject cfgs = Globals.getStrategies();
+// TUBE GLOB        
 
         //System.out.printf("CFG vorher: %s\n", cfgs.toString(3));
         cfgs.remove(selected);
         
        // System.out.printf("Neue nachher: %s\n", cfgs.toString(3));
-        Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
+      //  Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
+      Globals.putStrategies(cfgs);
 
         this.initComboBox();
         
