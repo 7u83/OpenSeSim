@@ -147,11 +147,11 @@ public class Globals {
                 .getPath()).toString();
 
         pathlist.add(dp);
-        
-        for (String p: a){
+
+        for (String p : a) {
             sesim.Logger.debug("SysProp Path List: %s", p);
         }
-        
+
         sesim.Logger.debug("CLASDINGS %s", dp);
 
         tloader = new AutoTraderLoader(pathlist);
@@ -161,41 +161,50 @@ public class Globals {
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
 
     static public final JSONArray getTraders() {
-        String traders_json = Globals.prefs_new.get(PrefKeys.TRADERS, "[]");
-        JSONArray traders = new JSONArray(traders_json);
+        //String traders_json = Globals.prefs_new.get(PrefKeys.TRADERS, "[]");
+        //JSONArray traders = new JSONArray(traders_json);
+
+        JSONArray traders = getConfig().getJSONArray(PrefKeys.TRADERS);
         return traders;
     }
 
     static public final JSONObject getStrategies() {
-        String cfglist = Globals.prefs_new.get(PrefKeys.STRATEGIES, "{}");
-        JSONObject cfgs = new JSONObject(cfglist);
-        return cfgs;
+        //String cfglist = Globals.prefs_new.get(PrefKeys.STRATEGIES, "{}");
+        //JSONObject cfgs = new JSONObject(cfglist);
+
+        JSONObject strategies = getConfig().getJSONObject(PrefKeys.STRATEGIES);
+        return strategies;
     }
-    
+
     static public final JSONObject getConfig() {
         String cfglist = Globals.prefs_new.get(PrefKeys.CONFIG, "{}");
         JSONObject cfgs = new JSONObject(cfglist);
         return cfgs;
     }
 
-
     static public final void putStrategies(JSONObject strategies) {
-        Globals.prefs_new.put(Globals.PrefKeys.STRATEGIES, strategies.toString());
+        //Globals.prefs_new.put(Globals.PrefKeys.STRATEGIES, strategies.toString());
+
+        JSONObject sobj = getConfig();
+        sobj.put(PrefKeys.STRATEGIES, strategies);
+        putConfig(sobj);
+
     }
 
     static public final void putTraders(JSONArray traders) {
-        Globals.prefs_new.put(Globals.PrefKeys.TRADERS, traders.toString());
+        // Globals.prefs_new.put(Globals.PrefKeys.TRADERS, traders.toString());
+        JSONObject sobj = getConfig();
+        sobj.put(PrefKeys.TRADERS, traders);
+        putConfig(sobj);
     }
-    
-     static public final void putConfig(JSONObject cfg) {
+
+    static public final void putConfig(JSONObject cfg) {
         Globals.prefs_new.put(Globals.PrefKeys.CONFIG, cfg.toString());
     }
 
     static public JSONObject getStrategy(String name) {
         return getStrategies().getJSONObject(name);
     }
-    
-   
 
     static public void getStrategiesIntoComboBox(JComboBox comboBox) {
         TreeMap stm = getStrategiesAsTreeMap();
@@ -224,19 +233,20 @@ public class Globals {
     static public final void saveStrategy(String name, JSONObject cfg) {
         JSONObject cfgs = getStrategies();
         cfgs.put(name, cfg);
-        prefs_new.put(PrefKeys.STRATEGIES, cfgs.toString());
+        //prefs_new.put(PrefKeys.STRATEGIES, cfgs.toString());
+        putStrategies(cfgs);
     }
 
     public static void saveFile(File f) throws FileNotFoundException {
 
-        JSONObject sobj = new JSONObject();
+        JSONObject sobj = getConfig(); //new JSONObject();
 
-        JSONArray traders = getTraders();
+   /*     JSONArray traders = getTraders();
         JSONObject strategies = getStrategies();
 
         sobj.put(PrefKeys.SESIMVERSION, SESIM_FILEVERSION);
         sobj.put(PrefKeys.STRATEGIES, strategies);
-        sobj.put(PrefKeys.TRADERS, traders);
+        sobj.put(PrefKeys.TRADERS, traders);*/
 
         PrintWriter out;
         out = new PrintWriter(f.getAbsolutePath());
@@ -253,11 +263,11 @@ public class Globals {
             throw new IOException("File has wrong version.");
         }
 
-        JSONArray traders = sobj.getJSONArray(PrefKeys.TRADERS);
+  /*      JSONArray traders = sobj.getJSONArray(PrefKeys.TRADERS);
         JSONObject strategies = sobj.getJSONObject(PrefKeys.STRATEGIES);
 
         putStrategies(strategies);
-        putTraders(traders);
+        putTraders(traders);*/
         putConfig(sobj);
 
     }
