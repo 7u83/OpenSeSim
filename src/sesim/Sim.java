@@ -30,12 +30,21 @@ import gui.SeSimApplication;
 import java.util.ArrayList;
 import java.util.Random;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  *
  * @author 7u83
  */
 public class Sim {
+
+    public static final class CfgKeys {
+
+        public static final String SESIMVERSION = "version";
+        public static final String STRATEGIES = "strategies";
+        public static final String TRADERS = "traders";
+
+    }
 
     static Random random = new Random(12);
 
@@ -85,7 +94,7 @@ public class Sim {
 
         return ac;
     }
-    
+
     private void initAutoTraderLoader() {
         ArrayList pathlist = new ArrayList<>();
         String dp = new java.io.File(sesim.Sim.class.getProtectionDomain()
@@ -95,6 +104,23 @@ public class Sim {
 
         pathlist.add(dp);
         tloader = new AutoTraderLoader(pathlist);
+    }
+
+    static public final JSONObject getStrategies(JSONObject cfg) {
+        return cfg.getJSONObject(CfgKeys.STRATEGIES);
+    }
+
+    static public final void putStrategies(JSONObject sobj, JSONObject strategies) {
+        sobj.put(CfgKeys.STRATEGIES, strategies);
+    }
+
+    static public final JSONArray getTraders(JSONObject cfg) {
+        JSONArray traders = cfg.getJSONArray(CfgKeys.TRADERS);
+        return traders;
+    }
+
+    static public final void putTraders(JSONObject cfg,JSONArray traders) {
+        cfg.put(CfgKeys.TRADERS, traders);
     }
 
 }

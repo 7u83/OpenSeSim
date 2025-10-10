@@ -43,6 +43,7 @@ import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.AutoTraderLoader;
+import sesim.Sim;
 
 /**
  *
@@ -91,8 +92,8 @@ public class Globals {
         public static final String CURRENTFILE = "currentfile";
 
         public static final String SESIMVERSION = "version";
-        public static final String STRATEGIES = "strategies";
-        public static final String TRADERS = "traders";
+//        public static final String STRATEGIES = "strategies";
+//        public static final String TRADERS = "traders";
         public static final String CONFIG = "sesimconfig";
 
     }
@@ -164,7 +165,8 @@ public class Globals {
         //String traders_json = Globals.prefs_new.get(PrefKeys.TRADERS, "[]");
         //JSONArray traders = new JSONArray(traders_json);
 
-        JSONArray traders = getConfig().getJSONArray(PrefKeys.TRADERS);
+    //    JSONArray traders = getConfig().getJSONArray(PrefKeys.TRADERS);
+        JSONArray traders = Sim.getTraders(getConfig());
         return traders;
     }
 
@@ -172,7 +174,8 @@ public class Globals {
         //String cfglist = Globals.prefs_new.get(PrefKeys.STRATEGIES, "{}");
         //JSONObject cfgs = new JSONObject(cfglist);
 
-        JSONObject strategies = getConfig().getJSONObject(PrefKeys.STRATEGIES);
+       // JSONObject strategies = getConfig().getJSONObject(PrefKeys.STRATEGIES);
+       JSONObject strategies = Sim.getStrategies(getConfig());
         return strategies;
     }
 
@@ -186,7 +189,8 @@ public class Globals {
         //Globals.prefs_new.put(Globals.PrefKeys.STRATEGIES, strategies.toString());
 
         JSONObject sobj = getConfig();
-        sobj.put(PrefKeys.STRATEGIES, strategies);
+        //sobj.put(PrefKeys.STRATEGIES, strategies);
+        Sim.putStrategies(sobj, strategies);
         putConfig(sobj);
 
     }
@@ -194,7 +198,8 @@ public class Globals {
     static public final void putTraders(JSONArray traders) {
         // Globals.prefs_new.put(Globals.PrefKeys.TRADERS, traders.toString());
         JSONObject sobj = getConfig();
-        sobj.put(PrefKeys.TRADERS, traders);
+        Sim.putTraders(sobj, traders);
+        //sobj.put(Sim.CfgKeys.TRADERS, traders);
         putConfig(sobj);
     }
 
