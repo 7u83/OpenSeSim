@@ -259,14 +259,15 @@ public class Exchange {
     }
 
     // private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
-    ConcurrentHashMap<Double, Account> accounts;
+    //ConcurrentHashMap<Double, Account> accounts;
 
-    public double createAccount(double money, double shares) {
+    public Account createAccount(double money, double shares) {
 
         Account a = new Account(this,money, shares);
         
-        accounts.put(a.id, a);
-        return a.id;
+        //accounts.put(a.id, a);
+        //return a.id;
+        return a;
     }
 
     public enum OrderStatus {
@@ -417,7 +418,7 @@ public class Exchange {
         random = new Random(12);
 
         quoteHistory = new ArrayList();
-        accounts = new ConcurrentHashMap<>();
+//        accounts = new ConcurrentHashMap<>();
 
         traders = new ArrayList();
 
@@ -846,8 +847,8 @@ public class Exchange {
 
     }
 
-    public boolean cancelOrder(double account_id, long order_id) {
-        Account a = accounts.get(account_id);
+    public boolean cancelOrder(Account a, long order_id) {
+        //Account a = accounts.get(account_id);
         if (a == null) {
             return false;
         }
@@ -1135,9 +1136,9 @@ public class Exchange {
      * @param limit
      * @return
      */
-    public long createOrder(double account_id, OrderType type, double volume, double limit) {
+    public long createOrder(Account a, OrderType type, double volume, double limit) {
 
-        Account a = accounts.get(account_id);
+    //    Account a = accounts.get(account_id);
         if (a == null) {
             System.out.printf("Order not places account\n");
             return -1;
@@ -1194,18 +1195,18 @@ public class Exchange {
         return o.limit;
     }
 
-    public int getNumberOfOpenOrders(double account_id) {
-        Account a = accounts.get(account_id);
+    public int getNumberOfOpenOrders(Account a) {
+    //    Account a = accounts.get(account_id);
         if (a == null) {
             return 0;
         }
         return a.orders.size();
     }
 
-    public Account getAccount(double account_id) {
+/*    public Account getAccount(double account_id) {
         return accounts.get(account_id);
     }
-    
+  */  
     
     
     
@@ -1262,9 +1263,9 @@ public class Exchange {
         return ad;
     }
      */
-    public ArrayList<OrderData> getOpenOrders(double account_id) {
+    public ArrayList<OrderData> getOpenOrders(Account a) {
 
-        Account a = accounts.get(account_id);
+//        Account a = accounts.get(account_id);
         if (a == null) {
             return null;
         }

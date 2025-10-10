@@ -34,7 +34,8 @@ import sesim.Scheduler.TimerTaskRunner;
  */
 public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRunner {
 
-    protected double account_id;
+  //  protected double account_id;
+      protected Account account_id;
     protected Exchange se;
    // protected AutoTraderConfig config;
 
@@ -75,13 +76,14 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
 
     @Override
     public Account getAccount() {
-        return se.getAccount(account_id);
+        return account_id;
     }
 
     @Override
     public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
         this.account_id = se.createAccount(money, shares);
-        se.getAccount(account_id).owner = this;
+ //       se.getAccount(account_id).owner = this;
+    this.account_id.owner=this;
         this.se = se;
         this.name = name;
         this.id = id;

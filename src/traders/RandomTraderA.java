@@ -71,7 +71,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     @Override
     public void start() {
-        Account a = se.getAccount(account_id);
+        Account a = account_id;
         a.setListener(this);
 
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
@@ -85,7 +85,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     public long timerTask() {
         intask = true;
         owait = null;
-        sesim.Account a = se.getAccount(account_id);
+        sesim.Account a = account_id;
         long rc = this.doTrade();
         setStatus("Sleeping for %d ms", rc);
         intask = false;
@@ -181,7 +181,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     public long cancelOrders() {
         int n = se.getNumberOfOpenOrders(account_id);
         if (n > 0) {
-            Account ad = se.getAccount(account_id);
+            Account ad = account_id;
 
             Set<Long> keys = ad.getOrders().keySet();
 
@@ -374,7 +374,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
     public boolean doBuy() {
 
 //        AccountData ad = this.se.getAccountData(account_id);
-        Account ad = se.getAccount(account_id);
+        Account ad = account_id;
 
         Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
 
@@ -421,7 +421,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         //   RandomTraderConfig myoldconfig = (RandomTraderConfig) this.oldconfig;
         //AccountData ad = this.se.getAccountData(account_id);
 
-        Account ad = se.getAccount(account_id);
+        Account ad = account_id;
 
         Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
 
