@@ -882,51 +882,39 @@ public class SeSimApplication extends javax.swing.JFrame {
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
-        //JPopupMenu.setDefaultLightWeightPopupEnabled(false);
-        
+
+        // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
         
-        // ConsoleHandler erzeugen
+        // create ConsoleHandler 
         ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.ALL); // alles loggen
         consoleHandler.setFormatter(new SimpleFormatter()); // lesbare Ausgabe
 
-        // Handler anhängen
+        // Append handler
         rootLogger.addHandler(consoleHandler);
         rootLogger.setLevel(Level.ALL); 
         
-        
-        
         sesim.Logger.debug("Starting application on the new SesimLogger");
-
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-
-        GraphicsDevice[] gs = ge.getScreenDevices();
-        for (GraphicsDevice d : gs) {
-            System.out.printf("ID %s\n", d.getIDstring());
-
-        }
+        
 
         Globals.initGlobals();
-
         Globals.se = new Exchange();
 
-        Class<?> c = sesim.Exchange.class;
-        Globals.prefs = Preferences.userNodeForPackage(c);
+                
+        Globals.prefs = Preferences.userRoot().node("/opensesim");
         Globals.prefs.put(Globals.PrefKeys.CURRENTFILE, "");
 
         Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
+        
         JDialog.setDefaultLookAndFeelDecorated(true);
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        JPopupMenu.setDefaultLightWeightPopupEnabled(true);
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
- /*               String x = new java.io.File(SeSimApplication.class.getProtectionDomain()
-                        .getCodeSource()
-                        .getLocation()
-                        .getPath()).toString(); //.getName();*/
-
-                System.out.printf("Creating Application\n");
+//                System.out.printf("Creating Application\n");
 
                 SeSimApplication app = new SeSimApplication();
                 app.setLocationRelativeTo(null);

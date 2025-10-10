@@ -82,6 +82,7 @@ public class Globals {
     public static final String GODMODE = "godmode";
 
     static public sesim.Exchange se;
+    static public sesim.Sim sim;
 
     /**
      * Defines keys for preferences
