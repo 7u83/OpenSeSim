@@ -126,7 +126,7 @@ public class Exchange {
         return data;
     }
 
-    public void injectMoney() {
+/*    public void injectMoney() {
 
         accounts.forEach(new BiConsumer() {
             @Override
@@ -138,9 +138,9 @@ public class Exchange {
 
         });
 
-    }
+    } */
 
-    public void pointZero() {
+/*    public void pointZero() {
         accounts.forEach(new BiConsumer() {
             @Override
             public void accept(Object t, Object u) {
@@ -152,7 +152,8 @@ public class Exchange {
         });
 
     }
-
+*/
+    
     public OHLCData getOHLCdata(Integer timeFrame) {
         OHLCData data; //=new OHLCData(timeFrame);
         data = ohlc_data.get(timeFrame);

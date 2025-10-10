@@ -43,6 +43,6 @@ public interface AccountInterface {
     
     public AutoTraderInterface getOwner();
     
-      public double getID();
+    //  public double getID();
     
 }

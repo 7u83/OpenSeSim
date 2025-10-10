@@ -25,15 +25,32 @@
  */
 package sesim;
 
-import java.util.logging.Level;
-import static java.util.logging.Level.*;
+import java.util.Random;
+
+
 
 /**
  *
  * @author 7u83
  */
 public class Sim {
+    static Random random = new Random(12);
 
+    public static int randNextInt() {
+        return random.nextInt();
+
+    }
+
+    public static int randNextInt(int bounds) {
+
+        return random.nextInt(bounds);
+
+    }
+
+    public static double randNextDouble() {
+        return random.nextDouble();
+
+    }
 
 
 }

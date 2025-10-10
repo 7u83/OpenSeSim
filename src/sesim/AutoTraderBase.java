@@ -73,6 +73,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
     }
     private long id;
 
+    @Override
     public Account getAccount() {
         return se.getAccount(account_id);
     }
