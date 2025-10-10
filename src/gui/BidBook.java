@@ -36,13 +36,13 @@ public class BidBook extends OrderBook {
 
     @Override
     ArrayList<Order> getOrderBook() {
-        return Globals.se.getOrderBook(OrderType.BUYLIMIT, 40);
+        return Globals.sim.se.getOrderBook(OrderType.BUYLIMIT, 40);
     }
 
     public BidBook() {
-        if (Globals.se == null) {
+        if (Globals.sim.se == null) {
             return;
         }
-        Globals.se.addBookReceiver(OrderType.BUYLIMIT, this);
+        Globals.sim.se.addBookReceiver(OrderType.BUYLIMIT, this);
     }
 }

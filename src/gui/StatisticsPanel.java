@@ -46,7 +46,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
         clockUpdater = new TimerTask() {
             @Override
             public void run() {
-                long t = Globals.se.timer.currentTimeMillis();
+                long t = Globals.sim.se.timer.currentTimeMillis();
 
                 System.out.printf("The Clock: %d\n", t);
                 jLabel1.setText(Scheduler.formatTimeMillis(t));

@@ -44,20 +44,20 @@ public class Statistics extends javax.swing.JPanel {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                Exchange.Statistics s = Globals.se.getStatistics();
+                Exchange.Statistics s = Globals.sim.se.getStatistics();
 
                 tradesLabel.setText(String.format("%d", s.trades));
 
                 if (s.heigh == null) {
                     labelHigh.setText("--");
                 } else {
-                    labelHigh.setText(Globals.se.getMoneyFormatter().format(s.heigh));
+                    labelHigh.setText(Globals.sim.se.getMoneyFormatter().format(s.heigh));
                 }
 
                 if (s.low == null) {
                     labelLow.setText("--");
                 } else {
-                    labelLow.setText(Globals.se.getMoneyFormatter().format(s.low));
+                    labelLow.setText(Globals.sim.se.getMoneyFormatter().format(s.low));
                 }
 
             }

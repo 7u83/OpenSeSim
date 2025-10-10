@@ -49,12 +49,11 @@ import sesim.AutoTraderLoader;
  * @author 7u83 <7u83@mail.ru>
  */
 public class Globals {
-    
+
     public static final String SESIM_FILEEXTENSION = "sesim";
     public static final Double SESIM_FILEVERSION = 0.1;
-    
+
     public static final String SESIM_APPTITLE = "SeSim - Stock Exchange Simulator";
-    
 
     public interface CfgListener {
 
@@ -75,31 +74,28 @@ public class Globals {
 
     public static JFrame frame;
 
-   // static final String STRATEGYPREFS = "Strategies";
-   // static final String TRADERPREFS = "Traders";
-
+    // static final String STRATEGYPREFS = "Strategies";
+    // static final String TRADERPREFS = "Traders";
     static final String DEVELSTATUS = "devel_status";
     public static final String GODMODE = "godmode";
 
-    static public sesim.Exchange se;
+    // static public sesim.Exchange se;
     static public sesim.Sim sim;
 
     /**
      * Defines keys for preferences
      */
-    public static final class PrefKeys{
+    public static final class PrefKeys {
 
         public static String WORKDIR = "workdir";
         public static final String CURRENTFILE = "currentfile";
-        
+
         public static final String SESIMVERSION = "version";
         public static final String STRATEGIES = "strategies";
         public static final String TRADERS = "traders";
-        
-
 
     }
-    
+
     static public Preferences prefs;
 
     public static class CfgStrings {
@@ -141,17 +137,21 @@ public class Globals {
     static AutoTraderLoader tloader;
 
     static void initGlobals() {
-       String[] a = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
-        ArrayList pathlist = new ArrayList<>(Arrays.asList(a));
-  //      System.out.printf("Init tloader\n");
+        String[] a = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
 
-        pathlist = new ArrayList<>();
+        ArrayList pathlist = new ArrayList<>();
         String dp = new java.io.File(SeSimApplication.class.getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
                 .getPath()).toString();
 
         pathlist.add(dp);
+        
+        for (String p: a){
+            sesim.Logger.debug("SysProp Path List: %s", p);
+        }
+        
+        sesim.Logger.debug("CLASDINGS %s", dp);
 
         tloader = new AutoTraderLoader(pathlist);
 
@@ -170,16 +170,15 @@ public class Globals {
         JSONObject cfgs = new JSONObject(cfglist);
         return cfgs;
     }
-    
-    static public final void putStrategies(JSONObject strategies){
+
+    static public final void putStrategies(JSONObject strategies) {
         Globals.prefs.put(Globals.PrefKeys.STRATEGIES, strategies.toString());
     }
 
-    static public final void putTraders (JSONArray traders){
+    static public final void putTraders(JSONArray traders) {
         Globals.prefs.put(Globals.PrefKeys.TRADERS, traders.toString());
     }
 
-    
     static public JSONObject getStrategy(String name) {
         return getStrategies().getJSONObject(name);
     }
@@ -214,9 +213,6 @@ public class Globals {
         prefs.put(PrefKeys.STRATEGIES, cfgs.toString());
     }
 
-
-    
-    
     public static void saveFile(File f) throws FileNotFoundException {
 
         JSONObject sobj = new JSONObject();
@@ -234,37 +230,36 @@ public class Globals {
         out.close();
 
     }
-    
-    public static void loadString(String s) throws IOException{
+
+    public static void loadString(String s) throws IOException {
         JSONObject sobj = new JSONObject(s);
-        
+
         Double version = sobj.getDouble(PrefKeys.SESIMVERSION);
-        if (version > SESIM_FILEVERSION){
+        if (version > SESIM_FILEVERSION) {
             throw new IOException("File has wrong version.");
         }
-        
+
         JSONArray traders = sobj.getJSONArray(PrefKeys.TRADERS);
         JSONObject strategies = sobj.getJSONObject(PrefKeys.STRATEGIES);
-        
+
         putStrategies(strategies);
         putTraders(traders);
-        
+
     }
 
-   
-    public static void clearAll(){
+    public static void clearAll() {
         putStrategies(new JSONObject());
         putTraders(new JSONArray());
     }
-    
+
     public static void loadFile(File f) throws IOException {
-        
+
         f.getAbsoluteFile();
         String s;
         s = new String(Files.readAllBytes(f.toPath()));
-        
+
         loadString(s);
-        
+
     }
 
 }

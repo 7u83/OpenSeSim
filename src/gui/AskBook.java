@@ -36,7 +36,7 @@ public class AskBook extends OrderBook {
 
     @Override
     ArrayList <Order> getOrderBook() {
-        return Globals.se.getOrderBook(OrderType.SELLLIMIT,40);
+        return Globals.sim.se.getOrderBook(OrderType.SELLLIMIT,40);
     }
     
     @Override
@@ -45,10 +45,10 @@ public class AskBook extends OrderBook {
     }
         
     public AskBook(){
-        if (Globals.se == null) {
+        if (Globals.sim.se == null) {
             return;
         }
-        Globals.se.addBookReceiver(OrderType.SELLLIMIT, this);
+        Globals.sim.se.addBookReceiver(OrderType.SELLLIMIT, this);
         
     }
 

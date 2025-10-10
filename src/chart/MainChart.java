@@ -149,7 +149,7 @@ public class MainChart extends chart.Chart {
 
     protected final void setCompression0(int timeFrame) {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            data = Globals.se.getOHLCdata(timeFrame);
+            data = Globals.sim.se.getOHLCdata(timeFrame);
             invalidate();
             repaint();
         });

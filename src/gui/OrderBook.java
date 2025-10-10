@@ -205,7 +205,7 @@ public abstract class OrderBook extends javax.swing.JPanel implements Exchange.B
    //     this.setBorder(BorderFactory.createEmptyBorder());
    //     this.orderBookScroller.setBorder(BorderFactory.createBevelBorder(0));
 
-        if (Globals.se == null) {
+        if (Globals.sim.se == null) {
             return;
         }
 

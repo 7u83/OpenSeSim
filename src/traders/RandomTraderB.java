@@ -251,7 +251,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     double getStart() {
 
-        return Globals.se.fairValue;
+        return this.se.fairValue;
 
     }
 

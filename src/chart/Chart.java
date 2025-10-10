@@ -53,16 +53,16 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      * Creates new form Chart
      */
     public Chart() {
-        if (Globals.se == null) {
+        if (Globals.sim.se == null) {
             return;
         }
 
         initComponents();
-        if (Globals.se == null) {
+        if (Globals.sim.se == null) {
             return;
         }
 
-        Globals.se.addQuoteReceiver(this);
+        Globals.sim.se.addQuoteReceiver(this);
 
     }
 
@@ -635,7 +635,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     public final void paintComponent(Graphics g) {
       //  System.out.print("PaintComponent\n");
         
-        if (Globals.se == null) {
+        if (Globals.sim.se == null) {
             return;
         }
 

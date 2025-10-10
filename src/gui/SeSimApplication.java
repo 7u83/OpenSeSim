@@ -78,7 +78,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         initComponents();
 
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] screens = ge.getScreenDevices();
 
         //Window w = screens[1].getFullScreenWindow();
@@ -96,7 +96,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             resetToDefaults();
             Globals.prefs.putBoolean("initilized", true);
         }
-        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
+        //this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         //this.setLocationRelativeTo(null);
     }
 
@@ -117,8 +117,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         WaitBox wb = new WaitBox();
 
-        //   Globals.se.setMoneyDecimals(8);
-        //    Globals.se.setSharesDecimals(0);        
+        //   Globals.sim.se.setMoneyDecimals(8);
+        //    Globals.sim.se.setSharesDecimals(0);        
         JSONArray tlist = Globals.getTraders();
 
         Double moneyTotal = 0.0;
@@ -147,9 +147,9 @@ public class SeSimApplication extends javax.swing.JFrame {
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
 
-                trader = this.createTraderNew(Globals.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
+                trader = this.createTraderNew(Globals.sim.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
 
-                Globals.se.traders.add(trader);
+                Globals.sim.se.traders.add(trader);
 
                 moneyTotal += money;
                 sharesTotal += shares;
@@ -158,13 +158,13 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         }
 
-        Globals.se.fairValue = moneyTotal / sharesTotal;
+        Globals.sim.se.fairValue = moneyTotal / sharesTotal;
 
-        //  Globals.se.fairValue = 1.0;
-        System.out.printf("Failr Value is %f\n", Globals.se.fairValue);
+        //  Globals.sim.se.fairValue = 1.0;
+        System.out.printf("Failr Value is %f\n", Globals.sim.se.fairValue);
 
-        for (int i = 0; i < Globals.se.traders.size(); i++) {
-            Globals.se.traders.get(i).start();
+        for (int i = 0; i < Globals.sim.se.traders.size(); i++) {
+            Globals.sim.se.traders.get(i).start();
         }
 
     }
@@ -560,14 +560,14 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     void pauseSim() {
-        Globals.se.timer.pause();
+        Globals.sim.se.timer.pause();
     }
 
     void startSim() {
 
         resetSim();
         JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", "{}"));
-        Globals.se.putConfig(jo);
+        Globals.sim.se.putConfig(jo);
 
         this.stopButton.setEnabled(true);
 
@@ -578,15 +578,15 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         this.startTraders();
 
-        Globals.se.timer.setPause(false);
-        Globals.se.timer.start();
-        Globals.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
+        Globals.sim.se.timer.setPause(false);
+        Globals.sim.se.timer.start();
+        Globals.sim.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
 
-        Scheduler.TimerTaskRunner tt = new Scheduler.TimerTaskRunner() {
+ /*       Scheduler.TimerTaskRunner tt = new Scheduler.TimerTaskRunner() {
             @Override
             public long timerTask() {
                 System.out.printf("Hello i will inject money\n");
-                // Globals.se.injectMoney();
+                // Globals.sim.se.injectMoney();
                 return 1000 * 60 * 10;
             }
 
@@ -595,19 +595,20 @@ public class SeSimApplication extends javax.swing.JFrame {
                 return 7L;
             }
 
-        };
-//        Globals.se.timer.startTimerTask(tt, 0);
+        };*/
+ 
+//        Globals.sim.se.timer.startTimerTask(tt, 0);
 
     }
 
     void stopSim() {
-        Globals.se.timer.terminate();
+        Globals.sim.se.timer.terminate();
         this.stopButton.setEnabled(false);
     }
 
     void resetSim() {
-        Globals.se.terminate();
-        Globals.se.reset();
+        Globals.sim.se.terminate();
+        Globals.sim.se.reset();
         chart.initChart();
         chart.invalidate();
         chart.repaint();
@@ -804,11 +805,11 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     private void accelSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_accelSpinnerStateChanged
         Double val = (Double) this.accelSpinner.getValue();
-        Globals.se.timer.setAcceleration(val);
+        Globals.sim.se.timer.setAcceleration(val);
     }//GEN-LAST:event_accelSpinnerStateChanged
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Globals.se.timer.pause();
+        Globals.sim.se.timer.pause();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
@@ -899,7 +900,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         
 
         Globals.initGlobals();
-        Globals.se = new Exchange();
+    //    Globals.sim.se = new Exchange();
+        Globals.sim = new sesim.Sim();
 
                 
         Globals.prefs = Preferences.userRoot().node("/opensesim");
@@ -908,7 +910,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         Globals.setLookAndFeel(Globals.prefs.get("laf", "Nimbus"));
         
         JDialog.setDefaultLookAndFeelDecorated(true);
-        JFrame.setDefaultLookAndFeelDecorated(true);
+        JFrame.setDefaultLookAndFeelDecorated(false);
         JPopupMenu.setDefaultLightWeightPopupEnabled(true);
 
         java.awt.EventQueue.invokeLater(new Runnable() {

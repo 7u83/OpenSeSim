@@ -109,7 +109,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
 
     public void setType(OrderType type) {
         this.type = type;
-        Globals.se.addBookReceiver(type, this);
+        Globals.sim.se.addBookReceiver(type, this);
     }
 
     /**
@@ -118,7 +118,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     public OrderBook() {
         initComponents();
 
-        if (Globals.se == null) {
+        if (Globals.sim.se == null) {
             return;
         }
         model = (DefaultTableModel) this.list.getModel();
@@ -126,7 +126,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
         list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
         list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));
         cfgChanged();
-//        Globals.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
+//        Globals.sim.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
         Globals.addCfgListener(this);
         
         new Timer().schedule(new TimerTask() {
@@ -145,7 +145,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     long ouctr = 0;
 
     void oupdater() {
-        ArrayList<Order> ob = Globals.se.getOrderBook(type, depth);
+        ArrayList<Order> ob = Globals.sim.se.getOrderBook(type, depth);
         model.setRowCount(ob.size());
         int row = 0;
         for (Order ob1 : ob) {

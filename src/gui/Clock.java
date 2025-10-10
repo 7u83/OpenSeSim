@@ -44,7 +44,7 @@ public class Clock extends javax.swing.JPanel {
 
         @Override
         public long timerTask() {
-               long t = Globals.se.timer.currentTimeMillis();  
+               long t = Globals.sim.se.timer.currentTimeMillis();  
                jLabel1.setText(Scheduler.formatTimeMillis(t));
                return 1000;
         }
@@ -67,17 +67,17 @@ public class Clock extends javax.swing.JPanel {
 
         this.timer = new Timer();
 
-        if(Globals.se==null)
+        if(Globals.sim.se==null)
             return;
 
         
         clockUpdater = new TimerTask () {
             @Override
             public void run() {
-                long t = Globals.se.timer.currentTimeMillis();
+                long t = Globals.sim.se.timer.currentTimeMillis();
                 
                 
-                Statistics s = Globals.se.getStatistics();
+                Statistics s = Globals.sim.se.getStatistics();
                 jLabel1.setText(Scheduler.formatTimeMillis(t));
             
             }

@@ -39,20 +39,24 @@ import sesim.Quote;
  */
 public class CreateOrderDialog extends javax.swing.JDialog {
 
+    sesim.Exchange se;
+
     /**
      * Creates new form CreateOrderDialog
      */
-    public CreateOrderDialog(java.awt.Frame parent, boolean modal) {
+    public CreateOrderDialog(Exchange se, java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+
         initComponents();
+        this.se = se;
         this.setLocationRelativeTo(this.getParent());
 
     }
 
     OrderType typeList[];
 
-    public CreateOrderDialog(java.awt.Frame parent, boolean modal, Account account, OrderType type) {
-        this(parent, modal);
+    public CreateOrderDialog(Exchange se, java.awt.Frame parent, boolean modal, Account account, OrderType type) {
+        this(se, parent, modal);
         this.account = account;
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Buy Lim", "Sell Lim", "Buy", "Sell"}));
         typeList = new OrderType[]{OrderType.BUYLIMIT, OrderType.SELLLIMIT, OrderType.BUY, OrderType.SELL};
@@ -73,16 +77,16 @@ public class CreateOrderDialog extends javax.swing.JDialog {
 
     public void initDialog() {
         OrderType t = getOrderType();
-        Quote q = Globals.se.getBestPrice_0();
+        Quote q = se.getBestPrice_0();
         Double price = q == null ? 0.0 : q.price;
 
         if (t == OrderType.BUYLIMIT) {
-            this.limitSpinner.setValue(Globals.se.roundMoney(price));
-            this.volumeSpinner.setValue(Globals.se.roundShares(account.getMoney() / price));
+            this.limitSpinner.setValue(se.roundMoney(price));
+            this.volumeSpinner.setValue(se.roundShares(account.getMoney() / price));
         }
         if (t == OrderType.SELLLIMIT) {
-            this.limitSpinner.setValue(Globals.se.roundMoney(price));
-            this.volumeSpinner.setValue(Globals.se.roundShares(account.getShares()));
+            this.limitSpinner.setValue(se.roundMoney(price));
+            this.volumeSpinner.setValue(se.roundShares(account.getShares()));
         }
 
     }
@@ -193,7 +197,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
         new Thread() {
             @Override
             public void run() {
-                Globals.se.createOrder(account, type, volume, limit);
+               se.createOrder(account, type, volume, limit);
             }
         }.start();
 
@@ -201,47 +205,8 @@ public class CreateOrderDialog extends javax.swing.JDialog {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CreateOrderDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CreateOrderDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CreateOrderDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CreateOrderDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                CreateOrderDialog dialog = new CreateOrderDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

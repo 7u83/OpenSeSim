@@ -158,7 +158,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
     public EditAutoTraderList() {
         initComponents();
 
-        if (Globals.se == null) {
+        if (Globals.sim.se == null) {
             return;
         }
 

@@ -353,7 +353,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 
     double getStart() {
 
-        return Globals.se.fairValue;
+        return this.se.fairValue;
 
     }
 

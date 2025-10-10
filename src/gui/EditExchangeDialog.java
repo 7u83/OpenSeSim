@@ -42,8 +42,8 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         this.setLocationRelativeTo(parent);
         JSONObject jo = new JSONObject(Globals.prefs.get("Exchange", Globals.DEFAULT_EXCHANGE_CFG));
 
-            this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.se.CFG_MONEY_DECIMALS));
-            this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.se.CFG_SHARES_DECIMALS));
+            this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_MONEY_DECIMALS));
+            this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_SHARES_DECIMALS));
             this.setLocationRelativeTo(parent);
     }
 
@@ -142,8 +142,8 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         JSONObject jo = new JSONObject();
-        jo.put(Globals.se.CFG_MONEY_DECIMALS, (Integer) this.moneyDecimalsSpinner.getValue());
-        jo.put(Globals.se.CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
+        jo.put(Globals.sim.se.CFG_MONEY_DECIMALS, (Integer) this.moneyDecimalsSpinner.getValue());
+        jo.put(Globals.sim.se.CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
         System.out.printf("EC: %s\n", jo.toString(3));
         Globals.prefs.put("Exchange", jo.toString());
         dispose();

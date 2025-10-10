@@ -42,7 +42,7 @@ public class OrderBookPanel_old extends javax.swing.JPanel {
     sesim.Exchange se;
 
     public OrderBookPanel_old() {
-        this.se = Globals.se;
+        this.se = Globals.sim.se;
 
         initComponents();
 

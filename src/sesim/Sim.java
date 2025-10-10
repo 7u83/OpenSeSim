@@ -25,15 +25,18 @@
  */
 package sesim;
 
+import gui.Globals;
+import gui.SeSimApplication;
+import java.util.ArrayList;
 import java.util.Random;
-
-
+import org.json.JSONObject;
 
 /**
  *
  * @author 7u83
  */
 public class Sim {
+
     static Random random = new Random(12);
 
     public static int randNextInt() {
@@ -52,5 +55,46 @@ public class Sim {
 
     }
 
+    public Exchange se;
+    public AutoTraderLoader tloader;
+
+    public Sim() {
+        se = new Exchange();
+        initAutoTraderLoader();
+    }
+
+    /**
+     *
+     * @param se
+     * @param id
+     * @param name
+     * @param money
+     * @param shares
+     * @param cfg
+     * @return
+     */
+    public AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
+
+        String base = cfg.getString("base");
+        AutoTraderInterface ac = tloader.getStrategyBase(base);
+        if (ac == null) {
+            return null;
+        }
+        ac.putConfig(cfg);
+        ac.init(se, id, name, money, shares, cfg);
+
+        return ac;
+    }
+    
+    private void initAutoTraderLoader() {
+        ArrayList pathlist = new ArrayList<>();
+        String dp = new java.io.File(sesim.Sim.class.getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .getPath()).toString();
+
+        pathlist.add(dp);
+        tloader = new AutoTraderLoader(pathlist);
+    }
 
 }
