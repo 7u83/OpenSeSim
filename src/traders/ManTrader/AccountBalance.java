@@ -25,7 +25,10 @@
  */
 package traders.ManTrader;
 
-import sesim.Exchange.Account;
+//import sesim.Exchange.Account;
+
+import sesim.Account;
+
 
 /**
  *

@@ -34,13 +34,14 @@ import java.util.SortedMap;
 import javax.swing.JDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sesim.Account;
 //import sesim.AccountData;
 
 import sesim.AutoTraderBase;
 
 import sesim.AutoTraderGui;
 import sesim.Exchange;
-import sesim.Exchange.Account;
+
 import sesim.Exchange.Order;
 import sesim.OrderData;
 import sesim.Quote;
@@ -81,7 +82,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     @Override
     public long timerTask() {
-        sesim.Exchange.Account a = se.getAccount(account_id);
+        sesim.Account a = se.getAccount(account_id);
         long rc = this.doTrade();
         return rc;
 
@@ -164,7 +165,7 @@ public class RandomTraderB extends AutoTraderBase {
     public long cancelOrders() {
         int n = se.getNumberOfOpenOrders(account_id);
         if (n > 0) {
-            Account ad = se.getAccount(account_id);
+            sesim.Account ad = se.getAccount(account_id);
             
 
             Set <Long>keys = ad.getOrders().keySet();
@@ -272,7 +273,7 @@ public class RandomTraderB extends AutoTraderBase {
 
 //        AccountData ad = this.se.getAccountData(account_id);
 
-        Account ad = se.getAccount(account_id);
+        sesim.Account ad = se.getAccount(account_id);
 
         Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, tobias
+ * Copyright (c) 2025, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,24 @@
  */
 package sesim;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
- * @author tobias
+ * @author 7u83
  */
-public class Order {
+public interface AccountInterface {
+
+    public double getShares();
+
+    public double getMoney();
+
+    public ConcurrentHashMap<Long, Exchange.Order> getOrders();
+    
+    public void update(Exchange.Order o);
+    
+    public AutoTraderInterface getOwner();
+    
+      public double getID();
     
 }

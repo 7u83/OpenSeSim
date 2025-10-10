@@ -27,8 +27,9 @@ package traders.ManTrader;
 
 import gui.Globals;
 import java.util.ArrayList;
+import sesim.Account;
 import sesim.Exchange;
-import sesim.Exchange.Account;
+
 import sesim.Exchange.OrderType;
 import sesim.Quote;
 

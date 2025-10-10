@@ -73,7 +73,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
     }
     private long id;
 
-    public Exchange.Account getAccount() {
+    public Account getAccount() {
         return se.getAccount(account_id);
     }
 

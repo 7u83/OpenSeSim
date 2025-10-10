@@ -29,6 +29,7 @@ import gui.Globals;
 import gui.OpenOrdersList;
 import javax.swing.JDialog;
 import org.json.JSONObject;
+import sesim.Account;
 
 import sesim.AutoTraderBase;
 
@@ -114,7 +115,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public void accountUpdated(Exchange.Account a, Exchange.Order o) {
+    public void accountUpdated(Account a, Exchange.Order o) {
         //this.consoleDialog.cons
         //System.out.printf("AccountListener called\n");
 

@@ -26,7 +26,8 @@
 package traders.ManTrader;
 
 import javax.swing.JPanel;
-import sesim.Exchange.Account;
+import sesim.Account;
+
 
 /**
  *

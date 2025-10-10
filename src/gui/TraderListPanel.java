@@ -39,10 +39,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import sesim.Account;
 
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
-import sesim.Exchange.Account;
+
 
 /**
  *

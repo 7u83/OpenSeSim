@@ -186,8 +186,10 @@ public class Exchange {
     /**
      * Implements a trading account
      */
-    public class Account implements Comparable {
-
+    
+/*    
+    public class old_Account implements Comparable {
+        Exchange se;
         private AccountListener listener = null;
 
         private final double id;
@@ -203,7 +205,8 @@ public class Exchange {
             return this.id - account.id < 0 ? -1 : 1;
         }
 
-        Account(double money, double shares) {
+        Account(Exchange se, double money, double shares) {
+            this.se=se;
             id = (random.nextDouble() + (account_id.getNext()));
             orders = new ConcurrentHashMap();
             this.money = money;
@@ -242,7 +245,7 @@ public class Exchange {
         }
 
     }
-
+*/
     public void createTraders(JSONArray traderdefs) {
         for (int i = 0; i < traderdefs.length(); i++) {
             JSONObject o = traderdefs.getJSONObject(i);
@@ -255,11 +258,12 @@ public class Exchange {
     }
 
     // private final ConcurrentHashMap<Double, Account> accounts = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Double, Account> accounts;
+    ConcurrentHashMap<Double, Account> accounts;
 
     public double createAccount(double money, double shares) {
 
-        Account a = new Account(money, shares);
+        Account a = new Account(this,money, shares);
+        
         accounts.put(a.id, a);
         return a.id;
     }

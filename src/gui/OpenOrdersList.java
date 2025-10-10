@@ -33,8 +33,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import javax.swing.table.DefaultTableModel;
+import sesim.Account;
 import sesim.Exchange;
-import sesim.Exchange.Account;
+
 import sesim.Exchange.Order;
 import sesim.Exchange.OrderType;
 import traders.ManTrader.CreateOrderDialog;
