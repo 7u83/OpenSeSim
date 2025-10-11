@@ -619,7 +619,8 @@ public class Exchange {
     }
 
     public void addBookReceiver(OrderType t, BookReceiver br) {
-
+        sesim.Logger.debug("Add BookReceiver");
+     //  sesim.Sim.Logger.
         if (br == null) {
 //            System.out.printf("Br is null\n");
         } else {
