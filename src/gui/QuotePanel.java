@@ -41,7 +41,7 @@ public class QuotePanel extends javax.swing.JPanel implements sesim.Exchange.Quo
      */
     public QuotePanel() {
         initComponents();
-        if (Globals.sim.se==null)
+        if (Globals.sim==null)
             return;
         Globals.sim.se.addQuoteReceiver(this);
     }

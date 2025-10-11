@@ -142,7 +142,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     boolean oupdate = false;
     boolean new_oupdate = false;
 
-    long ouctr = 0;
+ //   long ouctr = 0;
 
     void oupdater() {
         ArrayList<Order> ob = Globals.sim.se.getOrderBook(type, depth);

@@ -29,21 +29,14 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.TimerTask;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.prefs.Preferences;
@@ -53,16 +46,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
-import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-//import sesim.Logger;
-import sesim.AutoTraderInterface;
-import sesim.Exchange;
-import sesim.Scheduler;
 
 /**
  *
@@ -96,81 +83,11 @@ public class SeSimApplication extends javax.swing.JFrame {
             resetToDefaults();
             Globals.prefs_new.putBoolean("initilized", true);
         }
-        //this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
+//        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         //this.setLocationRelativeTo(null);
     }
 
-    /*  AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
 
-        String base = cfg.getString("base");
-        AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
-        if (ac == null) {
-            return null;
-        }
-        ac.putConfig(cfg);
-        ac.init(se, id, name, money, shares, cfg);
-
-        return ac;
-    }
-     */
- /*
-    public void startTraders() {
-        
-        Globals.sim.startTraders(Globals.getConfig());
-
-        WaitBox wb = new WaitBox();
-
-        //   Globals.sim.se.setMoneyDecimals(8);
-        //    Globals.sim.se.setSharesDecimals(0);        
-        JSONArray tlist = Globals.getTraders();
-
-        Double moneyTotal = 0.0;
-        Double sharesTotal = 0.0;
-        long id = 0;
-        for (int i = 0; i < tlist.length(); i++) {
-            JSONObject t = tlist.getJSONObject(i);
-            String strategy_name = t.getString("Strategy");
-            JSONObject strategy = Globals.getStrategy(strategy_name);
-            String base = strategy.getString("base");
-        //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
-
-       //     System.out.printf("Load Strat: %s\n", strategy_name);
-      //      System.out.printf("Base %s\n", base);
-            Integer count = t.getInt("Count");
-            Double shares = t.getDouble("Shares");
-            Double money = t.getDouble("Cash");
-
-            Boolean enabled = t.getBoolean("Enabled");
-            if (!enabled) {
-                continue;
-            }
-
-      //      System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
-
-            for (int i1 = 0; i1 < count; i1++) {
-                AutoTraderInterface trader;
-
-                trader = Globals.sim.createTraderNew(Globals.sim.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
-
-                Globals.sim.se.traders.add(trader);
-
-                moneyTotal += money;
-                sharesTotal += shares;
-
-            }
-
-        }
-
-        Globals.sim.se.fairValue = moneyTotal / sharesTotal;
-
-        //  Globals.sim.se.fairValue = 1.0;
-        System.out.printf("Failr Value is %f\n", Globals.sim.se.fairValue);
-
-        for (int i = 0; i < Globals.sim.se.traders.size(); i++) {
-            Globals.sim.se.traders.get(i).start();
-        }
-
-    } */
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -195,9 +112,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         stopButton = new javax.swing.JButton();
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
-        orderBooksHorizontal1 = new gui.orderbook.OrderBooksHorizontal();
-        chartSrollPane = new javax.swing.JScrollPane();
-        chart = new chart.MainChart();
+        orderBooksHorizontal = new gui.orderbook.OrderBooksHorizontal();
+        chartPanel = new chart.ChartPanel();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
@@ -227,7 +143,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         simMenuStop = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        viewRawOrderBook = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -333,22 +249,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         jSplitPane4.setDividerLocation(300);
         jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane4.setBottomComponent(orderBooksHorizontal1);
-
-        javax.swing.GroupLayout chartLayout = new javax.swing.GroupLayout(chart);
-        chart.setLayout(chartLayout);
-        chartLayout.setHorizontalGroup(
-            chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 696, Short.MAX_VALUE)
-        );
-        chartLayout.setVerticalGroup(
-            chartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 14, Short.MAX_VALUE)
-        );
-
-        chartSrollPane.setViewportView(chart);
-
-        jSplitPane4.setLeftComponent(chartSrollPane);
+        jSplitPane4.setBottomComponent(orderBooksHorizontal);
+        jSplitPane4.setLeftComponent(chartPanel);
 
         jSplitPane3.setRightComponent(jSplitPane4);
         jSplitPane3.setLeftComponent(quoteVertical1);
@@ -521,13 +423,15 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         viewMenu.add(viewTraderListCheckBox);
 
-        jCheckBoxMenuItem1.setText("Orderbook");
-        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        viewRawOrderBook.setMnemonic('R');
+        viewRawOrderBook.setText("Raw ordebook");
+        viewRawOrderBook.setToolTipText("");
+        viewRawOrderBook.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxMenuItem1ActionPerformed(evt);
+                viewRawOrderBookActionPerformed(evt);
             }
         });
-        viewMenu.add(jCheckBoxMenuItem1);
+        viewMenu.add(viewRawOrderBook);
 
         menuBar.add(viewMenu);
 
@@ -582,6 +486,9 @@ public class SeSimApplication extends javax.swing.JFrame {
             return;
         }
         
+        this.runButton.setEnabled(false);
+        this.stopButton.setEnabled(true);
+        
         resetSim();
         JSONObject jo = new JSONObject(Globals.prefs_new.get("Exchange", "{}"));
         Globals.sim.se.putConfig(jo);
@@ -589,33 +496,19 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.stopButton.setEnabled(true);
         this.pauseButton.setEnabled(true);
 
-//        this.orderBookPanel.invalidate();
-//        this.orderBookPanel.repaint();
+        this.orderBooksHorizontal.invalidate();
+        this.orderBooksHorizontal.repaint();
         this.clock.invalidate();
         this.clock.repaint();
 
-        //this.startTraders();
+        
         Globals.sim.startTraders(Globals.getConfig());
         
         Globals.sim.se.timer.setPause(false);
         Globals.sim.se.timer.start();
         Globals.sim.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
 
-        /*       Scheduler.TimerTaskRunner tt = new Scheduler.TimerTaskRunner() {
-            @Override
-            public long timerTask() {
-                System.out.printf("Hello i will inject money\n");
-                // Globals.sim.se.injectMoney();
-                return 1000 * 60 * 10;
-            }
 
-            @Override
-            public long getID() {
-                return 7L;
-            }
-
-        };*/
-//        Globals.sim.se.timer.startTimerTask(tt, 0);
     }
     
     void stopSim() {
@@ -628,16 +521,19 @@ public class SeSimApplication extends javax.swing.JFrame {
     void resetSim() {
         Globals.sim.se.terminate();
         Globals.sim.reset();
-        chart.initChart();
-        chart.invalidate();
-        chart.repaint();
-        //   this.chartPanel.reset();
-//       this.orderBookPanel.invalidate();
-//        this.orderBookPanel.repaint();
-
+        chartPanel.reset();
+        if (this.rawOrderBookDialog!=null){
+            this.rawOrderBookDialog.reset();
+        }
+        
+        this.orderBooksHorizontal.reset();
+        
+//        chart.initChart();
+//        chart.invalidate();
+//        chart.repaint();
     }
     
-    void initSim() {
+    private void initSim() {
         this.runButton.setEnabled(true);
         this.stopButton.setEnabled(false);
         this.pauseButton.setEnabled(false);
@@ -666,7 +562,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_pasteMenuItemActionPerformed
     
-    private final LoggerDialog log_d = new LoggerDialog(this, false);
+ //   private final LoggerDialog log_d = new LoggerDialog(this, false);
     
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
@@ -693,7 +589,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_openMenuItemActionPerformed
 
-    // initialize a JFileChose with  worging directory and extension
+    // initialize a JFileChoser with  working directory and extension
     private JFileChooser getFileChooser() {
         JFileChooser fc = new JFileChooser();
         
@@ -846,21 +742,54 @@ public class SeSimApplication extends javax.swing.JFrame {
         stopSim();
     }//GEN-LAST:event_stopButtonActionPerformed
 
-    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
-        JDialog jd = new gui.orderbook.OrderBookDialog(this, false);
-        jd.setVisible(rootPaneCheckingEnabled);
-    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
     
-    TraderListDialog tld = null;
+   gui.orderbook.OrderBookDialog rawOrderBookDialog = null; //new gui.orderbook.OrderBookDialog(this, false);
+    
+    private void viewRawOrderBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewRawOrderBookActionPerformed
+        
+        
+                javax.swing.SwingUtilities.invokeLater(() -> {
+           //  TraderListDialog traderListDialog = null;
+
+            if (this.viewRawOrderBook.getState()) {
+                if (rawOrderBookDialog == null) {
+                    rawOrderBookDialog = new gui.orderbook.OrderBookDialog(this, false);
+                    rawOrderBookDialog.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            super.windowClosing(e);
+                             viewRawOrderBook.setState(false);
+                            //System.out.printf("Set menu false\n");
+                        }
+                    });
+                    
+                }
+                
+                rawOrderBookDialog.setVisible(true);
+            } else if (rawOrderBookDialog != null) {
+                System.out.printf("Set visible = false\n");
+                rawOrderBookDialog.setVisible(false);
+            }
+                 });
+        
+      //  rawOrderBookDialog.setVisible(rootPaneCheckingEnabled);
+    }//GEN-LAST:event_viewRawOrderBookActionPerformed
+    
+   
+        
+   
+        
+   
+    
     private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
         
         javax.swing.SwingUtilities.invokeLater(() -> {
-            
-            System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
+             TraderListDialog traderListDialog = null;
+
             if (this.viewTraderListCheckBox.getState()) {
-                if (tld == null) {
-                    tld = new TraderListDialog(this, false);
-                    tld.addWindowListener(new WindowAdapter() {
+                if (traderListDialog == null) {
+                    traderListDialog = new TraderListDialog(this, false);
+                    traderListDialog.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosing(WindowEvent e) {
                             super.windowClosing(e);
@@ -871,10 +800,10 @@ public class SeSimApplication extends javax.swing.JFrame {
                     
                 }
                 
-                tld.setVisible(true);
-            } else if (tld != null) {
+                traderListDialog.setVisible(true);
+            } else if (traderListDialog != null) {
                 System.out.printf("Set visible = false\n");
-                tld.setVisible(false);
+                traderListDialog.setVisible(false);
             }
         });
 
@@ -940,8 +869,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-//                System.out.printf("Creating Application\n");
-
                 SeSimApplication app = new SeSimApplication();
                 app.setLocationRelativeTo(null);
                 app.setVisible(true);
@@ -952,8 +879,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JSpinner accelSpinner;
-    private chart.MainChart chart;
-    private javax.swing.JScrollPane chartSrollPane;
+    private chart.ChartPanel chartPanel;
     private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;
     private gui.Clock clock1;
@@ -965,7 +891,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
@@ -983,7 +908,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private gui.orderbook.OrderBook orderBookNew1;
-    private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
+    private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JButton pauseButton;
     private gui.orderbook.QuoteVertical quoteVertical1;
@@ -999,6 +924,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JButton stopButton;
     private gui.TraderListPanel traderListPanel1;
     private javax.swing.JMenu viewMenu;
+    private javax.swing.JCheckBoxMenuItem viewRawOrderBook;
     private javax.swing.JCheckBoxMenuItem viewTraderListCheckBox;
     // End of variables declaration//GEN-END:variables
 

@@ -59,7 +59,7 @@ public class Exchange {
     }
 
     public DecimalFormat getFormatter(int n) {
-        DecimalFormat formatter;
+  //      DecimalFormat formatter;
         String s = "#0.";
         if (n == 0) {
             s = "#";
@@ -284,6 +284,12 @@ public class Exchange {
     public List<Quote> quoteHistory; // = new TreeSet<>();
 
     final void initExchange() {
+        //   quoteReceiverList = (new CopyOnWriteArrayList<>());
+
+       this.quoteReceiverList.clear();
+       this.ask_bookreceivers.clear();
+       this.bid_bookreceivers.clear();
+       
         buy_orders = 0;
         sell_orders = 0;
         timer = new Scheduler();         //  timer = new Scheduler();
@@ -311,7 +317,7 @@ public class Exchange {
      * Constructor
      */
     public Exchange() {
-        qrlist = (new CopyOnWriteArrayList<>());
+        quoteReceiverList = (new CopyOnWriteArrayList<>());
 
         initExchange();
         executor.start();
@@ -640,19 +646,19 @@ public class Exchange {
     }
 
     // Here we store the list of quote receivers
-    private final List<QuoteReceiver> qrlist;
+    private final List<QuoteReceiver> quoteReceiverList;
 
     /**
      *
      * @param qr
      */
     public void addQuoteReceiver(QuoteReceiver qr) {
-        qrlist.add(qr);
+        quoteReceiverList.add(qr);
     }
 
     // send updated quotes to all quote receivers
     private void updateQuoteReceivers(Quote q) {
-        Iterator<QuoteReceiver> i = qrlist.iterator();
+        Iterator<QuoteReceiver> i = quoteReceiverList.iterator();
         while (i.hasNext()) {
             i.next().UpdateQuote(q);
         }

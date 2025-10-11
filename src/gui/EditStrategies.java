@@ -286,7 +286,7 @@ public final class EditStrategies extends javax.swing.JDialog {
 
         //Globals.LOGGER.info(String.format("Base %s\n", base));
 
-        ac = Globals.tloader.getStrategyBase(base);
+        ac = Globals.sim.tloader.getStrategyBase(base);
         if (ac == null) {
           //  System.out.print("BASE IST NULL\n");
           //  Globals.LOGGER.info(String.format("Can't load: %s\n", base));
@@ -410,7 +410,7 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
         if (sd.result==null)
             return;
         
-        AutoTraderInterface ac = Globals.tloader.getStrategyBase(sd.result.base);
+        AutoTraderInterface ac = Globals.sim.tloader.getStrategyBase(sd.result.base);
         JSONObject cfg = ac.getConfig();
         System.out.printf("Initial cfg %s\n", cfg.toString(2));
         cfg.put("base", ac.getClass().getCanonicalName());

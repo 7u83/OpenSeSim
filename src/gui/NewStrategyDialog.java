@@ -59,11 +59,11 @@ public class NewStrategyDialog extends EscDialog {
         this.setLocationRelativeTo(this.getParent());
 
         boolean devel = Globals.prefs_new.get(Globals.DEVELSTATUS, "false").equals("true");
-        ArrayList<String> names = Globals.tloader.getDefaultStrategyNames(devel);
+        ArrayList<String> names = Globals.sim.tloader.getDefaultStrategyNames(devel);
         this.jStrategyComboBox.removeAllItems();
 
         for (String name : names) {
-            AutoTraderInterface ac = Globals.tloader.getStrategyBase(name);
+            AutoTraderInterface ac = Globals.sim.tloader.getStrategyBase(name);
 
             Result r = new Result();
             r.base = name;

@@ -39,16 +39,21 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
      */
     public OrderBooksHorizontal() {
         initComponents();
-        if (Globals.sim==null)
+        if (Globals.sim == null) {
             return;
-        
+        }
+        reset();
+
+    }
+
+    public final void reset() {
         bidBook.setType(Exchange.OrderType.BUYLIMIT);
         askBook.setType(Exchange.OrderType.SELLLIMIT);
     }
-    
-    public void setDepth(int depth){
-        bidBook.depth=depth;
-        askBook.depth=depth;
+
+    public void setDepth(int depth) {
+        bidBook.depth = depth;
+        askBook.depth = depth;
     }
 
     /**

@@ -4,6 +4,7 @@
  */
 package chart;
 
+import gui.Globals;
 import javax.swing.JScrollPane;
 
 /**
@@ -13,6 +14,10 @@ import javax.swing.JScrollPane;
 public class ChartPanel extends JScrollPane {
 
     private MainChart chart;
+    
+    public MainChart getChart(){
+        return (chart);
+    }
 
     /**
      *
@@ -27,6 +32,7 @@ public class ChartPanel extends JScrollPane {
         chart.initChart();
         chart.invalidate();
         chart.repaint();
+        Globals.sim.se.addQuoteReceiver(chart);
     }
 
 }

@@ -136,7 +136,7 @@ public class Globals {
         }
     }
 
-    static AutoTraderLoader tloader;
+    static AutoTraderLoader x_tloader;
 
     static void initGlobals() {
         String[] a = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
@@ -153,9 +153,9 @@ public class Globals {
             sesim.Logger.debug("SysProp Path List: %s", p);
         }
 
-        sesim.Logger.debug("CLASDINGS %s", dp);
+        sesim.Logger.debug("CLASDINGS %s", dp); 
 
-        tloader = new AutoTraderLoader(pathlist);
+        x_tloader = new AutoTraderLoader(pathlist);
 
     }
 
