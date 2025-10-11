@@ -39,7 +39,7 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
      */
     public OrderBooksHorizontal() {
         initComponents();
-        if (Globals.sim.se==null)
+        if (Globals.sim==null)
             return;
         
         bidBook.setType(Exchange.OrderType.BUYLIMIT);

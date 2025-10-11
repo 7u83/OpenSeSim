@@ -118,7 +118,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     public OrderBook() {
         initComponents();
 
-        if (Globals.sim.se == null) {
+        if (Globals.sim == null) {
             return;
         }
         model = (DefaultTableModel) this.list.getModel();

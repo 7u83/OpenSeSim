@@ -63,12 +63,15 @@ public class Clock extends javax.swing.JPanel {
      */
     public Clock() {
         initComponents();
-        
-
         this.timer = new Timer();
-
-        if(Globals.sim.se==null)
+        
+        if(Globals.sim==null)
             return;
+        
+  
+
+     //   if(Globals.sim.se==null)
+     //       return;
 
         
         clockUpdater = new TimerTask () {
