@@ -25,7 +25,6 @@
  */
 package sesim;
 
-import gui.SeSimApplication;
 import java.util.ArrayList;
 import java.util.Random;
 import org.json.JSONObject;

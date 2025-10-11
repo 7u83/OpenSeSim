@@ -26,12 +26,10 @@
 package sesim;
 
 //import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
-import gui.Globals;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.SortedMap;
@@ -81,7 +79,7 @@ public class Scheduler extends Thread {
         synchronized (event_queue) {
             event_queue.notifyAll();
         }
-
+        pause=false;
     }
 
     @Override
@@ -94,7 +92,7 @@ public class Scheduler extends Thread {
 
     }
 
-    private class ObjectComparator implements Comparator<Object> {
+  /*  private class ObjectComparator implements Comparator<Object> {
 
         @Override
         public int compare(Object o1, Object o2) {
@@ -102,12 +100,12 @@ public class Scheduler extends Thread {
             return (((TimerTaskRunner) o1).getID() - ((TimerTaskRunner) o2).getID()) < 0 ? -1 : 1;
             //return System.identityHashCode(o1) - System.identityHashCode(o2);
         }
-    }
+    }*/
 
     long last_time_millis = System.currentTimeMillis();
     double current_time_millis = 0.0;
 
-    Clock clock;
+ //   Clock clock;
 
     long last_nanos = System.nanoTime();
     double current_nanos = 0;

@@ -60,7 +60,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 //import sesim.Logger;
-
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Scheduler;
@@ -75,10 +74,10 @@ public class SeSimApplication extends javax.swing.JFrame {
      * Creates new form NewMDIApplication
      */
     public SeSimApplication() {
-
+        
         initComponents();
-
-      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] screens = ge.getScreenDevices();
 
         //Window w = screens[1].getFullScreenWindow();
@@ -89,7 +88,8 @@ public class SeSimApplication extends javax.swing.JFrame {
             //Window w = gd.getFullScreenWindow();
 
         }
-
+        
+        initSim();
         setTitle("");
         boolean init = Globals.prefs_new.getBoolean("initilized", false);
         if (!init) {
@@ -100,7 +100,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         //this.setLocationRelativeTo(null);
     }
 
-  /*  AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
+    /*  AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
 
         String base = cfg.getString("base");
         AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
@@ -112,8 +112,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         return ac;
     }
-*/
-    /*
+     */
+ /*
     public void startTraders() {
         
         Globals.sim.startTraders(Globals.getConfig());
@@ -171,7 +171,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
 
     } */
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -192,7 +191,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         runButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        pauseButton = new javax.swing.JButton();
         stopButton = new javax.swing.JButton();
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
@@ -276,16 +275,16 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         jToolBar1.add(runButton);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pause.gif"))); // NOI18N
-        jButton2.setText("Pause");
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pause.gif"))); // NOI18N
+        pauseButton.setText("Pause");
+        pauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        pauseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                pauseButtonActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton2);
+        jToolBar1.add(pauseButton);
 
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/stop.gif"))); // NOI18N
         stopButton.setText("Stop");
@@ -560,18 +559,35 @@ public class SeSimApplication extends javax.swing.JFrame {
         d.setVisible(rootPaneCheckingEnabled);
 
     }//GEN-LAST:event_aboutMenuItemActionPerformed
-
+    
     void pauseSim() {
+
+        if (Globals.sim.se.timer.getPause()){
+            this.runButton.setEnabled(false);
+            this.pauseButton.setEnabled(true);
+    
+        }else{
+            this.runButton.setEnabled(true);
+            this.pauseButton.setEnabled(false);
+            
+        }
         Globals.sim.se.timer.pause();
     }
-
+    
     void startSim() {
-
+        
+        if (Globals.sim.se.timer.getPause()){
+            
+            pauseSim();
+            return;
+        }
+        
         resetSim();
         JSONObject jo = new JSONObject(Globals.prefs_new.get("Exchange", "{}"));
         Globals.sim.se.putConfig(jo);
-
+        
         this.stopButton.setEnabled(true);
+        this.pauseButton.setEnabled(true);
 
 //        this.orderBookPanel.invalidate();
 //        this.orderBookPanel.repaint();
@@ -579,14 +595,13 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.clock.repaint();
 
         //this.startTraders();
-        
         Globals.sim.startTraders(Globals.getConfig());
-
+        
         Globals.sim.se.timer.setPause(false);
         Globals.sim.se.timer.start();
         Globals.sim.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
 
- /*       Scheduler.TimerTaskRunner tt = new Scheduler.TimerTaskRunner() {
+        /*       Scheduler.TimerTaskRunner tt = new Scheduler.TimerTaskRunner() {
             @Override
             public long timerTask() {
                 System.out.printf("Hello i will inject money\n");
@@ -600,16 +615,16 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
 
         };*/
- 
 //        Globals.sim.se.timer.startTimerTask(tt, 0);
-
     }
-
+    
     void stopSim() {
         Globals.sim.se.timer.terminate();
         this.stopButton.setEnabled(false);
+        this.pauseButton.setEnabled(false);
+        this.runButton.setEnabled(true);
     }
-
+    
     void resetSim() {
         Globals.sim.se.terminate();
         Globals.sim.reset();
@@ -621,41 +636,47 @@ public class SeSimApplication extends javax.swing.JFrame {
 //        this.orderBookPanel.repaint();
 
     }
-
+    
+    void initSim() {
+        this.runButton.setEnabled(true);
+        this.stopButton.setEnabled(false);
+        this.pauseButton.setEnabled(false);
+    }
+    
 
     private void editPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesActionPerformed
-  //      Globals.LOGGER.info("Edit prefs...");
+        //      Globals.LOGGER.info("Edit prefs...");
 
         Dialog d = new gui.EditPreferencesDialog(this, rootPaneCheckingEnabled);
         d.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_editPreferencesActionPerformed
-
+    
 
     private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteMenuItemActionPerformed
         EditAutoTraderListDialog ed = new EditAutoTraderListDialog(this, true);
         ed.setVisible(rootPaneCheckingEnabled);
-
+        
 
     }//GEN-LAST:event_deleteMenuItemActionPerformed
 
     private void pasteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteMenuItemActionPerformed
         EditStrategies s = new EditStrategies(this, true);
         s.setVisible(rootPaneCheckingEnabled);
-
+        
 
     }//GEN-LAST:event_pasteMenuItemActionPerformed
-
+    
     private final LoggerDialog log_d = new LoggerDialog(this, false);
-
+    
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
         JFileChooser fc = getFileChooser();
-
+        
         while (true) {
             if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
                 return;
             }
-
+            
             try {
                 File f = fc.getSelectedFile();
                 Globals.loadFile(f);
@@ -664,26 +685,26 @@ public class SeSimApplication extends javax.swing.JFrame {
                 Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, f.getAbsolutePath());
                 setTitle(f.getName());
                 return;
-
+                
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-
+            
         }
     }//GEN-LAST:event_openMenuItemActionPerformed
 
     // initialize a JFileChose with  worging directory and extension
     private JFileChooser getFileChooser() {
         JFileChooser fc = new JFileChooser();
-
+        
         String workdir = Globals.prefs_new.get(Globals.PrefKeys.WORKDIR, "");
         fc.setCurrentDirectory(new File(workdir));
-
+        
         FileNameExtensionFilter sesim_filter = new FileNameExtensionFilter("SeSim Files", Globals.SESIM_FILEEXTENSION);
         fc.setFileFilter(sesim_filter);
         return fc;
     }
-
+    
     @Override
     public final void setTitle(String filename) {
         String name;
@@ -693,23 +714,23 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
         super.setTitle(name);
     }
-
+    
     private void saveFile(boolean saveAs) {
         JFileChooser fc = getFileChooser();
         FileFilter sesim_filter = fc.getFileFilter();
-
+        
         while (true) {
             String current_file = Globals.prefs_new.get(Globals.PrefKeys.CURRENTFILE, "");
             File fobj;
-
+            
             if (saveAs || "".equals(current_file)) {
-
+                
                 if (!"".equals(current_file)) {
                     fobj = new File(current_file);
                     fc.setSelectedFile(fobj);
                     fc.setCurrentDirectory(fobj);
                 }
-
+                
                 saveAs = true;
                 if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
                     return;
@@ -719,21 +740,21 @@ public class SeSimApplication extends javax.swing.JFrame {
                 fc.setSelectedFile(fobj);
                 fc.setCurrentDirectory(fobj);
             }
-
+            
             File f = fc.getSelectedFile();
             String workdir = fc.getCurrentDirectory().getAbsolutePath();
             Globals.prefs_new.put(Globals.PrefKeys.WORKDIR, workdir);
             String fn = f.getAbsolutePath();
-
+            
             if (f.exists() && saveAs) {
                 String s = String.format("File %s already exists. Do you want to overwrite?", fn);
                 int dialogResult = JOptionPane.showConfirmDialog(this, s, "Warning", JOptionPane.YES_NO_OPTION);
                 if (dialogResult != JOptionPane.YES_OPTION) {
                     continue;
                 }
-
+                
             }
-
+            
             FileFilter selected_filter = fc.getFileFilter();
             if (selected_filter == sesim_filter) {
                 System.out.printf("Filter", selected_filter.toString());
@@ -741,26 +762,26 @@ public class SeSimApplication extends javax.swing.JFrame {
                     f = new File(fn + "." + Globals.SESIM_FILEEXTENSION);
                 }
             }
-
+            
             try {
                 Globals.saveFile(f);
                 Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, fn);
                 setTitle(f.getName());
                 return;
-
+                
             } catch (Exception ex) {
-
+                
                 JOptionPane.showMessageDialog(this, "Can't save file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
+                
             }
-
+            
         }
-
+        
     }
-
+    
 
     private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
-
+        
         this.saveFile(true);
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
@@ -770,27 +791,27 @@ public class SeSimApplication extends javax.swing.JFrame {
         //  System.out.printf("EDRET: %d\n",rc);
 
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
-
+    
     private void resetToDefaults() {
         InputStream is = getClass().getResourceAsStream("/resources/files/defaultcfg.json");
         String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
-
+        
         try {
             Globals.loadString(df);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
+            
         }
-
+        
     }
 
     private void resetToDefaultsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetToDefaultsMenuItemActionPerformed
-
+        
         int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult != JOptionPane.YES_OPTION) {
             return;
         }
-
+        
         this.resetToDefaults();
 
     }//GEN-LAST:event_resetToDefaultsMenuItemActionPerformed
@@ -812,9 +833,10 @@ public class SeSimApplication extends javax.swing.JFrame {
         Globals.sim.se.timer.setAcceleration(val);
     }//GEN-LAST:event_accelSpinnerStateChanged
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Globals.sim.se.timer.pause();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
+        //Globals.sim.se.timer.pause();
+        pauseSim();
+    }//GEN-LAST:event_pauseButtonActionPerformed
 
     private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
         startSim();
@@ -828,12 +850,12 @@ public class SeSimApplication extends javax.swing.JFrame {
         JDialog jd = new gui.orderbook.OrderBookDialog(this, false);
         jd.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
-
+    
     TraderListDialog tld = null;
     private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
-
+        
         javax.swing.SwingUtilities.invokeLater(() -> {
-
+            
             System.out.printf("Trwindow: %s\n", Boolean.toString(this.viewTraderListCheckBox.getState()));
             if (this.viewTraderListCheckBox.getState()) {
                 if (tld == null) {
@@ -846,9 +868,9 @@ public class SeSimApplication extends javax.swing.JFrame {
                             System.out.printf("Set menu false\n");
                         }
                     });
-
+                    
                 }
-
+                
                 tld.setVisible(true);
             } else if (tld != null) {
                 System.out.printf("Set visible = false\n");
@@ -873,7 +895,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_closeMenuItemActionPerformed
 
     private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
-
+        
         int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult != JOptionPane.YES_OPTION) {
             return;
@@ -890,7 +912,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
-        
+
         // create ConsoleHandler 
         ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.ALL); // alles loggen
@@ -898,25 +920,23 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         // Append handler
         rootLogger.addHandler(consoleHandler);
-        rootLogger.setLevel(Level.ALL); 
+        rootLogger.setLevel(Level.ALL);        
         
         sesim.Logger.debug("Starting application on the new SesimLogger");
         
-
         Globals.initGlobals();
-    //    Globals.sim.se = new Exchange();
+        //    Globals.sim.se = new Exchange();
         Globals.sim = new sesim.Sim();
-
-                
+        
         Globals.prefs_new = Preferences.userRoot().node("/opensesim");
         Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, "");
-
+        
         Globals.setLookAndFeel(Globals.prefs_new.get("laf", "Nimbus"));
         
         JDialog.setDefaultLookAndFeelDecorated(true);
         JFrame.setDefaultLookAndFeelDecorated(false);
         JPopupMenu.setDefaultLightWeightPopupEnabled(true);
-
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -945,7 +965,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
@@ -966,6 +985,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private gui.orderbook.OrderBook orderBookNew1;
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal1;
     private javax.swing.JMenuItem pasteMenuItem;
+    private javax.swing.JButton pauseButton;
     private gui.orderbook.QuoteVertical quoteVertical1;
     private javax.swing.JMenuItem resetToDefaultsMenuItem;
     private javax.swing.JButton runButton;

@@ -3,12 +3,9 @@ package sesim;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -125,7 +122,6 @@ public class Exchange {
         return data;
     }
 
-    
     public OHLCData getOHLCdata(Integer timeFrame) {
         OHLCData data; //=new OHLCData(timeFrame);
         data = ohlc_data.get(timeFrame);
@@ -139,7 +135,6 @@ public class Exchange {
 
         return data;
 
-
     }
 
     void updateOHLCData(Quote q) {
@@ -147,7 +142,6 @@ public class Exchange {
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
         }
     }
-
 
     public enum OrderStatus {
         OPEN,
@@ -299,8 +293,7 @@ public class Exchange {
         quoteHistory = new ArrayList();
 //        accounts = new ConcurrentHashMap<>();
 
-      //  traders = new ArrayList();
-
+        //  traders = new ArrayList();
         statistics = new Statistics();
         //num_trades = 0;
 
@@ -347,16 +340,8 @@ public class Exchange {
 
     Statistics statistics;
 
-//    long num_trades = 0;
-//    long num_orders = 0;
     public Statistics getStatistics() {
         return statistics;
-        /*        Statistics s = new Statistics();
-        s.trades = num_trades;
-        s.orders = num_orders;
-        return s;
-         */
-
     }
 
     class Executor extends Thread {
