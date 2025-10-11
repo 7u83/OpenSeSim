@@ -605,10 +605,10 @@ public class Exchange {
         void UpdateOrderBook();
     }
 
-    final private ArrayList<BookReceiver> ask_bookreceivers = new ArrayList<>();
-    final private ArrayList<BookReceiver> bid_bookreceivers = new ArrayList<>();
+    final private CopyOnWriteArrayList<BookReceiver> ask_bookreceivers = new CopyOnWriteArrayList<>();
+    final private CopyOnWriteArrayList<BookReceiver> bid_bookreceivers = new CopyOnWriteArrayList<>();
 
-    private ArrayList<BookReceiver> selectBookReceiver(OrderType t) {
+    private CopyOnWriteArrayList<BookReceiver> selectBookReceiver(OrderType t) {
         switch (t) {
             case SELLLIMIT:
                 return ask_bookreceivers;
@@ -627,7 +627,7 @@ public class Exchange {
             //          System.out.printf("Br is not Nukk\n");
         }
 
-        ArrayList<BookReceiver> bookreceivers;
+        CopyOnWriteArrayList<BookReceiver> bookreceivers;
         bookreceivers = selectBookReceiver(t);
         if (bookreceivers == null) {
 //            System.out.printf("null in bookreceivers\n");
@@ -636,7 +636,7 @@ public class Exchange {
     }
 
     void updateBookReceivers(OrderType t) {
-        ArrayList<BookReceiver> bookreceivers;
+        CopyOnWriteArrayList<BookReceiver> bookreceivers;
         bookreceivers = selectBookReceiver(t);
 
         Iterator<BookReceiver> i = bookreceivers.iterator();
