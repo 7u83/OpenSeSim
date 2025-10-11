@@ -41,6 +41,7 @@ public class Sim {
         public static final String SESIMVERSION = "version";
         public static final String STRATEGIES = "strategies";
         public static final String TRADERS = "traders";
+        public static final String EXCHANGE = "exchange";
 
     }
 
@@ -70,13 +71,13 @@ public class Sim {
         initAutoTraderLoader();
         reset();
     }
-    
-     public ArrayList<AutoTraderInterface> traders;
-     
-     public final void reset(){
-         traders = new ArrayList();
-         se.reset();
-     }
+
+    public ArrayList<AutoTraderInterface> traders;
+
+    public final void reset() {
+        traders = new ArrayList();
+        se.reset();
+    }
 
     /**
      *
@@ -132,9 +133,30 @@ public class Sim {
     static public JSONObject getStrategy(JSONObject cfg, String name) {
         return getStrategies(cfg).getJSONObject(name);
     }
+    public static String DEFAULT_EXCHANGE_CFG
+            = "{"
+            + "  money_decimals: 2,"
+            + "  shares_decimals: 0"
+            + "}";
+
+    public static JSONObject getExchangeCfg(JSONObject cfg) {
+        JSONObject exchange = cfg.optJSONObject(CfgKeys.EXCHANGE);
+        if (exchange == null) {
+            exchange = new JSONObject(DEFAULT_EXCHANGE_CFG);
+        }
+        return exchange;
+        //return cfg.getJSONObject(CfgKeys.EXCHANGE);
+    }
+
+    static public final void putExchangeCfg(JSONObject sobj, JSONObject exchange) {
+        sobj.put(CfgKeys.EXCHANGE, exchange);
+    }
 
     public void startTraders(JSONObject cfg) {
 
+        
+        se.putConfig(getExchangeCfg(cfg));
+        
         //   Globals.sim.se.setMoneyDecimals(8);
         //    Globals.sim.se.setSharesDecimals(0);        
         JSONArray tlist = Sim.getTraders(cfg);

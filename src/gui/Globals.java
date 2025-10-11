@@ -54,7 +54,7 @@ public class Globals {
     public static final String SESIM_FILEEXTENSION = "sesim";
     public static final Double SESIM_FILEVERSION = 0.1;
 
-    public static final String SESIM_APPTITLE = "SeSim - Stock Exchange Simulator";
+    public static final String SESIM_APPTITLE = "OpenSeSim - Stock Exchange Simulator";
 
     public interface CfgListener {
 
@@ -105,11 +105,11 @@ public class Globals {
         public static final String GODMODE = "godmode";
     }
 
-    public static String DEFAULT_EXCHANGE_CFG
+/*   public static String DEFAULT_EXCHANGE_CFG
             = "{"
             + "  money_decimals: 2,"
             + "  shares_decimals: 0"
-            + "}";
+            + "}";*/
 
     //CfgStrings 
     static void setLookAndFeel(String selected) {

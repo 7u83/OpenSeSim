@@ -490,8 +490,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.stopButton.setEnabled(true);
         
         resetSim();
-        JSONObject jo = new JSONObject(Globals.prefs_new.get("Exchange", "{}"));
-        Globals.sim.se.putConfig(jo);
+  //      JSONObject jo = new JSONObject(Globals.prefs_new.get("Exchange", "{}"));
+//        Globals.sim.se.putConfig(jo);
         
         this.stopButton.setEnabled(true);
         this.pauseButton.setEnabled(true);

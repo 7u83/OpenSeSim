@@ -40,11 +40,11 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(parent);
-        JSONObject jo = new JSONObject(Globals.prefs_new.get("Exchange", Globals.DEFAULT_EXCHANGE_CFG));
+        JSONObject jo = sesim.Sim.getExchangeCfg(Globals.getConfig());
 
-            this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_MONEY_DECIMALS));
-            this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_SHARES_DECIMALS));
-            this.setLocationRelativeTo(parent);
+        this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_MONEY_DECIMALS));
+        this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_SHARES_DECIMALS));
+        this.setLocationRelativeTo(parent);
     }
 
     int showdialog() {
@@ -145,7 +145,11 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         jo.put(Globals.sim.se.CFG_MONEY_DECIMALS, (Integer) this.moneyDecimalsSpinner.getValue());
         jo.put(Globals.sim.se.CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
         System.out.printf("EC: %s\n", jo.toString(3));
-        Globals.prefs_new.put("Exchange", jo.toString());
+
+        JSONObject cfg = Globals.getConfig();
+        sesim.Sim.putExchangeCfg(cfg, jo);
+        Globals.putConfig(cfg);
+
         dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
