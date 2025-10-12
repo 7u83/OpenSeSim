@@ -33,9 +33,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -48,69 +52,16 @@ import sesim.Exchange.OrderType;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiver, CfgListener {
+public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiver {
 
-    DefaultTableModel model;
+    MyModel model;
     TableColumn trader_column = null;
+    TableColumn price_column = null;
+    TableColumn vol_column = null;
+    ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    class Renderer extends DefaultTableCellRenderer {
-
-        private final DecimalFormat formatter = new DecimalFormat("#.0000");
-
-        Renderer() {
-            super();
-            this.setHorizontalAlignment(RIGHT);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(
-                JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column) {
-
-            // First format the cell value as required
-            value = formatter.format((Number) value);
-
-            // And pass it on to parent class
-            return super.getTableCellRendererComponent(
-                    table, value, isSelected, hasFocus, row, column);
-        }
-    }
-
-    OrderType type = OrderType.BUYLIMIT;
+    private OrderType type = OrderType.BUYLIMIT;
     int depth = 40;
-
-    public void setGodMode(boolean on) {
-        TableColumnModel tcm = list.getColumnModel();
-        if (on) {
-            if (list.getColumnCount() == 3) {
-                return;
-            }
-            tcm.addColumn(trader_column);
-            tcm.moveColumn(2, 0);
-
-        } else {
-            if (list.getColumnCount() == 2) {
-                return;
-            }
-            tcm.removeColumn(tcm.getColumn(0));
-        }
-    }
-
-    /**
-     * Bla
-     */
-    @Override
-    public final void cfgChanged() {
-        boolean gm = Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true");
-        setGodMode(gm);
-        list.invalidate();
-        list.repaint();
-    }
-
-    public void setType(OrderType type) {
-        this.type = type;
-        Globals.sim.se.addBookReceiver(type, this);
-    }
 
     /**
      * Creates new form OrderBookNew
@@ -121,67 +72,171 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
         if (Globals.sim == null) {
             return;
         }
-        model = (DefaultTableModel) this.list.getModel();
+
+        model = (MyModel) this.list.getModel();
+
         trader_column = list.getColumnModel().getColumn(0);
-        list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
-        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));
-        cfgChanged();
-//        Globals.sim.se.addBookReceiver(Exchange.OrderType.BUYLIMIT, this);
-        Globals.addCfgListener(this);
-        
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-               // System.out.printf("Update order book\n");
-               // UpdateOrderBook();
-            }
-        }, 1000, 1000);
-        
-    }
+        price_column = list.getColumnModel().getColumn(1);
+        vol_column = list.getColumnModel().getColumn(2);
 
-    boolean oupdate = false;
-    boolean new_oupdate = false;
+        list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(
+                2//  Globals.sim.se.getSharesFormatter()
+        ));
 
- //   long ouctr = 0;
-
-    void oupdater() {
-        ArrayList<Order> ob = Globals.sim.se.getOrderBook(type, depth);
-        model.setRowCount(ob.size());
-        int row = 0;
-        for (Order ob1 : ob) {
-            model.setValueAt(ob1.getAccount().getOwner().getName(), row, 0);
-            model.setValueAt(ob1.getLimit(), row, 1);
-            model.setValueAt(ob1.getVolume(), row, 2);
-            row++;
-        }
-
-        synchronized (this) {
-            oupdate = new_oupdate;
-            new_oupdate = false;
-        }
-        if (oupdate) {
-            SwingUtilities.invokeLater(() -> {
-                oupdater();
-            });
-
-        }
+        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(
+                2 //  Globals.sim.se.getMoneyFormatter()
+        ));
 
     }
+
+    public void setType(OrderType type) {
+        this.type = type;
+        Globals.sim.se.addBookReceiver(type, this);
+    }
+
+    volatile boolean busy;
 
     @Override
     public void UpdateOrderBook() {
 
-        synchronized (this) {
-            if (oupdate) {
-                new_oupdate = true;
-                return;
+        if (busy) {
+            return;
+        }
+        busy = true;
+
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ArrayList<Order> newOb = Globals.sim.se.getOrderBook(type, depth);
+
+                    // GUI-Update on EDT
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void setGodMode(boolean on) {
+                            TableColumnModel tcm = list.getColumnModel();
+                            if (on) {
+                                if (list.getColumnCount() == 3) {
+                                    return;
+                                }
+                                tcm.addColumn(trader_column);
+                                tcm.moveColumn(2, 0);
+
+                            } else {
+                                if (list.getColumnCount() == 2) {
+                                    return;
+                                }
+                                tcm.removeColumn(tcm.getColumn(0));
+                            }
+                        }
+
+                        @Override
+                        public void run() {
+                            setGodMode(Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true"));
+                            vol_column.setCellRenderer(new NummericCellRenderer(Globals.sim.se.getSharesFormatter()));
+                            price_column.setCellRenderer(new NummericCellRenderer(Globals.sim.se.getMoneyFormatter()));
+                            model.setData(newOb);
+                            model.fireTableDataChanged();
+                        }
+                    });
+
+                    try {
+                        Thread.sleep(20);   // update rate is limited 50 Hz
+                    } catch (InterruptedException e) {
+                    }
+                } finally {
+                    busy = false;
+                }
             }
-            oupdate = true;
+        });
+
+    }
+
+    class MyModel extends AbstractTableModel {
+
+        ArrayList<Order> myOb = null;
+        final String colNames[] = {"Trader", "Price", "Volume"};
+        final Class[] colTypes = new Class[]{
+            java.lang.String.class, java.lang.Double.class, java.lang.Double.class
+        };
+
+        /*   private int getOffset() {
+            if (Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true")) {
+                return 0;
+            }
+            return 1;
+
+        }
+         */
+        void setData(ArrayList<Order> d) {
+            myOb = d;
         }
 
-        SwingUtilities.invokeLater(() -> {
-            oupdater();
-        });
+        @Override
+        public int getRowCount() {
+
+            if (myOb == null) {
+                return 0;
+            }
+            return myOb.size();
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+//            int o = getOffset();
+
+            /*          if (rowIndex >= myOb.size()) {
+                sesim.Logger.debug("ERROR  %d >= %d\n", rowIndex, myOb.size());
+
+                switch (columnIndex) {
+                    case 0:
+                        return "a";
+                    case 1:
+                        return (double) rowIndex;
+                    case 2:
+                        return (double) myOb.size();
+                    default:
+                        return null;
+                }
+            }*/
+            switch (columnIndex) {
+                case 0:
+                    return myOb.get(rowIndex).getAccount().getOwner().getName();
+                case 1:
+                    return myOb.get(rowIndex).getLimit();
+                case 2:
+                    return myOb.get(rowIndex).getVolume();
+                default:
+                    return null;
+            }
+
+            // }
+        }
+
+        //      list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
+        //list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));
+        @Override
+        public void fireTableRowsUpdated(int firstRow, int lastRow) {
+        }
+
+        @Override
+        public void fireTableCellUpdated(int row, int column) {
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return colNames[column];
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return colTypes[columnIndex];
+
+        }
 
     }
 
@@ -197,29 +252,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
         jScrollPane1 = new javax.swing.JScrollPane();
         list = new javax.swing.JTable();
 
-        list.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Trader", "Price", "Volume"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Double.class, java.lang.Double.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        list.setModel(new MyModel());
         jScrollPane1.setViewportView(list);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

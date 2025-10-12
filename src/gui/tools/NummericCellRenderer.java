@@ -53,6 +53,15 @@ public class NummericCellRenderer extends DefaultTableCellRenderer {
         this.setHorizontalAlignment(RIGHT);
     }
 
+    /**
+     *
+     * @param formatter
+     */
+    public NummericCellRenderer(DecimalFormat formatter){
+        this.formatter=formatter;
+        this.setHorizontalAlignment(RIGHT);
+    }
+    
     @Override
     public Component getTableCellRendererComponent(
             JTable table, Object value, boolean isSelected,

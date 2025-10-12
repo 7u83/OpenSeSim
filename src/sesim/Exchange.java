@@ -60,7 +60,7 @@ public class Exchange {
     }
 
     public DecimalFormat getFormatter(int n) {
-  //      DecimalFormat formatter;
+        //      DecimalFormat formatter;
         String s = "#0.";
         if (n == 0) {
             s = "#";
@@ -229,17 +229,17 @@ public class Exchange {
             this.status = OrderStatus.OPEN;
             this.cost = 0;
         }
-        
-        Order(Order o){
+
+        Order(Order o) {
             id = o.id;
             account = o.account;
-            type=o.type;
-            limit=o.limit;
-            volume=o.volume;
-            initial_volume=o.initial_volume;
-            created=o.created;
-            status=o.status;
-            cost=o.cost;
+            type = o.type;
+            limit = o.limit;
+            volume = o.volume;
+            initial_volume = o.initial_volume;
+            created = o.created;
+            status = o.status;
+            cost = o.cost;
         }
 
         public long getID() {
@@ -299,10 +299,10 @@ public class Exchange {
     final void initExchange() {
         //   quoteReceiverList = (new CopyOnWriteArrayList<>());
 
-       this.quoteReceiverList.clear();
-       this.ask_bookreceivers.clear();
-       this.bid_bookreceivers.clear();
-       
+        this.quoteReceiverList.clear();
+        this.ask_bookreceivers.clear();
+        this.bid_bookreceivers.clear();
+
         buy_orders = 0;
         sell_orders = 0;
         timer = new Scheduler();         //  timer = new Scheduler();
@@ -634,7 +634,7 @@ public class Exchange {
 
     public void addBookReceiver(OrderType t, BookReceiver br) {
         sesim.Logger.debug("Add BookReceiver");
-     //  sesim.Sim.Logger.
+        //  sesim.Sim.Logger.
         if (br == null) {
 //            System.out.printf("Br is null\n");
         } else {
@@ -692,24 +692,24 @@ public class Exchange {
             return null;
         }
         ArrayList<Order> ret;
-   //    synchronized (executor) {
+        //    synchronized (executor) {
 
-            ret = new ArrayList<>();
+        ret = new ArrayList<>();
 
-            Iterator<Order> it = book.iterator();
+        Iterator<Order> it = book.iterator();
 
-            for (int i = 0; i < depth && it.hasNext(); i++) {
-                Order o = new Order(it.next());
-                //   System.out.print(o.volume);
-                if (o.volume <= 0 ) {
-                    continue;
-                    //System.out.printf("Volume < 0 , Vol %f %s\n",o.volume,o.account.owner.getName());
-                    //System.exit(0);
-                }
-                ret.add(o);
+        for (int i = 0; i < depth && it.hasNext(); i++) {
+            Order o = new Order(it.next());
+            //   System.out.print(o.volume);
+            if (o.volume <= 0) {
+                continue;
+                //System.out.printf("Volume < 0 , Vol %f %s\n",o.volume,o.account.owner.getName());
+                //System.exit(0);
             }
-            // System.out.println();
-   //     }
+            ret.add(o);
+        }
+        // System.out.println();
+        //     }
         return ret;
     }
 
@@ -1015,13 +1015,12 @@ public class Exchange {
      */
     public long createOrder(Account a, OrderType type, double volume, double limit) {
 
-        System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(),type.toString(),limit,volume);
-      
+     //   System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(), type.toString(), limit, volume);
+
         if (a == null) {
             System.out.printf("Order not places account\n");
             return -1;
         }
-        
 
         Order o = new Order(a, type, volume, limit);
         if (o.volume <= 0 || o.limit <= 0) {
