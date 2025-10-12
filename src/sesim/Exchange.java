@@ -685,7 +685,7 @@ public class Exchange {
     //double lastprice = 100.0;
     //  long lastsvolume;
     // private final Locker tradelock = new Locker();
-    public ArrayList<Order> getOrderBook(OrderType type, int depth) {
+    public ArrayList<Order> getRawOrderBook(OrderType type, int depth) {
 
         SortedSet<Order> book = order_books.get(type);
         if (book == null) {

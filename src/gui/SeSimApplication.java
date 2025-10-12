@@ -101,7 +101,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane2 = new javax.swing.JSplitPane();
-        orderBookNew1 = new gui.orderbook.OrderBook();
+        orderBookNew1 = new gui.orderbook.RawOrderBook();
         jPanel2 = new javax.swing.JPanel();
         accelSpinner = new javax.swing.JSpinner();
         clock = new gui.Clock();
@@ -907,7 +907,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
-    private gui.orderbook.OrderBook orderBookNew1;
+    private gui.orderbook.RawOrderBook orderBookNew1;
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JButton pauseButton;

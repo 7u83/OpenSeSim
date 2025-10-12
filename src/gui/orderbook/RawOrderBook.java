@@ -52,7 +52,7 @@ import sesim.Exchange.OrderType;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiver {
+public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookReceiver {
 
     MyModel model;
     TableColumn trader_column = null;
@@ -66,7 +66,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
     /**
      * Creates new form OrderBookNew
      */
-    public OrderBook() {
+    public RawOrderBook() {
         initComponents();
 
         if (Globals.sim == null) {
@@ -108,7 +108,7 @@ public class OrderBook extends javax.swing.JPanel implements Exchange.BookReceiv
             @Override
             public void run() {
                 try {
-                    ArrayList<Order> newOb = Globals.sim.se.getOrderBook(type, depth);
+                    ArrayList<Order> newOb = Globals.sim.se.getRawOrderBook(type, depth);
 
                     // GUI-Update on EDT
                     SwingUtilities.invokeLater(new Runnable() {

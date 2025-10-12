@@ -67,11 +67,11 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
     private void initComponents() {
 
         bidBookPanel = new javax.swing.JPanel();
-        bidBook = new gui.orderbook.OrderBook();
+        bidBook = new gui.orderbook.RawOrderBook();
         jLabel2 = new javax.swing.JLabel();
         quoteVertical2 = new gui.orderbook.QuoteVertical();
         askBookPanel = new javax.swing.JPanel();
-        askBook = new gui.orderbook.OrderBook();
+        askBook = new gui.orderbook.RawOrderBook();
         jLabel1 = new javax.swing.JLabel();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
@@ -136,9 +136,9 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private gui.orderbook.OrderBook askBook;
+    private gui.orderbook.RawOrderBook askBook;
     private javax.swing.JPanel askBookPanel;
-    private gui.orderbook.OrderBook bidBook;
+    private gui.orderbook.RawOrderBook bidBook;
     private javax.swing.JPanel bidBookPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

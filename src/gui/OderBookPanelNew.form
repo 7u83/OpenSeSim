@@ -56,9 +56,9 @@
   <SubComponents>
     <Component class="gui.QuotePanel" name="quotePanel1">
     </Component>
-    <Component class="gui.orderbook.OrderBook" name="orderBookNew3">
+    <Component class="gui.orderbook.RawOrderBook" name="orderBookNew3">
     </Component>
-    <Component class="gui.orderbook.OrderBook" name="orderBookNew4">
+    <Component class="gui.orderbook.RawOrderBook" name="orderBookNew4">
     </Component>
     <Component class="javax.swing.Box$Filler" name="filler1">
       <Properties>

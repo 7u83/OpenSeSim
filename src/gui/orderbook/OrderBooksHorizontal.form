@@ -48,7 +48,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="gui.orderbook.OrderBook" name="bidBook">
+        <Component class="gui.orderbook.RawOrderBook" name="bidBook">
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
@@ -95,7 +95,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="gui.orderbook.OrderBook" name="askBook">
+        <Component class="gui.orderbook.RawOrderBook" name="askBook">
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
