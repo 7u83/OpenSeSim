@@ -49,6 +49,7 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
     public final void reset() {
         bidBook.setType(Exchange.OrderType.BUYLIMIT);
         askBook.setType(Exchange.OrderType.SELLLIMIT);
+        this.quoteVertical2.reset();
     }
 
     public void setDepth(int depth) {

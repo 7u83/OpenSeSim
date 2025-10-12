@@ -3,6 +3,7 @@ package sesim;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -308,7 +309,8 @@ public class Exchange {
         // Create order books
         order_books = new HashMap();
         for (OrderType type : OrderType.values()) {
-            order_books.put(type, new TreeSet(new OrderComparator(type)));
+//            order_books.put(type, new TreeSet(new OrderComparator(type)));
+            order_books.put(type, new ConcurrentSkipListSet(new OrderComparator(type)));
         }
 
     }
@@ -678,7 +680,7 @@ public class Exchange {
             return null;
         }
         ArrayList<Order> ret;
-        synchronized (executor) {
+       synchronized (executor) {
 
             ret = new ArrayList<>();
 
@@ -688,7 +690,7 @@ public class Exchange {
                 Order o = it.next();
                 //   System.out.print(o.volume);
                 if (o.volume <= 0) {
-                    //        System.out.printf("Volume < 0\n");
+                    System.out.printf("Volume < 0 , Vol %f %s\n",o.volume,o.account.owner.getName());
                     System.exit(0);
                 }
                 ret.add(o);
@@ -991,6 +993,7 @@ public class Exchange {
 
     /**
      *
+     * @param a
      * @param account_id
      * @param type
      * @param volume
@@ -999,11 +1002,13 @@ public class Exchange {
      */
     public long createOrder(Account a, OrderType type, double volume, double limit) {
 
-        //    Account a = accounts.get(account_id);
+        System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(),type.toString(),limit,volume);
+      
         if (a == null) {
             System.out.printf("Order not places account\n");
             return -1;
         }
+        
 
         Order o = new Order(a, type, volume, limit);
         if (o.volume <= 0 || o.limit <= 0) {

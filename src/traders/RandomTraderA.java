@@ -404,7 +404,13 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
 //            System.out.printf("Buy Order wont work\n");
         //        return false;
         //    }
+        
+        System.out.printf("I am: %s create BuyOrder. Money: %f, Shares: %f",
+                this.getName(),
+                this.account_id.getMoney(), this.account_id.getShares());
+        
         long rc = se.createOrder(account, type, volume, limit);
+        
 
         if (rc == -1) {
 

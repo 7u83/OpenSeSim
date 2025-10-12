@@ -47,6 +47,10 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
         if (Globals.sim == null) {
             return;
         }
+        reset();
+    }
+    
+    public final void reset(){
         Globals.sim.se.addQuoteReceiver(this);
     }
 
