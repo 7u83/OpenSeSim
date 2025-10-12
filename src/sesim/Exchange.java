@@ -229,6 +229,18 @@ public class Exchange {
             this.status = OrderStatus.OPEN;
             this.cost = 0;
         }
+        
+        Order(Order o){
+            id = o.id;
+            account = o.account;
+            type=o.type;
+            limit=o.limit;
+            volume=o.volume;
+            initial_volume=o.initial_volume;
+            created=o.created;
+            status=o.status;
+            cost=o.cost;
+        }
 
         public long getID() {
             return id;
@@ -680,23 +692,24 @@ public class Exchange {
             return null;
         }
         ArrayList<Order> ret;
-       synchronized (executor) {
+   //    synchronized (executor) {
 
             ret = new ArrayList<>();
 
             Iterator<Order> it = book.iterator();
 
             for (int i = 0; i < depth && it.hasNext(); i++) {
-                Order o = it.next();
+                Order o = new Order(it.next());
                 //   System.out.print(o.volume);
-                if (o.volume <= 0) {
-                    System.out.printf("Volume < 0 , Vol %f %s\n",o.volume,o.account.owner.getName());
-                    System.exit(0);
+                if (o.volume <= 0 ) {
+                    continue;
+                    //System.out.printf("Volume < 0 , Vol %f %s\n",o.volume,o.account.owner.getName());
+                    //System.exit(0);
                 }
                 ret.add(o);
             }
             // System.out.println();
-        }
+   //     }
         return ret;
     }
 
