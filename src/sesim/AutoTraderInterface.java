@@ -79,5 +79,7 @@ public interface AutoTraderInterface {
     public Account getAccount();
 
     public void start();
+    
+        public String getStatus();
 
 }

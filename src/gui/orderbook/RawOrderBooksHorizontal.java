@@ -32,12 +32,12 @@ import sesim.Exchange;
  *
  * @author tobias
  */
-public class OrderBooksHorizontal extends javax.swing.JPanel {
+public class RawOrderBooksHorizontal extends javax.swing.JPanel {
 
     /**
      * Creates new form OrderBooksHorizontal
      */
-    public OrderBooksHorizontal() {
+    public RawOrderBooksHorizontal() {
         initComponents();
         if (Globals.sim == null) {
             return;
@@ -67,12 +67,12 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
     private void initComponents() {
 
         bidBookPanel = new javax.swing.JPanel();
+        bidBook = new gui.orderbook.RawOrderBook();
         jLabel2 = new javax.swing.JLabel();
-        bidBook = new gui.orderbook.OrderBook();
         quoteVertical2 = new gui.orderbook.QuoteVertical();
         askBookPanel = new javax.swing.JPanel();
+        askBook = new gui.orderbook.RawOrderBook();
         jLabel1 = new javax.swing.JLabel();
-        askBook = new gui.orderbook.OrderBook();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -88,9 +88,10 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
             bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bidBookPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+                .addGroup(bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(bidBook, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         bidBookPanelLayout.setVerticalGroup(
             bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,8 +99,7 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
         );
 
         add(bidBookPanel);
@@ -115,11 +115,12 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
         askBookPanel.setLayout(askBookPanelLayout);
         askBookPanelLayout.setHorizontalGroup(
             askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, askBookPanelLayout.createSequentialGroup()
+            .addGroup(askBookPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+                .addGroup(askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(askBook, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         askBookPanelLayout.setVerticalGroup(
             askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,8 +128,7 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
         );
 
         add(askBookPanel);
@@ -136,9 +136,9 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private gui.orderbook.OrderBook askBook;
+    private gui.orderbook.RawOrderBook askBook;
     private javax.swing.JPanel askBookPanel;
-    private gui.orderbook.OrderBook bidBook;
+    private gui.orderbook.RawOrderBook bidBook;
     private javax.swing.JPanel bidBookPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

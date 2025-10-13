@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JTable;
@@ -44,7 +45,6 @@ import sesim.Account;
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -54,6 +54,10 @@ public class TraderListPanel extends javax.swing.JPanel {
     DefaultTableModel model;
 
     final void updateModel() {
+        if (Globals.sim == null) {
+            return;
+        }
+
         if (Globals.sim.se == null) {
             return;
         }
@@ -72,11 +76,12 @@ public class TraderListPanel extends javax.swing.JPanel {
             Account a = at.getAccount();
             model.setValueAt(i, i, 0);
             model.setValueAt(at.getName(), i, 1);
-            model.setValueAt(a.getMoney(), i, 2);
-            model.setValueAt(a.getShares(), i, 3);
+            model.setValueAt(at.getStatus(), i, 2);
+            model.setValueAt(a.getMoney(), i, 3);
+            model.setValueAt(a.getShares(), i, 4);
 
             double wealth = a.getShares() * price + a.getMoney();
-            model.setValueAt(wealth, i, 4);
+            model.setValueAt(wealth, i, 5);
         }
         List l = list.getRowSorter().getSortKeys();
         if (!l.isEmpty()) {
@@ -97,21 +102,27 @@ public class TraderListPanel extends javax.swing.JPanel {
         initComponents();
         model = (DefaultTableModel) list.getModel();
 //       updateModel();
-
+        AtomicBoolean running = new AtomicBoolean(false);
         Timer timer = new Timer();
         updater = new TimerTask() {
+
             @Override
             public void run() {
+                if (running.get()) {
+                    return;
+                }
+                running.set(true);
                 try {
                     updateModel();
                 } catch (Exception e) {
                 }
+                running.set(false);
 
             }
         };
-        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(3));
-        list.getColumnModel().getColumn(3).setCellRenderer(new NummericCellRenderer(0));
-        list.getColumnModel().getColumn(4).setCellRenderer(new NummericCellRenderer(3));
+        list.getColumnModel().getColumn(3).setCellRenderer(new NummericCellRenderer(3));
+        list.getColumnModel().getColumn(4).setCellRenderer(new NummericCellRenderer(0));
+        list.getColumnModel().getColumn(5).setCellRenderer(new NummericCellRenderer(3));
 
         // ID-Spalte zentrieren
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -153,38 +164,6 @@ public class TraderListPanel extends javax.swing.JPanel {
 
     }
 
-    void ZZtest() {
-
-//        new javax.swing.table.DefaultTableModel
-        MyModel m = new MyModel(
-                new Object[][]{
-                    {null, null, null, null, null},
-                    {null, null, null, null, null},
-                    {null, null, null, null, null},
-                    {null, null, null, null, null},
-                    {null, null, null, null, null}
-                },
-                new String[]{
-                    "ID", "Name", "Money", "Shares", "Wealth"
-                }
-        ) {
-            Class[] types = new Class[]{
-                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
-            };
-            boolean[] canEdit = new boolean[]{
-                false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        };
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -200,21 +179,16 @@ public class TraderListPanel extends javax.swing.JPanel {
         list.setAutoCreateRowSorter(true);
         list.setModel(new MyModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Name", "Cash", "Shares", "Total"
+                "ID", "Name","Status", "Cash", "Shares", "Total"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {

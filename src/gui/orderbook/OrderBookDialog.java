@@ -58,7 +58,7 @@ public class OrderBookDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        books = new gui.orderbook.OrderBooksHorizontal();
+        books = new gui.orderbook.RawOrderBooksHorizontal();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -121,6 +121,6 @@ public class OrderBookDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private gui.orderbook.OrderBooksHorizontal books;
+    private gui.orderbook.RawOrderBooksHorizontal books;
     // End of variables declaration//GEN-END:variables
 }

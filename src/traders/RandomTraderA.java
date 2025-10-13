@@ -89,7 +89,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         long rc = this.doTrade();
         setStatus("Sleeping for %d ms", rc);
         intask = false;
-        setStatus("Return fromtask %d", rc);
+    //    setStatus("Return fromtask %d", rc);
         
         if (owait != null)
             return owait;
@@ -124,10 +124,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
         return jo;
     }
 
-    void setStatus(String format, Object... arguments) {
-    //    String s = String.format(format, arguments);
-//        System.out.printf("%s: %s\n", this.getName(), s);
-    }
+
 
     private Float[] to_float(JSONArray a) {
         Float[] ret = new Float[a.length()];
@@ -243,7 +240,7 @@ public class RandomTraderA extends AutoTraderBase implements AccountListener {
             case BUY: {
                 boolean rc = doBuy();
                 if (rc) {
-                    setStatus("dobuy");
+            //        setStatus("dobuy");
                     mode = Action.BUY;
                     return getRandom(buy_wait);
                 }

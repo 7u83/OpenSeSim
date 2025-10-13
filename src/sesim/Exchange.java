@@ -87,12 +87,11 @@ public class Exchange {
         BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
     }
 
-    IDGenerator account_id = new IDGenerator();
+    //  IDGenerator account_id = new IDGenerator();
     //public static Timer timer = new Timer();
-
     public Scheduler timer; // = new Scheduler();
 
-    public ArrayList<AutoTraderInterface> traders_old;
+    //public ArrayList<AutoTraderInterface> traders_old;
 
     /**
      *
@@ -203,24 +202,71 @@ public class Exchange {
 
     IDGenerator order_id = new IDGenerator();
 
-    public class Order {
+    public static class OrderBookEntry {
+
+        public double limit;
+        public double volume;
+
+        public OrderBookEntry() {
+
+        }
+
+        public OrderBookEntry(OrderBookEntry oe) {
+
+            this.volume = oe.volume;
+            this.limit = oe.limit;
+        }
+
+        public String getOwnerName() {
+            return "";
+        }
+
+        public double getVolume() {
+            return volume;
+        }
+
+        public double getLimit() {
+            return limit;
+        }
+
+        /*     public OrderBookEntry(Order o) {
+            volume = o.volume;
+            limit = o.limit;
+            account = o.account;
+        }*/
+
+ /*     @Override
+        public int compareTo(OrderBookEntry o) {
+
+            if (this.limit < o.limit) {
+                return -1;
+            }
+            if (this.limit < o.limit) {
+                return 1;
+            }
+            return 0;
+
+        }*/
+    }
+
+    public class Order extends OrderBookEntry {
 
         OrderStatus status;
         OrderType type;
-        private double limit;
+        /*        private double limit;
         private double volume;
-
+        private final Account account;
+         */
         private final double initial_volume;
         private final long id;
         private final long created;
-
-        private final Account account;
-
+        protected final Account account;
         double cost;
 
         Order(Account account, OrderType type, double volume, double limit) {
-            id = order_id.getNext();
             this.account = account;
+
+            id = order_id.getNext();
             this.type = type;
             this.limit = roundMoney(limit);
             this.volume = roundShares(volume);
@@ -231,8 +277,9 @@ public class Exchange {
         }
 
         Order(Order o) {
+
+            this.account = o.account;
             id = o.id;
-            account = o.account;
             type = o.type;
             limit = o.limit;
             volume = o.volume;
@@ -242,16 +289,16 @@ public class Exchange {
             cost = o.cost;
         }
 
+        public String getOwnerName() {
+            return account.owner.getName();
+        }
+
+        public Account getAccount() {
+            return account;
+        }
+
         public long getID() {
             return id;
-        }
-
-        public double getVolume() {
-            return volume;
-        }
-
-        public double getLimit() {
-            return limit;
         }
 
         public OrderType getType() {
@@ -276,10 +323,6 @@ public class Exchange {
                 return -1;
             }
             return cost / e;
-        }
-
-        public Account getAccount() {
-            return account;
         }
 
         public OrderStatus getOrderStatus() {
@@ -679,38 +722,101 @@ public class Exchange {
         }
     }
 
-    // long time = 0;
-    //double theprice = 12.9;
-//    long orderid = 1;
-    //double lastprice = 100.0;
-    //  long lastsvolume;
-    // private final Locker tradelock = new Locker();
+    /**
+     * Returns a raw snapshot of the order book for the specified order type.
+     * <p>
+     * The method retrieves up to {@code depth} orders from the sorted order
+     * book corresponding to the given {@link OrderType}. If the order book is
+     * empty or not found, {@code null} is returned.
+     * </p>
+     *
+     * @param type the type of orders to retrieve (e.g. BUY or SELL)
+     * @param depth the maximum number of orders to include in the result
+     * @return a list of up to {@code depth} {@link Order} objects, or
+     * {@code null} if the order book does not exist
+     */
     public ArrayList<Order> getRawOrderBook(OrderType type, int depth) {
 
+        // Get the sorted order book for the specified type
         SortedSet<Order> book = order_books.get(type);
         if (book == null) {
             return null;
         }
-        ArrayList<Order> ret;
-        //    synchronized (executor) {
-
-        ret = new ArrayList<>();
+        ArrayList<Order> ret = new ArrayList<>();
 
         Iterator<Order> it = book.iterator();
 
+        // Iterate through the orders up to the given depth
         for (int i = 0; i < depth && it.hasNext(); i++) {
             Order o = new Order(it.next());
-            //   System.out.print(o.volume);
+
+            // Skip orders with non-positive volume
             if (o.volume <= 0) {
                 continue;
-                //System.out.printf("Volume < 0 , Vol %f %s\n",o.volume,o.account.owner.getName());
-                //System.exit(0);
+
             }
             ret.add(o);
         }
-        // System.out.println();
-        //     }
         return ret;
+    }
+
+//    public ArrayList<OrderBookEntry> getCompressedOrderBook(OrderType type, int depth) {
+    public TreeMap<Double, OrderBookEntry> getCompressedOrderBook(OrderType type, int depth) {
+
+        TreeMap<Double, OrderBookEntry> map = new TreeMap<>();
+
+        // Get the sorted order book for the specified type
+        SortedSet<Order> book = order_books.get(type);
+        if (book == null) {
+            return null;
+        }
+ 
+
+        Iterator<Order> it = book.iterator();
+
+        // Iterate through the orders up to the given depth
+        for (int i = 0; it.hasNext(); i++) {
+            Order o = new Order(it.next());
+
+            // Skip orders with non-positive volume
+            if (o.volume <= 0) {
+                continue;
+            }
+            
+                       OrderBookEntry oe = map.get(o.limit);
+            if (oe == null) {
+                map.put(o.limit, new OrderBookEntry(o));
+
+            } else {
+                oe.volume += o.volume;
+                map.put(o.limit, oe);
+            }
+       
+            if (map.size()>=depth)
+                break;
+
+        }
+
+
+        /*
+        book = this.getRawOrderBook(type, depth*4);
+        int d=0;
+        for (Order o : book) {
+            OrderBookEntry oe = map.get(o.limit);
+            if (oe == null) {
+                map.put(o.limit, new OrderBookEntry(o));
+                     d++;
+            } else {
+                oe.volume += o.volume;
+                map.put(o.limit, oe);
+            }
+       
+            if (d>=depth)
+                break;
+
+        }*/
+        return map;
+
     }
 
     public Quote getLastQuoete() {
@@ -1015,8 +1121,7 @@ public class Exchange {
      */
     public long createOrder(Account a, OrderType type, double volume, double limit) {
 
-     //   System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(), type.toString(), limit, volume);
-
+        //   System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(), type.toString(), limit, volume);
         if (a == null) {
             System.out.printf("Order not places account\n");
             return -1;
@@ -1078,69 +1183,5 @@ public class Exchange {
         return a.orders.size();
     }
 
-    /*    public Account getAccount(double account_id) {
-        return accounts.get(account_id);
-    }
-     */
- /*public AccountData getAccountData(double account_id) {
-        tradelock.lock();
-        Account a = accounts.get(account_id);
-        tradelock.unlock();
-        if (a == null) {
-            return null;
-        }
-
-        AccountData ad = new AccountData();
-        ad.id = account_id;
-        ad.money = a.money;
-        ad.shares = a.shares;
-
-        ad.orders = new ArrayList<>();
-        ad.orders.iterator();
-
-        a.orders.values();
-        Set s = a.orders.keySet();
-        Iterator it = s.iterator();
-
-        while (it.hasNext()) {
-            long x = (long) it.next();
-
-            Order o = a.orders.get(x);
-
-            OrderData od = new OrderData();
-            od.id = o.id;
-            od.limit = o.limit;
-            od.volume = o.volume;
-            ad.orders.add(od);
-        }
-
-        //System.exit(0);
-        //a.orders.keySet();
-        //KeySet ks = a.orders.keySet();
-        return ad;
-    }
-     */
-    public ArrayList<OrderData> getOpenOrders(Account a) {
-
-//        Account a = accounts.get(account_id);
-        if (a == null) {
-            return null;
-        }
-
-        ArrayList<OrderData> al = new ArrayList();
-
-        Iterator it = a.orders.entrySet().iterator();
-        while (it.hasNext()) {
-            Order o = (Order) it.next();
-            OrderData od = new OrderData();
-            od.limit = o.limit;
-            od.volume = o.initial_volume;
-            od.executed = o.initial_volume - o.volume;
-            od.id = o.id;
-            al.add(od);
-        }
-
-        return al;
-    }
-
+ 
 }

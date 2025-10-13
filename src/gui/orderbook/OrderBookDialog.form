@@ -36,7 +36,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="gui.orderbook.OrderBooksHorizontal" name="books">
+    <Component class="gui.orderbook.RawOrderBooksHorizontal" name="books">
     </Component>
   </SubComponents>
 </Form>

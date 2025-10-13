@@ -42,8 +42,8 @@ import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
 
-import sesim.Exchange.Order;
-import sesim.OrderData;
+//import sesim.Exchange.Order;
+//import sesim.OrderData;
 import sesim.Quote;
 
 /**

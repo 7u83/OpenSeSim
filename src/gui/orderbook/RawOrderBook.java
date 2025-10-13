@@ -26,26 +26,18 @@
 package gui.orderbook;
 
 import gui.Globals;
-import gui.Globals.CfgListener;
 import gui.tools.NummericCellRenderer;
-import java.awt.Component;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import sesim.Account;
 import sesim.Exchange;
 import sesim.Exchange.Order;
+import sesim.Exchange.OrderBookEntry;
 import sesim.Exchange.OrderType;
 
 /**
@@ -54,14 +46,15 @@ import sesim.Exchange.OrderType;
  */
 public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookReceiver {
 
-    MyModel model;
+    RawOrderBookModel model;
     TableColumn trader_column = null;
     TableColumn price_column = null;
     TableColumn vol_column = null;
     ExecutorService executor = Executors.newSingleThreadExecutor();
+    volatile boolean busy;
 
-    private OrderType type = OrderType.BUYLIMIT;
-    int depth = 40;
+    protected OrderType type = OrderType.BUYLIMIT;
+    protected int depth = 40;
 
     /**
      * Creates new form OrderBookNew
@@ -73,20 +66,11 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
             return;
         }
 
-        model = (MyModel) this.list.getModel();
+        model = (RawOrderBookModel) this.list.getModel();
 
         trader_column = list.getColumnModel().getColumn(0);
         price_column = list.getColumnModel().getColumn(1);
         vol_column = list.getColumnModel().getColumn(2);
-
-        list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(
-                2//  Globals.sim.se.getSharesFormatter()
-        ));
-
-        list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(
-                2 //  Globals.sim.se.getMoneyFormatter()
-        ));
-
     }
 
     public void setType(OrderType type) {
@@ -94,7 +78,27 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
         Globals.sim.se.addBookReceiver(type, this);
     }
 
-    volatile boolean busy;
+    public void setGodMode(boolean on) {
+        TableColumnModel tcm = list.getColumnModel();
+        if (on) {
+            if (list.getColumnCount() == 3) {
+                return;
+            }
+            tcm.addColumn(trader_column);
+            tcm.moveColumn(2, 0);
+
+        } else {
+            if (list.getColumnCount() == 2) {
+                return;
+            }
+            tcm.removeColumn(tcm.getColumn(0));
+        }
+    }
+
+    protected ArrayList<? extends OrderBookEntry> getOrderBook() {
+        return Globals.sim.se.getRawOrderBook(type, depth);
+        // return Globals.sim.se.getCompressedOrderBook(type);
+    }
 
     @Override
     public void UpdateOrderBook() {
@@ -108,26 +112,10 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
             @Override
             public void run() {
                 try {
-                    ArrayList<Order> newOb = Globals.sim.se.getRawOrderBook(type, depth);
+                    ArrayList<? extends OrderBookEntry> newOb = getOrderBook(); // Globals.sim.se.getRawOrderBook(type, depth);
 
-                    // GUI-Update on EDT
+                    // GUI update on EDT
                     SwingUtilities.invokeLater(new Runnable() {
-                        public void setGodMode(boolean on) {
-                            TableColumnModel tcm = list.getColumnModel();
-                            if (on) {
-                                if (list.getColumnCount() == 3) {
-                                    return;
-                                }
-                                tcm.addColumn(trader_column);
-                                tcm.moveColumn(2, 0);
-
-                            } else {
-                                if (list.getColumnCount() == 2) {
-                                    return;
-                                }
-                                tcm.removeColumn(tcm.getColumn(0));
-                            }
-                        }
 
                         @Override
                         public void run() {
@@ -151,23 +139,15 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
 
     }
 
-    class MyModel extends AbstractTableModel {
+    class RawOrderBookModel extends AbstractTableModel {
 
-        ArrayList<Order> myOb = null;
+        ArrayList<? extends OrderBookEntry> myOb = null;
         final String colNames[] = {"Trader", "Price", "Volume"};
         final Class[] colTypes = new Class[]{
             java.lang.String.class, java.lang.Double.class, java.lang.Double.class
         };
 
-        /*   private int getOffset() {
-            if (Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true")) {
-                return 0;
-            }
-            return 1;
-
-        }
-         */
-        void setData(ArrayList<Order> d) {
+        void setData(ArrayList<? extends OrderBookEntry> d) {
             myOb = d;
         }
 
@@ -182,25 +162,10 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-//            int o = getOffset();
 
-            /*          if (rowIndex >= myOb.size()) {
-                sesim.Logger.debug("ERROR  %d >= %d\n", rowIndex, myOb.size());
-
-                switch (columnIndex) {
-                    case 0:
-                        return "a";
-                    case 1:
-                        return (double) rowIndex;
-                    case 2:
-                        return (double) myOb.size();
-                    default:
-                        return null;
-                }
-            }*/
             switch (columnIndex) {
                 case 0:
-                    return myOb.get(rowIndex).getAccount().getOwner().getName();
+                    return myOb.get(rowIndex).getOwnerName();
                 case 1:
                     return myOb.get(rowIndex).getLimit();
                 case 2:
@@ -212,8 +177,6 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
             // }
         }
 
-        //      list.getColumnModel().getColumn(1).setCellRenderer(new NummericCellRenderer(3));
-        //list.getColumnModel().getColumn(2).setCellRenderer(new NummericCellRenderer(0));
         @Override
         public void fireTableRowsUpdated(int firstRow, int lastRow) {
         }
@@ -240,6 +203,14 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
 
     }
 
+    protected AbstractTableModel createModel() {
+        return new RawOrderBookModel();
+    }
+
+    protected javax.swing.JTable createList() {
+        return new javax.swing.JTable();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -250,9 +221,9 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        list = new javax.swing.JTable();
+        list = createList();
 
-        list.setModel(new MyModel());
+        list.setModel(createModel());
         jScrollPane1.setViewportView(list);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -270,7 +241,7 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable list;
+    protected javax.swing.JTable list;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -96,5 +96,16 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
 
     @Override
     public abstract void start();
+    
+    String status="";
+        protected void setStatus(String format, Object... arguments) {
+            
+            status = String.format(format, arguments);
+//        System.out.printf("%s: %s\n", this.getName(), s);
+    }
+       @Override
+        public String getStatus(){
+            return status;
+        }
 
 }
