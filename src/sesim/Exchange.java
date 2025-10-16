@@ -114,7 +114,7 @@ public class Exchange {
             return data;
         }
 
-        System.out.printf("--- build quote hostory for tf: %d\n", timeFrame);
+  //      System.out.printf("--- build quote hostory for tf: %d\n", timeFrame);
         for (Quote q : quoteHistory) {
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
         }
@@ -271,7 +271,7 @@ public class Exchange {
             this.limit = roundMoney(limit);
             this.volume = roundShares(volume);
             this.initial_volume = this.volume;
-            this.created = timer.currentTimeMillis();
+            this.created = timer.getCurrentTimeMillis();
             this.status = OrderStatus.OPEN;
             this.cost = 0;
         }
@@ -350,14 +350,10 @@ public class Exchange {
         sell_orders = 0;
         timer = new Scheduler();         //  timer = new Scheduler();
         //       random = new Random(12);
-        random = new Random(12);
+        random = new Random(19);
 
         quoteHistory = new ArrayList();
-//        accounts = new ConcurrentHashMap<>();
-
-        //  traders = new ArrayList();
         statistics = new Statistics();
-        //num_trades = 0;
 
         this.ohlc_data = new HashMap();
 
@@ -377,7 +373,7 @@ public class Exchange {
         quoteReceiverList = (new CopyOnWriteArrayList<>());
 
         initExchange();
-        executor.start();
+ //       executor.start();
 
     }
 
@@ -456,6 +452,19 @@ public class Exchange {
     public void terminate() {
         timer.terminate();
     }
+    
+    public void initLastQuote(){
+        Quote q = new Quote();
+        q.price=this.fairValue;
+        q.volume=0;
+        q.ask=q.price;
+        q.bid=q.price;
+        q.ask_volume=0;
+        q.bid_volume=0;
+        q.time=timer.getCurrentTimeMillis();
+        quoteHistory.add(q);
+        this.updateQuoteReceivers(q);
+    }
 
     /*
     class BidBook extends TreeSet {
@@ -482,6 +491,8 @@ public class Exchange {
     }*/
     public final String CFG_MONEY_DECIMALS = "money_decimals";
     public final String CFG_SHARES_DECIMALS = "shares_decimals";
+    public final String CFG_AUTO_INITIAL_PRICE = "auto_initial_price";
+    public final String CFG_INITIAL_PRICE="initial_price";
 
     public void putConfig(JSONObject cfg) {
         try {
@@ -1079,7 +1090,7 @@ public class Exchange {
         Quote q = new Quote();
         q.price = money_total / volume_total;
         q.volume = volume_total;
-        q.time = timer.currentTimeMillis();
+        q.time = timer.getCurrentTimeMillis();
 
         addQuoteToHistory(q);
 
@@ -1140,7 +1151,7 @@ public class Exchange {
                     buy_failed++;
                     break;
             }
-            //System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
+      //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
 
             return -1;
         }
@@ -1159,7 +1170,7 @@ public class Exchange {
             updateBookReceivers(OrderType.SELLLIMIT);
             updateBookReceivers(OrderType.BUYLIMIT);
 
-//            System.out.printf("Order to Queeue %s %f %f\n",o.type.toString(),o.volume,o.limit);
+    //        System.out.printf("Order to Queeue %s %f %f\n",o.type.toString(),o.volume,o.limit);
 //            order_queue.add(o);
 //            executor.notify();
         }

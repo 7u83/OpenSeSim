@@ -39,7 +39,7 @@ public class Quote implements Comparable {
     public double price;
     public double volume;
     public long time;
-    public long id;
+  //  public long id;
 
 
     public void print() {
@@ -63,8 +63,8 @@ public class Quote implements Comparable {
         if (ret != 0) {
             return ret;
         }
-
-        return (int) (this.id - q.id);
+return 0;
+    //    return (int) (this.id - q.id);
     }
 
     /*   Quote (){

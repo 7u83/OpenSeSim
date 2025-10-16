@@ -26,13 +26,13 @@
 package sesim;
 
 import org.json.JSONObject;
-import sesim.Scheduler.TimerTaskRunner;
+import sesim.Scheduler.EventProcessor;
 
 /**
  * 
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRunner {
+public abstract class AutoTraderBase implements AutoTraderInterface, EventProcessor {
 
   //  protected double account_id;
       protected Account account_id;
@@ -68,7 +68,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
     }
 
    
-    @Override
+//    @Override
     public long getID() {
         return id;
     }
@@ -101,7 +101,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, TimerTaskRu
         protected void setStatus(String format, Object... arguments) {
             
             status = String.format(format, arguments);
-//        System.out.printf("%s: %s\n", this.getName(), s);
+     //  System.out.printf("%s: %s\n", this.getName(), status);
     }
        @Override
         public String getStatus(){

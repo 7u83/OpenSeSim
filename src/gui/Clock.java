@@ -36,67 +36,40 @@ import sesim.Scheduler;
  */
 public class Clock extends javax.swing.JPanel {
 
-    protected final Timer timer;
+    protected final Timer timer = new Timer();
     TimerTask clockUpdater;
-    
-    
-    class ClockUpdater implements sesim.Scheduler.TimerTaskRunner{
 
-        @Override
-        public long timerTask() {
-               long t = Globals.sim.se.timer.currentTimeMillis();  
-               jLabel1.setText(Scheduler.formatTimeMillis(t));
-               return 1000;
-        }
-
-        @Override
-        public long getID() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        
-    }
-    
-    
-    
     /**
      * Creates new form Clock
      */
     public Clock() {
         initComponents();
-        this.timer = new Timer();
-        
-        if(Globals.sim==null)
+
+        if (Globals.sim == null) {
             return;
-        
-  
+        }
 
-     //   if(Globals.sim.se==null)
-     //       return;
 
-        
-        clockUpdater = new TimerTask () {
+        clockUpdater = new TimerTask() {
             @Override
             public void run() {
-                long t = Globals.sim.se.timer.currentTimeMillis();
-                
-                
+                long t = Globals.sim.se.timer.getCurrentTimeMillis();
+
                 Statistics s = Globals.sim.se.getStatistics();
                 jLabel1.setText(Scheduler.formatTimeMillis(t));
-            
+
             }
         };
 
-        timer.schedule(clockUpdater, 0, 1000);
-        
-        
+        timer.schedule(clockUpdater, 0, 100);
+
     }
-    
+
     @Override
-    public void setVisible(boolean b){
-        System.out.printf("Visible: %s\n",Boolean.toString(b));
+    public void setVisible(boolean b) {
+        System.out.printf("Visible: %s\n", Boolean.toString(b));
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

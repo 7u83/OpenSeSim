@@ -42,8 +42,23 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         this.setLocationRelativeTo(parent);
         JSONObject jo = sesim.Sim.getExchangeCfg(Globals.getConfig());
 
-        this.moneyDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_MONEY_DECIMALS));
-        this.sharesDecimalsSpinner.setValue(jo.getInt(Globals.sim.se.CFG_SHARES_DECIMALS));
+        this.moneyDecimalsSpinner.setValue(
+                jo.optInt(Globals.sim.se.CFG_MONEY_DECIMALS, 2)
+        );
+        this.sharesDecimalsSpinner.setValue(
+                jo.optInt(Globals.sim.se.CFG_SHARES_DECIMALS, 0)
+        );
+
+        this.initialPrice.setValue(
+                (Double) jo.optDouble(Globals.sim.se.CFG_INITIAL_PRICE, 100)
+        );
+
+        boolean autoCalc = jo.optBoolean(Globals.sim.se.CFG_AUTO_INITIAL_PRICE, true);
+        this.autoInitialPrice.setSelected(autoCalc);
+
+        // initialPrice enable/disable
+        this.initialPrice.setEnabled(!autoCalc);
+
         this.setLocationRelativeTo(parent);
     }
 
@@ -67,6 +82,9 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
+        initialPrice = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
+        autoInitialPrice = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SeSim ExchangeSettings");
@@ -75,11 +93,11 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
 
         sharesDecimalsSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 10, 1));
 
-        jLabel1.setText("Number of decimals for shares:");
+        jLabel1.setText("Shares decimals:");
 
         moneyDecimalsSpinner.setModel(new javax.swing.SpinnerNumberModel(2, 0, 10, 1));
 
-        jLabel2.setText("Number of decimals for money:");
+        jLabel2.setText("Currency decimals:");
 
         jButton1.setMnemonic('c');
         jButton1.setText("Cancel");
@@ -97,6 +115,17 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
             }
         });
 
+        initialPrice.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
+
+        jLabel3.setText("Initial price:");
+
+        autoInitialPrice.setText("Calculate initial price automatically");
+        autoInitialPrice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoInitialPriceActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -104,19 +133,26 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(okButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(moneyDecimalsSpinner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(sharesDecimalsSpinner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel1))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(80, 80, 80)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sharesDecimalsSpinner)
+                                    .addComponent(moneyDecimalsSpinner)
+                                    .addComponent(initialPrice, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                                .addComponent(okButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(autoInitialPrice)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -130,7 +166,13 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(moneyDecimalsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(initialPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(autoInitialPrice)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(okButton))
@@ -144,6 +186,8 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         JSONObject jo = new JSONObject();
         jo.put(Globals.sim.se.CFG_MONEY_DECIMALS, (Integer) this.moneyDecimalsSpinner.getValue());
         jo.put(Globals.sim.se.CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
+        jo.put(Globals.sim.se.CFG_INITIAL_PRICE, (Double) this.initialPrice.getValue());
+        jo.put(Globals.sim.se.CFG_AUTO_INITIAL_PRICE, (Boolean) this.autoInitialPrice.isSelected());
         System.out.printf("EC: %s\n", jo.toString(3));
 
         JSONObject cfg = Globals.getConfig();
@@ -156,6 +200,10 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void autoInitialPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoInitialPriceActionPerformed
+        initialPrice.setEnabled(!autoInitialPrice.isSelected());
+    }//GEN-LAST:event_autoInitialPriceActionPerformed
 
     /**
      * @param args the command line arguments
@@ -201,9 +249,12 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox autoInitialPrice;
+    private javax.swing.JSpinner initialPrice;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JSpinner moneyDecimalsSpinner;
     private javax.swing.JButton okButton;
     private javax.swing.JSpinner sharesDecimalsSpinner;

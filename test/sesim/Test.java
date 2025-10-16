@@ -41,7 +41,8 @@ import java.lang.ClassLoader.*;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sesim.Scheduler.TimerTaskRunner;
+import sesim.Scheduler.Event;
+import sesim.Scheduler.EventProcessor;
 
 /**
  *
@@ -114,12 +115,12 @@ public class Test {
     }
     static Scheduler s = new Scheduler();
 
-    static class MyTask implements TimerTaskRunner {
+    static class MyTask implements EventProcessor {
 
         long ctr = 0;
 
         @Override
-        public long timerTask() {
+        public long processEvent(Event e) {
             ctr++;
             double r = 1;
             for (int i = 0; i < 100000; i++) {
@@ -133,7 +134,7 @@ public class Test {
                     Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.printf("TimerTask %d %d %f\n", ctr, s.currentTimeMillis(), r);
+            System.out.printf("TimerTask %d %d %f\n", ctr, s.getCurrentTimeMillis(), r);
 
             return 1000;
         }

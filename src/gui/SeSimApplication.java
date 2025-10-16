@@ -489,9 +489,21 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.runButton.setEnabled(false);
         this.stopButton.setEnabled(true);
         
-        resetSim();
-  //      JSONObject jo = new JSONObject(Globals.prefs_new.get("Exchange", "{}"));
-//        Globals.sim.se.putConfig(jo);
+        
+        
+        Globals.sim.se.terminate();
+        Globals.sim.reset();
+        Globals.sim.startTraders(Globals.getConfig());
+        Globals.sim.se.timer.setPause(false);
+        Globals.sim.se.timer.start();
+        Globals.sim.se.timer.setAcceleration((Double) this.accelSpinner.getValue());        
+        
+        chartPanel.reset();
+        if (this.rawOrderBookDialog!=null){
+            this.rawOrderBookDialog.reset();
+        }
+        
+        this.orderBooksHorizontal.reset();
         
         this.stopButton.setEnabled(true);
         this.pauseButton.setEnabled(true);
@@ -501,12 +513,14 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.clock.invalidate();
         this.clock.repaint();
 
+        this.chartPanel.reset();
         
-        Globals.sim.startTraders(Globals.getConfig());
+        this.clock.invalidate();
+        this.clock.repaint();
+
         
-        Globals.sim.se.timer.setPause(false);
-        Globals.sim.se.timer.start();
-        Globals.sim.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
+        
+
 
 
     }
@@ -527,6 +541,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
         
         this.orderBooksHorizontal.reset();
+        
         
 //        chart.initChart();
 //        chart.invalidate();

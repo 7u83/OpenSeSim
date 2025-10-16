@@ -28,60 +28,102 @@ package sesim;
 //import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
 
 /**
+ * Scheduler class that manages and executes time-based simulation events.
+ * Supports acceleration, pause/resume, and termination.
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class Scheduler extends Thread {
 
+    /**
+     * Whether the scheduler is currently paused.
+     */
+    private boolean pause = false;
+
+    /**
+     * Acceleration factor for simulated time (1.0 = real time).
+     */
     private double acceleration = 1.0;
 
-    public void setAcceleration(double val) {
-
-        this.acceleration = val;
-        synchronized (this) {
-            this.notify();
-        }
-    }
-
-    public double getAcceleration() {
-
-        return this.acceleration;
-    }
-
-    private final SortedMap<Long, SortedSet<TimerTaskDef>> event_queue = new TreeMap<>();
-
-    public interface TimerTaskRunner {
-
-        long timerTask();
-
-        long getID();
-    }
-
+    /**
+     * Flag to terminate the main loop.
+     */
     private boolean terminate = false;
 
     /**
-     * Terminate the scheduler
+     * Ordered map of events, keyed by their scheduled time (milliseconds).
+     */
+    private final SortedMap<Long, LinkedHashSet<Event>> eventQueue
+            = new TreeMap<>();
+
+    /**
+     * Current simulated time in milliseconds.
+     */
+    private double currentTimeMillis = 0.0;
+
+    /**
+     * Last recorded real system nanosecond time.
+     */
+    private long last_nanos = System.nanoTime();
+
+    /**
+     * Accumulated simulated nanoseconds (scaled by acceleration).
+     */
+    private double current_nanos = 0;
+
+    /**
+     * Sets the time acceleration factor.
+     *
+     * @param val acceleration multiplier (>1.0 = faster, <1.0 = slower)
+     */
+    public void setAcceleration(double val) {
+        this.acceleration = val;
+        LockSupport.unpark(this);
+    }
+
+    /**
+     * Returns the current acceleration factor.
+     *
+     * @return acceleration multiplier
+     */
+    public double getAcceleration() {
+        return this.acceleration;
+    }
+
+    /**
+     * Interface defining an event processor. Implementations handle event logic
+     * when triggered.
+     */
+    public interface EventProcessor {
+
+        long processEvent(Event e);
+        //       long getID();
+    }
+
+    /**
+     * Requests the scheduler to stop and exit the main loop.
      */
     public void terminate() {
         terminate = true;
-        synchronized (event_queue) {
-            event_queue.notifyAll();
+        synchronized (eventQueue) {
+            eventQueue.notifyAll();
         }
-        pause=false;
+        pause = false;
     }
 
+    /**
+     * Starts the scheduler thread, reinitializing it if not already running.
+     */
     @Override
     public void start() {
         if (this.isAlive()) {
@@ -92,90 +134,43 @@ public class Scheduler extends Thread {
 
     }
 
-  /*  private class ObjectComparator implements Comparator<Object> {
-
-        @Override
-        public int compare(Object o1, Object o2) {
-
-            return (((TimerTaskRunner) o1).getID() - ((TimerTaskRunner) o2).getID()) < 0 ? -1 : 1;
-            //return System.identityHashCode(o1) - System.identityHashCode(o2);
-        }
-    }*/
-
-    long last_time_millis = System.currentTimeMillis();
-    double current_time_millis = 0.0;
-
- //   Clock clock;
-
-    long last_nanos = System.nanoTime();
-    double current_nanos = 0;
-
     /**
+     * Calculates the current simulated time, advancing it based on elapsed real
+     * time and the acceleration factor.
      *
-     * @return
+     * @return simulated time in milliseconds
      */
-    public long currentTimeMillis1() {
+    private long calculateCurrentTimeMillis() {
 
+        if (pause) {
+            return (long) this.currentTimeMillis;
+        }
         long cur = System.nanoTime();
         long diff = cur - last_nanos;
         last_nanos = cur;
-
-        if (pause) {
-            return (long) this.current_time_millis;
-        }
-
-        //  this.cur_nano += (((double)diff_nano)/1000000.0)*this.acceleration;
-        //     return (long)(cur_nano/1000000.0);        
         this.current_nanos += (double) diff * (double) this.acceleration;
-
-//        this.current_time_millis += ((double) diff) * this.acceleration;
-        this.current_time_millis = this.current_nanos / 1000000.0;
-
-        return (long) this.current_time_millis;
+        this.currentTimeMillis = this.current_nanos / 1000000.0;
+        return (long) this.currentTimeMillis;
     }
 
     /**
-     *
-     * @return
+     * Returns the current simulated time in milliseconds.
      */
-    public long currentTimeMillis1_old() {
+    public long getCurrentTimeMillis() {
 
-        long cur_nano = System.nanoTime();
-        long diff_nano = cur_nano - last_nanos;
-        last_nanos = cur_nano;
-
-        long cur = System.currentTimeMillis();
-
-        long diff = (cur - last_time_millis);
-
-        //System.out.printf("Diff Nanos: %d Diff Millis %d, ND: %d\n", diff_nano, diff, diff_nano/1000000);
-        last_time_millis = cur;
-
-//  last_time_millis += diff;
-        //if (diff == 0) {
-        //      diff++;
-        //  }
-        if (pause) {
-            return (long) this.current_time_millis;
-        }
-
-        //  this.cur_nano += (((double)diff_nano)/1000000.0)*this.acceleration;
-        //     return (long)(cur_nano/1000000.0);        
-        double fac = (((double) diff) + 10.0) * this.acceleration;
-        System.out.printf("Difdif: %f %f\n", fac, this.acceleration);
-        this.current_time_millis += ((double) diff) * this.acceleration;
-        return (long) this.current_time_millis;
+        return (long) this.currentTimeMillis;
     }
-
-    public long currentTimeMillis() {
-//            return (long)(cur_nano/1000000.0);
-        return (long) this.current_time_millis;
-    }
+    
+    
+        /**
+     * Formats a millisecond timestamp as HH:mm:ss.
+     * @param t time in milliseconds
+     * @return formatted string
+     */
 
     static public String formatTimeMillis(long t) {
         Date date = new Date(t);
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        String dateFormatted = formatter.format(date);
 
         long seconds = (t / 1000) % 60;
         long minutes = (t / 1000 / 60) % 60;
@@ -184,200 +179,127 @@ public class Scheduler extends Thread {
 
     }
 
-    AtomicInteger nextTimerTask = new AtomicInteger(0);
+    //private static AtomicInteger nextTimerTask = new AtomicInteger(0);
 
-    public class TimerTaskDef implements Comparable {
+    public static class Event  {
 
-        TimerTaskRunner taskRunner;
+        EventProcessor eventProcessor;
         long curevtime;
         long newevtime;
-        int id;
 
-        TimerTaskDef(TimerTaskRunner e, long t) {
-            taskRunner = e;
+        public String name;
+
+        public long time;
+     //   private final int id;
+
+        public Event(EventProcessor e, long t) {
+            eventProcessor = e;
             newevtime = t;
-            id = nextTimerTask.getAndAdd(1);
+       //     id = nextTimerTask.getAndAdd(1);
+            time = t;
 
         }
 
-        @Override
+        public Event(EventProcessor p) {
+            this.eventProcessor = p;
+            //id = nextTimerTask.getAndAdd(1);
+        }
+
+  /*      @Override
         public int compareTo(Object o) {
-            return ((TimerTaskDef) o).id - this.id;
+            return ((Event) o).id - this.id;
 
-        }
+        }*/
 
     }
 
-    //LinkedList<TimerTaskDef> set_tasks = new LinkedList<>();
-    ConcurrentLinkedQueue<TimerTaskDef> set_tasks = new ConcurrentLinkedQueue<>();
-
-    /**
-     *
-     * @param e
-     * @param time
-     * @return The TimerTask created
-     */
-    public TimerTaskDef startTimerTask(TimerTaskRunner e, long time) {
-
-        long evtime = time + currentTimeMillis();
-
-        TimerTaskDef task = new TimerTaskDef(e, evtime);
-        set_tasks.add(task);
-
-        synchronized (this) {
-            notify();
+    public void addEvent(long t, Event e) {
+        LinkedHashSet<Event> s = eventQueue.get(t);
+        if (s == null) {
+            s = new LinkedHashSet<>();
+            eventQueue.put(t, s);
         }
-        return task;
+        s.add(e);
+        LockSupport.unpark(this);
     }
 
-    public void rescheduleTimerTask(TimerTaskDef task, long time) {
-        long evtime = time + currentTimeMillis();
-        task.newevtime=evtime;
-        set_tasks.add(task);
-
-        synchronized (this) {
-            notify();
+    public boolean delEvent(long t, Event e) {
+        LinkedHashSet<Event> s = eventQueue.get(t);
+        if (s == null) {
+            return false;
         }
+        boolean rc = s.remove(e);
+        if (rc) {
+            LockSupport.unpark(this);
+        }
+        return rc;
     }
-
-    private boolean pause = false;
 
     public void pause() {
         setPause(!pause);
-
     }
 
     public void setPause(boolean val) {
         pause = val;
+        LockSupport.unpark(this);
         synchronized (this) {
             this.notify();
         }
-
     }
 
     public boolean getPause() {
         return pause;
     }
 
-    public long fireEvent(TimerTaskRunner e) {
-        return e.timerTask();
-    }
+    private long runEvents() {
 
-    //  HashMap<TimerTaskDef, Long> tasks = new HashMap<>();
-    private boolean addTimerTask(TimerTaskDef e) {
-
-       // System.out.printf("Add TimerTask %d %d\n",e.curevtime,e.newevtime);
-        //   long evtime = time + currentTimeMillis();
-        SortedSet<TimerTaskDef> s = event_queue.get(e.newevtime);
-        if (s == null) {
-            s = new TreeSet<>();
-            event_queue.put(e.newevtime, s);
+        if (eventQueue.isEmpty()) {
+            return -1;
         }
 
-        e.curevtime = e.newevtime;
+        long t = eventQueue.firstKey();
+        long ct = calculateCurrentTimeMillis();
 
-        //      tasks.put(e, e.evtime);
-        return s.add(e);
-    }
-
-    private final LinkedList<TimerTaskRunner> cancel_queue = new LinkedList();
-
-    public void cancelTimerTask(TimerTaskRunner e) {
-        cancel_queue.add(e);
-    }
-
-    private void cancelMy(TimerTaskDef e) {
-
-//        Long evtime = tasks.get(e.curevtime);
-//        if (evtime == null) {
-//            return;
-//        }
-//        System.out.printf("Cancel my %d\n", e.id);
-        SortedSet<TimerTaskDef> s = event_queue.get(e.curevtime);
-        if (s == null) {
-//            System.out.printf("My not found\n");    
-            return;
+        if (t > ct) {
+            return (long) (((double) t - this.getCurrentTimeMillis()) / this.acceleration);
         }
 
-        Boolean rc = s.remove(e);
-
-        if (s.isEmpty()) {
-
-            event_queue.remove(e.curevtime);
+        if (t < ct) {
+            //  System.out.printf("Time is overslipping: %d\n",ct-t);
+            this.currentTimeMillis = t;
+            this.current_nanos = this.currentTimeMillis * 1000000.0;
         }
+
+        LinkedHashSet<Event> s = eventQueue.remove(t);
+
+        for (Event e : s) {
+            e.eventProcessor.processEvent(e);
+        }
+        return 0;
 
     }
 
-    public long runEvents() {
-        synchronized (event_queue) {
+    class EmptyCtr implements EventProcessor {
 
-            if (event_queue.isEmpty()) {
-                return -1;
-            }
-
-            long t = event_queue.firstKey();
-            long ct = currentTimeMillis1();
-
-//            ct = t;
-            if (t > ct) {
-                //if ((long) diff > 0) {
-                //              System.out.printf("Leave Event Queue in run events %d\n", Thread.currentThread().getId());
-//                System.out.printf("Sleeping somewat %d\n", (long) (0.5 + (t - this.currentTimeMillis()) / this.acceleration));
-                //  return (long) diff;
-                return (long) (((double) t - this.currentTimeMillis()) / this.acceleration);
-            }
-
-            if (t < ct) {
-                //  System.out.printf("Time is overslipping: %d\n",ct-t);
-                this.current_time_millis = t;
-                this.current_nanos = this.current_time_millis * 1000000.0;
-
-            }
-
-            //  if (t <= ct) {
-            SortedSet s = event_queue.get(t);
-            Object rc = event_queue.remove(t);
-
-            if (s.size() > 1) {
-                //System.out.printf("Events in a row: %d\n", s.size());
-            }
-
-            Iterator<TimerTaskDef> it = s.iterator();
-            while (it.hasNext()) {
-                TimerTaskDef e = it.next();
-          //      if (s.size() > 1) {
-           //         System.out.printf("Sicku: %d %d\n", e.id, e.curevtime);
-           //     }
-
-                long next_t = this.fireEvent(e.taskRunner);
-                e.newevtime = next_t + t;
-                this.addTimerTask(e);
-            }
+        @Override
+        public long processEvent(Event e) {
+            //    System.out.printf("EventProcessor 1000\n");
+            addEvent(1000 + getCurrentTimeMillis(), e);
             return 0;
-
         }
 
-    }
-
-    class EmptyCtr implements TimerTaskRunner {
-
-        @Override
-        public long timerTask() {
-            //   System.out.printf("Current best brice %f\n", Globals.se.getBestPrice());
-            return 1000;
-        }
-
-        @Override
+//        @Override
         public long getID() {
             return 999999999999999999L;
-            //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
 
+        }
     }
 
     void initScheduler() {
-        current_time_millis = 0.0;
-        this.startTimerTask(new EmptyCtr(), 0);
+  //      nextTimerTask = new AtomicInteger(0);
+        currentTimeMillis = 0.0;
+        last_nanos = System.nanoTime();
+        this.addEvent(1000, new Event(new EmptyCtr()));
         terminate = false;
 
     }
@@ -386,37 +308,17 @@ public class Scheduler extends Thread {
     public void run() {
 
         while (!terminate) {
+            long wMillis = 0;
 
-            while (!set_tasks.isEmpty()) {
-                TimerTaskDef td = set_tasks.poll();
-                //System.out.printf("There is a set task %d %d\n",td.curevtime,td.newevtime);
-                
-                this.cancelMy(td);
-                this.addTimerTask(td);
+            wMillis = runEvents();
 
-            }
-
-            long wtime = runEvents();
-
-            if (wtime == 0) {
-                continue;
-            }
-
-            synchronized (this) {
-                try {
-//                    System.out.printf("My WTIME %d\n", wtime);
-                    if (wtime != -1 && !pause) {
-                        wait(wtime);
-                    } else {
-                        wait();
-                    }
-                } catch (Exception e) {
-
-                }
+            if (wMillis != -1 && !pause) {
+                LockSupport.parkNanos(wMillis * 1000 * 1000);
+            } else {
+                LockSupport.park();
             }
         }
-
-        this.event_queue.clear();
+        this.eventQueue.clear();
 
     }
 

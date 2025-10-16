@@ -52,6 +52,7 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
     TableColumn vol_column = null;
     ExecutorService executor = Executors.newSingleThreadExecutor();
     volatile boolean busy;
+    volatile boolean update = true;
 
     protected OrderType type = OrderType.BUYLIMIT;
     protected int depth = 40;
@@ -104,33 +105,40 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
     public void UpdateOrderBook() {
 
         if (busy) {
+            update=true;
             return;
         }
         busy = true;
+        update=true;
 
         executor.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    ArrayList<? extends OrderBookEntry> newOb = getOrderBook(); // Globals.sim.se.getRawOrderBook(type, depth);
 
-                    // GUI update on EDT
-                    SwingUtilities.invokeLater(new Runnable() {
+                    while (update) {
+                        update=false;
+                        ArrayList<? extends OrderBookEntry> newOb = getOrderBook(); // Globals.sim.se.getRawOrderBook(type, depth);
 
-                        @Override
-                        public void run() {
-                            setGodMode(Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true"));
-                            vol_column.setCellRenderer(new NummericCellRenderer(Globals.sim.se.getSharesFormatter()));
-                            price_column.setCellRenderer(new NummericCellRenderer(Globals.sim.se.getMoneyFormatter()));
-                            model.setData(newOb);
-                            model.fireTableDataChanged();
+                        // GUI update on EDT
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                setGodMode(Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true"));
+                                vol_column.setCellRenderer(new NummericCellRenderer(Globals.sim.se.getSharesFormatter()));
+                                price_column.setCellRenderer(new NummericCellRenderer(Globals.sim.se.getMoneyFormatter()));
+                                model.setData(newOb);
+                                model.fireTableDataChanged();
+                            }
+                        });
+
+                        try {
+                            Thread.sleep(50);   // update rate is limited 50 Hz
+                        } catch (InterruptedException e) {
                         }
-                    });
-
-                    try {
-                        Thread.sleep(20);   // update rate is limited 50 Hz
-                    } catch (InterruptedException e) {
                     }
+                    
                 } finally {
                     busy = false;
                 }

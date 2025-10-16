@@ -28,6 +28,7 @@ package traders.ManTrader;
 import gui.Globals;
 import gui.OpenOrdersList;
 import javax.swing.JDialog;
+import sesim.Scheduler.Event;
 import org.json.JSONObject;
 import sesim.Account;
 
@@ -65,7 +66,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     @Override
     public void start() {
-        se.timer.startTimerTask(this, 0);
+        //se.timer.createEvent(this, 0);
         consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, this.getAccount());
         this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
         // consoleDialog.     rdersList1.account=trader.getAccount();
@@ -76,7 +77,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public long timerTask() {
+    public long processEvent(Event e) {
 
 //        OpenOrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
 //        ol.updateModel();

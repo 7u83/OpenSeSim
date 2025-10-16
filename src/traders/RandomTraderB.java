@@ -45,6 +45,7 @@ import sesim.Exchange;
 //import sesim.Exchange.Order;
 //import sesim.OrderData;
 import sesim.Quote;
+import sesim.Scheduler.Event;
 
 /**
  *
@@ -77,11 +78,11 @@ public class RandomTraderB extends AutoTraderBase {
     @Override
     public void start() {
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-        se.timer.startTimerTask(this, delay);
+      //  se.timer.createEvent(this, delay);
     }
 
     @Override
-    public long timerTask() {
+    public long processEvent(Event e) {
   //      sesim.Account account = account_id;
         long rc = this.doTrade();
         return rc;

@@ -102,7 +102,6 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             }
         });
 
-        cancelButton.setMnemonic('c');
         cancelButton.setText("Cancel");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,7 +109,6 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             }
         });
 
-        applyButton.setMnemonic('a');
         applyButton.setText("Apply");
         applyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -118,7 +116,6 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             }
         });
 
-        okButton.setMnemonic('o');
         okButton.setText("Ok");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -131,6 +128,11 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         jDevleopmentFeaturesCheckBox.setText("Develeopment");
 
         godmodeCheckBox.setText("Godmode");
+        godmodeCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                godmodeCheckBoxActionPerformed(evt);
+            }
+        });
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -260,6 +262,10 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void godmodeCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_godmodeCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_godmodeCheckBoxActionPerformed
 
     /**
      * @param args the command line arguments

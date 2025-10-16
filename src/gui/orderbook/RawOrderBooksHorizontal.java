@@ -50,6 +50,8 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
         bidBook.setType(Exchange.OrderType.BUYLIMIT);
         askBook.setType(Exchange.OrderType.SELLLIMIT);
         this.quoteVertical2.reset();
+        bidBook.UpdateOrderBook();
+        askBook.UpdateOrderBook();
     }
 
     public void setDepth(int depth) {

@@ -196,8 +196,20 @@ public class Sim {
             }
 
         }
+        
+        
+        double initialPrice=Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE,100);
+        boolean autoInitialPrice=Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE,true);
 
-        this.se.fairValue = moneyTotal / sharesTotal;
+        if (autoInitialPrice){
+            this.se.fairValue = moneyTotal / sharesTotal;
+        }
+        else{
+            this.se.fairValue = initialPrice;
+        }
+        
+        
+        se.initLastQuote();
 
         //  Globals.sim.se.fairValue = 1.0;
         System.out.printf("Failr Value is %f\n", se.fairValue);

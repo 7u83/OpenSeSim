@@ -31,59 +31,58 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author tube
  */
-
-
 /**
-     * Implements a trading account
-     */
-    public class Account  {
-     //   private Exchange se;
-        private Exchange.AccountListener listener = null;
+ * Implements a trading account
+ */
+public class Account {
+    //   private Exchange se;
 
-  
-        double shares;
-        double money;
-        protected AutoTraderInterface owner;
+    private Exchange.AccountListener listener = null;
 
-        final ConcurrentHashMap<Long, Exchange.Order> orders;
+    double shares;
+    double money;
+    protected AutoTraderInterface owner;
 
-       
-        Account(double money, double shares) {
-          //  this.se = se;
+    final ConcurrentHashMap<Long, Exchange.Order> orders;
 
-            orders = new ConcurrentHashMap();
-            this.money = money;
-            this.shares = shares;
-        }
+    Account(double money, double shares) {
+        //  this.se = se;
 
-  
-        public double getShares() {
-            return shares;
-        }
-
-        public double getMoney() {
-            return money;
-        }
-
-        public AutoTraderInterface getOwner() {
-            return owner;
-        }
-
-        public ConcurrentHashMap<Long, Exchange.Order> getOrders() {
-            return orders;
-        }
-
-        public void setListener(Exchange.AccountListener al) {
-            this.listener = al;
-        }
-
-        public void update(Exchange.Order o) {
-            if (listener == null) {
-                return;
-            }
-            listener.accountUpdated(this, o);
-        }
-
+        orders = new ConcurrentHashMap();
+        this.money = money;
+        this.shares = shares;
     }
 
+    public double getShares() {
+        return shares;
+    }
 
+    public double getMoney() {
+        return money;
+    }
+
+    public AutoTraderInterface getOwner() {
+        return owner;
+    }
+
+    public ConcurrentHashMap<Long, Exchange.Order> getOrders() {
+        return orders;
+    }
+
+    public void setListener(Exchange.AccountListener al) {
+        this.listener = al;
+    }
+
+    public void update(Exchange.Order o) {
+        if (listener == null) {
+            return;
+        }
+        listener.accountUpdated(this, o);
+    }
+
+    public int getNumberOfOpenOrders() {
+
+        return orders.size();
+    }
+
+}

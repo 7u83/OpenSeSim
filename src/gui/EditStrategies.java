@@ -43,7 +43,7 @@ import sesim.AutoTraderInterface;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public final class EditStrategies extends javax.swing.JDialog {
+public final class EditStrategies extends EscDialog {
 
 
     TreeMap<String, JSONObject> strategies = new TreeMap();
@@ -71,14 +71,7 @@ public final class EditStrategies extends javax.swing.JDialog {
     public EditStrategies(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
-     
-              String dp = new java.io.File(SeSimApplication.class.getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .getPath()).toString();
 
- //       LOGGER.info(String.format("Path %s",dp));
         
         
         this.setLocationRelativeTo(this.getParent());
@@ -141,6 +134,8 @@ public final class EditStrategies extends javax.swing.JDialog {
             }
         });
 
+        jScrollPane1.setViewportBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
         guiPanel.setLayout(new java.awt.BorderLayout());
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -151,17 +146,17 @@ public final class EditStrategies extends javax.swing.JDialog {
         defaultGuiPanel.setLayout(defaultGuiPanelLayout);
         defaultGuiPanelLayout.setHorizontalGroup(
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, defaultGuiPanelLayout.createSequentialGroup()
+            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
                 .addContainerGap())
         );
         defaultGuiPanelLayout.setVerticalGroup(
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(defaultGuiPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
@@ -213,7 +208,7 @@ public final class EditStrategies extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jNewButton)
@@ -227,7 +222,7 @@ public final class EditStrategies extends javax.swing.JDialog {
                         .addComponent(jButton2)
                         .addGap(9, 9, 9))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jBaseLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                        .addComponent(jBaseLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -240,7 +235,7 @@ public final class EditStrategies extends javax.swing.JDialog {
                     .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBaseLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSaveButton)
@@ -303,6 +298,7 @@ public final class EditStrategies extends javax.swing.JDialog {
         if (acgui != null) {
 
             guiPanel.add(acgui, java.awt.BorderLayout.CENTER);
+            jScrollPane1.setViewportView(acgui);
             acgui.setVisible(true);
 
         } else {

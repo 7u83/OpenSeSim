@@ -19,8 +19,8 @@
     ],
     "strategies": {"SimpleRandom": {
         "sell_wait": [
-            10000,
-            50000
+            10,
+            50
         ],
         "initla_delay": [
             0,
@@ -35,8 +35,8 @@
             0
         ],
         "buy_wait": [
-            10000,
-            50000
+            10,
+            50
         ],
         "sell_volume": [
             100,
