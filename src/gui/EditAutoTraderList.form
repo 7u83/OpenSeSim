@@ -53,31 +53,13 @@
           <Properties>
             <Property name="autoCreateRowSorter" type="boolean" value="true"/>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="6" rowCount="2">
-                <Column editable="true" title="Name" type="java.lang.String">
-                  <Data value="Alice"/>
-                  <Data value="Bob"/>
-                </Column>
-                <Column editable="true" title="Count" type="java.lang.Integer">
-                  <Data value="1"/>
-                  <Data value="1"/>
-                </Column>
-                <Column editable="true" title="Strategy" type="java.lang.Object">
-                  <Data value=""/>
-                  <Data value="null"/>
-                </Column>
-                <Column editable="true" title="Cash" type="java.lang.Double">
-                  <Data value="10000.0"/>
-                  <Data value="1000.0"/>
-                </Column>
-                <Column editable="true" title="Shares" type="java.lang.Double">
-                  <Data value="100.0"/>
-                  <Data value="100.0"/>
-                </Column>
-                <Column editable="true" title="Enabled" type="java.lang.Boolean">
-                  <Data value="true"/>
-                  <Data value="true"/>
-                </Column>
+              <Table columnCount="6" rowCount="0">
+                <Column editable="true" title="Name" type="java.lang.String"/>
+                <Column editable="true" title="Count" type="java.lang.Integer"/>
+                <Column editable="true" title="Strategy" type="java.lang.Object"/>
+                <Column editable="true" title="Cash" type="java.lang.Double"/>
+                <Column editable="true" title="Shares" type="java.lang.Double"/>
+                <Column editable="true" title="Enabled" type="java.lang.Boolean"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

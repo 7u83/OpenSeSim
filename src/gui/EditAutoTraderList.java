@@ -105,11 +105,11 @@ public class EditAutoTraderList extends javax.swing.JPanel {
                     continue;
                 }
 
-                System.out.printf("Want to set (%d,%d): %s\n", row, col, val);
+             //   System.out.printf("Want to set (%d,%d): %s\n", row, col, val);
 
                 //list.getModel().setValueAt(val, row, col);
                 Class cl = list.getModel().getColumnClass(col);
-                System.out.printf("The Class is: %s\n", cl.getName());
+             //   System.out.printf("The Class is: %s\n", cl.getName());
                 Object cv = new Object();
                 if (cl == Double.class) {
                     cv = rowobj.getDouble(h);
@@ -207,8 +207,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         list.setAutoCreateRowSorter(true);
         list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Alice",  new Integer(1), "",  new Double(10000.0),  new Double(100.0),  new Boolean(true)},
-                {"Bob",  new Integer(1), null,  new Double(1000.0),  new Double(100.0),  new Boolean(true)}
+
             },
             new String [] {
                 "Name", "Count", "Strategy", "Cash", "Shares", "Enabled"

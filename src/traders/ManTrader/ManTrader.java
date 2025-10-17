@@ -77,7 +77,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public long processEvent(Event e) {
+    public long processEvent(long t,Event e) {
 
 //        OpenOrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
 //        ol.updateModel();
@@ -120,9 +120,9 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
         //this.consoleDialog.cons
         //System.out.printf("AccountListener called\n");
 
-        //System.out.printf("%d %s\n", o.getID(), o.getOrderStatus().toString());
+        //System.out.printf("%d %s\n", o.getID(), o.getStatus().toString());
 
-        if (o.getOrderStatus()==OrderStatus.CLOSED){
+        if (o.getStatus()==OrderStatus.CLOSED){
             o.getAccount().getOrders().put(o.getID(), o);
         }
         this.consoleDialog.getOrderList().updateModel();

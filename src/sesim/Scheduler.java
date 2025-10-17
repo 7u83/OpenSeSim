@@ -29,12 +29,9 @@ package sesim;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -106,7 +103,7 @@ public class Scheduler extends Thread {
      */
     public interface EventProcessor {
 
-        long processEvent(Event e);
+        long processEvent(long time, Event e);
         //       long getID();
     }
 
@@ -155,6 +152,7 @@ public class Scheduler extends Thread {
 
     /**
      * Returns the current simulated time in milliseconds.
+     * @return 
      */
     public long getCurrentTimeMillis() {
 
@@ -184,8 +182,6 @@ public class Scheduler extends Thread {
     public static class Event  {
 
         EventProcessor eventProcessor;
-        long curevtime;
-        long newevtime;
 
         public String name;
 
@@ -194,7 +190,6 @@ public class Scheduler extends Thread {
 
         public Event(EventProcessor e, long t) {
             eventProcessor = e;
-            newevtime = t;
        //     id = nextTimerTask.getAndAdd(1);
             time = t;
 
@@ -273,7 +268,7 @@ public class Scheduler extends Thread {
         LinkedHashSet<Event> s = eventQueue.remove(t);
 
         for (Event e : s) {
-            e.eventProcessor.processEvent(e);
+            e.eventProcessor.processEvent(t,e);
         }
         return 0;
 
@@ -282,7 +277,7 @@ public class Scheduler extends Thread {
     class EmptyCtr implements EventProcessor {
 
         @Override
-        public long processEvent(Event e) {
+        public long processEvent(long t, Event e) {
             //    System.out.printf("EventProcessor 1000\n");
             addEvent(1000 + getCurrentTimeMillis(), e);
             return 0;

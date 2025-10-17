@@ -28,6 +28,7 @@ package traders.ManTrader;
 import gui.OpenOrdersList;
 
 import sesim.Exchange;
+import sesim.Exchange.Order;
 
 /**
  *
@@ -175,7 +176,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
         
         System.out.printf("Should buy: %f %f\n",volume,limit);
         
-        long createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.BUYLIMIT, volume, limit);
+        Order createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.BUYLIMIT, volume, limit);
         System.out.printf("The retval is %d",createOrder);
         
     //    this.ordersList.account=this.trader.getAccount();
@@ -190,7 +191,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
         
         System.out.printf("Should sell: %f %f\n",volume,limit);
         
-        long createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.SELLLIMIT, volume, limit);
+        Order createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.SELLLIMIT, volume, limit);
         System.out.printf("The retval is %d",createOrder);
     }//GEN-LAST:event_sellButtonActionPerformed
 
@@ -200,7 +201,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
         
         System.out.printf("Should stoploss: %f %f\n",volume,limit);
         
-        long createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.STOPLOSS, volume, limit);
+        Order createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.STOPLOSS, volume, limit);
         System.out.printf("The retval is %d",createOrder);
     }//GEN-LAST:event_stopLossButtonActionPerformed
 

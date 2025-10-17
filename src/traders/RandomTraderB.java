@@ -82,7 +82,7 @@ public class RandomTraderB extends AutoTraderBase {
     }
 
     @Override
-    public long processEvent(Event e) {
+    public long processEvent(long time, Event e) {
   //      sesim.Account account = account_id;
         long rc = this.doTrade();
         return rc;
@@ -119,7 +119,7 @@ public class RandomTraderB extends AutoTraderBase {
     private Float[] to_float(JSONArray a) {
         Float[] ret = new Float[a.length()];
         for (int i = 0; i < a.length(); i++) {
-            ret[i] = new Float(a.getDouble(i));
+         //   ret[i] = new Float(a.getDouble(i));
 
         }
         return ret;

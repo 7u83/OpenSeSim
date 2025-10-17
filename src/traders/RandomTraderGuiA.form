@@ -269,49 +269,57 @@
     <Component class="javax.swing.JLabel" name="jLabel9">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Volume to buy (in %):"/>
+        <Property name="text" type="java.lang.String" value="Amount to buy (%):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Percentage of available funds used for each buy order."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Volume to sell (in %):"/>
+        <Property name="text" type="java.lang.String" value="Amount to sell (%):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Percentage of owned shares sold per sell order."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
         <Property name="text" type="java.lang.String" value="Buy limit (in %):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Maximum price deviation allowed when buying (positive or negative)."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel12">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Sel limit (in %):"/>
+        <Property name="text" type="java.lang.String" value="Sell limit (in %):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Maximum price deviation allowed when selling (positive or negative)."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel15">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Buy order wait (in seconds):"/>
+        <Property name="text" type="java.lang.String" value="Buy order timeout (sec):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Maximum time to wait for a buy order to be filled before it is canceled."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel18">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Sell order wait (in seconds):"/>
+        <Property name="text" type="java.lang.String" value="Sell order timeout (sec):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Maximum time to wait for a sell order to be filled before it is canceled."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel23">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Wait after buy (in seconds):"/>
+        <Property name="text" type="java.lang.String" value="Sleep after buy (sec):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Idle time after completing a buy order before placing another trade."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel24">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Wait after sell (in seconds):"/>
+        <Property name="text" type="java.lang.String" value="Sleep after sell (sec):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Idle time after completing a sell order before placing another trade."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="initialDelayMin">
@@ -342,7 +350,8 @@
     <Component class="javax.swing.JLabel" name="jLabel27">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Initial delay (in seconds):"/>
+        <Property name="text" type="java.lang.String" value="Initial delay (sec):"/>
+        <Property name="toolTipText" type="java.lang.String" value="Time to wait before the bot starts trading."/>
       </Properties>
     </Component>
   </SubComponents>

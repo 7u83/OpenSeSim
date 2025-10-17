@@ -325,7 +325,7 @@ public class Exchange {
             return cost / e;
         }
 
-        public OrderStatus getOrderStatus() {
+        public OrderStatus getStatus() {
             return status;
         }
 
@@ -1124,18 +1124,17 @@ public class Exchange {
     /**
      *
      * @param a
-     * @param account_id
      * @param type
      * @param volume
      * @param limit
      * @return
      */
-    public long createOrder(Account a, OrderType type, double volume, double limit) {
+    public Order createOrder(Account a, OrderType type, double volume, double limit) {
 
         //   System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(), type.toString(), limit, volume);
         if (a == null) {
             System.out.printf("Order not places account\n");
-            return -1;
+            return null;
         }
 
         Order o = new Order(a, type, volume, limit);
@@ -1153,7 +1152,7 @@ public class Exchange {
             }
       //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
 
-            return -1;
+            return null;
         }
 
 //        System.out.printf("Getting executor in create Order\n", Thread.currentThread().getId());
@@ -1175,7 +1174,7 @@ public class Exchange {
 //            executor.notify();
         }
 //       a.update(o);
-        return o.id;
+        return o;
     }
 
     public double getBestLimit(OrderType type) {

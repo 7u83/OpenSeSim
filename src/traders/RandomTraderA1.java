@@ -37,6 +37,7 @@ import sesim.AutoTraderGui;
 import sesim.Exchange;
 //import sesim.Exchange.Account;
 import sesim.Exchange.AccountListener;
+import sesim.Exchange.Order;
 import sesim.Exchange.OrderStatus;
 import sesim.Exchange.OrderType;
 import sesim.Quote;
@@ -90,7 +91,7 @@ public class RandomTraderA1 extends AutoTraderBase
     boolean intask = false;
 
     @Override
-    public long processEvent(Event e) {
+    public long processEvent(long time,Event e) {
         intask = true;
         owait = null;
         long rc = this.doTrade();
@@ -108,7 +109,7 @@ public class RandomTraderA1 extends AutoTraderBase
 
     @Override
     public String getDisplayName() {
-        return "Random Trader (A)";
+        return "Random Trader (A1)";
     }
 
     @Override
@@ -139,7 +140,7 @@ public class RandomTraderA1 extends AutoTraderBase
     private Float[] to_float(JSONArray a) {
         Float[] ret = new Float[a.length()];
         for (int i = 0; i < a.length(); i++) {
-            ret[i] = new Float(a.getDouble(i));
+         //   ret[i] = new Float(a.getDouble(i));
 
         }
         return ret;
@@ -211,10 +212,10 @@ public class RandomTraderA1 extends AutoTraderBase
 
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
-        setStatus("Account update -%s ", o.getOrderStatus().toString());
+        setStatus("Account update -%s ", o.getStatus().toString());
         setStatus("In Task: %s", Boolean.toString(this.intask));
-        //System.out.printf("Order updated %s %d\n", o.getOrderStatus().toString(), Thread.currentThread().getId());
-        if (o.getOrderStatus() == OrderStatus.CLOSED) {
+        //System.out.printf("Order updated %s %d\n", o.getStatus().toString(), Thread.currentThread().getId());
+        if (o.getStatus() == OrderStatus.CLOSED) {
 
          //   if (!intask) {
                 Long w = waitAfterOrder();
@@ -422,10 +423,10 @@ public class RandomTraderA1 extends AutoTraderBase
 //                this.getName(),
 //                this.account_id.getMoney(), this.account_id.getShares());
         
-        long rc = se.createOrder(account, type, volume, limit);
+        Order rc = se.createOrder(account, type, volume, limit);
         
 
-        if (rc == -1) {
+        if (rc == null) {
 
 //            System.out.printf("Buy failed %f, %f / %f (%f)\n", volume, money, limit, ad.getMoney());
             return false;
@@ -463,8 +464,8 @@ public class RandomTraderA1 extends AutoTraderBase
         //        return false;
         //    }
 //        System.out.printf("Create a Sell Order %f %f!!!!\n", volume, limit);
-        long rc = se.createOrder(account, type, volume, limit);
-        return rc != -1;
+        Order rc = se.createOrder(account, type, volume, limit);
+        return rc != null;
 
     }
 

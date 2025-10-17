@@ -181,28 +181,36 @@ public class RandomTraderGuiA extends AutoTraderGui {
         sellVolMin.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
 
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel9.setText("Volume to buy (in %):");
+        jLabel9.setText("Amount to buy (%):");
+        jLabel9.setToolTipText("Percentage of available funds used for each buy order.");
 
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel10.setText("Volume to sell (in %):");
+        jLabel10.setText("Amount to sell (%):");
+        jLabel10.setToolTipText("Percentage of owned shares sold per sell order.");
 
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel11.setText("Buy limit (in %):");
+        jLabel11.setToolTipText("Maximum price deviation allowed when buying (positive or negative).");
 
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel12.setText("Sel limit (in %):");
+        jLabel12.setText("Sell limit (in %):");
+        jLabel12.setToolTipText("Maximum price deviation allowed when selling (positive or negative).");
 
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel15.setText("Buy order wait (in seconds):");
+        jLabel15.setText("Buy order timeout (sec):");
+        jLabel15.setToolTipText("Maximum time to wait for a buy order to be filled before it is canceled.");
 
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel18.setText("Sell order wait (in seconds):");
+        jLabel18.setText("Sell order timeout (sec):");
+        jLabel18.setToolTipText("Maximum time to wait for a sell order to be filled before it is canceled.");
 
         jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel23.setText("Wait after buy (in seconds):");
+        jLabel23.setText("Sleep after buy (sec):");
+        jLabel23.setToolTipText("Idle time after completing a buy order before placing another trade.");
 
         jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel24.setText("Wait after sell (in seconds):");
+        jLabel24.setText("Sleep after sell (sec):");
+        jLabel24.setToolTipText("Idle time after completing a sell order before placing another trade.");
 
         initialDelayMin.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 0.1f));
 
@@ -214,7 +222,8 @@ public class RandomTraderGuiA extends AutoTraderGui {
         jLabel26.setText("minimum:");
 
         jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel27.setText("Initial delay (in seconds):");
+        jLabel27.setText("Initial delay (sec):");
+        jLabel27.setToolTipText("Time to wait before the bot starts trading.");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

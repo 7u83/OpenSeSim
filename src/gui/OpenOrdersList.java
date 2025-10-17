@@ -73,7 +73,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
             model.setValueAt(((Order) o).getExecuted(), row, 3);
             model.setValueAt(((Order) o).getAvaragePrice(), row, 4);
             model.setValueAt(((Order) o).getInitialVolume(), row, 5);
-            model.setValueAt(((Order) o).getOrderStatus().toString(), row, 6);
+            model.setValueAt(((Order) o).getStatus().toString(), row, 6);
             row++;
         }
         this.table.getRowSorter().allRowsChanged();
