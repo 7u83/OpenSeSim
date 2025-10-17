@@ -11,6 +11,7 @@
     <description>Builds, tests, and runs the project SeSim.</description>
     <import file="nbproject/build-impl.xml"/>
     
+    <property name="ivy.home" value="${user.home}/.ant/lib"/>
     
     <target name="-check-for-ivy">
         <available property="have.ivy" resource="fr/jayasoft/ivy/ant/antlib.xml"/>
@@ -26,6 +27,8 @@
             </classpath>
         </taskdef>
     </target>
+    
+    
     <target name="-ivy-retrieve" depends="-ivy-define" xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
         <ivy:resolve/> <!-- Tell Ivy to resolve dependencies -->
         <ivy:retrieve/> <!-- Load dependencies to the project -->
@@ -45,7 +48,7 @@
         <delete dir="lib"/>
     </target>    
     
-    
+    <target name="retrieve-ivy" depends="-ivy-retrieve" description="Retrieve project dependencies via Ivy"/>
     
     <!--
 
@@ -107,7 +110,22 @@
     nbproject/build-impl.xml file. 
 
     -->
+
     
+
+
+<target name="init-ivy-global">
+    
+    <mkdir dir="${user.home}/.ant/lib"/>
+
+    
+    <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar"
+         dest="${user.home}/.ant/lib/ivy.jar"
+         skipexisting="true"/>
+    
+    <echo message="Ivy ist jetzt in ${user.home}/.ant/lib"/>
+</target>
+
     
  <target name="single-jar" depends="jar">
     <property name="store.jar.name" value="SeSim"/>
@@ -135,3 +153,4 @@
 </target>    
     
 </project>
+
