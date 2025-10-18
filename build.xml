@@ -39,7 +39,8 @@
             <map from="${basedir}${file.separator}" to=""/>
         </pathconvert>
         <propertyfile file="nbproject/project.properties">
-            <entry operation="=" key="ivy.classpath" value="${ivy.classpath.computed}"/>
+             <entry key="ivy.classpath" value="${ivy.classpath.computed}"/>
+            <!--<entry operation="=" key="ivy.classpath" value="${ivy.classpath.computed}"/>-->
         </propertyfile>
     </target>
     <target name="-pre-compile" depends="-ivy-retrieve"/>
