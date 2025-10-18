@@ -7,6 +7,8 @@
         <dependency org="org.apache.groovy" name="groovy" rev="4.0.15"/>
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency org="org.json" name="json" rev="20160810"/>
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.3.0"/> 
+        
     </dependencies>
 
 </ivy-module>

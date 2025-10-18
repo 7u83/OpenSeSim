@@ -39,13 +39,13 @@ public class Account {
 
     private Exchange.AccountListener listener = null;
 
-    double shares;
-    double money;
+    float shares;
+    float money;
     protected AutoTraderInterface owner;
 
     final ConcurrentHashMap<Long, Exchange.Order> orders;
 
-    Account(double money, double shares) {
+    Account(float money, float shares) {
         //  this.se = se;
 
         orders = new ConcurrentHashMap();
@@ -53,11 +53,11 @@ public class Account {
         this.shares = shares;
     }
 
-    public double getShares() {
+    public float getShares() {
         return shares;
     }
 
-    public double getMoney() {
+    public float getMoney() {
         return money;
     }
 

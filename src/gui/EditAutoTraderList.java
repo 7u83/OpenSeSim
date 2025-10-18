@@ -111,8 +111,8 @@ public class EditAutoTraderList extends javax.swing.JPanel {
                 Class cl = list.getModel().getColumnClass(col);
              //   System.out.printf("The Class is: %s\n", cl.getName());
                 Object cv = new Object();
-                if (cl == Double.class) {
-                    cv = rowobj.getDouble(h);
+                if (cl == Float.class) {
+                    cv = (float)rowobj.getDouble(h);
                 }
                 if (cl == String.class) {
                     cv = rowobj.getString(h);
@@ -136,9 +136,9 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
     DefaultTableModel model;
 
-    private double getFairValue() {
-        Double money = 0.0;
-        Double shares = 0.0;
+    private float getFairValue() {
+        float money = 0.0f;
+        float shares = 0.0f;
 
         for (int r = 0; r < model.getRowCount(); r++) {
             Boolean e = (Boolean) list.getValueAt(r, list.getColumn("Enabled").getModelIndex());
@@ -148,8 +148,8 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             if (!e) {
                 continue;
             }
-            money += (Double) list.getValueAt(r, list.getColumn("Cash").getModelIndex());
-            shares += (Double) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
+            money += (float) list.getValueAt(r, list.getColumn("Cash").getModelIndex());
+            shares += (float) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
 //            System.out.printf("Row: %d %f %f\n", r, money, shares);
         }
         return money / shares;
@@ -214,7 +214,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Double.class, java.lang.Double.class, java.lang.Boolean.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Float.class, java.lang.Float.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {

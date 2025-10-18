@@ -323,8 +323,8 @@ public class RandomTraderA extends AutoTraderBase
      * @param max maximeum value
      * @return the number
      */
-    protected double getRandom(double min, double max) {
-        double r = se.randNextDouble();
+    protected float getRandom(float min, float max) {
+        float r = (float)se.randNextDouble();
 
         // System.out.printf("RD: %f", r);
         // System.exit(0);
@@ -335,7 +335,7 @@ public class RandomTraderA extends AutoTraderBase
         return (int) Math.round(getRandom(minmax[0], minmax[1]));
     }
 
-    private double getStart() {
+    private float getStart() {
 
         return this.se.fairValue;
 
@@ -347,10 +347,10 @@ public class RandomTraderA extends AutoTraderBase
      * @param minmax
      * @return
      */
-    private double getRandomAmmount(double val, Float[] minmax) {
+    private float getRandomAmmount(float val, Float[] minmax) {
 
-        double min = val * minmax[0] / 100.0;
-        double max = val * minmax[1] / 100.0;
+        float min = val * minmax[0] / 100.0f;
+        float max = val * minmax[1] / 100.0f;
         return getRandom(min, max);
     }
 
@@ -359,16 +359,16 @@ public class RandomTraderA extends AutoTraderBase
         Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
 
         // how much money we ant to invest?
-        double money = getRandomAmmount(account_id.getMoney(), buy_volume);
+        float money = getRandomAmmount(account_id.getMoney(), buy_volume);
 
         Quote q = se.getBestPrice_0();
         //q=se.getLastQuoete();
-        double lp = q == null ? getStart() : q.price;
+        float lp = q == null ? getStart() : q.price;
 
-        double limit;
+        float limit;
         limit = lp + getRandomAmmount(lp, buy_limit);
 
-        double volume = money / limit;
+        float volume = money / limit;
 
         limit = se.roundMoney(limit);
         volume = se.roundShares(volume);
@@ -382,15 +382,15 @@ public class RandomTraderA extends AutoTraderBase
         Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
 
         // how many shares we want to sell?
-        double volume = getRandomAmmount(account_id.getShares(), sell_volume);
+        float volume = getRandomAmmount(account_id.getShares(), sell_volume);
         volume = se.roundShares(volume);
 
-        //    double lp = 100.0; //se.getBestLimit(type);
+        //    float lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getBestPrice_0();
 
-        double lp = q == null ? getStart() : q.price;
+        float lp = q == null ? getStart() : q.price;
 
-        double limit;
+        float limit;
         limit = lp + getRandomAmmount(lp, sell_limit);
         se.roundMoney(limit);
 

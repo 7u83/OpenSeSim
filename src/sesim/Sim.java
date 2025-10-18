@@ -89,7 +89,7 @@ public class Sim {
      * @param cfg
      * @return
      */
-    public AutoTraderInterface createTraderNew(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
+    public AutoTraderInterface createTraderNew(Exchange se, long id, String name, float money, float shares, JSONObject cfg) {
 
         String base = cfg.getString("base");
         AutoTraderInterface ac = tloader.getStrategyBase(base);
@@ -161,8 +161,8 @@ public class Sim {
         //    Globals.sim.se.setSharesDecimals(0);        
         JSONArray tlist = Sim.getTraders(cfg);
 
-        Double moneyTotal = 0.0;
-        Double sharesTotal = 0.0;
+        Float moneyTotal = 0.0f;
+        Float sharesTotal = 0.0f;
         long id = 0;
         for (int i = 0; i < tlist.length(); i++) {
             JSONObject t = tlist.getJSONObject(i);
@@ -174,8 +174,8 @@ public class Sim {
             //     System.out.printf("Load Strat: %s\n", strategy_name);
             //      System.out.printf("Base %s\n", base);
             Integer count = t.getInt("Count");
-            Double shares = t.getDouble("Shares");
-            Double money = t.getDouble("Cash");
+            Float shares = (float)t.getDouble("Shares");
+            Float money = (float)t.getDouble("Cash");
 
             Boolean enabled = t.getBoolean("Enabled");
             if (!enabled) {
@@ -198,7 +198,7 @@ public class Sim {
         }
         
         
-        double initialPrice=Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE,100);
+        float initialPrice=(float)(Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE,100.0f));
         boolean autoInitialPrice=Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE,true);
 
         if (autoInitialPrice){

@@ -17,7 +17,7 @@ public class Exchange {
 
     ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
-    private double money_df = 10000;
+    private float money_df = 10000;
     private int money_decimals = 2;
     DecimalFormat money_formatter;
 
@@ -27,13 +27,13 @@ public class Exchange {
      * @param n number of decimals
      */
     public void setMoneyDecimals(int n) {
-        money_df = Math.pow(10, n);
+        money_df = (float)Math.pow(10, n);
         money_decimals = n;
         money_formatter = getFormatter(n);
     }
 
-    private double shares_df = 1;
-    private double shares_decimals = 0;
+    private float shares_df = 1;
+    private float shares_decimals = 0;
     private DecimalFormat shares_formatter;
 
     /**
@@ -42,20 +42,20 @@ public class Exchange {
      * @param n number of decimals
      */
     public void setSharesDecimals(int n) {
-        shares_df = Math.pow(10, n);
+        shares_df = (float)Math.pow(10, n);
         shares_decimals = n;
         shares_formatter = getFormatter(n);
     }
 
-    public double roundToDecimals(double val, double f) {
-        return Math.floor(val * f) / f;
+    public float roundToDecimals(float val, float f) {
+        return (float)Math.floor(val * f) / f;
     }
 
-    public double roundShares(double shares) {
+    public float roundShares(float shares) {
         return roundToDecimals(shares, shares_df);
     }
 
-    public double roundMoney(double money) {
+    public float roundMoney(float money) {
         return roundToDecimals(money, money_df);
     }
 
@@ -160,7 +160,7 @@ public class Exchange {
 
         @Override
         public int compare(Order left, Order right) {
-            double d;
+            float d;
             switch (this.type) {
                 case BUYLIMIT:
                 case STOPBUY:
@@ -204,8 +204,8 @@ public class Exchange {
 
     public static class OrderBookEntry {
 
-        public double limit;
-        public double volume;
+        public float limit;
+        public float volume;
 
         public OrderBookEntry() {
 
@@ -221,11 +221,11 @@ public class Exchange {
             return "";
         }
 
-        public double getVolume() {
+        public float getVolume() {
             return volume;
         }
 
-        public double getLimit() {
+        public float getLimit() {
             return limit;
         }
 
@@ -253,17 +253,17 @@ public class Exchange {
 
         OrderStatus status;
         OrderType type;
-        /*        private double limit;
-        private double volume;
+        /*        private float limit;
+        private float volume;
         private final Account account;
          */
-        private final double initial_volume;
+        private final float initial_volume;
         private final long id;
         private final long created;
         protected final Account account;
-        double cost;
+        float cost;
 
-        Order(Account account, OrderType type, double volume, double limit) {
+        Order(Account account, OrderType type, float volume, float limit) {
             this.account = account;
 
             id = order_id.getNext();
@@ -305,20 +305,20 @@ public class Exchange {
             return type;
         }
 
-        public double getExecuted() {
+        public float getExecuted() {
             return initial_volume - volume;
         }
 
-        public double getInitialVolume() {
+        public float getInitialVolume() {
             return initial_volume;
         }
 
-        public double getCost() {
+        public float getCost() {
             return cost;
         }
 
-        public double getAvaragePrice() {
-            double e = getExecuted();
+        public float getAvaragePrice() {
+            float e = getExecuted();
             if (e <= 0) {
                 return -1;
             }
@@ -381,8 +381,8 @@ public class Exchange {
 
         public long trades;
         public long orders;
-        public Double heigh;
-        public Double low;
+        public Float heigh;
+        public Float low;
 
         public final void reset() {
             trades = 0;
@@ -504,7 +504,7 @@ public class Exchange {
 
     }
 
-    public Double getBestPrice() {
+    public Float getBestPrice() {
         //      System.out.printf("Get BP\n");
         SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
@@ -530,7 +530,7 @@ public class Exchange {
             //     System.out.printf("aaaaa bbbbb %f %f \n", a.limit, b.limit);
             // if there is no last quote calculate from bid and ask
             //if (lq == null) {
-            double rc = (bid.first().limit + ask.first().limit) / 2.0;
+            float rc = (bid.first().limit + ask.first().limit) / 2.0f;
             //    System.out.printf("RCRC2.0: %f\n", rc);
             return rc;
 
@@ -610,7 +610,7 @@ public class Exchange {
 
                 // if there is no last quote calculate from bid and ask
                 if (lq == null) {
-                    q.price = (bid.first().limit + ask.first().limit) / 2.0;
+                    q.price = (bid.first().limit + ask.first().limit) / 2.0f;
                     return q;
                 }
 
@@ -772,9 +772,9 @@ public class Exchange {
     }
 
 //    public ArrayList<OrderBookEntry> getCompressedOrderBook(OrderType type, int depth) {
-    public TreeMap<Double, OrderBookEntry> getCompressedOrderBook(OrderType type, int depth) {
+    public TreeMap<Float, OrderBookEntry> getCompressedOrderBook(OrderType type, int depth) {
 
-        TreeMap<Double, OrderBookEntry> map = new TreeMap<>();
+        TreeMap<Float, OrderBookEntry> map = new TreeMap<>();
 
         // Get the sorted order book for the specified type
         SortedSet<Order> book = order_books.get(type);
@@ -839,7 +839,7 @@ public class Exchange {
         //    return this.quoteHistory.last();
     }
 
-    private void transferMoneyAndShares(Account src, Account dst, double money, double shares) {
+    private void transferMoneyAndShares(Account src, Account dst, float money, float shares) {
         src.money -= money;
         dst.money += money;
         src.shares -= shares;
@@ -905,7 +905,7 @@ public class Exchange {
      */
     long nextQuoteId = 0;
 
-    public double fairValue = 0;
+    public float fairValue = 0;
 
     private void removeOrderIfExecuted(Order o) {
         if (o.getAccount().getOwner().getName().equals("Tobias0")) {
@@ -938,7 +938,7 @@ public class Exchange {
 
     }
 
-    void checkSLOrders(double price) {
+    void checkSLOrders(float price) {
         SortedSet<Order> sl = order_books.get(OrderType.STOPLOSS);
         SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
 
@@ -961,7 +961,7 @@ public class Exchange {
 
     }
 
-    private void finishTrade(Order b, Order a, double price, double volume) {
+    private void finishTrade(Order b, Order a, float price, float volume) {
         // Transfer money and shares
         transferMoneyAndShares(b.account, a.account, volume * price, -volume);
 
@@ -1008,8 +1008,8 @@ public class Exchange {
         SortedSet<Order> ul_buy = order_books.get(OrderType.BUY);
         SortedSet<Order> ul_sell = order_books.get(OrderType.SELL);
 
-        double volume_total = 0;
-        double money_total = 0;
+        float volume_total = 0;
+        float money_total = 0;
 
         while (true) {
 
@@ -1018,12 +1018,12 @@ public class Exchange {
                 Order a = ul_sell.first();
                 Order b = ul_buy.first();
 
-                Double price = getBestPrice();
+                Float price = getBestPrice();
                 if (price == null) {
                     break;
                 }
 
-                double volume = b.volume >= a.volume ? a.volume : b.volume;
+                float volume = b.volume >= a.volume ? a.volume : b.volume;
                 finishTrade(b, a, price, volume);
                 volume_total += volume;
                 money_total += price * volume;
@@ -1036,8 +1036,8 @@ public class Exchange {
             while (!ul_buy.isEmpty() && !ask.isEmpty()) {
                 Order a = ask.first();
                 Order b = ul_buy.first();
-                double price = a.limit;
-                double volume = b.volume >= a.volume ? a.volume : b.volume;
+                float price = a.limit;
+                float volume = b.volume >= a.volume ? a.volume : b.volume;
                 finishTrade(b, a, price, volume);
                 volume_total += volume;
                 money_total += price * volume;
@@ -1049,8 +1049,8 @@ public class Exchange {
             while (!ul_sell.isEmpty() && !bid.isEmpty()) {
                 Order b = bid.first();
                 Order a = ul_sell.first();
-                double price = b.limit;
-                double volume = b.volume >= a.volume ? a.volume : b.volume;
+                float price = b.limit;
+                float volume = b.volume >= a.volume ? a.volume : b.volume;
                 finishTrade(b, a, price, volume);
                 volume_total += volume;
                 money_total += price * volume;
@@ -1070,8 +1070,8 @@ public class Exchange {
             }
 
             // There is a match, calculate price and volume
-            double price = b.id < a.id ? b.limit : a.limit;
-            double volume = b.volume >= a.volume ? a.volume : b.volume;
+            float price = b.id < a.id ? b.limit : a.limit;
+            float volume = b.volume >= a.volume ? a.volume : b.volume;
 
             finishTrade(b, a, price, volume);
             volume_total += volume;
@@ -1129,7 +1129,7 @@ public class Exchange {
      * @param limit
      * @return
      */
-    public Order createOrder(Account a, OrderType type, double volume, double limit) {
+    public Order createOrder(Account a, OrderType type, float volume, float limit) {
 
         //   System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(), type.toString(), limit, volume);
         if (a == null) {
@@ -1177,7 +1177,7 @@ public class Exchange {
         return o;
     }
 
-    public double getBestLimit(OrderType type) {
+    public float getBestLimit(OrderType type) {
         Order o = order_books.get(type).first();
         if (o == null) {
             return -1;

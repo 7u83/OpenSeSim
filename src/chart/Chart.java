@@ -33,7 +33,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     // hight of x-axis area in em 
     private int xAxisAreaHight = 3;
 
-    private double x_unit_width = 1.0;
+    private double x_unit_width = 1.0f;
 
     private float candleWidth = (float) ((x_unit_width * emWidth) * 0.9f);
 
@@ -259,13 +259,13 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             return (rect.height - ((y - c_mm.getMin()) * c_yscaling)) + rect.y;
         }
 
-        double getValAtY(float y) {
+        float getValAtY(float y) {
             float val = 0;
 
             if (c_mm.isLog()) {
                 float ys = rect.height / c_mm.getDiff();
 
-                return Math.exp((rect.height + rect.y) / ys + c_mm.getMin() - y / ys);
+                return (float)Math.exp((rect.height + rect.y) / ys + c_mm.getMin() - y / ys);
 
             }
 
@@ -391,11 +391,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         for (int yp = (int) y2; yp < y1; yp += emWidth * 5) {
             g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + emWidth, yp);
-            double v1 = ctx.getValAtY(yp);
+            float v1 = ctx.getValAtY(yp);
             g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + emWidth * 1.5f, yp + c_font_height / 3);
         }
 
-        double v1, v2;
+        float v1, v2;
         v1 = ctx.getValAtY(y1);
         v2 = ctx.getValAtY(y2);
 

@@ -33,9 +33,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public interface AccountInterface {
 
-    public double getShares();
+    public float getShares();
 
-    public double getMoney();
+    public float getMoney();
 
     public ConcurrentHashMap<Long, Exchange.Order> getOrders();
     
@@ -43,6 +43,6 @@ public interface AccountInterface {
     
     public AutoTraderInterface getOwner();
     
-    //  public double getID();
+    //  public float getID();
     
 }

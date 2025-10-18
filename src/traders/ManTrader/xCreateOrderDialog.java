@@ -78,7 +78,7 @@ public class xCreateOrderDialog extends javax.swing.JDialog {
     public void initDialog() {
         OrderType t = getOrderType();
         Quote q = se.getBestPrice_0();
-        Double price = q == null ? 0.0 : q.price;
+        Float price = q == null ? 0.0f : q.price;
 
         if (t == OrderType.BUYLIMIT) {
             this.limitSpinner.setValue(se.roundMoney(price));
@@ -185,8 +185,8 @@ public class xCreateOrderDialog extends javax.swing.JDialog {
 
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        double volume = (double) volumeSpinner.getValue();
-        double limit = (double) limitSpinner.getValue();
+        float volume = (float) volumeSpinner.getValue();
+        float limit = (float) limitSpinner.getValue();
 
         if (account == null) {
             System.out.printf("Account is null\n");

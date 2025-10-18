@@ -36,14 +36,14 @@ import sesim.Scheduler.EventProcessor;
  */
 public abstract class AutoTraderBase implements AutoTraderInterface, EventProcessor {
 
-  //  protected double account_id;
+  //  protected float account_id;
       protected Account account_id;
     protected Exchange se;
    // protected AutoTraderConfig config;
 
     protected String name;
 
-/*    public AutoTraderBase(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
+/*    public AutoTraderBase(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
         Exchange.Account a = se.getAccount(account_id);
 
@@ -82,7 +82,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     }
 
     @Override
-    public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
+    public void init(Exchange se, long id, String name, float money, float shares, JSONObject cfg) {
         this.account_id = new Account(money,shares); // se.createAccount(money, shares);
  //       se.getAccount(account_id).owner = this;
     this.account_id.owner=this;

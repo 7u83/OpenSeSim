@@ -68,7 +68,7 @@ public class NummericCellRenderer extends DefaultTableCellRenderer {
             boolean hasFocus, int row, int column) {
 
         
-        if (!(value instanceof Double)) {
+        if (!(value instanceof Float)) {
             return super.getTableCellRendererComponent(
                     table, value, isSelected, hasFocus, row, column);
         }

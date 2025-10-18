@@ -69,7 +69,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         }
 
         sesim.Quote q = Globals.sim.se.getLastQuoete();
-        double price = q == null ? 0 : q.price;
+        float price = q == null ? 0 : q.price;
 
         int size = Globals.sim.traders.size();
         model.setRowCount(size);
@@ -82,7 +82,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             model.setValueAt(a.getMoney(), i, 3);
             model.setValueAt(a.getShares(), i, 4);
 
-            double wealth = a.getShares() * price + a.getMoney();
+            float wealth = a.getShares() * price + a.getMoney();
             model.setValueAt(wealth, i, 5);
         }
         List l = list.getRowSorter().getSortKeys();
@@ -187,7 +187,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false

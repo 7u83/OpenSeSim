@@ -76,9 +76,9 @@ public class Test {
         return "";
     }
 
-    /*  static private <T extends Number> void to(T n, Double o) {
+    /*  static private <T extends Number> void to(T n, Float o) {
         if (Float == T) {
-            System.out.printf("Double ret %", o.floatValue());
+            System.out.printf("Float ret %", o.floatValue());
 
             n = (T) (Number) o.floatValue();
         }
@@ -122,7 +122,7 @@ public class Test {
         @Override
         public long processEvent(Event e) {
             ctr++;
-            double r = 1;
+            float r = 1;
             for (int i = 0; i < 100000; i++) {
                 r = r + i * r;
                 r = r + 1.0;
@@ -151,8 +151,8 @@ public class Test {
      */
     public static void main(String[] args) throws InterruptedException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
 
-        double val = Math.log(12);
-        double rval = Math.exp(val);
+        float val = Math.log(12);
+        float rval = Math.exp(val);
         
         
         System.out.printf("Result: %f, %f\n", val,rval);

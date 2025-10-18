@@ -7,33 +7,41 @@ package traders;
 import org.json.JSONObject;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
+import sesim.Exchange;
 import sesim.Exchange.Order;
 import sesim.Scheduler;
-
 
 /**
  *
  * @author tube
  */
 public class MarketMaker extends AutoTraderBase {
-    
-    int numPosition=10;
-    float centerPrice=100.0f;
-    float lowestPrice=0.0f;
-    
-    Order orders[]=null;
+
+    int numPosition = 10;
+    float centerPrice = 100.0f;
+    float lowestPrice = 0.0f;
+
+    Order orders[] = null;
+    float cashPerBuyOrder = 0f;
 
     @Override
     public void start() {
-        float dist=(centerPrice-lowestPrice)/this.numPosition;
-        
         centerPrice = se.getBestPrice();
-        
-       /* while(false){
-        
-        }*/
-        
-        this.setStatus("Price: %f",p);
+        float dist = (centerPrice - lowestPrice) / numPosition;
+        float cashPerOrder = account_id.getMoney();
+        cashPerBuyOrder=account_id.getMoney()/numPosition;
+
+        float price = lowestPrice;
+        while (price < centerPrice) {
+         
+            price += dist;
+            float vol = se.roundShares(cashPerBuyOrder/price);
+            System.out.printf("Buy Order at price: %f with vol: %f\n", price,vol);
+            se.createOrder(account_id, Exchange.OrderType.BUYLIMIT, vol, price);
+            
+        }
+
+        this.setStatus("Price: %f", dist);
 
     }
 

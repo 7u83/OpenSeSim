@@ -152,7 +152,7 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
         ArrayList<? extends OrderBookEntry> myOb = null;
         final String colNames[] = {"Trader", "Price", "Volume"};
         final Class[] colTypes = new Class[]{
-            java.lang.String.class, java.lang.Double.class, java.lang.Double.class
+            java.lang.String.class, java.lang.Float.class, java.lang.Float.class
         };
 
         void setData(ArrayList<? extends OrderBookEntry> d) {

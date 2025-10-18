@@ -47,8 +47,8 @@ public class AccountBalance extends javax.swing.JPanel{
     
       
     public void updateBalance (Account account){
-        this.moneyLabel.setText(Double.toString(account.getMoney()));
-        this.sharesLabel.setText(Double.toString(account.getShares()));
+        this.moneyLabel.setText(Float.toString(account.getMoney()));
+        this.sharesLabel.setText(Float.toString(account.getShares()));
     }
     
    

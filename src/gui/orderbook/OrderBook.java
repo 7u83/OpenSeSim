@@ -44,7 +44,7 @@ import sesim.Exchange.OrderType;
  */
 public class OrderBook extends RawOrderBook {
 
-    TreeMap<Double, OrderBookEntry> lastMap = new TreeMap<>();
+    TreeMap<Float, OrderBookEntry> lastMap = new TreeMap<>();
 
     ;
     
@@ -76,9 +76,9 @@ public class OrderBook extends RawOrderBook {
         if (prev == null) {
             ce.color = "Gray";
         } else {
-            if (prev.volume < oe.volume) {
+            if (prev.volume > oe.volume) {
                 ce.color = "Red";
-            } else if (prev.volume > oe.volume) {
+            } else if (prev.volume < oe.volume) {
                 ce.color = "Green";
             } else {
                 ce.color = "  ---  ";
@@ -89,17 +89,17 @@ public class OrderBook extends RawOrderBook {
 
     @Override
     protected ArrayList<? extends Exchange.OrderBookEntry> getOrderBook() {
-        TreeMap<Double, OrderBookEntry> map = Globals.sim.se.getCompressedOrderBook(type, depth);
+        TreeMap<Float, OrderBookEntry> map = Globals.sim.se.getCompressedOrderBook(type, depth);
 
-        //TreeMap<Double, OrderBookEntry> cmap = new TreeMap<>();
+        //TreeMap<Float, OrderBookEntry> cmap = new TreeMap<>();
         ArrayList<OrderBookEntry> r = new ArrayList<>();
         if (type == OrderType.BUYLIMIT) {
-            for (Map.Entry<Double, OrderBookEntry> oe : ((TreeMap<Double, OrderBookEntry>) map).descendingMap().entrySet()) {
+            for (Map.Entry<Float, OrderBookEntry> oe : ((TreeMap<Float, OrderBookEntry>) map).descendingMap().entrySet()) {
                 r.add(this.getDiffedEntry(oe.getValue()));
             }
         } else {
 
-            for (Map.Entry<Double, OrderBookEntry> oe : map.entrySet()) {
+            for (Map.Entry<Float, OrderBookEntry> oe : map.entrySet()) {
                 r.add(this.getDiffedEntry(oe.getValue()));
 
             }

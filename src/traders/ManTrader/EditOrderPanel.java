@@ -43,7 +43,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         System.out.printf("Load now\n");
 
         Quote q = se.getBestPrice_0();
-        Double price = q == null ? 0.0 : q.price;
+        Float price = q == null ? 0.0f : q.price;
 
         if (type == OrderType.BUYLIMIT) {
             this.limitSpinner.setValue(se.roundMoney(price));
@@ -57,26 +57,27 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }
 
     private void setPrice() {
-        double price = this.getPrice();
+        float price = this.getPrice();
         String s = se.getMoneyFormatter().format(price);
         this.priceLabel.setText(s);
     }
 
-    public double getPrice() {
-        double price = this.getVolume() * this.getLimit();
+    public float getPrice() {
+        float price = this.getVolume() * this.getLimit();
         price = se.roundMoney(price);
         return price;
     }
 
-    public double getVolume() {
-        return (double) volumeSpinner.getValue();
+    public float getVolume() {
+       return (float) volumeSpinner.getValue();
+        
     }
 
-    public double getLimit() {
-        return (double) limitSpinner.getValue();
+    public float getLimit() {
+        return (float) limitSpinner.getValue();
     }
 
-    /*    double limit = (double) limitSpinner.getValue();
+    /*    float limit = (float) limitSpinner.getValue();
 
         if (account == null) {
             System.out.printf("Account is null\n");
@@ -105,10 +106,11 @@ public class EditOrderPanel extends javax.swing.JPanel {
         volumeSpinner = new javax.swing.JSpinner();
         loadValuesButton = new javax.swing.JButton();
         priceLabel = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Buy Limit", "Sell Limit", "Sell", "Buy" }));
 
-        limitSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
+        limitSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
         limitSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 limitSpinnerStateChanged(evt);
@@ -119,14 +121,15 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
         jLabel4.setText("Volume:");
 
-        volumeSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
+        volumeSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
         volumeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 volumeSpinnerStateChanged(evt);
             }
         });
 
-        loadValuesButton.setText("Load");
+        loadValuesButton.setText("Set limit");
+        loadValuesButton.setToolTipText("Set limit to the curent \ntraded price.");
         loadValuesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadValuesButtonActionPerformed(evt);
@@ -135,6 +138,14 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
         priceLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         priceLabel.setText("0.00");
+
+        jButton1.setText("Set vol");
+        jButton1.setToolTipText("Set the volume to the maximum \namount  you can buy with your \ncurrent cash balance.");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -150,8 +161,11 @@ public class EditOrderPanel extends javax.swing.JPanel {
                     .addComponent(limitSpinner))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(loadValuesButton, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
-                    .addComponent(priceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(priceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(loadValuesButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -164,7 +178,8 @@ public class EditOrderPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(loadValuesButton))
+                    .addComponent(loadValuesButton)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -181,8 +196,13 @@ public class EditOrderPanel extends javax.swing.JPanel {
         setPrice();
     }//GEN-LAST:event_volumeSpinnerStateChanged
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     javax.swing.JSpinner limitSpinner;

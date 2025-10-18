@@ -57,8 +57,8 @@
                 <Column editable="true" title="Name" type="java.lang.String"/>
                 <Column editable="true" title="Count" type="java.lang.Integer"/>
                 <Column editable="true" title="Strategy" type="java.lang.Object"/>
-                <Column editable="true" title="Cash" type="java.lang.Double"/>
-                <Column editable="true" title="Shares" type="java.lang.Double"/>
+                <Column editable="true" title="Cash" type="java.lang.Float"/>
+                <Column editable="true" title="Shares" type="java.lang.Float"/>
                 <Column editable="true" title="Enabled" type="java.lang.Boolean"/>
               </Table>
             </Property>

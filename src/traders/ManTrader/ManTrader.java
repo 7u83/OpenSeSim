@@ -48,7 +48,7 @@ import sesim.Exchange.OrderStatus;
  */
 public class ManTrader extends AutoTraderBase implements AccountListener, AutoTraderInterface {
 
-//    public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
+//    public ManTrader(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
 //        //  super(se, id, name, money, shares, null);
 //        super();
 //    }
@@ -58,7 +58,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg) {
+    public void init(Exchange se, long id, String name, float money, float shares, JSONObject cfg) {
         super.init(se, id, name, money, shares, cfg);
         getAccount().setListener(this);
     }

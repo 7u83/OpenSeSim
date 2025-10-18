@@ -25,15 +25,24 @@
  */
 package sesim;
 
+import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AutoTraderGui extends JPanel{
-    public void save()
-    {
-        
+public class AutoTraderGui extends JPanel {
+
+    public void save() {
+
+    }
+
+    public AutoTraderGui() {
+        super();
+    }
+
+    public AutoTraderGui(BorderLayout b) {
+        super(b);
     }
 }

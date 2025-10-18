@@ -30,6 +30,10 @@
     
     
     <target name="-ivy-retrieve" depends="-ivy-define" xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+        
+        <property file="nbproject/project.properties"/>
+        <property name="ivy.classpath.old" value="${ivy.classpath}"/>
+        
         <ivy:resolve/> <!-- Tell Ivy to resolve dependencies -->
         <ivy:retrieve/> <!-- Load dependencies to the project -->
         <pathconvert property="ivy.classpath.computed" dirsep="/" pathsep=":">
@@ -38,11 +42,30 @@
             </path>
             <map from="${basedir}${file.separator}" to=""/>
         </pathconvert>
-        <propertyfile file="build/ivy.properties">
-             <entry key="ivy.classpath" value="${ivy.classpath.computed}"/>
-            <!--<entry operation="=" key="ivy.classpath" value="${ivy.classpath.computed}"/>-->
-        </propertyfile>
+
+        <!-- Prüfen, ob sich der Classpath geändert hat -->
+        <condition property="ivy.classpath.changed">
+            <not>
+                <equals arg1="${ivy.classpath.computed}" arg2="${ivy.classpath.old}"/>
+            </not>
+        </condition>
+        <echo message="ivy.classpath.computed = [${ivy.classpath.computed}]"/>
+        <echo message="ivy.classpath.old      = [${ivy.classpath.old}]"/>
+        <!-- Nur schreiben, wenn sich Classpath geändert hat -->
+              
+        <antcall target="-update-ivy-classpath"/>
+
+
     </target>
+    
+    <!-- Nur ausführen, wenn ivy.classpath.changed gesetzt -->
+    <target name="-update-ivy-classpath" if="ivy.classpath.changed">
+        <propertyfile file="nbproject/project.properties">
+            <entry operation="=" key="ivy.classpath" value="${ivy.classpath.computed}"/>
+        </propertyfile>
+        <echo message="ivy.classpath updated in project.properties"/>
+    </target>
+    
     <target name="-pre-compile" depends="-ivy-retrieve"/>
     <target name="-pre-compile-single" depends="-ivy-retrieve"/>
     <target name="-post-clean">
@@ -115,43 +138,42 @@
     
 
 
-<target name="init-ivy-global">
+    <target name="init-ivy-global">
     
-    <mkdir dir="${user.home}/.ant/lib"/>
+        <mkdir dir="${user.home}/.ant/lib"/>
 
     
-    <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar"
-         dest="${user.home}/.ant/lib/ivy.jar"
-         skipexisting="true"/>
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar"
+             dest="${user.home}/.ant/lib/ivy.jar"
+             skipexisting="true"/>
     
-    <echo message="Ivy ist jetzt in ${user.home}/.ant/lib"/>
-</target>
+        <echo message="Ivy ist jetzt in ${user.home}/.ant/lib"/>
+    </target>
 
     
- <target name="single-jar" depends="jar">
-    <property name="store.jar.name" value="SeSim"/>
-    <property name="store.dir" value="store"/>
-    <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
-    <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
-    <delete dir="${store.dir}"/>
-    <mkdir dir="${store.dir}"/>
-    <jar destfile="${store.dir}/temp_final.jar" filesetmanifest="skip">
-        <!-- 
-        <zipgroupfileset dir="dist" includes="*.jar"/>
-        <zipgroupfileset dir="dist/lib" includes="*.jar"/>
-        -->
-        <zipgroupfileset dir="dist" includes="${application.title}.jar"/>
-<zipgroupfileset dir="dist/lib" includes="commons-*.jar,json-*.jar"/>
-        <manifest>
-            <attribute name="Main-Class" value="${main.class}"/>
-        </manifest>
-    </jar>
-    <zip destfile="${store.jar}">
-        <zipfileset src="${store.dir}/temp_final.jar"
-        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
-    </zip>
-    <delete file="${store.dir}/temp_final.jar"/>
-</target>    
+    <target name="single-jar" depends="jar">
+        <property name="store.jar.name" value="SeSim"/>
+        <property name="store.dir" value="store"/>
+        <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
+        <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
+        <delete dir="${store.dir}"/>
+        <mkdir dir="${store.dir}"/>
+        <jar destfile="${store.dir}/temp_final.jar" filesetmanifest="skip">
+            <!-- 
+            <zipgroupfileset dir="dist" includes="*.jar"/>
+            <zipgroupfileset dir="dist/lib" includes="*.jar"/>
+            -->
+            <zipgroupfileset dir="dist" includes="${application.title}.jar"/>
+            <zipgroupfileset dir="dist/lib" includes="commons-*.jar,json-*.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+            </manifest>
+        </jar>
+        <zip destfile="${store.jar}">
+            <zipfileset src="${store.dir}/temp_final.jar"
+                        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+        </zip>
+        <delete file="${store.dir}/temp_final.jar"/>
+    </target>    
     
 </project>
-

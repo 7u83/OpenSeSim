@@ -740,7 +740,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_simMenuStopActionPerformed
 
     private void accelSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_accelSpinnerStateChanged
-        Double val = (Double) this.accelSpinner.getValue();
+        Double val = (Double)this.accelSpinner.getValue();
         Globals.sim.se.timer.setAcceleration(val);
     }//GEN-LAST:event_accelSpinnerStateChanged
 

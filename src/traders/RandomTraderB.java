@@ -235,8 +235,8 @@ public class RandomTraderB extends AutoTraderBase {
      * @param max maximeum value
      * @return the number
      */
-    protected double getRandom(double min, double max) {
-        double r = se.randNextDouble();
+    protected float getRandom(float min, float max) {
+        float r = (float)se.randNextDouble();
 
         // System.out.printf("RD: %f", r);
         // System.exit(0);
@@ -247,7 +247,7 @@ public class RandomTraderB extends AutoTraderBase {
         return (int) Math.round(getRandom(minmax[0], minmax[1]));
     }
 
-    double getStart() {
+    float getStart() {
 
         return this.se.fairValue;
 
@@ -259,11 +259,11 @@ public class RandomTraderB extends AutoTraderBase {
      * @param minmax
      * @return
      */
-    protected double getRandomAmmount(double val, Float[] minmax) {
+    protected float getRandomAmmount(float val, Float[] minmax) {
 
         //System.out.printf("RandomAmmount: %f (%f,%f)\n",val, minmax[0], minmax[1]);
-        double min = val * minmax[0] / 100.0;
-        double max = val * minmax[1] / 100.0;
+        float min = val * minmax[0] / 100.0f;
+        float max = val * minmax[1] / 100.0f;
         return getRandom(min, max);
     }
 
@@ -280,17 +280,17 @@ public class RandomTraderB extends AutoTraderBase {
         }
 
         // how much money we ant to invest?
-        double money = getRandomAmmount(account.getMoney(), buy_volume);
+        float money = getRandomAmmount(account.getMoney(), buy_volume);
     
         Quote q = se.getBestPrice_0();
         //q=se.getLastQuoete();
-        double lp = q == null ? getStart() : q.price;
+        float lp = q == null ? getStart() : q.price;
 
-        double limit;
+        float limit;
         limit = lp + getRandomAmmount(lp, buy_limit);
 
 
-        double volume = money / limit;
+        float volume = money / limit;
 
     //    System.out.printf("Volume : %f", volume);
         
@@ -317,20 +317,20 @@ public class RandomTraderB extends AutoTraderBase {
 
                
         // how much shares we ant to sell?
-        double volume = getRandomAmmount(account.getShares(), sell_volume);
+        float volume = getRandomAmmount(account.getShares(), sell_volume);
         volume = se.roundShares(volume);
         
 
-        //    double lp = 100.0; //se.getBestLimit(type);
+        //    float lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getBestPrice_0();
           //      q=se.getLastQuoete();
-        double lp = q == null ? getStart() : q.price;
+        float lp = q == null ? getStart() : q.price;
         
         
         
         
 
-        double limit;
+        float limit;
         limit = lp + getRandomAmmount(lp, sell_limit);
         se.roundMoney(limit);
 

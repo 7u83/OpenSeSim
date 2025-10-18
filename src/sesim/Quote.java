@@ -31,13 +31,13 @@ package sesim;
  */
 public class Quote implements Comparable {
 
-    public double bid;
-    public double bid_volume;
-    public double ask;
-    public double ask_volume;
+    public float bid;
+    public float bid_volume;
+    public float ask;
+    public float ask_volume;
 
-    public double price;
-    public double volume;
+    public float price;
+    public float volume;
     public long time;
   //  public long id;
 

@@ -75,7 +75,7 @@ public interface AutoTraderInterface {
      * @param shares Number of shares
      * @param cfg 
      */
-    public void init(Exchange se, long id, String name, double money, double shares, JSONObject cfg);
+    public void init(Exchange se, long id, String name, float money, float shares, JSONObject cfg);
 
     public Account getAccount();
 
