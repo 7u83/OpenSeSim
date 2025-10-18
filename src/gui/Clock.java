@@ -49,7 +49,6 @@ public class Clock extends javax.swing.JPanel {
             return;
         }
 
-
         clockUpdater = new TimerTask() {
             @Override
             public void run() {

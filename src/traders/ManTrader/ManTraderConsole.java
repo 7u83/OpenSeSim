@@ -26,31 +26,114 @@
 package traders.ManTrader;
 
 import gui.OpenOrdersList;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import sesim.Account;
 
 import sesim.Exchange;
 import sesim.Exchange.Order;
+import sesim.Exchange.OrderType;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class ManTraderConsole extends javax.swing.JPanel {
-    
-    public ManTrader trader;
 
-    public OpenOrdersList getOrderListPanel(){
-        
+    public ManTrader trader;
+    Account account;
+    Exchange se;
+
+    public OpenOrdersList getOrderListPanel() {
+
         return this.ordersList;
     }
-    
+
     /**
      * Creates new form ManTraderConsole
      */
     public ManTraderConsole() {
         initComponents();
-        
-        
-      //  this.ordersList1.account=trader.getAccount();
+
+        //  this.ordersList1.account=trader.getAccount();
+    }
+
+    public ManTraderConsole(Exchange e, Account a) {
+        account = a;
+        se = e;
+        initComponents();
+        this.buyEditOrderPanel.limitSpinner.addChangeListener(
+                new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                double p = buyEditOrderPanel.getPrice();
+                if (p >= account.getMoney()) {
+                    buyButton.setEnabled(false);
+                } else {
+                    buyButton.setEnabled(true);
+                }
+            }
+
+        }
+        );
+
+        this.buyEditOrderPanel.volumeSpinner.addChangeListener(
+                new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                double p = buyEditOrderPanel.getPrice();
+                if (p >= account.getMoney()) {
+                    buyButton.setEnabled(false);
+                } else {
+                    buyButton.setEnabled(true);
+                }
+            }
+
+        }
+        );
+
+  /*      this.sellEditOrderPanel.limitSpinner.addChangeListener(
+                new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                double v = buyEditOrderPanel.getVolume();
+                if (v >= account.getMoney()) {
+                    buyButton.setEnabled(false);
+                } else {
+                    buyButton.setEnabled(true);
+                }
+            }
+
+        }
+        );*/
+
+        this.sellEditOrderPanel.volumeSpinner.addChangeListener(
+                new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                double v = sellEditOrderPanel.getVolume();
+                if (v >= account.getShares()) {
+                    sellButton.setEnabled(false);
+                } else {
+                    sellButton.setEnabled(true);
+                }
+            }
+
+        }
+        );
+
+    }
+
+    void init(Account a) {
+        this.ordersList.initOrderList(account);
+    }
+
+    void doUpdate(Account a) {
+        this.ordersList.updateModel();
+        this.accountBalance2.updateBalance(a);
+
+        //     this.consoleDialog.getOrderList().updateModel();
+        //this.consoleDialog.getBalancePanel().updateBalance(o.getAccount());
     }
 
     /**
@@ -62,26 +145,17 @@ public class ManTraderConsole extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        limitSpinner = new javax.swing.JSpinner();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        volumeSpinner = new javax.swing.JSpinner();
-        buyButton = new javax.swing.JButton();
-        sellButton = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        moneyText = new javax.swing.JLabel();
-        stopLossButton = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         ordersList = new gui.OpenOrdersList();
+        accountBalance2 = new traders.ManTrader.AccountBalance();
+        buyButton = new javax.swing.JButton();
+        sellEditOrderPanel = new EditOrderPanel(se,account,OrderType.SELLLIMIT);
+        buyEditOrderPanel = new EditOrderPanel(se,account,OrderType.BUYLIMIT);
+        sellButton = new javax.swing.JButton();
 
-        limitSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
+        jTabbedPane1.addTab("Open Orders", ordersList);
 
-        jLabel1.setText("Limit:");
-
-        jLabel2.setText("Volume:");
-
-        volumeSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
-
+        buyButton.setBackground(new java.awt.Color(153, 255, 153));
         buyButton.setText("Buy");
         buyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -89,25 +163,13 @@ public class ManTraderConsole extends javax.swing.JPanel {
             }
         });
 
+        sellButton.setBackground(new java.awt.Color(255, 153, 153));
         sellButton.setText("Sell");
         sellButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sellButtonActionPerformed(evt);
             }
         });
-
-        jLabel3.setText("Money:");
-
-        moneyText.setText("jLabel4");
-
-        stopLossButton.setText("StopLoss");
-        stopLossButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stopLossButtonActionPerformed(evt);
-            }
-        });
-
-        jTabbedPane1.addTab("Open Orders", ordersList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -118,26 +180,17 @@ public class ManTraderConsole extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTabbedPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(buyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(sellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(sellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(stopLossButton))
+                                .addComponent(sellEditOrderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(44, 44, 44)
-                                .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(buyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(limitSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(moneyText, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(buyEditOrderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(accountBalance2, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -146,77 +199,48 @@ public class ManTraderConsole extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(moneyText))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(limitSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(buyButton, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                            .addComponent(sellButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(stopLossButton)
-                        .addGap(20, 20, 20))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(accountBalance2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buyEditOrderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(sellEditOrderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sellButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 14, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void buyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyButtonActionPerformed
-        Double limit = (Double)this.limitSpinner.getValue();
-        Double volume = (Double)this.volumeSpinner.getValue();
-        
-        System.out.printf("Should buy: %f %f\n",volume,limit);
-        
-        Order createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.BUYLIMIT, volume, limit);
-        System.out.printf("The retval is %d",createOrder);
-        
-    //    this.ordersList.account=this.trader.getAccount();
-    //    this.ordersList.updateModel();
-        
-        
+
+        double vol = this.buyEditOrderPanel.getVolume();
+        double limit = this.buyEditOrderPanel.getLimit();
+        System.out.printf("buy button pressed, v: %f, l: %f\n", vol, limit);
+        synchronized (se.timer) {
+            Order o = se.createOrder(account, OrderType.BUYLIMIT, vol, limit);
+
+        }
+
     }//GEN-LAST:event_buyButtonActionPerformed
 
     private void sellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellButtonActionPerformed
-        Double limit = (Double)this.limitSpinner.getValue();
-        Double volume = (Double)this.volumeSpinner.getValue();
-        
-        System.out.printf("Should sell: %f %f\n",volume,limit);
-        
-        Order createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.SELLLIMIT, volume, limit);
-        System.out.printf("The retval is %d",createOrder);
-    }//GEN-LAST:event_sellButtonActionPerformed
+        double vol = this.sellEditOrderPanel.getVolume();
+        double limit = this.sellEditOrderPanel.getLimit();
+        System.out.printf("buy button pressed, v: %f, l: %f\n", vol, limit);
+        synchronized (se.timer) {
+            Order o = se.createOrder(account, OrderType.SELLLIMIT, vol, limit);
 
-    private void stopLossButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopLossButtonActionPerformed
-       Double limit = (Double)this.limitSpinner.getValue();
-        Double volume = (Double)this.volumeSpinner.getValue();
-        
-        System.out.printf("Should stoploss: %f %f\n",volume,limit);
-        
-        Order createOrder = trader.getSE().createOrder(trader.getAccount(), Exchange.OrderType.STOPLOSS, volume, limit);
-        System.out.printf("The retval is %d",createOrder);
-    }//GEN-LAST:event_stopLossButtonActionPerformed
+        }
+    }//GEN-LAST:event_sellButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private traders.ManTrader.AccountBalance accountBalance2;
     private javax.swing.JButton buyButton;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private traders.ManTrader.EditOrderPanel buyEditOrderPanel;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JSpinner limitSpinner;
-    private javax.swing.JLabel moneyText;
     private gui.OpenOrdersList ordersList;
     private javax.swing.JButton sellButton;
-    private javax.swing.JButton stopLossButton;
-    private javax.swing.JSpinner volumeSpinner;
+    private traders.ManTrader.EditOrderPanel sellEditOrderPanel;
     // End of variables declaration//GEN-END:variables
 }

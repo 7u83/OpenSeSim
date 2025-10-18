@@ -203,11 +203,11 @@ public class RandomTraderA extends AutoTraderBase
         return false;
     }
 
-    @Override
+ /*   @Override
     public JDialog getGuiConsole() {
         return null;
     }
-
+*/
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
 

@@ -26,6 +26,7 @@
 package sesim;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import org.json.JSONObject;
 
 /**
@@ -45,7 +46,7 @@ public interface AutoTraderInterface {
      */
     public abstract AutoTraderGui getGui();
 
-    public abstract JDialog getGuiConsole();
+    public abstract JDialog getGuiConsole(JFrame parent);
 
     /**
      * Get current configuration of the auto trader as JSON object.

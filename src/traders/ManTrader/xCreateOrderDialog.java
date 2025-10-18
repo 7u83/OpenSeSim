@@ -37,25 +37,25 @@ import sesim.Quote;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class CreateOrderDialog extends javax.swing.JDialog {
+public class xCreateOrderDialog extends javax.swing.JDialog {
 
     sesim.Exchange se;
 
     /**
      * Creates new form CreateOrderDialog
      */
-    public CreateOrderDialog(Exchange se, java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public xCreateOrderDialog(Exchange se) {
+        super();
 
         initComponents();
         this.se = se;
-        this.setLocationRelativeTo(this.getParent());
+     //   this.setLocationRelativeTo(this.getParent());
 
     }
 
     OrderType typeList[];
 
-    public CreateOrderDialog(Exchange se, java.awt.Frame parent, boolean modal, Account account, OrderType type) {
+ /*   public CreateOrderDialog(Exchange se, java.awt.Frame parent, boolean modal, Account account, OrderType type) {
         this(se, parent, modal);
         this.account = account;
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Buy Lim", "Sell Lim", "Buy", "Sell"}));
@@ -66,7 +66,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
             }
         }
         initDialog();
-    }
+    } */
 
     private OrderType getOrderType() {
         int i = this.typeComboBox.getSelectedIndex();
@@ -119,7 +119,6 @@ public class CreateOrderDialog extends javax.swing.JDialog {
             }
         });
 
-        jButton2.setMnemonic('c');
         jButton2.setText("Cancel");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,7 +141,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(91, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton1)
@@ -163,7 +162,7 @@ public class CreateOrderDialog extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(126, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(limitSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)

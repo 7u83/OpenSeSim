@@ -28,6 +28,7 @@ package traders.ManTrader;
 import gui.Globals;
 import gui.OpenOrdersList;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import sesim.Scheduler.Event;
 import org.json.JSONObject;
 import sesim.Account;
@@ -45,16 +46,15 @@ import sesim.Exchange.OrderStatus;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ManTrader extends AutoTraderBase implements AccountListener, AutoTraderInterface{
+public class ManTrader extends AutoTraderBase implements AccountListener, AutoTraderInterface {
 
 //    public ManTrader(Exchange se, long id, String name, double money, double shares, AutoTraderConfig config) {
 //        //  super(se, id, name, money, shares, null);
 //        super();
 //    }
-
     public ManTrader() {
         super();
-
+       
     }
 
     @Override
@@ -66,18 +66,20 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     @Override
     public void start() {
+        
+        account_id.setListener(this);
         //se.timer.createEvent(this, 0);
-        consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, this.getAccount());
-        this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
-        // consoleDialog.     rdersList1.account=trader.getAccount();
+     //   consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, account_id);
 
+//        this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
+        // consoleDialog.     rdersList1.account=trader.getAccount();
 //        consoleDialog.getConsole().trader=this;
-        consoleDialog.setVisible(true);
+     //   consoleDialog.setVisible(true);
 
     }
 
     @Override
-    public long processEvent(long t,Event e) {
+    public long processEvent(long t, Event e) {
 
 //        OpenOrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
 //        ol.updateModel();
@@ -111,22 +113,36 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public JDialog getGuiConsole() {
+    public JDialog getGuiConsole(JFrame parent) {
+
+        consoleDialog = new ManTraderConsoleDialog(parent, false, se,account_id);
+        
+        consoleDialog.init(se, account_id);
+        consoleDialog.doUpdate(account_id);
+//        this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
+        // consoleDialog.     rdersList1.account=trader.getAccount();
+//        consoleDialog.getConsole().trader=this;
+      //  consoleDialog.setVisible(true);
         return this.consoleDialog;
     }
 
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
+        if (this.consoleDialog==null)
+            return;
+        
         //this.consoleDialog.cons
         //System.out.printf("AccountListener called\n");
 
         //System.out.printf("%d %s\n", o.getID(), o.getStatus().toString());
-
-        if (o.getStatus()==OrderStatus.CLOSED){
+        if (o.getStatus() == OrderStatus.CLOSED) {
             o.getAccount().getOrders().put(o.getID(), o);
         }
-        this.consoleDialog.getOrderList().updateModel();
-        this.consoleDialog.getBalancePanel().updateBalance(o.getAccount());
+        
+        consoleDialog.doUpdate(a);
+        
+      //  this.consoleDialog.getOrderList().updateModel();
+      //  this.consoleDialog.getBalancePanel().updateBalance(o.getAccount());
     }
 
 }

@@ -112,10 +112,11 @@ public class Scheduler extends Thread {
      */
     public void terminate() {
         terminate = true;
-        synchronized (eventQueue) {
+        /*        synchronized (eventQueue) {
             eventQueue.notifyAll();
-        }
+        }*/
         pause = false;
+        LockSupport.unpark(this);
     }
 
     /**
@@ -152,20 +153,20 @@ public class Scheduler extends Thread {
 
     /**
      * Returns the current simulated time in milliseconds.
-     * @return 
+     *
+     * @return
      */
     public long getCurrentTimeMillis() {
 
         return (long) this.currentTimeMillis;
     }
-    
-    
-        /**
+
+    /**
      * Formats a millisecond timestamp as HH:mm:ss.
+     *
      * @param t time in milliseconds
      * @return formatted string
      */
-
     static public String formatTimeMillis(long t) {
         Date date = new Date(t);
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -178,19 +179,18 @@ public class Scheduler extends Thread {
     }
 
     //private static AtomicInteger nextTimerTask = new AtomicInteger(0);
-
-    public static class Event  {
+    public static class Event {
 
         EventProcessor eventProcessor;
 
         public String name;
 
         public long time;
-     //   private final int id;
+        //   private final int id;
 
         public Event(EventProcessor e, long t) {
             eventProcessor = e;
-       //     id = nextTimerTask.getAndAdd(1);
+            //     id = nextTimerTask.getAndAdd(1);
             time = t;
 
         }
@@ -200,12 +200,11 @@ public class Scheduler extends Thread {
             //id = nextTimerTask.getAndAdd(1);
         }
 
-  /*      @Override
+        /*      @Override
         public int compareTo(Object o) {
             return ((Event) o).id - this.id;
 
         }*/
-
     }
 
     public void addEvent(long t, Event e) {
@@ -237,9 +236,9 @@ public class Scheduler extends Thread {
     public void setPause(boolean val) {
         pause = val;
         LockSupport.unpark(this);
-        synchronized (this) {
+        /*    synchronized (this) {
             this.notify();
-        }
+        }*/
     }
 
     public boolean getPause() {
@@ -268,7 +267,7 @@ public class Scheduler extends Thread {
         LinkedHashSet<Event> s = eventQueue.remove(t);
 
         for (Event e : s) {
-            e.eventProcessor.processEvent(t,e);
+            e.eventProcessor.processEvent(t, e);
         }
         return 0;
 
@@ -291,7 +290,7 @@ public class Scheduler extends Thread {
     }
 
     void initScheduler() {
-  //      nextTimerTask = new AtomicInteger(0);
+        //      nextTimerTask = new AtomicInteger(0);
         currentTimeMillis = 0.0;
         last_nanos = System.nanoTime();
         this.addEvent(1000, new Event(new EmptyCtr()));
@@ -305,7 +304,9 @@ public class Scheduler extends Thread {
         while (!terminate) {
             long wMillis = 0;
 
-            wMillis = runEvents();
+            synchronized (this) {
+                wMillis = runEvents();
+            }
 
             if (wMillis != -1 && !pause) {
                 LockSupport.parkNanos(wMillis * 1000 * 1000);

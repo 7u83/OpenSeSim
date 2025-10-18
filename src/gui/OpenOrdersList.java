@@ -38,7 +38,7 @@ import sesim.Exchange;
 
 import sesim.Exchange.Order;
 import sesim.Exchange.OrderType;
-import traders.ManTrader.CreateOrderDialog;
+//import traders.ManTrader.CreateOrderDialog;
 
 /**
  *
@@ -53,8 +53,6 @@ public class OpenOrdersList extends javax.swing.JPanel {
         if (null == account) {
             return;
         }
-
-
 
         int row = 0;
 
@@ -89,7 +87,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
         model.setRowCount(0);
         table.setFillsViewportHeight(true);
         updateModel();
-        
+
     }
 
     public void initOrderList(Account account) {
@@ -192,10 +190,10 @@ public class OpenOrdersList extends javax.swing.JPanel {
         Point point = evt.getPoint();
         int currentRow = table.rowAtPoint(point);
         if (currentRow != -1) {
-            
+
             table.setRowSelectionInterval(currentRow, currentRow);
         } else {
-            
+
         }
 
         int nbuttons = MouseInfo.getNumberOfButtons();
@@ -204,15 +202,15 @@ public class OpenOrdersList extends javax.swing.JPanel {
             return;
         }
 
-        ctxMenu.show(table, point.x,point.y);
+        ctxMenu.show(table, point.x, point.y);
 
     }//GEN-LAST:event_tableMousePressed
 
     private void createOrder(OrderType t) {
-        CreateOrderDialog cd = new CreateOrderDialog(Globals.sim.se,Globals.frame, true, account, t);
-        
+     //   CreateOrderDialog cd = new CreateOrderDialog(Globals.sim.se, Globals.frame, true, account, t);
+
         //cd.initDialog(account);
-        cd.setVisible(true);
+     //   cd.setVisible(true);
 
     }
 

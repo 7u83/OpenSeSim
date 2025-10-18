@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import org.json.JSONObject;
 import sesim.Scheduler.EventProcessor;
 
@@ -108,4 +110,9 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
             return status;
         }
 
+        
+        @Override
+        public JDialog getGuiConsole(JFrame parent){
+            return null;
+        }
 }

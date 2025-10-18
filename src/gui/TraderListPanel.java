@@ -33,9 +33,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import javax.swing.table.DefaultTableModel;
@@ -227,7 +229,8 @@ public class TraderListPanel extends javax.swing.JPanel {
             Integer tid = (Integer) model.getValueAt(index, 0);
             // System.out.printf("Trader ID %d\n", tid);
 
-            JDialog console = Globals.sim.traders.get(tid).getGuiConsole();
+            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            JDialog console = Globals.sim.traders.get(tid).getGuiConsole(parentFrame);
             if (console == null) {
                 return;
             }

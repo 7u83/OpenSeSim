@@ -181,10 +181,7 @@ public class RandomTraderB extends AutoTraderBase {
       
     }
 
-    @Override
-    public JDialog getGuiConsole() {
-        return null;
-    }
+    
 
     protected enum Action {
         BUY, SELL, RANDOM

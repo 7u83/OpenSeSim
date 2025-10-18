@@ -28,13 +28,15 @@ package traders.ManTrader;
 //import sesim.Exchange.Account;
 
 import sesim.Account;
+import sesim.Exchange;
+import sesim.Exchange.AccountListener;
 
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AccountBalance extends javax.swing.JPanel {
+public class AccountBalance extends javax.swing.JPanel{
 
     /**
      * Creates new form AccountBalance
@@ -43,10 +45,13 @@ public class AccountBalance extends javax.swing.JPanel {
         initComponents();
     }
     
+      
     public void updateBalance (Account account){
         this.moneyLabel.setText(Double.toString(account.getMoney()));
         this.sharesLabel.setText(Double.toString(account.getShares()));
     }
+    
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,16 +62,16 @@ public class AccountBalance extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        moneyLabelText = new javax.swing.JLabel();
         moneyLabel = new javax.swing.JLabel();
         sharesLabel = new javax.swing.JLabel();
         sharesLabelText = new javax.swing.JLabel();
 
-        jLabel1.setText("Money:");
+        moneyLabelText.setText("Cash balance:");
 
         moneyLabel.setText("0.0000");
 
-        sharesLabel.setText("jLabel3");
+        sharesLabel.setText("0");
 
         sharesLabelText.setText("Shares:");
 
@@ -74,35 +79,38 @@ public class AccountBalance extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sharesLabelText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(moneyLabelText, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(moneyLabel)
-                .addGap(18, 18, 18)
-                .addComponent(sharesLabelText)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sharesLabel)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(sharesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(moneyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(moneyLabel)
-                    .addComponent(sharesLabel)
-                    .addComponent(sharesLabelText))
+                    .addComponent(moneyLabelText)
+                    .addComponent(moneyLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sharesLabelText)
+                    .addComponent(sharesLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel moneyLabel;
+    private javax.swing.JLabel moneyLabelText;
     private javax.swing.JLabel sharesLabel;
     private javax.swing.JLabel sharesLabelText;
     // End of variables declaration//GEN-END:variables
+
+
 }
