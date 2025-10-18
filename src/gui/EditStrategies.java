@@ -45,23 +45,22 @@ import sesim.AutoTraderInterface;
  */
 public final class EditStrategies extends EscDialog {
 
-
     TreeMap<String, JSONObject> strategies = new TreeMap();
 
     void initComboBox() {
-        
-        this.reloadStrategyConfigs();
-        
-        this.jComboBoxStrategySelector.removeAllItems();
 
-/*        
+        this.reloadStrategyConfigs();
+
+        this.strategySelectComboBox.removeAllItems();
+
+        /*        
         ArrayList<String> sn = Globals.tloader.getDefaultStrategyNames();
-*/
+         */
         Iterator<String> i = strategies.keySet().iterator();
         while (i.hasNext()) {
 
-            this.jComboBoxStrategySelector.addItem(i.next());
-        }        
+            this.strategySelectComboBox.addItem(i.next());
+        }
 
     }
 
@@ -72,20 +71,16 @@ public final class EditStrategies extends EscDialog {
         super(parent, modal);
         initComponents();
 
-        
-        
         this.setLocationRelativeTo(this.getParent());
 
         initComboBox();
         
-        
+pack();                             // berechnet benötigte Größe
+setMinimumSize(getSize()); 
 
     }
 
-
-    
     //final String STRATEGYPREFS = "Strategies";
-
     void reloadStrategyConfigs() {
 
         strategies = new TreeMap();
@@ -99,6 +94,30 @@ public final class EditStrategies extends EscDialog {
         }
 
     }
+    
+    void initGuiPanel(){
+        javax.swing.GroupLayout defaultGuiPanelLayout = new javax.swing.GroupLayout(acgui);
+        acgui.setLayout(defaultGuiPanelLayout);
+        defaultGuiPanelLayout.setHorizontalGroup(
+            defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        defaultGuiPanelLayout.setVerticalGroup(
+            defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+
+        guiPanel.add(acgui, java.awt.BorderLayout.CENTER);
+        
+        
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -110,7 +129,7 @@ public final class EditStrategies extends EscDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jComboBoxStrategySelector = new javax.swing.JComboBox<>();
+        strategySelectComboBox = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         guiPanel = new javax.swing.JPanel();
         defaultGuiPanel = new javax.swing.JPanel();
@@ -127,10 +146,10 @@ public final class EditStrategies extends EscDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jComboBoxStrategySelector.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBoxStrategySelector.addActionListener(new java.awt.event.ActionListener() {
+        strategySelectComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        strategySelectComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxStrategySelectorActionPerformed(evt);
+                strategySelectComboBoxActionPerformed(evt);
             }
         });
 
@@ -148,15 +167,15 @@ public final class EditStrategies extends EscDialog {
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(defaultGuiPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         defaultGuiPanelLayout.setVerticalGroup(
             defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(defaultGuiPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
@@ -191,7 +210,7 @@ public final class EditStrategies extends EscDialog {
         });
 
         jNewButton.setMnemonic('n');
-        jNewButton.setText("New");
+        jNewButton.setText("New ...");
         jNewButton.setToolTipText("");
         jNewButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -208,9 +227,9 @@ public final class EditStrategies extends EscDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 225, Short.MAX_VALUE)
                         .addComponent(jNewButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jRemoveButton)
@@ -224,7 +243,7 @@ public final class EditStrategies extends EscDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jBaseLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(strategySelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -232,10 +251,10 @@ public final class EditStrategies extends EscDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxStrategySelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(strategySelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBaseLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSaveButton)
@@ -252,14 +271,13 @@ public final class EditStrategies extends EscDialog {
     AutoTraderGui acgui;
     AutoTraderInterface ac;
 
-    private void jComboBoxStrategySelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxStrategySelectorActionPerformed
+    private void strategySelectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_strategySelectComboBoxActionPerformed
 
         //String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
         //JSONObject cfgs = new JSONObject(cfglist);
         // TUBE GLOB
-        JSONObject cfgs =  Globals.getStrategies();
-        String item = (String) this.jComboBoxStrategySelector.getSelectedItem();
-
+        JSONObject cfgs = Globals.getStrategies();
+        String item = (String) this.strategySelectComboBox.getSelectedItem();
 
         if (item == null) {
             return;
@@ -280,11 +298,10 @@ public final class EditStrategies extends EscDialog {
         }
 
         //Globals.LOGGER.info(String.format("Base %s\n", base));
-
         ac = Globals.sim.tloader.getStrategyBase(base);
         if (ac == null) {
-          //  System.out.print("BASE IST NULL\n");
-          //  Globals.LOGGER.info(String.format("Can't load: %s\n", base));
+            //  System.out.print("BASE IST NULL\n");
+            //  Globals.LOGGER.info(String.format("Can't load: %s\n", base));
             //System.exit(0);
 
             return;
@@ -296,7 +313,7 @@ public final class EditStrategies extends EscDialog {
         acgui = ac.getGui();
         guiPanel.removeAll();
         if (acgui != null) {
-
+                 //this.initGuiPanel();
             guiPanel.add(acgui, java.awt.BorderLayout.CENTER);
             jScrollPane1.setViewportView(acgui);
             acgui.setVisible(true);
@@ -304,6 +321,8 @@ public final class EditStrategies extends EscDialog {
         } else {
             System.out.printf("Adding default gui panel\n");
             guiPanel.add(this.defaultGuiPanel, java.awt.BorderLayout.CENTER);
+            jScrollPane1.setViewportView(defaultGuiPanel);
+            this.defaultGuiPanel.setVisible(true);
         }
         this.revalidate();
         System.out.printf("Setted the dings\n", "");
@@ -316,28 +335,24 @@ public final class EditStrategies extends EscDialog {
 
 //        System.out.print("Crete auto trader afeter select\n");
 //        AutoTrader at = ac.createTrader(Globals.se, jo, 100, 100);
-
         this.repaint();
-    }//GEN-LAST:event_jComboBoxStrategySelectorActionPerformed
+    }//GEN-LAST:event_strategySelectComboBoxActionPerformed
 
     private void jSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveButtonActionPerformed
 
-        if (acgui!=null)
+        if (acgui != null) {
             acgui.save();
-        
+        }
+
         JSONObject o = ac.getConfig();
 
-        String item = (String) this.jComboBoxStrategySelector.getSelectedItem();
+        String item = (String) this.strategySelectComboBox.getSelectedItem();
 
 //        o.put("base", ac.getDisplayName());
         o.put("base", ac.getClass().getCanonicalName());
-        
-System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
 
-        
-        
-        
-        
+        System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
+
         JSONObject o0 = strategies.get(item);
 
         if (o0 == null) {
@@ -354,15 +369,15 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
 //        JSONObject cfgs = new JSONObject(cfglist);
 // TUBE GLOB
         JSONObject cfgs = Globals.getStrategies();
-        
+
         cfgs.put(item, o);
-        
+
 //        Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
         Globals.putStrategies(cfgs);
 
         //this.reloadStrategyConfigs();
         this.initComboBox();
-        this.jComboBoxStrategySelector.setSelectedItem(item);
+        this.strategySelectComboBox.setSelectedItem(item);
         //this.jComboBoxStrategySelector.
 
         System.out.printf("Saving item: %s\nJSON %s\n", item, o.toString(3));
@@ -377,40 +392,39 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
 
         System.out.print("Hello - remove button\n");
 
-        String selected = (String) this.jComboBoxStrategySelector.getSelectedItem();
+        String selected = (String) this.strategySelectComboBox.getSelectedItem();
         System.out.printf("Selected: %s\n", selected);
 
 //        String cfglist = Globals.prefs.get(Globals.PrefKeys.STRATEGIES, "{}");
 //        JSONObject cfgs = new JSONObject(cfglist);
-
         JSONObject cfgs = Globals.getStrategies();
 // TUBE GLOB        
 
         //System.out.printf("CFG vorher: %s\n", cfgs.toString(3));
         cfgs.remove(selected);
-        
-       // System.out.printf("Neue nachher: %s\n", cfgs.toString(3));
-      //  Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
-      Globals.putStrategies(cfgs);
+
+        // System.out.printf("Neue nachher: %s\n", cfgs.toString(3));
+        //  Globals.prefs.put(Globals.PrefKeys.STRATEGIES, cfgs.toString());
+        Globals.putStrategies(cfgs);
 
         this.initComboBox();
-        
 
 
     }//GEN-LAST:event_jRemoveButtonActionPerformed
 
     private void jNewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNewButtonActionPerformed
-        NewStrategyDialog sd = new NewStrategyDialog((Frame) this.getParent(),true);
+        NewStrategyDialog sd = new NewStrategyDialog((Frame) this.getParent(), true);
         sd.setVisible(true);
-        
-        if (sd.result==null)
+
+        if (sd.result == null) {
             return;
-        
+        }
+
         AutoTraderInterface ac = Globals.sim.tloader.getStrategyBase(sd.result.base);
         JSONObject cfg = ac.getConfig();
         System.out.printf("Initial cfg %s\n", cfg.toString(2));
         cfg.put("base", ac.getClass().getCanonicalName());
-        
+
         Globals.saveStrategy(sd.result.name, cfg);
         this.initComboBox();
     }//GEN-LAST:event_jNewButtonActionPerformed
@@ -464,12 +478,12 @@ System.out.printf("The big name: %s\n", ac.getClass().getCanonicalName());
     private javax.swing.JLabel jBaseLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBoxStrategySelector;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JButton jNewButton;
     private javax.swing.JButton jRemoveButton;
     private javax.swing.JButton jSaveButton;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JComboBox<String> strategySelectComboBox;
     // End of variables declaration//GEN-END:variables
 }
