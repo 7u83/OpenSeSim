@@ -215,7 +215,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
 
         double vol = this.buyEditOrderPanel.getVolume();
         double limit = this.buyEditOrderPanel.getLimit();
-        System.out.printf("buy button pressed, v: %f, l: %f\n", vol, limit);
+     
         synchronized (se.timer) {
             Order o = se.createOrder(account, OrderType.BUYLIMIT, vol, limit);
 
@@ -226,7 +226,7 @@ public class ManTraderConsole extends javax.swing.JPanel {
     private void sellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellButtonActionPerformed
         double vol = this.sellEditOrderPanel.getVolume();
         double limit = this.sellEditOrderPanel.getLimit();
-        System.out.printf("buy button pressed, v: %f, l: %f\n", vol, limit);
+  //      System.out.printf("buy button pressed, v: %f, l: %f\n", vol, limit);
         synchronized (se.timer) {
             Order o = se.createOrder(account, OrderType.SELLLIMIT, vol, limit);
 

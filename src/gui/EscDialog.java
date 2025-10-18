@@ -46,8 +46,8 @@ public class EscDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-
-        this.setLocationRelativeTo(parent);
+ //this.setLocationRelativeTo(this.getParent());
+    //    this.setLocationRelativeTo(parent);
 
         // Key binding for Esc
         getRootPane().registerKeyboardAction(

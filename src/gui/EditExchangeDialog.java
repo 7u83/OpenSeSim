@@ -59,7 +59,7 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         // initialPrice enable/disable
         this.initialPrice.setEnabled(!autoCalc);
 
-        this.setLocationRelativeTo(parent);
+       // this.setLocationRelativeTo(parent);
     }
 
     int showdialog() {
