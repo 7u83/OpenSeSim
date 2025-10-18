@@ -38,7 +38,7 @@
             </path>
             <map from="${basedir}${file.separator}" to=""/>
         </pathconvert>
-        <propertyfile file="nbproject/project.properties">
+        <propertyfile file="build/ivy.properties">
              <entry key="ivy.classpath" value="${ivy.classpath.computed}"/>
             <!--<entry operation="=" key="ivy.classpath" value="${ivy.classpath.computed}"/>-->
         </propertyfile>
