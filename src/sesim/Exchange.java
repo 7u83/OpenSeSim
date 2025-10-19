@@ -47,15 +47,15 @@ public class Exchange {
         shares_formatter = getFormatter(n);
     }
 
-    public float roundToDecimals(float val, float f) {
-        return (float)Math.floor(val * f) / f;
+    public float roundToDecimals(double val, double f) {
+        return (float) ( (Math.floor(val * f) / f) );
     }
 
-    public float roundShares(float shares) {
+    public float roundShares(double shares) {
         return roundToDecimals(shares, shares_df);
     }
 
-    public float roundMoney(float money) {
+    public float roundMoney(double money) {
         return roundToDecimals(money, money_df);
     }
 
@@ -464,6 +464,15 @@ public class Exchange {
         q.time=timer.getCurrentTimeMillis();
         quoteHistory.add(q);
         this.updateQuoteReceivers(q);
+    }
+    
+    public float getLastPrice(){
+        Quote q = this.getLastQuoete();
+        if (q==null){
+            System.out.printf("get last quote failed\n");
+            return 0f;
+        }
+        return q.price;
     }
 
     /*
