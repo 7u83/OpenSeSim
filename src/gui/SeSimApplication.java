@@ -29,6 +29,7 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -856,6 +857,10 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
+        
+     //   import java.awt.Toolkit;
+
+
 
         // create ConsoleHandler 
         ConsoleHandler consoleHandler = new ConsoleHandler();

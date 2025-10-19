@@ -25,7 +25,13 @@
  */
 package sesim;
 
+import groovy.util.MapEntry;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import sesim.Exchange.Order;
+import sesim.Exchange.OrderType;
 
 /**
  *
@@ -65,8 +71,11 @@ public class Account {
         return owner;
     }
 
-    public ConcurrentHashMap<Long, Exchange.Order> getOrders() {
+    /*  public ConcurrentHashMap<Long, Exchange.Order> getOrders() {
         return orders;
+    }*/
+    public Map<Long, Exchange.Order> getOrders() {
+        return Collections.unmodifiableMap(orders);
     }
 
     public void setListener(Exchange.AccountListener al) {
@@ -85,4 +94,52 @@ public class Account {
         return orders.size();
     }
 
+    public float getCashInOpenOrders() {
+        Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
+        float cash = 0f;
+
+        while (it.hasNext()) {
+            Map.Entry e = it.next();
+            Order o = (Order) e.getValue();
+            if (o.type == OrderType.BUYLIMIT) {
+                cash += (o.getInitialVolume() - o.getExecuted()) * o.limit;
+            }
+        }
+        return cash;
+
+    }
+
+    public float getSharesInOpenOrders() {
+        Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
+        float volume = 0f;
+
+        while (it.hasNext()) {
+            Map.Entry e = it.next();
+            Order o = (Order) e.getValue();
+            if (o.type == OrderType.SELLLIMIT) {
+                volume += o.getInitialVolume() - o.getExecuted();
+            }
+        }
+        return volume;
+    }
+
+    public boolean couldBuy(float volume, float limit) {
+        float avail = this.getMoney() - this.getCashInOpenOrders();
+
+        System.out.printf("CouldBuy %f<%f\n", volume * limit, avail);
+        return volume * limit <= avail;
+    }
+
+    public boolean coulSell(float volume) {
+        float avail = this.getShares() - this.getSharesInOpenOrders();
+        return volume <= avail;
+    }
+
+    public float getSharesAvailable() {
+        return getShares() - getSharesInOpenOrders();
+    }
+
+    public float getCashAvailable() {
+        return this.getMoney() - this.getCashInOpenOrders();
+    }
 }

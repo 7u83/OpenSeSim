@@ -136,7 +136,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
         //System.out.printf("%d %s\n", o.getID(), o.getStatus().toString());
         if (o.getStatus() == OrderStatus.CLOSED) {
-            o.getAccount().getOrders().put(o.getID(), o);
+//            o.getAccount().getOrders().put(o.getID(), o);
         }
         
         consoleDialog.doUpdate(a);

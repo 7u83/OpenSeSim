@@ -92,7 +92,39 @@ public class ManTraderConsoleDialog extends EscDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ctxMenu = new javax.swing.JPopupMenu();
+        ctxMenuCreateBuyOrder = new javax.swing.JMenuItem();
+        ctxMenuCreateSellOrder = new javax.swing.JMenuItem();
+        ctxMenuCancelOrder = new javax.swing.JMenuItem();
+        ctxMenuModifyOder = new javax.swing.JMenuItem();
         manTraderConsole = new ManTraderConsole(se,account);
+
+        ctxMenuCreateBuyOrder.setText("Create Buy Order");
+        ctxMenuCreateBuyOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuCreateBuyOrderActionPerformed(evt);
+            }
+        });
+        ctxMenu.add(ctxMenuCreateBuyOrder);
+
+        ctxMenuCreateSellOrder.setText("Create Sell Order");
+        ctxMenuCreateSellOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuCreateSellOrderActionPerformed(evt);
+            }
+        });
+        ctxMenu.add(ctxMenuCreateSellOrder);
+
+        ctxMenuCancelOrder.setText("Cancel Order");
+        ctxMenuCancelOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ctxMenuCancelOrderActionPerformed(evt);
+            }
+        });
+        ctxMenu.add(ctxMenuCancelOrder);
+
+        ctxMenuModifyOder.setText("Modify Oder");
+        ctxMenu.add(ctxMenuModifyOder);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -110,8 +142,29 @@ public class ManTraderConsoleDialog extends EscDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void ctxMenuCreateBuyOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateBuyOrderActionPerformed
+      //  createOrder(OrderType.BUYLIMIT);
+    }//GEN-LAST:event_ctxMenuCreateBuyOrderActionPerformed
+
+    private void ctxMenuCreateSellOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateSellOrderActionPerformed
+       // createOrder(OrderType.SELLLIMIT);
+    }//GEN-LAST:event_ctxMenuCreateSellOrderActionPerformed
+
+    private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed
+   //     int r = table.getSelectedRow();
+   //    Long id = (Long) model.getValueAt(r, 0);
+
+   //    System.out.printf("Should cancel %d\n", id);
+        //      Globals.sim.se.cancelOrder(account, id);
+    }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu ctxMenu;
+    private javax.swing.JMenuItem ctxMenuCancelOrder;
+    private javax.swing.JMenuItem ctxMenuCreateBuyOrder;
+    private javax.swing.JMenuItem ctxMenuCreateSellOrder;
+    private javax.swing.JMenuItem ctxMenuModifyOder;
     private traders.ManTrader.ManTraderConsole manTraderConsole;
     // End of variables declaration//GEN-END:variables
 }

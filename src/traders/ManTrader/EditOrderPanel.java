@@ -4,6 +4,10 @@
  */
 package traders.ManTrader;
 
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JSpinner;
+import javax.swing.text.DefaultFormatter;
 import sesim.Account;
 import sesim.Exchange;
 import sesim.Exchange.OrderType;
@@ -24,6 +28,19 @@ public class EditOrderPanel extends javax.swing.JPanel {
      */
     public EditOrderPanel() {
         initComponents();
+
+        JSpinner spinner = limitSpinner;
+        JComponent comp = spinner.getEditor();
+        JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
+        DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
+        formatter.setCommitsOnValidEdit(true);
+
+        spinner = volumeSpinner;
+        comp = spinner.getEditor();
+        field = (JFormattedTextField) comp.getComponent(0);
+        formatter = (DefaultFormatter) field.getFormatter();
+        formatter.setCommitsOnValidEdit(true);
+
     }
 
     public EditOrderPanel(Exchange e, Account a, OrderType t) {
@@ -69,8 +86,8 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }
 
     public float getVolume() {
-       return (float) volumeSpinner.getValue();
-        
+        return (float) volumeSpinner.getValue();
+
     }
 
     public float getLimit() {
@@ -106,7 +123,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         volumeSpinner = new javax.swing.JSpinner();
         loadValuesButton = new javax.swing.JButton();
         priceLabel = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        setVolButton = new javax.swing.JButton();
 
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Buy Limit", "Sell Limit", "Sell", "Buy" }));
 
@@ -139,11 +156,11 @@ public class EditOrderPanel extends javax.swing.JPanel {
         priceLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         priceLabel.setText("0.00");
 
-        jButton1.setText("Set vol");
-        jButton1.setToolTipText("Set the volume to the maximum \namount  you can buy with your \ncurrent cash balance.");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        setVolButton.setText("Set vol");
+        setVolButton.setToolTipText("Set the volume to the maximum \namount  you can buy with your \ncurrent cash balance.");
+        setVolButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                setVolButtonActionPerformed(evt);
             }
         });
 
@@ -151,21 +168,25 @@ public class EditOrderPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(loadValuesButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(setVolButton, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12))
+                    .addComponent(priceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(volumeSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(limitSpinner))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(priceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(loadValuesButton)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(limitSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,9 +199,8 @@ public class EditOrderPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(loadValuesButton)
-                    .addComponent(jButton1))
-                .addContainerGap())
+                    .addComponent(setVolButton)
+                    .addComponent(loadValuesButton)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -196,18 +216,29 @@ public class EditOrderPanel extends javax.swing.JPanel {
         setPrice();
     }//GEN-LAST:event_volumeSpinnerStateChanged
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void setVolButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setVolButtonActionPerformed
+        Quote q = se.getBestPrice_0();
+        Float price = q == null ? 0.0f : q.price;
+
+        if (type == OrderType.BUYLIMIT) {
+            //this.limitSpinner.setValue(se.roundMoney(price));
+            this.volumeSpinner.setValue(se.roundShares(account.getCashAvailable()/ this.getLimit()));
+        }
+        if (type == OrderType.SELLLIMIT) {
+            //  double avail = account.getSharesAvailable();
+            this.volumeSpinner.setValue(se.roundShares(account.getSharesAvailable()));
+        }        // TODO add your handling code here:
+        this.volumeSpinner.revalidate();
+    }//GEN-LAST:event_setVolButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     javax.swing.JSpinner limitSpinner;
     private javax.swing.JButton loadValuesButton;
     private javax.swing.JLabel priceLabel;
+    private javax.swing.JButton setVolButton;
     private javax.swing.JComboBox<String> typeComboBox;
     javax.swing.JSpinner volumeSpinner;
     // End of variables declaration//GEN-END:variables

@@ -407,7 +407,7 @@ public class Exchange {
 
         @Override
         public void run() {
-            synchronized (this) {
+  /*          synchronized (this) {
                 try {
                     while (true) {
 
@@ -430,7 +430,7 @@ public class Exchange {
                     Logger.getLogger(Exchange.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-            }
+            }*/
         }
 
     }
@@ -935,8 +935,10 @@ public class Exchange {
         if (o.getAccount().getOwner().getName().equals("Tobias0")) {
 //            System.out.printf("Fully remove tobias\n");
         }
+        int n = o.account.orders.size();
 
-        o.account.orders.remove(o.id);
+
+        Order x = o.account.orders.remove(o.id);
 
         SortedSet book = order_books.get(o.type);
 
@@ -973,7 +975,7 @@ public class Exchange {
     private void finishTrade(Order b, Order a, float price, float volume) {
         // Transfer money and shares
         transferMoneyAndShares(b.account, a.account, volume * price, -volume);
-
+          statistics.trades++;
         // Update volume
         b.volume -= volume;
         a.volume -= volume;
@@ -997,7 +999,7 @@ public class Exchange {
             statistics.low = q.price;
         }
 
-        statistics.trades++;
+      //  statistics.trades++;
 
         //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
         quoteHistory.add(q);
@@ -1087,7 +1089,7 @@ public class Exchange {
             money_total += price * volume;
 
 //            num_trades++;
-            statistics.trades++;
+      //      statistics.trades++;
 
             this.checkSLOrders(price);
 
@@ -1141,10 +1143,10 @@ public class Exchange {
     public Order createOrder(Account a, OrderType type, float volume, float limit) {
 
         //   System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(), type.toString(), limit, volume);
-        if (a == null) {
+  /*      if (a == null) {
             System.out.printf("Order not places account\n");
             return null;
-        }
+        }*/
 
         Order o = new Order(a, type, volume, limit);
         if (o.volume <= 0 || o.limit <= 0) {
@@ -1171,7 +1173,9 @@ public class Exchange {
             statistics.orders++;
 
             addOrderToBook(o);
+//            System.out.printf("PUT ORDER %s, %d\n",o,a.orders.size());
             a.orders.put(o.id, o);
+//            System.out.printf("PUT ORDER AFTER %s, %d\n",o,a.orders.size());
             a.update(o);
 
             executeOrders();
@@ -1202,5 +1206,6 @@ public class Exchange {
         return a.orders.size();
     }
 
+    
  
 }

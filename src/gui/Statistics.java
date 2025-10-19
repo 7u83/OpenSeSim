@@ -74,7 +74,7 @@ public class Statistics extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        numTrades = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         labelHigh = new javax.swing.JLabel();
@@ -83,7 +83,7 @@ public class Statistics extends javax.swing.JPanel {
 
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel1.setText("Trades:");
+        numTrades.setText("Trades:");
 
         jLabel2.setText("Heigh:");
 
@@ -111,7 +111,7 @@ public class Statistics extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labelLow))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(numTrades)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tradesLabel)))
                 .addContainerGap(302, Short.MAX_VALUE))
@@ -129,7 +129,7 @@ public class Statistics extends javax.swing.JPanel {
                     .addComponent(labelLow))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(numTrades)
                     .addComponent(tradesLabel))
                 .addContainerGap(235, Short.MAX_VALUE))
         );
@@ -137,11 +137,11 @@ public class Statistics extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel labelHigh;
     private javax.swing.JLabel labelLow;
+    private javax.swing.JLabel numTrades;
     private javax.swing.JLabel tradesLabel;
     // End of variables declaration//GEN-END:variables
 }

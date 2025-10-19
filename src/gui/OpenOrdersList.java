@@ -46,18 +46,24 @@ import sesim.Exchange.OrderType;
  */
 public class OpenOrdersList extends javax.swing.JPanel {
 
-    private Account account;
+ //   private Account account;
     DefaultTableModel model;
+    private Map list = null;
 
     public final void updateModel() {
-        if (null == account) {
+        if (list == null) {
             return;
         }
 
-        int row = 0;
+        
 
-        Iterator<Map.Entry<Long, Order>> it = account.getOrders().entrySet().iterator();
-        model.setRowCount(account.getOrders().size());
+  //      Iterator<Map.Entry<Long, Order>> it = account.getOrders().entrySet().iterator();
+  //        model.setRowCount(account.getOrders().size());
+  
+        Iterator<Map.Entry<Long, Order>> it = list.entrySet().iterator();
+        model.setRowCount(list.size());
+  
+        int row = 0;
         while (it.hasNext()) {
             Map.Entry e = it.next();
             Long k = (Long) e.getKey();
@@ -86,13 +92,19 @@ public class OpenOrdersList extends javax.swing.JPanel {
         model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         table.setFillsViewportHeight(true);
-        updateModel();
+      //  updateModel();
 
     }
 
-    public void initOrderList(Account account) {
+    /*public void initOrderList(Account account) {
         this.account = account;
-        updateModel();
+        javax.swing.SwingUtilities.invokeLater(this::updateModel);
+
+    }*/
+
+    public void setOrderList(Map m) {
+        this.list = m;
+        javax.swing.SwingUtilities.invokeLater(this::updateModel);
     }
 
     /**
@@ -187,7 +199,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
 
     private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
 
-        Point point = evt.getPoint();
+  /*      Point point = evt.getPoint();
         int currentRow = table.rowAtPoint(point);
         if (currentRow != -1) {
 
@@ -203,15 +215,14 @@ public class OpenOrdersList extends javax.swing.JPanel {
         }
 
         ctxMenu.show(table, point.x, point.y);
-
+*/
     }//GEN-LAST:event_tableMousePressed
 
     private void createOrder(OrderType t) {
-     //   CreateOrderDialog cd = new CreateOrderDialog(Globals.sim.se, Globals.frame, true, account, t);
+        //   CreateOrderDialog cd = new CreateOrderDialog(Globals.sim.se, Globals.frame, true, account, t);
 
         //cd.initDialog(account);
-     //   cd.setVisible(true);
-
+        //   cd.setVisible(true);
     }
 
 
@@ -229,7 +240,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
         Long id = (Long) model.getValueAt(r, 0);
 
         System.out.printf("Should cancel %d\n", id);
-        Globals.sim.se.cancelOrder(account, id);
+  //      Globals.sim.se.cancelOrder(account, id);
 
     }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
 
