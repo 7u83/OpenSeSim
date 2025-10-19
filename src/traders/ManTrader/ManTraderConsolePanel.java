@@ -26,10 +26,15 @@
 package traders.ManTrader;
 
 import gui.OpenOrdersList;
+import java.awt.Frame;
+import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.Window;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
 import javax.swing.JSpinner;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import sesim.Account;
@@ -42,7 +47,7 @@ import sesim.Exchange.OrderType;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ManTraderConsole extends javax.swing.JPanel {
+public class ManTraderConsolePanel extends javax.swing.JPanel {
 
     public ManTrader trader;
     Account account;
@@ -56,16 +61,61 @@ public class ManTraderConsole extends javax.swing.JPanel {
     /**
      * Creates new form ManTraderConsole
      */
-    public ManTraderConsole() {
+    public ManTraderConsolePanel() {
         initComponents();
 
         //  this.ordersList1.account=trader.getAccount();
     }
 
-    public ManTraderConsole(Exchange e, Account a) {
+    public ManTraderConsolePanel(Exchange e, Account a) {
         account = a;
         se = e;
         initComponents();
+       
+       // JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+        ordersList.table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+                    evt.consume();
+                    System.out.println("Doppelklick auf Order!");
+            //    Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(ManTraderConsolePanel.this);
+                
+                
+                // 1. Übergeordnetes Window finden (korrigierter Cast)
+            Window parentWindow = SwingUtilities.getWindowAncestor(ManTraderConsolePanel.this);
+
+            // 2. Parent an den Dialog-Konstruktor übergeben
+            //    Wenn ModifyOrderDialog einen java.awt.Frame oder java.awt.Dialog erwartet:
+            Frame parentFrame = (parentWindow instanceof Frame) ? (Frame) parentWindow : null;
+            // ODER (falls der Konstruktor auch Dialoge akzeptiert, was üblich ist):
+            // Dialog parentDialog = (parentWindow instanceof Dialog) ? (Dialog) parentWindow : null;
+            
+            // Da Sie Frame verwenden wollten, bleiben wir bei dieser Logik,
+            // setzen aber auf null, wenn es kein Frame ist, um den Fehler zu vermeiden.
+                    Point point = evt.getPoint();
+                int currentRow = ordersList.table.rowAtPoint(point);
+                if (currentRow != -1) {
+
+                    ordersList.table.setRowSelectionInterval(currentRow, currentRow);
+                    Long oid = (Long) ordersList.table.getModel().getValueAt(currentRow, 0);
+                    Order o = account.getOrderByID(oid);
+                                        ModifyOrderDialog d = new ModifyOrderDialog(parentFrame, true,se, o);
+                    d.setLocationRelativeTo(parentWindow);
+                    d.setVisible(true);
+        } else {
+
+        }
+
+            
+            
+            
+
+                }
+            }
+        });
+
         this.buyEditOrderPanel.limitSpinner.addChangeListener(
                 new ChangeListener() {
             @Override
@@ -241,6 +291,11 @@ public class ManTraderConsole extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        ordersList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ordersListMousePressed(evt);
+            }
+        });
         orderTabs.addTab("Open Orders", ordersList);
         orderTabs.addTab("Closed Orders", closedOrderList);
 
@@ -327,6 +382,14 @@ public class ManTraderConsole extends javax.swing.JPanel {
     private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed
 
     }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
+
+    private void ordersListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ordersListMousePressed
+        System.out.printf("Something hppened\n");
+/*        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+            evt.consume();
+            ModifyOrderDialog d = new ModifyOrderDialog(null, true);
+        }*/
+    }//GEN-LAST:event_ordersListMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

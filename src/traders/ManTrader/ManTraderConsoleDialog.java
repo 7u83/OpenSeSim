@@ -97,7 +97,7 @@ public class ManTraderConsoleDialog extends EscDialog {
         ctxMenuCreateSellOrder = new javax.swing.JMenuItem();
         ctxMenuCancelOrder = new javax.swing.JMenuItem();
         ctxMenuModifyOder = new javax.swing.JMenuItem();
-        manTraderConsole = new ManTraderConsole(se,account);
+        manTraderConsole = new ManTraderConsolePanel(se,account);
 
         ctxMenuCreateBuyOrder.setText("Create Buy Order");
         ctxMenuCreateBuyOrder.addActionListener(new java.awt.event.ActionListener() {
@@ -165,6 +165,6 @@ public class ManTraderConsoleDialog extends EscDialog {
     private javax.swing.JMenuItem ctxMenuCreateBuyOrder;
     private javax.swing.JMenuItem ctxMenuCreateSellOrder;
     private javax.swing.JMenuItem ctxMenuModifyOder;
-    private traders.ManTrader.ManTraderConsole manTraderConsole;
+    private traders.ManTrader.ManTraderConsolePanel manTraderConsole;
     // End of variables declaration//GEN-END:variables
 }

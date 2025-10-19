@@ -163,7 +163,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.String.class
+                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false
@@ -178,11 +178,6 @@ public class OpenOrdersList extends javax.swing.JPanel {
             }
         });
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                tableMousePressed(evt);
-            }
-        });
         jScrollPane1.setViewportView(table);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -196,27 +191,6 @@ public class OpenOrdersList extends javax.swing.JPanel {
             .addComponent(jScrollPane1)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
-
-  /*      Point point = evt.getPoint();
-        int currentRow = table.rowAtPoint(point);
-        if (currentRow != -1) {
-
-            table.setRowSelectionInterval(currentRow, currentRow);
-        } else {
-
-        }
-
-        int nbuttons = MouseInfo.getNumberOfButtons();
-        int button = evt.getButton();
-        if (!evt.isPopupTrigger()) {
-            return;
-        }
-
-        ctxMenu.show(table, point.x, point.y);
-*/
-    }//GEN-LAST:event_tableMousePressed
 
     private void createOrder(OrderType t) {
         //   CreateOrderDialog cd = new CreateOrderDialog(Globals.sim.se, Globals.frame, true, account, t);
@@ -252,6 +226,6 @@ public class OpenOrdersList extends javax.swing.JPanel {
     private javax.swing.JMenuItem ctxMenuCreateSellOrder;
     private javax.swing.JMenuItem ctxMenuModifyOder;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable table;
+    public javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,6 +10,7 @@ import javax.swing.JSpinner;
 import javax.swing.text.DefaultFormatter;
 import sesim.Account;
 import sesim.Exchange;
+import sesim.Exchange.Order;
 import sesim.Exchange.OrderType;
 import sesim.Quote;
 
@@ -49,6 +50,15 @@ public class EditOrderPanel extends javax.swing.JPanel {
         account = a;
         type = t;
         this.loadFields();
+    }
+
+    public EditOrderPanel(Exchange e, Account a, Order o) {
+        this();
+        account = a;
+        se = e;
+        type = o.getType();
+        this.limitSpinner.setValue(o.limit);
+        this.volumeSpinner.setValue(o.volume);
     }
 
     private void loadFields() {
@@ -222,7 +232,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
         if (type == OrderType.BUYLIMIT) {
             //this.limitSpinner.setValue(se.roundMoney(price));
-            this.volumeSpinner.setValue(se.roundShares(account.getCashAvailable()/ this.getLimit()));
+            this.volumeSpinner.setValue(se.roundShares(account.getCashAvailable() / this.getLimit()));
         }
         if (type == OrderType.SELLLIMIT) {
             //  double avail = account.getSharesAvailable();

@@ -142,4 +142,8 @@ public class Account {
     public float getCashAvailable() {
         return this.getMoney() - this.getCashInOpenOrders();
     }
+    
+    public Order getOrderByID(long oid){
+        return orders.get(oid);
+    }
 }

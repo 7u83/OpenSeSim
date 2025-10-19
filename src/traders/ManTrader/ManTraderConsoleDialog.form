@@ -72,9 +72,9 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="traders.ManTrader.ManTraderConsole" name="manTraderConsole">
+    <Component class="traders.ManTrader.ManTraderConsolePanel" name="manTraderConsole">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ManTraderConsole(se,account)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new traders.ManTrader.ManTraderConsolePanel(se,account)"/>
       </AuxValues>
     </Component>
   </SubComponents>
