@@ -48,7 +48,7 @@ public class ManTraderConsoleDialog extends EscDialog {
      * @param a
      */
     public ManTraderConsoleDialog(java.awt.Frame parent, boolean modal,
-            Exchange e, Account a) {
+            Exchange e, Account a, ManTrader mt) {
         super(parent, modal);
         se = e;
         account = a;
@@ -57,7 +57,7 @@ public class ManTraderConsoleDialog extends EscDialog {
         this.pack(); // Größe basierend auf Komponenten berechnen
         this.setMinimumSize(this.getSize()); // Minimalgröße setzen
 
-        this.manTraderConsole.init(account);
+        this.manTraderConsole.init(account,mt);
 
         /*  this.ordersList.initOrderList(account); */
         this.setTitle(account.getOwner().getName() + " - Trading Console");
@@ -76,8 +76,8 @@ public class ManTraderConsoleDialog extends EscDialog {
 
     }
 
-    void doUpdate(Account a) {
-        this.manTraderConsole.doUpdate(a);
+    void doUpdate(Account a, ManTrader mt) {
+        this.manTraderConsole.doUpdate(a,mt);
     }
 
     // public ManTraderConsole getConsole(){

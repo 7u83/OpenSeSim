@@ -1,13 +1,44 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Copyright (c) 2025, 7u83 <7u83@mail.ru>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
+
 package traders.GroovyTrader;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import groovy.lang.Script;
 import org.json.JSONObject;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
+import sesim.Exchange;
+import sesim.Exchange.Order;
+import sesim.Exchange.OrderType;
+import sesim.Quote;
 import sesim.Scheduler;
+import sesim.Scheduler.Event;
+import sesim.Scheduler.EventProcessor;
 
 /**
  *
@@ -15,16 +46,112 @@ import sesim.Scheduler;
  */
 public class GroovyTrader extends AutoTraderBase {
 
+    String groovySourceCode = "";
+    Script groovyScript;
+
+    final String CFG_SRC = "src";
+    AccountApi accountApi;
+    SeSimApi sesimApi;
+
     @Override
     public void start() {
-        return;
-        
+        accountApi = new AccountApi();
+        sesimApi = new SeSimApi();
 
+        Binding binding = new Binding();
+        binding.setVariable("account", accountApi);
+        binding.setVariable("sesim", sesimApi);
+        
+        GroovyShell shell = new GroovyShell(binding);
+
+        try {
+            // 1. Skript parsen, um die Script-Klasse zu erhalten
+
+            groovyScript = shell.parse(this.groovySourceCode);
+
+            // 2. Die Methode (Funktion) mit Argumenten aufrufen
+            //    Der erste Parameter ist der Name der Funktion.
+            //    Der zweite Parameter ist ein Array von Argumenten (Object...).
+            Object result = groovyScript.invokeMethod("start", new Object[]{});
+
+            System.out.println("Ergebnis aus Groovy: " + result);
+            return;
+
+        } catch (Exception e) {
+            System.err.println("Fehler beim Ausführen der Groovy-Funktion: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+
+    }
+
+    public class AccountApi {
+
+        public float getCashBalance() {
+            return account_id.getMoney();
+        }
+        public float getShares() {
+            return account_id.getShares();
+        }
+        
+    }
+    
+    public class SeSimApi{
+        
+        private class GroovyEvent extends Event implements EventProcessor{
+            final String groovyFun;
+
+            public GroovyEvent(String fun,long t){
+               this.eventProcessor=this;
+               this.groovyFun=fun;
+                
+            }
+
+            @Override
+            public long processEvent(long time, Event e) {
+                Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
+                return 0;
+            }
+            
+        }
+        
+        public OrderType BUYLIMIT=Exchange.OrderType.BUYLIMIT;
+        public OrderType SELLIMIT=Exchange.OrderType.SELLLIMIT;
+        
+        public Order createOrder(OrderType type,float vol, float limit){
+            limit = se.roundMoney(limit);
+            vol = se.roundShares(vol);
+            return  se.createOrder(account_id, type, vol, limit);
+        }
+        
+        public Order createOrder(OrderType type, double vol, double limit){
+            return createOrder(type, (float)vol, (float)limit);
+        }
+        
+        public boolean cancleOrder(Order o){
+            return se.cancelOrder(account_id, o.getID());
+        }
+        
+        public Quote getLastQuote(){
+            return se.getLastQuoete();
+        }
+        
+        public float getLastPrice(){
+            return getLastQuote().price;
+        }
+        
+        public boolean scheduleOnce(String groovyFun, long timer){
+            GroovyEvent g = new GroovyEvent(groovyFun,timer);
+            se.timer.addEvent(se.timer.getCurrentTimeMillis()
+                + timer, g);
+            
+            return true;
+        }
     }
 
     @Override
     public boolean getDevelStatus() {
-return true;
+        return true;
     }
 
     @Override
@@ -38,22 +165,24 @@ return true;
      */
     @Override
     public AutoTraderGui getGui() {
-        return new GroovyTraderGui();
+        return new GroovyTraderGui(this);
     }
 
     @Override
     public JSONObject getConfig() {
-        return new JSONObject();
+        JSONObject r = new JSONObject();
+        r.put(CFG_SRC, this.groovySourceCode);
+        return r;
     }
 
     @Override
-    public void putConfig(JSONObject cfg) {
-      
+    public void setConfig(JSONObject cfg) {
+        this.groovySourceCode = cfg.optString(CFG_SRC, "");
     }
 
     @Override
     public long processEvent(long time, Scheduler.Event e) {
         return 0;
     }
-    
+
 }

@@ -206,8 +206,8 @@
             <Component class="gui.OpenOrdersList" name="closedOrderList">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Closed Orders">
-                    <Property name="tabTitle" type="java.lang.String" value="Closed Orders"/>
+                  <JTabbedPaneConstraints tabName="All Orders">
+                    <Property name="tabTitle" type="java.lang.String" value="All Orders"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>

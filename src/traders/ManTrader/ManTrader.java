@@ -27,6 +27,7 @@ package traders.ManTrader;
 
 import gui.Globals;
 import gui.OpenOrdersList;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import sesim.Scheduler.Event;
@@ -52,6 +53,9 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 //        //  super(se, id, name, money, shares, null);
 //        super();
 //    }
+    
+    public final ConcurrentHashMap<Long, Exchange.Order> allOrders=new ConcurrentHashMap<>();
+    
     public ManTrader() {
         super();
        
@@ -103,7 +107,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public void putConfig(JSONObject cfg) {
+    public void setConfig(JSONObject cfg) {
         return;
     }
 
@@ -115,10 +119,10 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     @Override
     public JDialog getGuiConsole(JFrame parent) {
 
-        consoleDialog = new ManTraderConsoleDialog(parent, false, se,account_id);
+        consoleDialog = new ManTraderConsoleDialog(parent, false, se,account_id,this);
         
         consoleDialog.init(se, account_id);
-        consoleDialog.doUpdate(account_id);
+        consoleDialog.doUpdate(account_id,this);
 //        this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
         // consoleDialog.     rdersList1.account=trader.getAccount();
 //        consoleDialog.getConsole().trader=this;
@@ -128,6 +132,11 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     @Override
     public void accountUpdated(Account a, Exchange.Order o) {
+        
+        
+        this.allOrders.put(o.getID(), o);
+        System.out.printf("Update received %d\n",this.allOrders.size());
+        
         if (this.consoleDialog==null)
             return;
         
@@ -139,7 +148,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 //            o.getAccount().getOrders().put(o.getID(), o);
         }
         
-        consoleDialog.doUpdate(a);
+        consoleDialog.doUpdate(a,this);
         
       //  this.consoleDialog.getOrderList().updateModel();
       //  this.consoleDialog.getBalancePanel().updateBalance(o.getAccount());

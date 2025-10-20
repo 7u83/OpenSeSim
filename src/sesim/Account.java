@@ -130,7 +130,7 @@ public class Account {
         return volume * limit <= avail;
     }
 
-    public boolean coulSell(float volume) {
+    public boolean couldSell(float volume) {
         float avail = this.getShares() - this.getSharesInOpenOrders();
         return volume <= avail;
     }
@@ -145,5 +145,18 @@ public class Account {
     
     public Order getOrderByID(long oid){
         return orders.get(oid);
+    }
+    
+    public boolean isOrderCovered(OrderType type, float volume, float limit){
+        switch (type){
+            case BUYLIMIT:
+            case BUY:
+                return this.couldBuy(volume, limit);
+            case SELLLIMIT:
+            case SELL:
+                return this.couldSell(volume);
+                
+        }
+        return false;
     }
 }

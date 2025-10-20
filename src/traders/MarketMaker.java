@@ -232,7 +232,7 @@ public class MarketMaker extends AutoTraderBase {
     }
 
     @Override
-    public void putConfig(JSONObject cfg) {
+    public void setConfig(JSONObject cfg) {
 
     }
 

@@ -35,6 +35,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import sesim.AutoTraderGui;
 import sesim.AutoTraderInterface;
@@ -291,7 +292,7 @@ setMinimumSize(getSize());
             System.out.print("--------------------------------------\n");
             base = o.getString("base");
 
-        } catch (Exception e) {
+        } catch (JSONException e) {
             System.out.printf("Exception return\n", "");
             base = item;
 
@@ -301,13 +302,13 @@ setMinimumSize(getSize());
         ac = Globals.sim.tloader.getStrategyBase(base);
         if (ac == null) {
             //  System.out.print("BASE IST NULL\n");
-            //  Globals.LOGGER.info(String.format("Can't load: %s\n", base));
+            Globals.LOGGER.info(String.format("Can't load: %s\n", base));
             //System.exit(0);
 
             return;
         }
 
-        ac.putConfig(o);
+        ac.setConfig(o);
         this.jBaseLabel.setText(base);
 
         acgui = ac.getGui();

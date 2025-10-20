@@ -47,7 +47,7 @@ import sesim.Scheduler.Event;
 public class RandomTraderA extends AutoTraderBase
         implements AccountListener {
 
-    public Float[] initial_delay = {0f, 5.0f};
+    public Float[] initial_delay = {0f, 7.0f};
 
     public Float[] sell_volume = {100f, 100f};
     public Float[] sell_limit = {-2f, 2f};
@@ -57,7 +57,7 @@ public class RandomTraderA extends AutoTraderBase
     public Float[] buy_volume = {100f, 100f};
     public Float[] buy_limit = {-2f, 2f};
     public Float[] buy_wait = {10f, 50f};
-    public Float[] wait_after_buy = {10f, 0f};
+    public Float[] wait_after_buy = {0f, 0f};
 
     public Float[] wait_after_fail = {10f, 20f};
 
@@ -176,10 +176,14 @@ public class RandomTraderA extends AutoTraderBase
     }*/
     //   Long owait = null;
     @Override
-    public void putConfig(JSONObject cfg) {
+    public void setConfig(JSONObject cfg) {
+        System.out.printf("put config sr: %s\n", cfg.toString(9));
+        
         if (cfg == null) {
             return;
         }
+        
+         
 
         try {
             initial_delay = to_float(cfg.getJSONArray(INITIAL_DELAY));
@@ -194,6 +198,8 @@ public class RandomTraderA extends AutoTraderBase
             wait_after_buy = to_float(cfg.getJSONArray(WAIT_AFTER_BUY));
         } catch (JSONException e) {
 
+    //        System.out.printf("Some exception has accoured\n", buy_wait);
+            throw(e);
         }
 
     }
@@ -270,13 +276,16 @@ public class RandomTraderA extends AutoTraderBase
         if (s == OrderStatus.OPEN || s == OrderStatus.PARTIALLY_EXECUTED) {
             se.cancelOrder(account_id, o.getID());
             currentOrder = null;
+            setStatus("Sleep after timeout");
             return wait_after_timeout;
         }
 
         if (o.getType() == OrderType.BUYLIMIT) {
+            setStatus("Sleep after buy");
             long r = getRandom(wait_after_buy) * 1000;
             return r;
         }
+        setStatus("Sleep after sell");
         return getRandom(wait_after_sell) * 1000;
     }
 
@@ -290,29 +299,36 @@ public class RandomTraderA extends AutoTraderBase
             case BUY:
                 o = doBuy();
                 if (o == null) {
+                    setStatus("Buy failed");
                     return 5000;
                 }
                 if (o.getStatus() == OrderStatus.CLOSED) {
+                    setStatus("Sleep after buy");
                     return getRandom(wait_after_buy) * 1000;
 
                 }
                 this.currentOrder = o;
+                setStatus("Waiting for buy order");
                 return getRandom(buy_wait) * 1000;
 
             case SELL:
                 o = doSell();
                 if (o == null) {
+                    setStatus("Sell failed");
                     return 5000;
                 }
                 if (o.getStatus() == OrderStatus.CLOSED) {
+                setStatus("Sleep after sell");
                     return getRandom(wait_after_sell) * 1000;
 
                 }
                 this.currentOrder = o;
+                setStatus("Waiting for sell order");
                 return getRandom(sell_wait) * 1000;
 
         }
 
+        
         return 5000;
     }
 

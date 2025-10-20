@@ -1,13 +1,42 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ * Copyright (c) 2017, 7u83 <7u83@mail.ru>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 package traders.GroovyTrader;
 
+//import org.fife.ui.rtextarea.AbstractSearchDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import javax.swing.*;
+import org.fife.ui.rtextarea.SearchEngine;
+import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextarea.SearchResult;
+//import org.fife.ui.rtextarea.SearchDialog;
+//import org.fife.ui.rtextarea.ReplaceDialog;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import sesim.AutoTraderGui;
@@ -18,17 +47,24 @@ import sesim.AutoTraderGui;
  */
 public class GroovyTraderGui extends AutoTraderGui {
 
+    RSyntaxTextArea textArea;
+    GroovyTrader trader;
+
+    /*    ReplaceDialog replaceDialog;
+    SearchDialog searchDialog;*/
+
     /**
      * Creates new form GrovyTraderGui
      */
-    public GroovyTraderGui() {
-       
+    public GroovyTraderGui(GroovyTrader trader) {
+        this.trader = trader;
+
         initComponents();
-        
-         setLayout(new BorderLayout());
+
+        setLayout(new BorderLayout());
 
         // 1. Erstellen Sie die RSyntaxTextArea
-        RSyntaxTextArea textArea = new RSyntaxTextArea(20, 60);
+        textArea = new RSyntaxTextArea(20, 60);
 
         // 2. Setzen Sie den Syntax-Stil auf Groovy
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GROOVY);
@@ -36,28 +72,44 @@ public class GroovyTraderGui extends AutoTraderGui {
         // Optional: Zeilennummern anzeigen, etc.
         textArea.setCodeFoldingEnabled(true);
 
-        // 3. Fügen Sie die TextArea zu einem RTextScrollPane hinzu (für Scrollen und Zeilennummern)
+        this.setText(trader.groovySourceCode);
+
         RTextScrollPane sp = new RTextScrollPane(textArea);
 
         // 4. Fügen Sie die ScrollPane zum JPanel hinzu
         this.add(sp, BorderLayout.CENTER);
-        
-      setVisible(true);
+
+        /*    // Such- und Ersetzen-Dialoge vorbereiten
+        replaceDialog = new ReplaceDialog(null, textArea);
+        searchDialog = new SearchDialog(null, textArea);
+
+        // Tastenkürzel hinzufügen: STRG+F = Suche, STRG+H = Ersetzen
+        textArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_F) {
+                    searchDialog.setVisible(true);
+                } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_H) {
+                    replaceDialog.setVisible(true);
+                }
+            }
+        });*/
+        setVisible(true);
     }
 
-    // ... Beispiel Main-Methode zum Testen ...
-    /*  public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Groovy Editor");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setContentPane(new GroovyEditorPanel());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
-    }*/
-    
-    
+    void setText(String text) {
+        textArea.setText(text);
+    }
+
+    String getText() {
+        return textArea.getText();
+    }
+
+    @Override
+    public void save() {
+        this.trader.groovySourceCode = getText();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

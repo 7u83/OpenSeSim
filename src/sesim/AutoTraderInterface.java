@@ -58,7 +58,7 @@ public interface AutoTraderInterface {
      * Set the configuration for auto trader by a JSON object.
      * @param cfg the configuration
      */
-    public abstract void putConfig(JSONObject cfg);
+    public abstract void setConfig(JSONObject cfg);
 
     /**
      * Return the name of the auto trader.

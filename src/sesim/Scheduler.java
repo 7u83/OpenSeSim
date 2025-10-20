@@ -181,7 +181,7 @@ public class Scheduler extends Thread {
     //private static AtomicInteger nextTimerTask = new AtomicInteger(0);
     public static class Event {
 
-        EventProcessor eventProcessor;
+        protected EventProcessor eventProcessor;
 
         public String name;
 
@@ -200,11 +200,10 @@ public class Scheduler extends Thread {
             //id = nextTimerTask.getAndAdd(1);
         }
 
-        /*      @Override
-        public int compareTo(Object o) {
-            return ((Event) o).id - this.id;
-
-        }*/
+        public Event(){
+            eventProcessor=null;
+        }
+        
     }
 
     public void addEvent(long t, Event e) {

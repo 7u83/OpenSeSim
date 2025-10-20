@@ -27,7 +27,7 @@ public class Exchange {
      * @param n number of decimals
      */
     public void setMoneyDecimals(int n) {
-        money_df = (float)Math.pow(10, n);
+        money_df = (float) Math.pow(10, n);
         money_decimals = n;
         money_formatter = getFormatter(n);
     }
@@ -42,13 +42,13 @@ public class Exchange {
      * @param n number of decimals
      */
     public void setSharesDecimals(int n) {
-        shares_df = (float)Math.pow(10, n);
+        shares_df = (float) Math.pow(10, n);
         shares_decimals = n;
         shares_formatter = getFormatter(n);
     }
 
     public float roundToDecimals(double val, double f) {
-        return (float) ( (Math.floor(val * f) / f) );
+        return (float) ((Math.floor(val * f) / f));
     }
 
     public float roundShares(double shares) {
@@ -92,7 +92,6 @@ public class Exchange {
     public Scheduler timer; // = new Scheduler();
 
     //public ArrayList<AutoTraderInterface> traders_old;
-
     /**
      *
      */
@@ -114,7 +113,7 @@ public class Exchange {
             return data;
         }
 
-  //      System.out.printf("--- build quote hostory for tf: %d\n", timeFrame);
+        //      System.out.printf("--- build quote hostory for tf: %d\n", timeFrame);
         for (Quote q : quoteHistory) {
             data.realTimeAdd(q.time, (float) q.price, (float) q.volume);
         }
@@ -253,10 +252,7 @@ public class Exchange {
 
         OrderStatus status;
         OrderType type;
-        /*        private float limit;
-        private float volume;
-        private final Account account;
-         */
+
         private final float initial_volume;
         private final long id;
         private final long created;
@@ -332,6 +328,11 @@ public class Exchange {
         public long getCreated() {
             return created;
         }
+
+        public boolean isOpen() {
+            return this.status == OrderStatus.OPEN
+                    || this.status == OrderStatus.PARTIALLY_EXECUTED;
+        }
     }
 
     /**
@@ -373,7 +374,7 @@ public class Exchange {
         quoteReceiverList = (new CopyOnWriteArrayList<>());
 
         initExchange();
- //       executor.start();
+        //       executor.start();
 
     }
 
@@ -407,7 +408,7 @@ public class Exchange {
 
         @Override
         public void run() {
-  /*          synchronized (this) {
+            /*          synchronized (this) {
                 try {
                     while (true) {
 
@@ -452,23 +453,23 @@ public class Exchange {
     public void terminate() {
         timer.terminate();
     }
-    
-    public void initLastQuote(){
+
+    public void initLastQuote() {
         Quote q = new Quote();
-        q.price=this.fairValue;
-        q.volume=0;
-        q.ask=q.price;
-        q.bid=q.price;
-        q.ask_volume=0;
-        q.bid_volume=0;
-        q.time=timer.getCurrentTimeMillis();
+        q.price = this.fairValue;
+        q.volume = 0;
+        q.ask = q.price;
+        q.bid = q.price;
+        q.ask_volume = 0;
+        q.bid_volume = 0;
+        q.time = timer.getCurrentTimeMillis();
         quoteHistory.add(q);
         this.updateQuoteReceivers(q);
     }
-    
-    public float getLastPrice(){
+
+    public float getLastPrice() {
         Quote q = this.getLastQuoete();
-        if (q==null){
+        if (q == null) {
             System.out.printf("get last quote failed\n");
             return 0f;
         }
@@ -501,7 +502,7 @@ public class Exchange {
     public final String CFG_MONEY_DECIMALS = "money_decimals";
     public final String CFG_SHARES_DECIMALS = "shares_decimals";
     public final String CFG_AUTO_INITIAL_PRICE = "auto_initial_price";
-    public final String CFG_INITIAL_PRICE="initial_price";
+    public final String CFG_INITIAL_PRICE = "initial_price";
 
     public void putConfig(JSONObject cfg) {
         try {
@@ -790,7 +791,6 @@ public class Exchange {
         if (book == null) {
             return null;
         }
- 
 
         Iterator<Order> it = book.iterator();
 
@@ -802,8 +802,8 @@ public class Exchange {
             if (o.volume <= 0) {
                 continue;
             }
-            
-                       OrderBookEntry oe = map.get(o.limit);
+
+            OrderBookEntry oe = map.get(o.limit);
             if (oe == null) {
                 map.put(o.limit, new OrderBookEntry(o));
 
@@ -811,9 +811,10 @@ public class Exchange {
                 oe.volume += o.volume;
                 map.put(o.limit, oe);
             }
-       
-            if (map.size()>=depth)
+
+            if (map.size() >= depth) {
                 break;
+            }
 
         }
 
@@ -855,8 +856,6 @@ public class Exchange {
         dst.shares += shares;
 
     }
-    
-    
 
     public boolean cancelOrder(Account a, long order_id) {
         //Account a = accounts.get(account_id);
@@ -880,6 +879,7 @@ public class Exchange {
                 boolean rc = ob.remove(o);
 
                 a.orders.remove(o.id);
+                o.status = OrderStatus.CANCELED;
                 a.update(o);
                 ret = true;
             }
@@ -939,7 +939,6 @@ public class Exchange {
         }
         int n = o.account.orders.size();
 
-
         Order x = o.account.orders.remove(o.id);
 
         SortedSet book = order_books.get(o.type);
@@ -977,7 +976,7 @@ public class Exchange {
     private void finishTrade(Order b, Order a, float price, float volume) {
         // Transfer money and shares
         transferMoneyAndShares(b.account, a.account, volume * price, -volume);
-          statistics.trades++;
+        statistics.trades++;
         // Update volume
         b.volume -= volume;
         a.volume -= volume;
@@ -1001,8 +1000,7 @@ public class Exchange {
             statistics.low = q.price;
         }
 
-      //  statistics.trades++;
-
+        //  statistics.trades++;
         //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
         quoteHistory.add(q);
         updateOHLCData(q);
@@ -1091,8 +1089,7 @@ public class Exchange {
             money_total += price * volume;
 
 //            num_trades++;
-      //      statistics.trades++;
-
+            //      statistics.trades++;
             this.checkSLOrders(price);
 
         }
@@ -1145,11 +1142,10 @@ public class Exchange {
     public Order createOrder(Account a, OrderType type, float volume, float limit) {
 
         //   System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(), type.toString(), limit, volume);
-  /*      if (a == null) {
+        /*      if (a == null) {
             System.out.printf("Order not places account\n");
             return null;
         }*/
-
         Order o = new Order(a, type, volume, limit);
         if (o.volume <= 0 || o.limit <= 0) {
 
@@ -1163,7 +1159,7 @@ public class Exchange {
                     buy_failed++;
                     break;
             }
-      //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
+            //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
 
             return null;
         }
@@ -1184,7 +1180,7 @@ public class Exchange {
             updateBookReceivers(OrderType.SELLLIMIT);
             updateBookReceivers(OrderType.BUYLIMIT);
 
-    //        System.out.printf("Order to Queeue %s %f %f\n",o.type.toString(),o.volume,o.limit);
+            //        System.out.printf("Order to Queeue %s %f %f\n",o.type.toString(),o.volume,o.limit);
 //            order_queue.add(o);
 //            executor.notify();
         }
@@ -1208,6 +1204,4 @@ public class Exchange {
         return a.orders.size();
     }
 
-    
- 
 }

@@ -96,7 +96,7 @@ public class Sim {
         if (ac == null) {
             return null;
         }
-        ac.putConfig(cfg);
+        ac.setConfig(cfg);
         ac.init(se, id, name, money, shares, cfg);
 
         return ac;
@@ -200,6 +200,8 @@ public class Sim {
         
         float initialPrice=(float)(Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE,100.0f));
         boolean autoInitialPrice=Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE,true);
+        
+        System.out.printf("Cache total %f, Shares total\n", moneyTotal,sharesTotal);
 
         if (autoInitialPrice){
             this.se.fairValue = moneyTotal / sharesTotal;

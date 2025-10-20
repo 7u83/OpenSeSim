@@ -1,60 +1,83 @@
 {
     "traders": [
         {
-            "Cash": "1000000.0",
             "Strategy": "SimpleRandom",
-            "Enabled": "true",
+            "Enabled": "false",
             "Count": "1",
+            "Cash": "1000000.0",
             "Shares": "10000.0",
             "Name": "Alice"
         },
         {
-            "Cash": "10000.0",
             "Strategy": "SimpleRandom",
             "Enabled": "true",
-            "Count": "1",
+            "Count": "500",
+            "Cash": "10000.0",
             "Shares": "100.0",
             "Name": "Bob"
+        },
+        {
+            "Strategy": "Groovy",
+            "Enabled": "true",
+            "Count": "100",
+            "Cash": "10000.0",
+            "Shares": "0.0",
+            "Name": "Groovy"
+        },
+        {
+            "Strategy": "Human",
+            "Enabled": "true",
+            "Count": "1",
+            "Cash": "9000.0",
+            "Shares": "100.0",
+            "Name": "Tubw"
         }
     ],
-    "strategies": {"SimpleRandom": {
-        "sell_wait": [
-            10,
-            50
-        ],
-        "initla_delay": [
-            0,
-            5
-        ],
-        "sell_limit": [
-            -2,
-            2
-        ],
-        "sell_wait_after": [
-            0,
-            0
-        ],
-        "buy_wait": [
-            10,
-            50
-        ],
-        "sell_volume": [
-            100,
-            100
-        ],
-        "buy_wait_after": [
-            0,
-            0
-        ],
-        "buy_volume": [
-            100,
-            100
-        ],
-        "buy_limit": [
-            -2,
-            2
-        ],
-        "base": "traders.RandomTraderA"
-    }},
+    "strategies": {
+        "Human": {"base": "traders.ManTrader.ManTrader"},
+        "SimpleRandom": {
+            "initial_delay": [
+                0,
+                5
+            ],
+            "sell_wait": [
+                10,
+                50
+            ],
+            "sell_limit": [
+                -2,
+                2
+            ],
+            "sell_wait_after": [
+                0,
+                0
+            ],
+            "buy_wait": [
+                10,
+                50
+            ],
+            "sell_volume": [
+                100,
+                100
+            ],
+            "buy_wait_after": [
+                0,
+                0
+            ],
+            "buy_volume": [
+                100,
+                100
+            ],
+            "buy_limit": [
+                -2,
+                2
+            ],
+            "base": "traders.RandomTraderA"
+        },
+        "SimpleGroovy": {
+            "src": "import groovy.transform.Field\n\n\n@Field STOPLOSS = -5\n@Field TAKEPROFIT = +5\n\n\n\ndef takeProfitPrice;\ndef stopLossPrice;\n\ndef myOrder;\n\ndef start(){\n\tprintln (\"Start trader\");\n\t\n\tdef lastPrice = sesim.getLastPrice();\n\tdef numShares = account.getCashBalance()/lastPrice;\n\n\n\n\tstopLossPrice = lastPrice+lastPrice/100*STOPLOSS;\t\n\ttakeProfitPrice = lastPrice+lastPrice/100*TAKEPROFIT;\t\n\n\tmyOrder = sesim.createOrder(sesim.BUYLIMIT,numShares,lastPrice);\n\t\n\tsesim.scheduleOnce(\"checkOpen\",1000);\n\tprintln(\"checkOpen Scheduled\");\n\treturn 0;\n}\n\n\n\ndef checkOpen(){\n\tif (myOrder.isOpen()){\n\t\tprintln(\"order ist open\");\n\t\tsesim.scheduleOnce(\"checkOpen\",1000);\n\t\treturn;\n\t}\n\n\tprintln(\"initial Order was filled\");\n\n\tmyOrder = sesim.createOrder(sesim.SELLIMIT,account.getShares(),takeProfitPrice);\n\tsesim.scheduleOnce(\"checkTpOrSl\", 1000);\n\t\n\tprintln(\"groovy callback called\");\n\tprintln(myOrder.getStatus());\n}\n\ndef checkTpOrSl(){\n\tif (myOrder.isOpen()){\n\t\tif (sesim.getLastPrice() < stopLossPrice){\n\t\t\t// initiate stop loss\n\t\t\tsesim.cancleOrder(myOrder);\n\t\t\tmyOrder = sesim.createOrder(sesim.SELLIMIT, account.getShares(), 0.1);\n\t\t\tsesim.scheduleOnce(\"checkSl\",1000);\t\t\t\n\t\t\treturn;\n\t\t}\n\n\t\t//continue to wait for order close (take profit)\n\t\tsesim.scheduleOnce(\"checkTpOrSl\",1000);\n\t\treturn;\n\t}\n\n\t// take profit has taken in, start over in 30 seconds.\n\tsesim.scheduleOnce(\"start\",30000);\n\n}\n\n\ndef checkSl(){\n\tif (myOrder.isOpen()){\n\t\tprintln(\"Stop loss not closed\");\n\t\tsesim.scheduleOnce(\"checkSl\",1000);\n\t\treturn;\n\t}\n\t// start over\n\tsesim.scheduleOnce(\"start\",30000);\n}\n\n\n\n\n\n\n\n\t\n\n",
+            "base": "traders.GroovyTrader.GroovyTrader"
+        }
+    },
     "version": 0.1
 }

@@ -136,7 +136,7 @@ public class RandomTraderB extends AutoTraderBase {
     }
 
     @Override
-    public void putConfig(JSONObject cfg) {
+    public void setConfig(JSONObject cfg) {
         if (cfg == null) {
             return;
         }

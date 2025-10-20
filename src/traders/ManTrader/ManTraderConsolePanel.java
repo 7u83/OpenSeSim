@@ -30,6 +30,8 @@ import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -52,6 +54,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
     public ManTrader trader;
     Account account;
     Exchange se;
+    
+   
 
     public OpenOrdersList getOrderListPanel() {
 
@@ -177,17 +181,20 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
 
     private boolean updateSellButton() {
         float vol = this.sellEditOrderPanel.getVolume();
-        boolean b = account.coulSell(vol);
+        boolean b = account.couldSell(vol);
         this.sellButton.setEnabled(b);
         return b;
     }
 
-    void init(Account a) {
-        this.ordersList.setOrderList(account.getOrders()); //  .initOrderList(account);
+    void init(Account a,ManTrader mt) {
+        this.ordersList.setOrderList(account.getOrders()); 
+        this.closedOrderList.setOrderList(Collections.unmodifiableMap(mt.allOrders));
+
     }
 
-    void doUpdate(Account a) {
+    void doUpdate(Account a,ManTrader mt) {
         this.ordersList.updateModel();
+        this.closedOrderList.updateModel();
         this.accountBalance2.updateBalance(a);
         updateBuyButton();
         updateSellButton();
@@ -297,7 +304,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
             }
         });
         orderTabs.addTab("Open Orders", ordersList);
-        orderTabs.addTab("Closed Orders", closedOrderList);
+        orderTabs.addTab("All Orders", closedOrderList);
 
         javax.swing.GroupLayout orderPanelLayout = new javax.swing.GroupLayout(orderPanel);
         orderPanel.setLayout(orderPanelLayout);
