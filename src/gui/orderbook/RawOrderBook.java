@@ -34,17 +34,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import sesim.Account;
 import sesim.Exchange;
-import sesim.Exchange.Order;
 import sesim.Exchange.OrderBookEntry;
-import sesim.Exchange.OrderType;
+import sesim.Exchange.Order;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookReceiver {
+public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookListener {
 
     RawOrderBookModel model;
     TableColumn trader_column = null;
@@ -54,8 +52,10 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
     volatile boolean busy;
     volatile boolean update = true;
 
-    protected OrderType type = OrderType.BUYLIMIT;
+    protected byte type = Order.BUYLIMIT;
     protected int depth = 40;
+    
+    Exchange se;
 
     /**
      * Creates new form OrderBookNew
@@ -74,10 +74,18 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
         vol_column = list.getColumnModel().getColumn(2);
     }
 
-    public void setType(OrderType type) {
+    public void start(Exchange se, byte type) {
+        this.se=se;
         this.type = type;
-        Globals.sim.se.addBookReceiver(type, this);
+        stop();
+        se.addBookListener(type, this);
+        UpdateOrderBook();
     }
+    
+    public void stop(){
+        se.removeBookListener(this);
+    }
+    
 
     public void setGodMode(boolean on) {
         TableColumnModel tcm = list.getColumnModel();
@@ -99,6 +107,12 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
     protected ArrayList<? extends OrderBookEntry> getOrderBook() {
         return Globals.sim.se.getRawOrderBook(type, depth);
         // return Globals.sim.se.getCompressedOrderBook(type);
+    }
+    
+    private byte priceColumn;
+    public void setPriceColumn(byte t){
+        priceColumn=t;
+        
     }
 
     @Override
@@ -175,7 +189,13 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookRec
                 case 0:
                     return myOb.get(rowIndex).getOwnerName();
                 case 1:
-                    return myOb.get(rowIndex).getLimit();
+                    switch (priceColumn){
+                        case Order.STOP:
+                            System.out.printf("Stop switch\n");
+                            return myOb.get(rowIndex).getStop();
+                        default:
+                            return myOb.get(rowIndex).getLimit();
+                    }
                 case 2:
                     return myOb.get(rowIndex).getVolume();
                 default:

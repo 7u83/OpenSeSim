@@ -35,8 +35,9 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import sesim.Exchange;
+import sesim.Exchange.CompOrderBookEntry;
 import sesim.Exchange.OrderBookEntry;
-import sesim.Exchange.OrderType;
+import sesim.Exchange.Order;
 
 /**
  *
@@ -48,7 +49,7 @@ public class OrderBook extends RawOrderBook {
 
     ;
     
-    class ColoredOrderBookEntry extends OrderBookEntry {
+    class ColoredOrderBookEntry extends CompOrderBookEntry {
 
         public String color = new String();
 
@@ -71,14 +72,14 @@ public class OrderBook extends RawOrderBook {
     }
 
     private OrderBookEntry getDiffedEntry(OrderBookEntry oe) {
-        OrderBookEntry prev = lastMap.get(oe.limit);
+        OrderBookEntry prev = lastMap.get(oe.getLimit());
         ColoredOrderBookEntry ce = new ColoredOrderBookEntry(oe);
         if (prev == null) {
             ce.color = "Gray";
         } else {
-            if (prev.volume > oe.volume) {
+            if (prev.getVolume() > oe.getVolume()) {
                 ce.color = "Red";
-            } else if (prev.volume < oe.volume) {
+            } else if (prev.getVolume() < oe.getVolume()) {
                 ce.color = "Green";
             } else {
                 ce.color = "  ---  ";
@@ -93,7 +94,7 @@ public class OrderBook extends RawOrderBook {
 
         //TreeMap<Float, OrderBookEntry> cmap = new TreeMap<>();
         ArrayList<OrderBookEntry> r = new ArrayList<>();
-        if (type == OrderType.BUYLIMIT) {
+        if (type == Order.BUYLIMIT) {
             for (Map.Entry<Float, OrderBookEntry> oe : ((TreeMap<Float, OrderBookEntry>) map).descendingMap().entrySet()) {
                 r.add(this.getDiffedEntry(oe.getValue()));
             }

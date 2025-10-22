@@ -34,7 +34,7 @@ import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
 import sesim.Exchange.Order;
-import sesim.Exchange.OrderType;
+import sesim.Exchange.Order;
 import sesim.Quote;
 import sesim.Scheduler;
 import sesim.Scheduler.Event;
@@ -115,18 +115,18 @@ public class GroovyTrader extends AutoTraderBase {
             
         }
         
-        public OrderType BUYLIMIT=Exchange.OrderType.BUYLIMIT;
-        public OrderType SELLIMIT=Exchange.OrderType.SELLLIMIT;
+        public byte BUYLIMIT=Exchange.Order.BUYLIMIT;
+        public byte SELLIMIT=Exchange.Order.SELLLIMIT;
         
-        public Order createOrder(OrderType type,float vol, float limit){
+        public Order createOrder(byte type,float vol, float limit){
             limit = se.roundMoney(limit);
             vol = se.roundShares(vol);
-            return  se.createOrder(account_id, type, vol, limit);
+            return  se.createOrder(account_id, type, vol, limit,0f);
         }
         
-        public Order createOrder(OrderType type, double vol, double limit){
+     /*   public Order createOrder(Order type, double vol, double limit){
             return createOrder(type, (float)vol, (float)limit);
-        }
+        }*/
         
         public boolean cancleOrder(Order o){
             return se.cancelOrder(account_id, o.getID());

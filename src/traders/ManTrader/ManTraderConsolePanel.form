@@ -55,17 +55,17 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
                   <Component id="orderPanel" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="accountBalance2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="tradingPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -91,17 +91,17 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="sellEditOrderPanel" min="-2" max="-2" attributes="0"/>
-                      <Component id="buyEditOrderPanel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="sellButton" min="-2" pref="104" max="-2" attributes="0"/>
-                      <Component id="buyButton" min="-2" pref="104" max="-2" attributes="0"/>
-                  </Group>
                   <EmptySpace max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="buyEditOrderPanel" pref="412" max="32767" attributes="0"/>
+                      <Component id="sellEditOrderPanel" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="buyButton" pref="98" max="32767" attributes="0"/>
+                      <Component id="sellButton" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -113,12 +113,12 @@
                       <Component id="buyEditOrderPanel" max="32767" attributes="0"/>
                       <Component id="buyButton" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="sellEditOrderPanel" max="32767" attributes="0"/>
-                      <Component id="sellButton" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="sellButton" min="-2" pref="87" max="-2" attributes="0"/>
+                      <Component id="sellEditOrderPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="12" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -137,12 +137,12 @@
         </Component>
         <Component class="traders.ManTrader.EditOrderPanel" name="sellEditOrderPanel">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,OrderType.SELLLIMIT)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,Order.SELL)"/>
           </AuxValues>
         </Component>
         <Component class="traders.ManTrader.EditOrderPanel" name="buyEditOrderPanel">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,OrderType.BUYLIMIT)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,Order.BUY)"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="buyButton">
@@ -167,7 +167,7 @@
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="orderTabs" pref="688" max="32767" attributes="0"/>
+                      <Component id="orderTabs" pref="756" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

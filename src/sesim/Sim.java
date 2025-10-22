@@ -177,7 +177,7 @@ public class Sim {
             Float shares = (float)t.getDouble("Shares");
             Float money = (float)t.getDouble("Cash");
 
-            Boolean enabled = t.getBoolean("Enabled");
+            Boolean enabled = t.optBoolean("Enabled",false);
             if (!enabled) {
                 continue;
             }

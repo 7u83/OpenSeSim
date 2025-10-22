@@ -11,7 +11,7 @@ import javax.swing.text.DefaultFormatter;
 import sesim.Account;
 import sesim.Exchange;
 import sesim.Exchange.Order;
-import sesim.Exchange.OrderType;
+import sesim.Exchange.Order;
 import sesim.Quote;
 
 /**
@@ -22,7 +22,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
     Exchange se;
     Account account;
-    OrderType type;
+    byte type;
 
     /**
      * Creates new form EditOrderPanel
@@ -36,20 +36,29 @@ public class EditOrderPanel extends javax.swing.JPanel {
         DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
         formatter.setCommitsOnValidEdit(true);
 
+        limitSpinner.setEnabled(false);
+
         spinner = volumeSpinner;
         comp = spinner.getEditor();
         field = (JFormattedTextField) comp.getComponent(0);
         formatter = (DefaultFormatter) field.getFormatter();
         formatter.setCommitsOnValidEdit(true);
 
+        spinner = stopSpinner;
+        comp = spinner.getEditor();
+        field = (JFormattedTextField) comp.getComponent(0);
+        formatter = (DefaultFormatter) field.getFormatter();
+        formatter.setCommitsOnValidEdit(true);
+        this.stopSpinner.setEnabled(false);
+
     }
 
-    public EditOrderPanel(Exchange e, Account a, OrderType t) {
+    public EditOrderPanel(Exchange e, Account a, byte type) {
         this();
         se = e;
         account = a;
-        type = t;
-        this.loadFields();
+        this.type = type;
+        //this.loadFields();
     }
 
     public EditOrderPanel(Exchange e, Account a, Order o) {
@@ -57,8 +66,8 @@ public class EditOrderPanel extends javax.swing.JPanel {
         account = a;
         se = e;
         type = o.getType();
-        this.limitSpinner.setValue(o.limit);
-        this.volumeSpinner.setValue(o.volume);
+        this.limitSpinner.setValue(o.getLimit());
+        this.volumeSpinner.setValue(o.getVolume());
     }
 
     private void loadFields() {
@@ -72,11 +81,11 @@ public class EditOrderPanel extends javax.swing.JPanel {
         Quote q = se.getBestPrice_0();
         Float price = q == null ? 0.0f : q.price;
 
-        if (type == OrderType.BUYLIMIT) {
+        if (type == Order.BUYLIMIT) {
             this.limitSpinner.setValue(se.roundMoney(price));
             this.volumeSpinner.setValue(se.roundShares(account.getMoney() / price));
         }
-        if (type == OrderType.SELLLIMIT) {
+        if (type == Order.SELLLIMIT) {
             this.limitSpinner.setValue(se.roundMoney(price));
             this.volumeSpinner.setValue(se.roundShares(account.getShares()));
         }
@@ -94,6 +103,10 @@ public class EditOrderPanel extends javax.swing.JPanel {
         price = se.roundMoney(price);
         return price;
     }
+    
+    public float getStop() {
+        return (float) stopSpinner.getValue();
+    }
 
     public float getVolume() {
         return (float) volumeSpinner.getValue();
@@ -104,12 +117,23 @@ public class EditOrderPanel extends javax.swing.JPanel {
         return (float) limitSpinner.getValue();
     }
 
+    public byte getOrderType() {
+        byte t = this.type;
+        if (this.limitCheckBox.isSelected()) {
+            t |= Order.LIMIT;
+        }
+        if (this.stopCheckBox.isSelected()) {
+            t |= Order.STOP;
+        }
+        return t;
+    }
+
     /*    float limit = (float) limitSpinner.getValue();
 
         if (account == null) {
             System.out.printf("Account is null\n");
         }
-        OrderType type = this.getOrderType();
+        Order type = this.getOrderType();
 
         new Thread() {
             @Override
@@ -128,12 +152,15 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
         typeComboBox = new javax.swing.JComboBox<>();
         limitSpinner = new javax.swing.JSpinner();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         volumeSpinner = new javax.swing.JSpinner();
         loadValuesButton = new javax.swing.JButton();
         priceLabel = new javax.swing.JLabel();
         setVolButton = new javax.swing.JButton();
+        stopCheckBox = new javax.swing.JCheckBox();
+        limitCheckBox = new javax.swing.JCheckBox();
+        stopSpinner = new javax.swing.JSpinner();
+        jCheckBox3 = new javax.swing.JCheckBox();
 
         typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Buy Limit", "Sell Limit", "Sell", "Buy" }));
 
@@ -143,8 +170,6 @@ public class EditOrderPanel extends javax.swing.JPanel {
                 limitSpinnerStateChanged(evt);
             }
         });
-
-        jLabel3.setText("Limit:");
 
         jLabel4.setText("Volume:");
 
@@ -174,43 +199,79 @@ public class EditOrderPanel extends javax.swing.JPanel {
             }
         });
 
+        stopCheckBox.setText("Stop");
+        stopCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopCheckBoxActionPerformed(evt);
+            }
+        });
+
+        limitCheckBox.setText("Lmit");
+        limitCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limitCheckBoxActionPerformed(evt);
+            }
+        });
+
+        stopSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
+        stopSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                stopSpinnerStateChanged(evt);
+            }
+        });
+
+        jCheckBox3.setText("fill or kill");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(loadValuesButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(setVolButton, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12))
-                    .addComponent(priceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(limitSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap()
+                        .addComponent(loadValuesButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(setVolButton, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(priceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(stopCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(stopSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(limitCheckBox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(limitSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(limitSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(priceLabel))
+                    .addComponent(priceLabel)
+                    .addComponent(jLabel4)
+                    .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(setVolButton)
+                        .addComponent(loadValuesButton)
+                        .addComponent(limitSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jCheckBox3))
+                    .addComponent(limitCheckBox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(volumeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(setVolButton)
-                    .addComponent(loadValuesButton)))
+                    .addComponent(stopCheckBox)
+                    .addComponent(stopSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -230,25 +291,40 @@ public class EditOrderPanel extends javax.swing.JPanel {
         Quote q = se.getBestPrice_0();
         Float price = q == null ? 0.0f : q.price;
 
-        if (type == OrderType.BUYLIMIT) {
+        if (type == Order.BUYLIMIT) {
             //this.limitSpinner.setValue(se.roundMoney(price));
             this.volumeSpinner.setValue(se.roundShares(account.getCashAvailable() / this.getLimit()));
         }
-        if (type == OrderType.SELLLIMIT) {
+        if (type == Order.SELLLIMIT) {
             //  double avail = account.getSharesAvailable();
             this.volumeSpinner.setValue(se.roundShares(account.getSharesAvailable()));
         }        // TODO add your handling code here:
         this.volumeSpinner.revalidate();
     }//GEN-LAST:event_setVolButtonActionPerformed
 
+    private void stopCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopCheckBoxActionPerformed
+        stopSpinner.setEnabled(this.stopCheckBox.isSelected());        // TODO add your handling code here:
+    }//GEN-LAST:event_stopCheckBoxActionPerformed
+
+    private void stopSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_stopSpinnerStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stopSpinnerStateChanged
+
+    private void limitCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limitCheckBoxActionPerformed
+        limitSpinner.setEnabled(this.limitCheckBox.isSelected());
+    }//GEN-LAST:event_limitCheckBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JCheckBox limitCheckBox;
     javax.swing.JSpinner limitSpinner;
     private javax.swing.JButton loadValuesButton;
     private javax.swing.JLabel priceLabel;
     private javax.swing.JButton setVolButton;
+    private javax.swing.JCheckBox stopCheckBox;
+    javax.swing.JSpinner stopSpinner;
     private javax.swing.JComboBox<String> typeComboBox;
     javax.swing.JSpinner volumeSpinner;
     // End of variables declaration//GEN-END:variables

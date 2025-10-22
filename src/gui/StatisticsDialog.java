@@ -56,11 +56,11 @@ public class StatisticsDialog extends javax.swing.JDialog {
         statisticsPanel1.setLayout(statisticsPanel1Layout);
         statisticsPanel1Layout.setHorizontalGroup(
             statisticsPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 388, Short.MAX_VALUE)
+            .addGap(0, 293, Short.MAX_VALUE)
         );
         statisticsPanel1Layout.setVerticalGroup(
             statisticsPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
+            .addGap(0, 268, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

@@ -27,6 +27,7 @@ package gui.orderbook;
 
 import gui.Globals;
 import sesim.Exchange;
+import sesim.Exchange.Order;
 
 /**
  *
@@ -39,20 +40,40 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
      */
     public RawOrderBooksHorizontal() {
         initComponents();
-        if (Globals.sim == null) {
+/*        if (Globals.sim == null) {
             return;
-        }
-        reset();
+        }*/
+        //start();
 
     }
 
-    public final void reset() {
-        bidBook.setType(Exchange.OrderType.BUYLIMIT);
-        askBook.setType(Exchange.OrderType.SELLLIMIT);
+    public final void start(Exchange se, byte leftType, byte rightType) {
+        
+        System.out.printf("Start Horz Rawbook\n");
+        //bidBook.start(Globals.sim.se,Order.BUYLIMIT);
+        //askBook.start(Globals.sim.se,Order.SELLLIMIT);
+        bidBook.start(Globals.sim.se,leftType);
+        askBook.start(Globals.sim.se,rightType);        
         this.quoteVertical2.reset();
-        bidBook.UpdateOrderBook();
-        askBook.UpdateOrderBook();
+       // bidBook.UpdateOrderBook();
+       // askBook.UpdateOrderBook();
     }
+    
+    public final void setTitles(String left, String right){
+        this.leftTitle.setText(left);
+        this.rightTitle.setText(right);
+    }
+    
+    public void setPriceColumn(byte t){
+        bidBook.setPriceColumn(t);
+        askBook.setPriceColumn(t);
+    }
+    
+    public void stop(){
+        bidBook.stop();
+        askBook.stop();
+    }
+            
 
     public void setDepth(int depth) {
         bidBook.depth = depth;
@@ -70,19 +91,19 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
 
         bidBookPanel = new javax.swing.JPanel();
         bidBook = new gui.orderbook.RawOrderBook();
-        jLabel2 = new javax.swing.JLabel();
+        leftTitle = new javax.swing.JLabel();
         quoteVertical2 = new gui.orderbook.QuoteVertical();
         askBookPanel = new javax.swing.JPanel();
         askBook = new gui.orderbook.RawOrderBook();
-        jLabel1 = new javax.swing.JLabel();
+        rightTitle = new javax.swing.JLabel();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         bidBookPanel.setPreferredSize(new java.awt.Dimension(320, 296));
 
-        jLabel2.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Bid");
+        leftTitle.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        leftTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        leftTitle.setText("Bid");
 
         javax.swing.GroupLayout bidBookPanelLayout = new javax.swing.GroupLayout(bidBookPanel);
         bidBookPanel.setLayout(bidBookPanelLayout);
@@ -92,14 +113,14 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(leftTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         bidBookPanelLayout.setVerticalGroup(
             bidBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bidBookPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
+                .addComponent(leftTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bidBook, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
         );
@@ -109,9 +130,9 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
 
         askBookPanel.setPreferredSize(new java.awt.Dimension(320, 296));
 
-        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Ask");
+        rightTitle.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        rightTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        rightTitle.setText("Ask");
 
         javax.swing.GroupLayout askBookPanelLayout = new javax.swing.GroupLayout(askBookPanel);
         askBookPanel.setLayout(askBookPanelLayout);
@@ -121,14 +142,14 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(rightTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         askBookPanelLayout.setVerticalGroup(
             askBookPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, askBookPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(rightTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(askBook, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
         );
@@ -142,8 +163,8 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
     private javax.swing.JPanel askBookPanel;
     private gui.orderbook.RawOrderBook bidBook;
     private javax.swing.JPanel bidBookPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel leftTitle;
     private gui.orderbook.QuoteVertical quoteVertical2;
+    private javax.swing.JLabel rightTitle;
     // End of variables declaration//GEN-END:variables
 }

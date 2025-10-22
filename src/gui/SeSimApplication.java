@@ -50,7 +50,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONObject;
-
+import sesim.Exchange.Order;
 
 /**
  *
@@ -62,9 +62,9 @@ public class SeSimApplication extends javax.swing.JFrame {
      * Creates new form NewMDIApplication
      */
     public SeSimApplication() {
-        
+
         initComponents();
-        
+
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] screens = ge.getScreenDevices();
 
@@ -76,7 +76,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             //Window w = gd.getFullScreenWindow();
 
         }
-        
+
         initSim();
         setTitle("");
         boolean init = Globals.prefs_new.getBoolean("initilized", false);
@@ -87,7 +87,6 @@ public class SeSimApplication extends javax.swing.JFrame {
 //        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         //this.setLocationRelativeTo(null);
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -145,6 +144,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         viewMenu = new javax.swing.JMenu();
         viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
         viewRawOrderBook = new javax.swing.JCheckBoxMenuItem();
+        viewUnlimitedOrdes = new javax.swing.JCheckBoxMenuItem();
+        viewStopOrders = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -220,7 +221,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 297, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(accelSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -268,6 +269,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
+        openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         openMenuItem.setMnemonic('o');
         openMenuItem.setText("Open");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -277,6 +279,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         fileMenu.add(openMenuItem);
 
+        saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         saveMenuItem.setMnemonic('s');
         saveMenuItem.setText("Save");
         saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -326,6 +329,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(clearMenuItem);
         fileMenu.add(jSeparator4);
 
+        exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -424,8 +428,9 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         viewMenu.add(viewTraderListCheckBox);
 
+        viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, 0));
         viewRawOrderBook.setMnemonic('R');
-        viewRawOrderBook.setText("Raw ordebook");
+        viewRawOrderBook.setText("Level 3 ordebook");
         viewRawOrderBook.setToolTipText("");
         viewRawOrderBook.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -433,6 +438,22 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
         });
         viewMenu.add(viewRawOrderBook);
+
+        viewUnlimitedOrdes.setText("unlimited orders");
+        viewUnlimitedOrdes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewUnlimitedOrdesActionPerformed(evt);
+            }
+        });
+        viewMenu.add(viewUnlimitedOrdes);
+
+        viewStopOrders.setText("stop orders");
+        viewStopOrders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewStopOrdersActionPerformed(evt);
+            }
+        });
+        viewMenu.add(viewStopOrders);
 
         menuBar.add(viewMenu);
 
@@ -464,48 +485,46 @@ public class SeSimApplication extends javax.swing.JFrame {
         d.setVisible(rootPaneCheckingEnabled);
 
     }//GEN-LAST:event_aboutMenuItemActionPerformed
-    
+
     void pauseSim() {
 
-        if (Globals.sim.se.timer.getPause()){
+        if (Globals.sim.se.timer.getPause()) {
             this.runButton.setEnabled(false);
             this.pauseButton.setEnabled(true);
-    
-        }else{
+
+        } else {
             this.runButton.setEnabled(true);
             this.pauseButton.setEnabled(false);
-            
+
         }
         Globals.sim.se.timer.pause();
     }
-    
+
     void startSim() {
-        
-        if (Globals.sim.se.timer.getPause()){
-            
+
+        if (Globals.sim.se.timer.getPause()) {
+
             pauseSim();
             return;
         }
-        
+
         this.runButton.setEnabled(false);
         this.stopButton.setEnabled(true);
-        
-        
-        
-        Globals.sim.se.terminate();
+
+        //Globals.sim.se.terminate();
         Globals.sim.reset();
         Globals.sim.startTraders(Globals.getConfig());
         Globals.sim.se.timer.setPause(false);
         Globals.sim.se.timer.start();
-        Globals.sim.se.timer.setAcceleration((Double) this.accelSpinner.getValue());        
-        
+        Globals.sim.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
+
         chartPanel.reset();
-        if (this.rawOrderBookDialog!=null){
-            this.rawOrderBookDialog.reset();
+        if (this.rawOrderBookDialog != null) {
+            this.rawOrderBookDialog.start(Globals.sim.se, Order.BUYLIMIT, Order.SELLLIMIT);
         }
-        
-        this.orderBooksHorizontal.reset();
-        
+
+        this.orderBooksHorizontal.start();
+
         this.stopButton.setEnabled(true);
         this.pauseButton.setEnabled(true);
 
@@ -515,46 +534,40 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.clock.repaint();
 
         this.chartPanel.reset();
-        
+
         this.clock.invalidate();
         this.clock.repaint();
 
-        
-        
-
-
-
     }
-    
+
     void stopSim() {
         Globals.sim.se.timer.terminate();
         this.stopButton.setEnabled(false);
         this.pauseButton.setEnabled(false);
         this.runButton.setEnabled(true);
     }
-    
+
     void resetSim() {
-        Globals.sim.se.terminate();
+        //      Globals.sim.se.terminate();
         Globals.sim.reset();
         chartPanel.reset();
-        if (this.rawOrderBookDialog!=null){
-            this.rawOrderBookDialog.reset();
+        if (this.rawOrderBookDialog != null) {
+            this.rawOrderBookDialog.start(Globals.sim.se, Order.BUYLIMIT, Order.SELLLIMIT);
         }
-        
-        this.orderBooksHorizontal.reset();
-        
-        
+
+        this.orderBooksHorizontal.start();
+
 //        chart.initChart();
 //        chart.invalidate();
 //        chart.repaint();
     }
-    
+
     private void initSim() {
         this.runButton.setEnabled(true);
         this.stopButton.setEnabled(false);
         this.pauseButton.setEnabled(false);
     }
-    
+
 
     private void editPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesActionPerformed
         //      Globals.LOGGER.info("Edit prefs...");
@@ -562,33 +575,33 @@ public class SeSimApplication extends javax.swing.JFrame {
         Dialog d = new gui.EditPreferencesDialog(this, rootPaneCheckingEnabled);
         d.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_editPreferencesActionPerformed
-    
+
 
     private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteMenuItemActionPerformed
         EditAutoTraderListDialog ed = new EditAutoTraderListDialog(this, true);
         ed.setVisible(rootPaneCheckingEnabled);
-        
+
 
     }//GEN-LAST:event_deleteMenuItemActionPerformed
 
     private void pasteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteMenuItemActionPerformed
-        EditStrategies s = new EditStrategies(this, true);
+        EditStrategies s = new EditStrategies(this, false);
+
         s.setVisible(rootPaneCheckingEnabled);
-        
+
 
     }//GEN-LAST:event_pasteMenuItemActionPerformed
-    
- //   private final LoggerDialog log_d = new LoggerDialog(this, false);
-    
+
+    //   private final LoggerDialog log_d = new LoggerDialog(this, false);
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
         JFileChooser fc = getFileChooser();
-        
+
         while (true) {
             if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
                 return;
             }
-            
+
             try {
                 File f = fc.getSelectedFile();
                 Globals.loadFile(f);
@@ -597,26 +610,26 @@ public class SeSimApplication extends javax.swing.JFrame {
                 Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, f.getAbsolutePath());
                 setTitle(f.getName());
                 return;
-                
+
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
+
         }
     }//GEN-LAST:event_openMenuItemActionPerformed
 
     // initialize a JFileChoser with  working directory and extension
     private JFileChooser getFileChooser() {
         JFileChooser fc = new JFileChooser();
-        
+
         String workdir = Globals.prefs_new.get(Globals.PrefKeys.WORKDIR, "");
         fc.setCurrentDirectory(new File(workdir));
-        
+
         FileNameExtensionFilter sesim_filter = new FileNameExtensionFilter("SeSim Files", Globals.SESIM_FILEEXTENSION);
         fc.setFileFilter(sesim_filter);
         return fc;
     }
-    
+
     @Override
     public final void setTitle(String filename) {
         String name;
@@ -626,23 +639,23 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
         super.setTitle(name);
     }
-    
+
     private void saveFile(boolean saveAs) {
         JFileChooser fc = getFileChooser();
         FileFilter sesim_filter = fc.getFileFilter();
-        
+
         while (true) {
             String current_file = Globals.prefs_new.get(Globals.PrefKeys.CURRENTFILE, "");
             File fobj;
-            
+
             if (saveAs || "".equals(current_file)) {
-                
+
                 if (!"".equals(current_file)) {
                     fobj = new File(current_file);
                     fc.setSelectedFile(fobj);
                     fc.setCurrentDirectory(fobj);
                 }
-                
+
                 saveAs = true;
                 if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
                     return;
@@ -652,21 +665,21 @@ public class SeSimApplication extends javax.swing.JFrame {
                 fc.setSelectedFile(fobj);
                 fc.setCurrentDirectory(fobj);
             }
-            
+
             File f = fc.getSelectedFile();
             String workdir = fc.getCurrentDirectory().getAbsolutePath();
             Globals.prefs_new.put(Globals.PrefKeys.WORKDIR, workdir);
             String fn = f.getAbsolutePath();
-            
+
             if (f.exists() && saveAs) {
                 String s = String.format("File %s already exists. Do you want to overwrite?", fn);
                 int dialogResult = JOptionPane.showConfirmDialog(this, s, "Warning", JOptionPane.YES_NO_OPTION);
                 if (dialogResult != JOptionPane.YES_OPTION) {
                     continue;
                 }
-                
+
             }
-            
+
             FileFilter selected_filter = fc.getFileFilter();
             if (selected_filter == sesim_filter) {
                 System.out.printf("Filter", selected_filter.toString());
@@ -674,26 +687,26 @@ public class SeSimApplication extends javax.swing.JFrame {
                     f = new File(fn + "." + Globals.SESIM_FILEEXTENSION);
                 }
             }
-            
+
             try {
                 Globals.saveFile(f);
                 Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, fn);
                 setTitle(f.getName());
                 return;
-                
+
             } catch (Exception ex) {
-                
+
                 JOptionPane.showMessageDialog(this, "Can't save file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                
+
             }
-            
+
         }
-        
+
     }
-    
+
 
     private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
-        
+
         this.saveFile(true);
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
@@ -703,27 +716,27 @@ public class SeSimApplication extends javax.swing.JFrame {
         //  System.out.printf("EDRET: %d\n",rc);
 
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
-    
+
     private void resetToDefaults() {
         InputStream is = getClass().getResourceAsStream("/resources/files/defaultcfg.json");
         String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
-        
+
         try {
             Globals.loadString(df);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            
+
         }
-        
+
     }
 
     private void resetToDefaultsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetToDefaultsMenuItemActionPerformed
-        
+
         int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult != JOptionPane.YES_OPTION) {
             return;
         }
-        
+
         this.resetToDefaults();
 
     }//GEN-LAST:event_resetToDefaultsMenuItemActionPerformed
@@ -741,7 +754,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_simMenuStopActionPerformed
 
     private void accelSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_accelSpinnerStateChanged
-        Double val = (Double)this.accelSpinner.getValue();
+        Double val = (Double) this.accelSpinner.getValue();
         Globals.sim.se.timer.setAcceleration(val);
     }//GEN-LAST:event_accelSpinnerStateChanged
 
@@ -758,49 +771,54 @@ public class SeSimApplication extends javax.swing.JFrame {
         stopSim();
     }//GEN-LAST:event_stopButtonActionPerformed
 
-    
-   gui.orderbook.OrderBookDialog rawOrderBookDialog = null; //new gui.orderbook.OrderBookDialog(this, false);
-    
+    RawOrderBookDialog rawOrderBookDialog = null;
+
+//new gui.orderbook.OrderBookDialog(this, false);
+
     private void viewRawOrderBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewRawOrderBookActionPerformed
-        
-        
-                javax.swing.SwingUtilities.invokeLater(() -> {
-           //  TraderListDialog traderListDialog = null;
+
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            //  TraderListDialog traderListDialog = null;
 
             if (this.viewRawOrderBook.getState()) {
                 if (rawOrderBookDialog == null) {
-                    rawOrderBookDialog = new gui.orderbook.OrderBookDialog(this, false);
+
+                    rawOrderBookDialog = new RawOrderBookDialog(this, false);
+
+                    rawOrderBookDialog.start(Globals.sim.se, Order.BUYLIMIT, Order.SELLLIMIT);
+                    rawOrderBookDialog.setTitle("Level 3 Order Book");
+
                     rawOrderBookDialog.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosing(WindowEvent e) {
                             super.windowClosing(e);
-                             viewRawOrderBook.setState(false);
-                            //System.out.printf("Set menu false\n");
+
+                            System.out.printf("Closingn");
+                            rawOrderBookDialog.dispose();
+                            rawOrderBookDialog.stop();
+                            rawOrderBookDialog = null;
+                            viewRawOrderBook.setState(false);
                         }
                     });
-                    
+
                 }
-                
+
                 rawOrderBookDialog.setVisible(true);
             } else if (rawOrderBookDialog != null) {
                 System.out.printf("Set visible = false\n");
                 rawOrderBookDialog.setVisible(false);
+
             }
-                 });
-        
-      //  rawOrderBookDialog.setVisible(rootPaneCheckingEnabled);
+        });
+
+        //  rawOrderBookDialog.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_viewRawOrderBookActionPerformed
-    
-   
-        
-   
-        
-   
-    
+
+
     private void viewTraderListCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTraderListCheckBoxActionPerformed
-        
+
         javax.swing.SwingUtilities.invokeLater(() -> {
-             TraderListDialog traderListDialog = null;
+            TraderListDialog traderListDialog = null;
 
             if (this.viewTraderListCheckBox.getState()) {
                 if (traderListDialog == null) {
@@ -813,9 +831,9 @@ public class SeSimApplication extends javax.swing.JFrame {
                             System.out.printf("Set menu false\n");
                         }
                     });
-                    
+
                 }
-                
+
                 traderListDialog.setVisible(true);
             } else if (traderListDialog != null) {
                 System.out.printf("Set visible = false\n");
@@ -840,13 +858,96 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_closeMenuItemActionPerformed
 
     private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
-        
+
         int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult != JOptionPane.YES_OPTION) {
             return;
         }
         Globals.clearAll();
     }//GEN-LAST:event_clearMenuItemActionPerformed
+
+    RawOrderBookDialog stopOrderBookDialog = null;
+
+    RawOrderBookDialog unlimitedOrdersDialog = null;
+
+    private void viewUnlimitedOrdesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewUnlimitedOrdesActionPerformed
+
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            //  TraderListDialog traderListDialog = null;
+
+            if (this.viewUnlimitedOrdes.getState()) {
+                if (unlimitedOrdersDialog == null) {
+
+                    unlimitedOrdersDialog = new RawOrderBookDialog(this, false);
+
+                    unlimitedOrdersDialog.start(Globals.sim.se, Order.BUY, Order.SELL);
+                    unlimitedOrdersDialog.setTitle("Unlimited Orders");
+
+                    unlimitedOrdersDialog.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            super.windowClosing(e);
+
+                            System.out.printf("Closingn");
+                            unlimitedOrdersDialog.dispose();
+                            unlimitedOrdersDialog.stop();
+                            unlimitedOrdersDialog = null;
+                            viewUnlimitedOrdes.setState(false);
+                        }
+                    });
+
+                }
+
+                unlimitedOrdersDialog.setVisible(true);
+            } else if (unlimitedOrdersDialog != null) {
+                System.out.printf("Set visible = false\n");
+                unlimitedOrdersDialog.setVisible(false);
+
+            }
+        });
+
+
+    }//GEN-LAST:event_viewUnlimitedOrdesActionPerformed
+
+    private void viewStopOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewStopOrdersActionPerformed
+
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            //  TraderListDialog traderListDialog = null;
+
+            if (this.viewStopOrders.getState()) {
+                if (stopOrderBookDialog == null) {
+
+                    stopOrderBookDialog = new RawOrderBookDialog(this, false);
+
+                    stopOrderBookDialog.start(Globals.sim.se, Order.BUYSTOP , Order.SELLSTOP);
+                    stopOrderBookDialog.setTitle("Stop Orders");
+                    stopOrderBookDialog.setTitles("Stop Buy", "Stop Sell");
+                    stopOrderBookDialog.setPriceColumn(Order.STOP);
+
+                    stopOrderBookDialog.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            super.windowClosing(e);
+
+                            System.out.printf("Closingn");
+                            stopOrderBookDialog.dispose();
+                            stopOrderBookDialog.stop();
+                            stopOrderBookDialog = null;
+                            viewStopOrders.setState(false);
+                        }
+                    });
+
+                }
+
+                stopOrderBookDialog.setVisible(true);
+            } else if (unlimitedOrdersDialog != null) {
+                System.out.printf("Set visible = false\n");
+                stopOrderBookDialog.setVisible(false);
+
+            }
+        });
+
+    }//GEN-LAST:event_viewStopOrdersActionPerformed
 
     /**
      * @param args the command line arguments
@@ -857,11 +958,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
-        
-     //   import java.awt.Toolkit;
 
-
-
+        //   import java.awt.Toolkit;
         // create ConsoleHandler 
         ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.ALL); // alles loggen
@@ -869,23 +967,23 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         // Append handler
         rootLogger.addHandler(consoleHandler);
-        rootLogger.setLevel(Level.ALL);        
-        
+        rootLogger.setLevel(Level.ALL);
+
         sesim.Logger.debug("Starting application on the new SesimLogger");
-        
+
         Globals.initGlobals();
         //    Globals.sim.se = new Exchange();
         Globals.sim = new sesim.Sim();
-        
+
         Globals.prefs_new = Preferences.userRoot().node("/opensesim");
         Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, "");
-        
+
         Globals.setLookAndFeel(Globals.prefs_new.get("laf", "Nimbus"));
-        
+
         JDialog.setDefaultLookAndFeelDecorated(true);
         JFrame.setDefaultLookAndFeelDecorated(false);
         JPopupMenu.setDefaultLightWeightPopupEnabled(true);
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -945,7 +1043,9 @@ public class SeSimApplication extends javax.swing.JFrame {
     private gui.TraderListPanel traderListPanel1;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JCheckBoxMenuItem viewRawOrderBook;
+    private javax.swing.JCheckBoxMenuItem viewStopOrders;
     private javax.swing.JCheckBoxMenuItem viewTraderListCheckBox;
+    private javax.swing.JCheckBoxMenuItem viewUnlimitedOrdes;
     // End of variables declaration//GEN-END:variables
 
 }

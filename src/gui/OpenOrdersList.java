@@ -37,7 +37,7 @@ import sesim.Account;
 import sesim.Exchange;
 
 import sesim.Exchange.Order;
-import sesim.Exchange.OrderType;
+import sesim.Exchange.Order;
 //import traders.ManTrader.CreateOrderDialog;
 
 /**
@@ -71,7 +71,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
 
             model.setValueAt(k, row, 0);
 
-            model.setValueAt(((Order) o).getType().toString(), row, 1);
+            model.setValueAt(((Order) o).getTypeAsString(), row, 1);
 
             model.setValueAt(((Order) o).getLimit(), row, 2);
             model.setValueAt(((Order) o).getExecuted(), row, 3);
@@ -192,7 +192,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void createOrder(OrderType t) {
+    private void createOrder(byte t) {
         //   CreateOrderDialog cd = new CreateOrderDialog(Globals.sim.se, Globals.frame, true, account, t);
 
         //cd.initDialog(account);
@@ -201,12 +201,12 @@ public class OpenOrdersList extends javax.swing.JPanel {
 
 
     private void ctxMenuCreateSellOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateSellOrderActionPerformed
-        createOrder(OrderType.SELLLIMIT);
+        createOrder(Order.SELLLIMIT);
 
     }//GEN-LAST:event_ctxMenuCreateSellOrderActionPerformed
 
     private void ctxMenuCreateBuyOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateBuyOrderActionPerformed
-        createOrder(OrderType.BUYLIMIT);
+        createOrder(Order.BUYLIMIT);
     }//GEN-LAST:event_ctxMenuCreateBuyOrderActionPerformed
 
     private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed

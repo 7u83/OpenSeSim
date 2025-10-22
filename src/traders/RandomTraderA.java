@@ -36,7 +36,7 @@ import sesim.Exchange;
 import sesim.Exchange.AccountListener;
 import sesim.Exchange.Order;
 import sesim.Exchange.OrderStatus;
-import sesim.Exchange.OrderType;
+import sesim.Exchange.Order;
 import sesim.Quote;
 import sesim.Scheduler.Event;
 
@@ -229,7 +229,7 @@ public class RandomTraderA extends AutoTraderBase
         boolean rc = se.timer.delEvent(tradeEventTime, TRADEEVENT);
 
    //     System.out.printf("Cancel %s rc for %d = %b\n",getName(),tradeEventTime,rc);
-        if (currentOrder.getType() == OrderType.BUYLIMIT) {
+        if (currentOrder.getType() == Order.BUYLIMIT) {
             tradeEventTime = getRandom(wait_after_buy) * 1000;
         } else {
             tradeEventTime = getRandom(wait_after_sell) * 1000;
@@ -260,7 +260,7 @@ public class RandomTraderA extends AutoTraderBase
 
     /* private long getSleepTimeAfterOrder(Order o) {
 
-        if (o.getType() == OrderType.BUYLIMIT) {
+        if (o.getType() == Order.BUYLIMIT) {
             long r = getRandom(wait_after_buy) * 1000;
             return r;
         }
@@ -280,7 +280,7 @@ public class RandomTraderA extends AutoTraderBase
             return wait_after_timeout;
         }
 
-        if (o.getType() == OrderType.BUYLIMIT) {
+        if (o.getType() == Order.BUYLIMIT) {
             setStatus("Sleep after buy");
             long r = getRandom(wait_after_buy) * 1000;
             return r;
@@ -372,7 +372,7 @@ public class RandomTraderA extends AutoTraderBase
 
     private Order doBuy() {
 
-        Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
+        byte type = Exchange.Order.BUYLIMIT;
 
         // how much money we ant to invest?
         float money = getRandomAmmount(account_id.getMoney(), buy_volume);
@@ -389,13 +389,13 @@ public class RandomTraderA extends AutoTraderBase
         limit = se.roundMoney(limit);
         volume = se.roundShares(volume);
 
-        return se.createOrder(account_id, type, volume, limit);
+        return se.createOrder(account_id, type, volume, limit,0f);
 
     }
 
     private Order doSell() {
 
-        Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
+        byte type = Exchange.Order.SELLLIMIT;
 
         // how many shares we want to sell?
         float volume = getRandomAmmount(account_id.getShares(), sell_volume);
@@ -410,7 +410,7 @@ public class RandomTraderA extends AutoTraderBase
         limit = lp + getRandomAmmount(lp, sell_limit);
         se.roundMoney(limit);
 
-        return se.createOrder(account_id, type, volume, limit);
+        return se.createOrder(account_id, type, volume, limit,0f);
 
     }
 

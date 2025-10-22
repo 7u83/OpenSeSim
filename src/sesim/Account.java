@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import sesim.Exchange.Order;
-import sesim.Exchange.OrderType;
+import sesim.Exchange.Order;
 
 /**
  *
@@ -101,7 +101,7 @@ public class Account {
         while (it.hasNext()) {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
-            if (o.type == OrderType.BUYLIMIT) {
+            if (o.type == Order.BUYLIMIT) {
                 cash += (o.getInitialVolume() - o.getExecuted()) * o.limit;
             }
         }
@@ -116,7 +116,7 @@ public class Account {
         while (it.hasNext()) {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
-            if (o.type == OrderType.SELLLIMIT) {
+            if (o.type == Order.SELLLIMIT) {
                 volume += o.getInitialVolume() - o.getExecuted();
             }
         }
@@ -147,13 +147,15 @@ public class Account {
         return orders.get(oid);
     }
     
-    public boolean isOrderCovered(OrderType type, float volume, float limit){
+    public boolean isOrderCovered(byte type, float volume, float limit){
+      
+        
         switch (type){
-            case BUYLIMIT:
-            case BUY:
+            case Order.BUYLIMIT:
+            case Order.BUY:
                 return this.couldBuy(volume, limit);
-            case SELLLIMIT:
-            case SELL:
+            case Order.SELLLIMIT:
+            case Order.SELL:
                 return this.couldSell(volume);
                 
         }

@@ -28,14 +28,8 @@ package traders.ManTrader;
 import gui.OpenOrdersList;
 import java.awt.Frame;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JSpinner;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -43,7 +37,6 @@ import sesim.Account;
 
 import sesim.Exchange;
 import sesim.Exchange.Order;
-import sesim.Exchange.OrderType;
 
 /**
  *
@@ -54,8 +47,6 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
     public ManTrader trader;
     Account account;
     Exchange se;
-    
-   
 
     public OpenOrdersList getOrderListPanel() {
 
@@ -75,46 +66,40 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         account = a;
         se = e;
         initComponents();
-       
-       // JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
+        // JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         ordersList.table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2 && !evt.isConsumed()) {
                     evt.consume();
                     System.out.println("Doppelklick auf Order!");
-            //    Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(ManTraderConsolePanel.this);
-                
-                
-                // 1. Übergeordnetes Window finden (korrigierter Cast)
-            Window parentWindow = SwingUtilities.getWindowAncestor(ManTraderConsolePanel.this);
+                    //    Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(ManTraderConsolePanel.this);
 
-            // 2. Parent an den Dialog-Konstruktor übergeben
-            //    Wenn ModifyOrderDialog einen java.awt.Frame oder java.awt.Dialog erwartet:
-            Frame parentFrame = (parentWindow instanceof Frame) ? (Frame) parentWindow : null;
-            // ODER (falls der Konstruktor auch Dialoge akzeptiert, was üblich ist):
-            // Dialog parentDialog = (parentWindow instanceof Dialog) ? (Dialog) parentWindow : null;
-            
-            // Da Sie Frame verwenden wollten, bleiben wir bei dieser Logik,
-            // setzen aber auf null, wenn es kein Frame ist, um den Fehler zu vermeiden.
+                    // 1. Übergeordnetes Window finden (korrigierter Cast)
+                    Window parentWindow = SwingUtilities.getWindowAncestor(ManTraderConsolePanel.this);
+
+                    // 2. Parent an den Dialog-Konstruktor übergeben
+                    //    Wenn ModifyOrderDialog einen java.awt.Frame oder java.awt.Dialog erwartet:
+                    Frame parentFrame = (parentWindow instanceof Frame) ? (Frame) parentWindow : null;
+                    // ODER (falls der Konstruktor auch Dialoge akzeptiert, was üblich ist):
+                    // Dialog parentDialog = (parentWindow instanceof Dialog) ? (Dialog) parentWindow : null;
+
+                    // Da Sie Frame verwenden wollten, bleiben wir bei dieser Logik,
+                    // setzen aber auf null, wenn es kein Frame ist, um den Fehler zu vermeiden.
                     Point point = evt.getPoint();
-                int currentRow = ordersList.table.rowAtPoint(point);
-                if (currentRow != -1) {
+                    int currentRow = ordersList.table.rowAtPoint(point);
+                    if (currentRow != -1) {
 
-                    ordersList.table.setRowSelectionInterval(currentRow, currentRow);
-                    Long oid = (Long) ordersList.table.getModel().getValueAt(currentRow, 0);
-                    Order o = account.getOrderByID(oid);
-                                        ModifyOrderDialog d = new ModifyOrderDialog(parentFrame, true,se, o);
-                    d.setLocationRelativeTo(parentWindow);
-                    d.setVisible(true);
-        } else {
+                        ordersList.table.setRowSelectionInterval(currentRow, currentRow);
+                        Long oid = (Long) ordersList.table.getModel().getValueAt(currentRow, 0);
+                        Order o = account.getOrderByID(oid);
+                        ModifyOrderDialog d = new ModifyOrderDialog(parentFrame, true, se, o);
+                        d.setLocationRelativeTo(parentWindow);
+                        d.setVisible(true);
+                    } else {
 
-        }
-
-            
-            
-            
+                    }
 
                 }
             }
@@ -186,13 +171,13 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         return b;
     }
 
-    void init(Account a,ManTrader mt) {
-        this.ordersList.setOrderList(account.getOrders()); 
+    void init(Account a, ManTrader mt) {
+        this.ordersList.setOrderList(account.getOrders());
         this.closedOrderList.setOrderList(Collections.unmodifiableMap(mt.allOrders));
 
     }
 
-    void doUpdate(Account a,ManTrader mt) {
+    void doUpdate(Account a, ManTrader mt) {
         this.ordersList.updateModel();
         this.closedOrderList.updateModel();
         this.accountBalance2.updateBalance(a);
@@ -217,8 +202,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         ctxMenuModifyOder = new javax.swing.JMenuItem();
         tradingPanel = new javax.swing.JPanel();
         sellButton = new javax.swing.JButton();
-        sellEditOrderPanel = new EditOrderPanel(se,account,OrderType.SELLLIMIT);
-        buyEditOrderPanel = new EditOrderPanel(se,account,OrderType.BUYLIMIT);
+        sellEditOrderPanel = new EditOrderPanel(se,account,Order.SELL);
+        buyEditOrderPanel = new EditOrderPanel(se,account,Order.BUY);
         buyButton = new javax.swing.JButton();
         orderPanel = new javax.swing.JPanel();
         orderTabs = new javax.swing.JTabbedPane();
@@ -274,15 +259,15 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         tradingPanelLayout.setHorizontalGroup(
             tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tradingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sellEditOrderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buyEditOrderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(buyEditOrderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                    .addComponent(sellEditOrderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(buyButton, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                    .addComponent(sellButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         tradingPanelLayout.setVerticalGroup(
             tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,11 +276,11 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
                 .addGroup(tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(buyEditOrderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(buyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12)
-                .addGroup(tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(sellEditOrderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(sellButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tradingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(sellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sellEditOrderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         ordersList.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -314,7 +299,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
             .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(orderPanelLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(orderTabs, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
+                    .addComponent(orderTabs, javax.swing.GroupLayout.DEFAULT_SIZE, 756, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         orderPanelLayout.setVerticalGroup(
@@ -333,13 +318,13 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(orderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(accountBalance2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tradingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -357,9 +342,11 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
     private void buyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyButtonActionPerformed
         float vol = this.buyEditOrderPanel.getVolume();
         float limit = this.buyEditOrderPanel.getLimit();
+        float stop = this.buyEditOrderPanel.getStop();
+        byte type = this.buyEditOrderPanel.getOrderType();
 
         synchronized (se.timer) {
-            Order o = se.createOrder(account, OrderType.BUYLIMIT, vol, limit);
+            Order o = se.createOrder(account, type, vol, limit, stop);
 
         }
         this.updateBuyButton();
@@ -370,20 +357,22 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
     private void sellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellButtonActionPerformed
         float vol = this.sellEditOrderPanel.getVolume();
         float limit = this.sellEditOrderPanel.getLimit();
-
+        float stop = this.sellEditOrderPanel.getStop();
+        byte type = this.sellEditOrderPanel.getOrderType();
+        
         synchronized (se.timer) {
-            Order o = se.createOrder(account, OrderType.SELLLIMIT, vol, limit);
+            Order o = se.createOrder(account, type, vol, limit, stop);
 
         }
         this.updateSellButton();
     }//GEN-LAST:event_sellButtonActionPerformed
 
     private void ctxMenuCreateBuyOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateBuyOrderActionPerformed
-        //  createOrder(OrderType.BUYLIMIT);
+        //  createOrder(Order.BUYLIMIT);
     }//GEN-LAST:event_ctxMenuCreateBuyOrderActionPerformed
 
     private void ctxMenuCreateSellOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateSellOrderActionPerformed
-        // createOrder(OrderType.SELLLIMIT);
+        // createOrder(Order.SELLLIMIT);
     }//GEN-LAST:event_ctxMenuCreateSellOrderActionPerformed
 
     private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed
@@ -392,7 +381,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
 
     private void ordersListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ordersListMousePressed
         System.out.printf("Something hppened\n");
-/*        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+        /*        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
             evt.consume();
             ModifyOrderDialog d = new ModifyOrderDialog(null, true);
         }*/

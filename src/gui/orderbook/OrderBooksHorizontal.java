@@ -42,13 +42,13 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
         if (Globals.sim == null) {
             return;
         }
-        reset();
+        start();
 
     }
 
-    public final void reset() {
-        bidBook.setType(Exchange.OrderType.BUYLIMIT);
-        askBook.setType(Exchange.OrderType.SELLLIMIT);
+    public final void start() {
+        bidBook.start(Globals.sim.se, Exchange.Order.BUYLIMIT);
+        askBook.start(Globals.sim.se, Exchange.Order.SELLLIMIT);
         this.quoteVertical2.reset();
         askBook.UpdateOrderBook();
         bidBook.UpdateOrderBook();

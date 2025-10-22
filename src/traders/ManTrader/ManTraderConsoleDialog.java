@@ -143,11 +143,11 @@ public class ManTraderConsoleDialog extends EscDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ctxMenuCreateBuyOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateBuyOrderActionPerformed
-      //  createOrder(OrderType.BUYLIMIT);
+      //  createOrder(Order.BUYLIMIT);
     }//GEN-LAST:event_ctxMenuCreateBuyOrderActionPerformed
 
     private void ctxMenuCreateSellOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateSellOrderActionPerformed
-       // createOrder(OrderType.SELLLIMIT);
+       // createOrder(Order.SELLLIMIT);
     }//GEN-LAST:event_ctxMenuCreateSellOrderActionPerformed
 
     private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed

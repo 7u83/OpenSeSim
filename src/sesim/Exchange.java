@@ -2,6 +2,7 @@ package sesim;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -83,10 +84,9 @@ public class Exchange {
     /**
      * Definition of order types
      */
-    public enum OrderType {
+    /*public enum Order {
         BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
-    }
-
+    }*/
     //  IDGenerator account_id = new IDGenerator();
     //public static Timer timer = new Timer();
     public Scheduler timer; // = new Scheduler();
@@ -151,9 +151,9 @@ public class Exchange {
 
     class OrderComparator implements Comparator<Order> {
 
-        OrderType type;
+        byte type;
 
-        OrderComparator(OrderType type) {
+        OrderComparator(byte type) {
             this.type = type;
         }
 
@@ -161,20 +161,20 @@ public class Exchange {
         public int compare(Order left, Order right) {
             float d;
             switch (this.type) {
-                case BUYLIMIT:
-                case STOPBUY:
-                case BUY:
+                case Order.BUYLIMIT:
+                case Order.STOPBUY:
+                case Order.BUY:
                     d = right.limit - left.limit;
                     break;
-                case SELLLIMIT:
-                case STOPLOSS:
-                case SELL:
+                case Order.SELLLIMIT:
+                case Order.STOPLOSS:
+                case Order.SELL:
                     d = left.limit - right.limit;
                     break;
                 default:
                     d = 0;
-
             }
+
             if (d != 0) {
                 return d > 0 ? 1 : -1;
             }
@@ -197,27 +197,90 @@ public class Exchange {
 
     }
 
-    HashMap<OrderType, SortedSet<Order>> order_books;
+    class zzOrderComparator implements Comparator<Order> {
 
+        byte type;
+
+        zzOrderComparator(byte type) {
+            this.type = type;
+        }
+
+        @Override
+        public int compare(Order left, Order right) {
+            float d;
+            switch (this.type) {
+                case Order.BUYLIMIT:
+                case Order.STOPBUY:
+                case Order.BUY:
+                    d = right.limit - left.limit;
+                    break;
+                case Order.SELLLIMIT:
+                case Order.STOPLOSS:
+                case Order.SELL:
+                    d = left.limit - right.limit;
+                    break;
+                default:
+                    d = 0;
+            }
+
+            if (d != 0) {
+                return d > 0 ? 1 : -1;
+            }
+
+            d = right.initial_volume - left.initial_volume;
+            if (d != 0) {
+                return d > 0 ? 1 : -1;
+            }
+
+            if (left.id < right.id) {
+                return -1;
+            }
+            if (left.id > right.id) {
+                return 1;
+            }
+
+            return 0;
+
+        }
+
+    }
+
+    //HashMap<Byte, SortedSet<Order>> order_books;
     IDGenerator order_id = new IDGenerator();
 
-    public static class OrderBookEntry {
+    public interface OrderBookEntry {
+
+        public float getVolume();
+
+        public float getLimit();
+
+        public float getStop();
+
+        public String getOwnerName();
+
+        void addVolume(float volume);
+
+    }
+
+    public static class CompOrderBookEntry implements OrderBookEntry {
 
         public float limit;
         public float volume;
 
-        public OrderBookEntry() {
+        public CompOrderBookEntry() {
 
         }
 
-        public OrderBookEntry(OrderBookEntry oe) {
+        public CompOrderBookEntry(Order oe) {
 
             this.volume = oe.volume;
             this.limit = oe.limit;
         }
 
-        public String getOwnerName() {
-            return "";
+        public CompOrderBookEntry(OrderBookEntry oe) {
+
+            this.volume = oe.getVolume();
+            this.limit = oe.getLimit();
         }
 
         public float getVolume() {
@@ -226,6 +289,10 @@ public class Exchange {
 
         public float getLimit() {
             return limit;
+        }
+
+        public String getOwnerName() {
+            return "";
         }
 
         /*     public OrderBookEntry(Order o) {
@@ -246,12 +313,43 @@ public class Exchange {
             return 0;
 
         }*/
+        @Override
+        public void addVolume(float v) {
+            volume += v;
+        }
+
+        @Override
+        public float getStop() {
+            return -1;
+        }
     }
 
-    public class Order extends OrderBookEntry {
+    public class Order implements OrderBookEntry {
+
+        public final static byte BUY = 0x00;
+        public final static byte SELL = 0x01;
+        public final static byte LIMIT = 0x02;
+        public final static byte STOP = 0x04;
+        public final static byte TAKEPROFIT = 0x08;
+        public final static byte FOK = 0x10;
+
+        public final static byte SELLLIMIT = SELL | LIMIT;
+        public final static byte BUYLIMIT = BUY | LIMIT;
+        public final static byte STOPBUY = BUY | STOP;
+        public final static byte STOPLOSS = SELL | STOP;
+
+        public final static byte BUYSTOP = BUY | STOP;
+        public final static byte SELLSTOP = SELL | STOP;
+
+        float volume;
+
+        float limit;
+        float stop;
+        float profit;
 
         OrderStatus status;
-        OrderType type;
+        // Order type;
+        byte type;
 
         private final float initial_volume;
         private final long id;
@@ -259,7 +357,7 @@ public class Exchange {
         protected final Account account;
         float cost;
 
-        Order(Account account, OrderType type, float volume, float limit) {
+        Order(Account account, byte type, float volume, float limit) {
             this.account = account;
 
             id = order_id.getNext();
@@ -270,6 +368,7 @@ public class Exchange {
             this.created = timer.getCurrentTimeMillis();
             this.status = OrderStatus.OPEN;
             this.cost = 0;
+
         }
 
         Order(Order o) {
@@ -283,6 +382,7 @@ public class Exchange {
             created = o.created;
             status = o.status;
             cost = o.cost;
+            stop = o.stop;
         }
 
         public String getOwnerName() {
@@ -297,8 +397,18 @@ public class Exchange {
             return id;
         }
 
-        public OrderType getType() {
+        public byte getType() {
             return type;
+        }
+
+        public String getTypeAsString() {
+            String s;
+            if (0 != (type & Order.SELL)) {
+                s = "SELL";
+            } else {
+                s = "BUY";
+            }
+            return s;
         }
 
         public float getExecuted() {
@@ -311,6 +421,10 @@ public class Exchange {
 
         public float getCost() {
             return cost;
+        }
+
+        public boolean isSell() {
+            return (type & SELL) != 0;
         }
 
         public float getAvaragePrice() {
@@ -333,6 +447,35 @@ public class Exchange {
             return this.status == OrderStatus.OPEN
                     || this.status == OrderStatus.PARTIALLY_EXECUTED;
         }
+
+        @Override
+        public float getVolume() {
+            return volume;
+        }
+
+        @Override
+        public float getLimit() {
+            return limit;
+        }
+
+        public boolean hasLimit() {
+            return (type & LIMIT) != 0;
+        }
+
+        public boolean hasStop() {
+            return (type & STOP) != 0;
+        }
+
+        @Override
+        public void addVolume(float volume) {
+
+        }
+
+        @Override
+        public float getStop() {
+            System.out.printf("Get stop %f\n", stop);
+            return stop;
+        }
     }
 
     /**
@@ -340,12 +483,19 @@ public class Exchange {
      */
     public List<Quote> quoteHistory; // = new TreeSet<>();
 
+    SortedSet bidBook;
+    SortedSet askBook;
+    SortedSet ulBidBook;
+    SortedSet ulAskBook;
+    SortedSet stopBuyBook;
+    SortedSet stopSellBook;
+
     final void initExchange() {
         //   quoteReceiverList = (new CopyOnWriteArrayList<>());
 
         this.quoteReceiverList.clear();
-        this.ask_bookreceivers.clear();
-        this.bid_bookreceivers.clear();
+        this.askBookListeners.clear();
+        this.bidBookListeners.clear();
 
         buy_orders = 0;
         sell_orders = 0;
@@ -359,12 +509,24 @@ public class Exchange {
         this.ohlc_data = new HashMap();
 
         // Create order books
-        order_books = new HashMap();
-        for (OrderType type : OrderType.values()) {
+        //   order_books = new HashMap();
+        bidBook = new ConcurrentSkipListSet(new OrderComparator(Order.BUYLIMIT));
+        askBook = new ConcurrentSkipListSet(new OrderComparator(Order.SELLLIMIT));
+        ulBidBook = new ConcurrentSkipListSet(new OrderComparator(Order.BUY));
+        ulAskBook = new ConcurrentSkipListSet(new OrderComparator(Order.SELL));
+        stopSellBook = new ConcurrentSkipListSet(new OrderComparator(Order.STOPLOSS));
+        stopBuyBook = new ConcurrentSkipListSet(new OrderComparator(Order.BUY));
+
+        /*   order_books.put(Order.BUYLIMIT, new ConcurrentSkipListSet(new OrderComparator(Order.BUYLIMIT)));
+        order_books.put(Order.SELLLIMIT, new ConcurrentSkipListSet(new OrderComparator(Order.SELLLIMIT)));
+        order_books.put(Order.BUY, new ConcurrentSkipListSet(new OrderComparator(Order.BUY)));
+        order_books.put(Order.SELL, new ConcurrentSkipListSet(new OrderComparator(Order.SELL)));
+        order_books.put(Order.STOPLOSS, new ConcurrentSkipListSet(new OrderComparator(Order.STOPLOSS)));
+         */
+ /*for (Order type : Order.values()) {
 //            order_books.put(type, new TreeSet(new OrderComparator(type)));
             order_books.put(type, new ConcurrentSkipListSet(new OrderComparator(type)));
-        }
-
+        }*/
     }
 
     /**
@@ -423,8 +585,8 @@ public class Exchange {
                             executeOrders();
                         }
 
-                        updateBookReceivers(OrderType.SELLLIMIT);
-                        updateBookReceivers(OrderType.BUYLIMIT);
+                        updateBookReceivers(Order.SELLLIMIT);
+                        updateBookReceivers(Order.BUYLIMIT);
                     }
 
                 } catch (InterruptedException ex) {
@@ -441,19 +603,17 @@ public class Exchange {
     /**
      * Start the exchange
      */
-    public void start() {
+    /*    public void start() {
         timer.start();
 
-    }
-
+    }*/
     public void reset() {
         initExchange();
     }
 
-    public void terminate() {
+    /*   public void terminate() {
         timer.terminate();
-    }
-
+    }*/
     public void initLastQuote() {
         Quote q = new Quote();
         q.price = this.fairValue;
@@ -516,8 +676,8 @@ public class Exchange {
 
     public Float getBestPrice() {
         //      System.out.printf("Get BP\n");
-        SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
-        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+        SortedSet<Order> bid = bidBook;
+        SortedSet<Order> ask = askBook;
 
         Quote lq = this.getLastQuoete();
         Order b = null, a = null;
@@ -596,8 +756,8 @@ public class Exchange {
     public Quote getBestPrice_0() {
 
         synchronized (executor) {
-            SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
-            SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+            SortedSet<Order> bid = bidBook;
+            SortedSet<Order> ask = askBook;
 
             Quote lq = this.getLastQuoete();
             Order b = null, a = null;
@@ -678,46 +838,65 @@ public class Exchange {
     /**
      * Bookreceiver Interface
      */
-    public interface BookReceiver {
+    public interface BookListener {
 
         void UpdateOrderBook();
     }
 
-    final private CopyOnWriteArrayList<BookReceiver> ask_bookreceivers = new CopyOnWriteArrayList<>();
-    final private CopyOnWriteArrayList<BookReceiver> bid_bookreceivers = new CopyOnWriteArrayList<>();
+    final private Set<BookListener> askBookListeners = ConcurrentHashMap.newKeySet();
+    final private Set<BookListener> bidBookListeners = ConcurrentHashMap.newKeySet();
+    final private Set<BookListener> ulAskBookListeners = ConcurrentHashMap.newKeySet();
+    final private Set<BookListener> ulBidBookListeners = ConcurrentHashMap.newKeySet();
+    final private Set<BookListener> stopBuyBookListeners = ConcurrentHashMap.newKeySet();
+    final private Set<BookListener> stopSellBookListeners = ConcurrentHashMap.newKeySet();
 
-    private CopyOnWriteArrayList<BookReceiver> selectBookReceiver(OrderType t) {
+    private Set<BookListener> selectBookReceiver(byte t) {
         switch (t) {
-            case SELLLIMIT:
-                return ask_bookreceivers;
-            case BUYLIMIT:
-                return bid_bookreceivers;
+            case Order.SELLLIMIT:
+                return askBookListeners;
+            case Order.BUYLIMIT:
+                return bidBookListeners;
+            case Order.SELL:
+                return ulAskBookListeners;
+            case Order.BUY:
+                return ulBidBookListeners;
+            case Order.BUYSTOP:
+                return stopBuyBookListeners;
+            case Order.SELLSTOP:
+                return stopSellBookListeners;
+
         }
         return null;
     }
 
-    public void addBookReceiver(OrderType t, BookReceiver br) {
-        sesim.Logger.debug("Add BookReceiver");
-        //  sesim.Sim.Logger.
-        if (br == null) {
-//            System.out.printf("Br is null\n");
-        } else {
-            //          System.out.printf("Br is not Nukk\n");
+    public void addBookListener(byte type, BookListener bl) {
+        sesim.Logger.debug("Add book listener %s", bl.toString());
+        if (bl == null) {
+            return;
         }
 
-        CopyOnWriteArrayList<BookReceiver> bookreceivers;
-        bookreceivers = selectBookReceiver(t);
-        if (bookreceivers == null) {
-//            System.out.printf("null in bookreceivers\n");
+        Set<BookListener> booklisteners = selectBookReceiver(type);
+        if (booklisteners == null) {
+            return;
         }
-        bookreceivers.add(br);
+        booklisteners.add(bl);
     }
 
-    void updateBookReceivers(OrderType t) {
-        CopyOnWriteArrayList<BookReceiver> bookreceivers;
-        bookreceivers = selectBookReceiver(t);
+    public void removeBookListener(BookListener bl) {
+        sesim.Logger.debug("Remove book listener %s", bl.toString());
+        askBookListeners.remove(bl);
+        bidBookListeners.remove(bl);
+        ulAskBookListeners.remove(bl);
+        ulBidBookListeners.remove(bl);
+        stopBuyBookListeners.remove(bl);
+        stopSellBookListeners.remove(bl);
+    }
 
-        Iterator<BookReceiver> i = bookreceivers.iterator();
+    void updateBookReceivers(byte t) {
+        Set<BookListener> booklisteners;
+        booklisteners = selectBookReceiver(t);
+
+        Iterator<BookListener> i = booklisteners.iterator();
         while (i.hasNext()) {
             i.next().UpdateOrderBook();
         }
@@ -747,8 +926,8 @@ public class Exchange {
      * Returns a raw snapshot of the order book for the specified order type.
      * <p>
      * The method retrieves up to {@code depth} orders from the sorted order
-     * book corresponding to the given {@link OrderType}. If the order book is
-     * empty or not found, {@code null} is returned.
+     * book corresponding to the given {@link Order}. If the order book is empty
+     * or not found, {@code null} is returned.
      * </p>
      *
      * @param type the type of orders to retrieve (e.g. BUY or SELL)
@@ -756,10 +935,10 @@ public class Exchange {
      * @return a list of up to {@code depth} {@link Order} objects, or
      * {@code null} if the order book does not exist
      */
-    public ArrayList<Order> getRawOrderBook(OrderType type, int depth) {
+    public ArrayList<Order> getRawOrderBook(byte type, int depth) {
 
         // Get the sorted order book for the specified type
-        SortedSet<Order> book = order_books.get(type);
+        SortedSet<Order> book = getBook(type); //order_books.get(type);
         if (book == null) {
             return null;
         }
@@ -781,13 +960,33 @@ public class Exchange {
         return ret;
     }
 
-//    public ArrayList<OrderBookEntry> getCompressedOrderBook(OrderType type, int depth) {
-    public TreeMap<Float, OrderBookEntry> getCompressedOrderBook(OrderType type, int depth) {
+    SortedSet<Order> getBook(byte type) {
+        switch (type & 0x07) {
+            case Order.BUYLIMIT:
+                return bidBook;
+            case Order.SELLLIMIT:
+                return askBook;
+            case Order.BUY:
+                return ulBidBook;
+            case Order.SELL:
+                return ulAskBook;
+            case Order.SELLSTOP:
+                return stopSellBook;
+            case Order.BUYSTOP:
+                return stopBuyBook;
+
+            default:
+                return null;
+        }
+    }
+
+//    public ArrayList<OrderBookEntry> getCompressedOrderBook(Order type, int depth) {
+    public TreeMap<Float, OrderBookEntry> getCompressedOrderBook(byte type, int depth) {
 
         TreeMap<Float, OrderBookEntry> map = new TreeMap<>();
 
         // Get the sorted order book for the specified type
-        SortedSet<Order> book = order_books.get(type);
+        SortedSet<Order> book = getBook(type); //order_books.get(type);
         if (book == null) {
             return null;
         }
@@ -805,10 +1004,10 @@ public class Exchange {
 
             OrderBookEntry oe = map.get(o.limit);
             if (oe == null) {
-                map.put(o.limit, new OrderBookEntry(o));
+                map.put(o.limit, new CompOrderBookEntry(o));
 
             } else {
-                oe.volume += o.volume;
+                oe.addVolume(o.volume);
                 map.put(o.limit, oe);
             }
 
@@ -849,11 +1048,11 @@ public class Exchange {
         //    return this.quoteHistory.last();
     }
 
-    private void transferMoneyAndShares(Account src, Account dst, float money, float shares) {
-        src.money -= money;
-        dst.money += money;
-        src.shares -= shares;
-        dst.shares += shares;
+    private void transferMoneyAndShares(Account buyer, Account seller, float money, float shares) {
+        buyer.money -= money;
+        seller.money += money;
+        buyer.shares += shares;
+        seller.shares -= shares;
 
     }
 
@@ -874,7 +1073,7 @@ public class Exchange {
 
             //   System.out.print("The Order:"+o.limit+"\n");
             if (o != null) {
-                SortedSet ob = order_books.get(o.type);
+                SortedSet ob = getBook(o.type); //order_books.get(o.type);
 
                 boolean rc = ob.remove(o);
 
@@ -919,31 +1118,34 @@ public class Exchange {
     public float fairValue = 0;
 
     private void removeOrderIfExecuted(Order o) {
-        if (o.getAccount().getOwner().getName().equals("Tobias0")) {
-//            System.out.printf("Tobias 0 test\n");
-        }
 
-        if (o.volume != 0) {
-
-            if (o.getAccount().getOwner().getName().equals("Tobias0")) {
-//                System.out.printf("Patially remove tobias\n");
-            }
+        if (o.volume != 0 && o.status != OrderStatus.CLOSED) {
 
             o.status = OrderStatus.PARTIALLY_EXECUTED;
             o.account.update(o);
             return;
         }
 
-        if (o.getAccount().getOwner().getName().equals("Tobias0")) {
-//            System.out.printf("Fully remove tobias\n");
-        }
         int n = o.account.orders.size();
 
         Order x = o.account.orders.remove(o.id);
 
-        SortedSet book = order_books.get(o.type);
-
-        book.remove(book.first());
+        //SortedSet book = getBook(o.type); //order_books.get(o.type);
+        //book.remove(book.first());
+        if (o.isSell()) {
+            if (o.hasLimit()) {
+                askBook.remove(o);
+            } else {
+                ulAskBook.remove(o);
+            }
+        }
+        else {
+            if (o.hasLimit()) {
+                bidBook.remove(o);
+            } else {
+                ulBidBook.remove(o);
+            }            
+        }
 
         o.status = OrderStatus.CLOSED;
         o.account.update(o);
@@ -951,41 +1153,54 @@ public class Exchange {
     }
 
     void checkSLOrders(float price) {
-        SortedSet<Order> sl = order_books.get(OrderType.STOPLOSS);
-        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+        SortedSet<Order> ss = stopSellBook; //order_books.get(Order.STOPLOSS);
+        SortedSet<Order> sb = stopBuyBook; //order_books.get(Order.SELLLIMIT);
 
-        if (sl.isEmpty()) {
-            return;
+        while (!ss.isEmpty()) {
+            Order s = ss.first();
+            if (price > s.stop) {
+                break;
+            }
+            ss.remove(s);
+            if (s.hasLimit()) {
+                askBook.add(s);
+            } else {
+                ulAskBook.add(s);
+            }
         }
 
-        Order s = sl.first();
-        if (price <= s.limit) {
-            sl.remove(s);
-
-            s.type = OrderType.SELL;
-            addOrderToBook(s);
-
-//            System.out.printf("Stoploss hit %f %f\n", s.volume, s.limit);
+        while (!sb.isEmpty()) {
+            Order s = sb.first();
+            if (price > s.stop) {
+                break;
+            }
+            sb.remove(s);
+            if (s.hasLimit()) {
+                bidBook.add(s);
+            } else {
+                ulBidBook.add(s);
+            }
         }
+
     }
 
     public void executeUnlimitedOrders() {
 
     }
 
-    private void finishTrade(Order b, Order a, float price, float volume) {
+    private void finishTrade(Order buyer, Order seller, float price, float volume) {
         // Transfer money and shares
-        transferMoneyAndShares(b.account, a.account, volume * price, -volume);
+        transferMoneyAndShares(buyer.account, seller.account, volume * price, volume);
         statistics.trades++;
         // Update volume
-        b.volume -= volume;
-        a.volume -= volume;
+        buyer.volume -= volume;
+        seller.volume -= volume;
 
-        b.cost += price * volume;
-        a.cost += price * volume;
+        buyer.cost += price * volume;
+        seller.cost += price * volume;
 
-        removeOrderIfExecuted(a);
-        removeOrderIfExecuted(b);
+        removeOrderIfExecuted(seller);
+        removeOrderIfExecuted(buyer);
     }
 
     void addQuoteToHistory(Quote q) {
@@ -1013,11 +1228,11 @@ public class Exchange {
     public void executeOrders() {
 
 //        System.out.printf("Exec Orders\n");
-        SortedSet<Order> bid = order_books.get(OrderType.BUYLIMIT);
-        SortedSet<Order> ask = order_books.get(OrderType.SELLLIMIT);
+        SortedSet<Order> bid = bidBook; //order_books.get(Order.BUYLIMIT);
+        SortedSet<Order> ask = askBook; //order_books.get(Order.SELLLIMIT);
 
-        SortedSet<Order> ul_buy = order_books.get(OrderType.BUY);
-        SortedSet<Order> ul_sell = order_books.get(OrderType.SELL);
+        SortedSet<Order> ul_buy = ulBidBook; //order_books.get(Order.BUY);
+        SortedSet<Order> ul_sell = ulAskBook; //order_books.get(Order.SELL);
 
         float volume_total = 0;
         float money_total = 0;
@@ -1025,17 +1240,26 @@ public class Exchange {
         while (true) {
 
             // Match unlimited sell orders against unlimited buy orders
-            if (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
-                Order a = ul_sell.first();
-                Order b = ul_buy.first();
+            while (!ul_sell.isEmpty() && !ul_buy.isEmpty()) {
+                Order seller = ul_sell.first();
+                Order buyer = ul_buy.first();
 
-                Float price = getBestPrice();
-                if (price == null) {
+                float price = this.getBestPrice();
+                /*if (price == null) {
                     break;
+                }*/
+
+                float volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
+
+                float bp = volume * price;
+                float cashAvail = buyer.account.getCashAvailable();
+                if (cashAvail < bp) {
+                    volume = cashAvail / price;
+                    volume = roundShares(volume);
+                    buyer.status = OrderStatus.CLOSED;
                 }
 
-                float volume = b.volume >= a.volume ? a.volume : b.volume;
-                finishTrade(b, a, price, volume);
+                finishTrade(buyer, seller, price, volume);
                 volume_total += volume;
                 money_total += price * volume;
                 this.checkSLOrders(price);
@@ -1045,11 +1269,20 @@ public class Exchange {
             }
 
             while (!ul_buy.isEmpty() && !ask.isEmpty()) {
-                Order a = ask.first();
-                Order b = ul_buy.first();
-                float price = a.limit;
-                float volume = b.volume >= a.volume ? a.volume : b.volume;
-                finishTrade(b, a, price, volume);
+                Order seller = ask.first();
+                Order buyer = ul_buy.first();
+                float price = seller.limit;
+                float volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
+
+                float bp = volume * price;
+                float cashAvail = buyer.account.getCashAvailable();
+                if (cashAvail < bp) {
+                    volume = cashAvail / price;
+                    volume = roundShares(volume);
+                    buyer.status = OrderStatus.CLOSED;
+                }
+
+                finishTrade(buyer, seller, price, volume);
                 volume_total += volume;
                 money_total += price * volume;
                 this.checkSLOrders(price);
@@ -1058,11 +1291,11 @@ public class Exchange {
 
             // Match unlimited sell orders against limited buy orders
             while (!ul_sell.isEmpty() && !bid.isEmpty()) {
-                Order b = bid.first();
-                Order a = ul_sell.first();
-                float price = b.limit;
-                float volume = b.volume >= a.volume ? a.volume : b.volume;
-                finishTrade(b, a, price, volume);
+                Order buyer = bid.first();
+                Order seller = ul_sell.first();
+                float price = buyer.limit;
+                float volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
+                finishTrade(buyer, seller, price, volume);
                 volume_total += volume;
                 money_total += price * volume;
                 this.checkSLOrders(price);
@@ -1113,19 +1346,32 @@ public class Exchange {
     long sell_orders = 0;
 
     private void addOrderToBook(Order o) {
-        order_books.get(o.type).add(o);
-        switch (o.type) {
-            case BUY:
-            case BUYLIMIT:
-                buy_orders++;
-                break;
-            case SELL:
-            case SELLLIMIT:
-                sell_orders++;
-                break;
 
+        if (o.isSell()) {
+            if (o.hasStop()) {
+                stopSellBook.add(o);
+            } else {
+                if (o.hasLimit()) {
+                    askBook.add(o);
+                } else {
+                    ulAskBook.add(o);
+                }
+            }
+            sell_orders++;
+            return;
         }
-//        System.out.printf("B/S  %d/%d Failed B/S: %d/%d\n", buy_orders, sell_orders,buy_failed,sell_failed);
+
+        if (o.hasStop()) {
+            stopBuyBook.add(o);
+        } else {
+            if (o.hasLimit()) {
+                bidBook.add(o);
+            } else {
+                ulBidBook.add(o);
+            }
+        }
+        buy_orders++;
+
     }
 
     long buy_failed = 0;
@@ -1139,57 +1385,48 @@ public class Exchange {
      * @param limit
      * @return
      */
-    public Order createOrder(Account a, OrderType type, float volume, float limit) {
+    public Order createOrder(Account a, byte type, float volume, float limit, float stop) {
 
-        //   System.out.printf("PLACE ORDER for %s, type:%s, limit:%f, volume:%f\n", a.owner.getName(), type.toString(), limit, volume);
-        /*      if (a == null) {
-            System.out.printf("Order not places account\n");
-            return null;
-        }*/
-        Order o = new Order(a, type, volume, limit);
-        if (o.volume <= 0 || o.limit <= 0) {
-
-            switch (o.type) {
-                case SELL:
-                case SELLLIMIT:
-                    sell_failed++;
-                    break;
-                case BUY:
-                case BUYLIMIT:
-                    buy_failed++;
-                    break;
+        if (volume <= 0) {
+            if ((type & Order.SELL) != 0) {
+                sell_failed++;
+            } else {
+                sell_failed--;
             }
-            //      System.out.printf("Order ffailed  %f %f \n",o.volume,o.limit);
 
             return null;
         }
 
-//        System.out.printf("Getting executor in create Order\n", Thread.currentThread().getId());
+        Order o = new Order(a, type, volume, limit);
+        o.stop = stop;
+
         synchronized (executor) {
 
             //num_orders++;
             statistics.orders++;
 
             addOrderToBook(o);
-//            System.out.printf("PUT ORDER %s, %d\n",o,a.orders.size());
+
             a.orders.put(o.id, o);
-//            System.out.printf("PUT ORDER AFTER %s, %d\n",o,a.orders.size());
             a.update(o);
 
             executeOrders();
-            updateBookReceivers(OrderType.SELLLIMIT);
-            updateBookReceivers(OrderType.BUYLIMIT);
+            updateBookReceivers(Order.SELLLIMIT);
+            updateBookReceivers(Order.BUYLIMIT);
+            updateBookReceivers(Order.SELL);
+            updateBookReceivers(Order.BUY);
+            updateBookReceivers(Order.SELLSTOP);
+            updateBookReceivers(Order.BUYSTOP);
 
-            //        System.out.printf("Order to Queeue %s %f %f\n",o.type.toString(),o.volume,o.limit);
-//            order_queue.add(o);
-//            executor.notify();
         }
-//       a.update(o);
+
         return o;
     }
 
-    public float getBestLimit(OrderType type) {
-        Order o = order_books.get(type).first();
+    public float getBestLimit(Order type) {
+        //Order o = order_books.get(type).first();
+        Order o = getBook(type.type).first();
+
         if (o == null) {
             return -1;
         }

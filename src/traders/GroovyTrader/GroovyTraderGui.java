@@ -35,26 +35,40 @@ import org.fife.ui.rtextarea.SearchResult;
 //import org.fife.ui.rtextarea.ReplaceDialog;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.rsta.ui.search.FindDialog;
+import org.fife.rsta.ui.search.SearchEvent;
+import static org.fife.rsta.ui.search.SearchEvent.Type.FIND;
+import static org.fife.rsta.ui.search.SearchEvent.Type.MARK_ALL;
+import static org.fife.rsta.ui.search.SearchEvent.Type.REPLACE;
+import static org.fife.rsta.ui.search.SearchEvent.Type.REPLACE_ALL;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import sesim.AutoTraderGui;
+import static sun.jvm.hotspot.HelloWorld.e;
 
 /**
  *
  * @author tube
  */
-public class GroovyTraderGui extends AutoTraderGui {
+public class GroovyTraderGui extends AutoTraderGui implements SearchListener {
 
     RSyntaxTextArea textArea;
     GroovyTrader trader;
 
-    /*    ReplaceDialog replaceDialog;
-    SearchDialog searchDialog;*/
+    ReplaceDialog replaceDialog;
+    FindDialog findDialog;
 
     /**
      * Creates new form GrovyTraderGui
+     * @param trader the trader the form belongs to
      */
     public GroovyTraderGui(GroovyTrader trader) {
         this.trader = trader;
@@ -79,21 +93,35 @@ public class GroovyTraderGui extends AutoTraderGui {
         // 4. Fügen Sie die ScrollPane zum JPanel hinzu
         this.add(sp, BorderLayout.CENTER);
 
-        /*    // Such- und Ersetzen-Dialoge vorbereiten
-        replaceDialog = new ReplaceDialog(null, textArea);
-        searchDialog = new SearchDialog(null, textArea);
+        JDialog parent = (JDialog) SwingUtilities.getWindowAncestor(this);
+
+        findDialog = new org.fife.rsta.ui.search.FindDialog(parent, this);
+        //findDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        findDialog.setModalityType(Dialog.ModalityType.MODELESS);
+        findDialog.pack();;
+        findDialog.setMinimumSize(findDialog.getSize());
+        replaceDialog = new org.fife.rsta.ui.search.ReplaceDialog(parent, this);
+        replaceDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+
+        SearchContext context = findDialog.getSearchContext();
 
         // Tastenkürzel hinzufügen: STRG+F = Suche, STRG+H = Ersetzen
         textArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_F) {
-                    searchDialog.setVisible(true);
+
+                    findDialog.setAlwaysOnTop(true);
+                    findDialog.setLocationRelativeTo(parent);
+                    findDialog.setVisible(true);
+
                 } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_H) {
                     replaceDialog.setVisible(true);
                 }
             }
-        });*/
+        });
+
+
         setVisible(true);
     }
 
@@ -121,6 +149,57 @@ public class GroovyTraderGui extends AutoTraderGui {
 
         setLayout(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    @Override
+    public void searchEvent(SearchEvent e) {
+        SearchEvent.Type type = e.getType();
+        SearchContext context = e.getSearchContext();
+        SearchResult result;
+
+        switch (type) {
+            default: // Prevent FindBugs warning later
+            case MARK_ALL:
+                result = SearchEngine.markAll(textArea, context);
+                break;
+            case FIND:
+                result = SearchEngine.find(textArea, context);
+                if (!result.wasFound() || result.isWrapped()) {
+                    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+                }
+                break;
+            case REPLACE:
+                result = SearchEngine.replace(textArea, context);
+                if (!result.wasFound() || result.isWrapped()) {
+                    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+                }
+                break;
+            case REPLACE_ALL:
+                result = SearchEngine.replaceAll(textArea, context);
+                JOptionPane.showMessageDialog(null, result.getCount()
+                        + " occurrences replaced.");
+                break;
+        }
+
+        String text;
+        if (result.wasFound()) {
+            text = "Text found; occurrences marked: " + result.getMarkedCount();
+        } else if (type == SearchEvent.Type.MARK_ALL) {
+            if (result.getMarkedCount() > 0) {
+                text = "Occurrences marked: " + result.getMarkedCount();
+            } else {
+                text = "";
+            }
+        } else {
+            text = "Text not found";
+        }
+        //statusBar.setLabel(text);
+    }
+
+    @Override
+    public String getSelectedText() {
+        return textArea.getSelectedText();
+
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

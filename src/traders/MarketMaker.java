@@ -31,7 +31,7 @@ import sesim.AutoTraderGui;
 import sesim.Exchange;
 import sesim.Exchange.Order;
 import sesim.Exchange.OrderStatus;
-import sesim.Exchange.OrderType;
+import sesim.Exchange.Order;
 import sesim.Scheduler;
 import sesim.Scheduler.Event;
 
@@ -125,8 +125,8 @@ public class MarketMaker extends AutoTraderBase {
             orders[i].volume = se.roundShares(cashPerBuyOrder / price);
 
             // Create initial buy order
-            orders[i].o = se.createOrder(account_id, Exchange.OrderType.BUYLIMIT,
-                    orders[i].volume, orders[i].buyLimit);
+            orders[i].o = se.createOrder(account_id, Exchange.Order.BUYLIMIT,
+                    orders[i].volume, orders[i].buyLimit,0f);
 
         }
 
@@ -141,17 +141,17 @@ public class MarketMaker extends AutoTraderBase {
         for (int i = 0; i < numPositions; i++) {
             Order o = orders[i].o;
             if (o.getStatus() == OrderStatus.CLOSED) {
-                if (o.getType() == OrderType.SELLLIMIT) {
+                if (o.getType() == Order.SELLLIMIT) {
                     // Create new buy order if previous was sell
-                    Order n = se.createOrder(account_id, OrderType.BUYLIMIT,
-                            orders[i].volume, orders[i].buyLimit);
+                    Order n = se.createOrder(account_id, Order.BUYLIMIT,
+                            orders[i].volume, orders[i].buyLimit,0f);
                     if (n != null) {
                         orders[i].o = n;
                     }
                 } else {
                     // Create new sell order if previous was buy
-                    Order n = se.createOrder(account_id, OrderType.SELLLIMIT,
-                            orders[i].volume, orders[i].sellLimit);
+                    Order n = se.createOrder(account_id, Order.SELLLIMIT,
+                            orders[i].volume, orders[i].sellLimit,0f);
                     if (n != null) {
                         orders[i].o = n;
                     }

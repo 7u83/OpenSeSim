@@ -273,7 +273,7 @@ public class RandomTraderB extends AutoTraderBase {
 
         sesim.Account account = account_id;
 
-        Exchange.OrderType type = Exchange.OrderType.BUYLIMIT;
+        byte type = Exchange.Order.BUYLIMIT;
 
         if (account == null) {
             return false;
@@ -301,7 +301,7 @@ public class RandomTraderB extends AutoTraderBase {
             return false;
         }
 
-        se.createOrder(account, type, volume, limit);
+        se.createOrder(account, type, volume, limit,0f);
 
         return true;
 
@@ -313,7 +313,7 @@ public class RandomTraderB extends AutoTraderBase {
         
         Account account = account_id;
 
-        Exchange.OrderType type = Exchange.OrderType.SELLLIMIT;
+       byte type = Exchange.Order.SELLLIMIT;
 
                
         // how much shares we ant to sell?
@@ -339,7 +339,7 @@ public class RandomTraderB extends AutoTraderBase {
             return false;
         }
 
-        se.createOrder(account, type, volume, limit);
+        se.createOrder(account, type, volume, limit,0f);
         
         return true;
 
