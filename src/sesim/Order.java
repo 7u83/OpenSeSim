@@ -79,7 +79,7 @@ public class Order implements OrderBookEntry {
         this.limit = se.roundMoney(limit);
         this.volume = se.roundShares(volume);
         this.initial_volume = this.volume;
-        this.created = se.timer.getCurrentTimeMillis();
+        this.created = se.sim.scheduler.getCurrentTimeMillis();
         this.status = OPEN; //Exchange.OrderStatus.OPEN;
         this.cost = 0;
 

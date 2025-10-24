@@ -39,6 +39,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
   //  protected float account_id;
       protected Account account_id;
     protected Exchange se;
+    protected Sim sim;
    // protected AutoTraderConfig config;
 
     protected String name;
@@ -82,10 +83,13 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     }
 
     @Override
-    public void init(Exchange se, long id, String name, float money, float shares, JSONObject cfg) {
+    public void init(Sim sim, long id, String name, float money, float shares, JSONObject cfg) {
         this.account_id = new Account(money,shares); // se.createAccount(money, shares);
  //       se.getAccount(account_id).owner = this;
-    this.account_id.owner=this;
+ 
+ this.sim=sim;
+ this.se=sim.se;
+ this.account_id.owner=this;
         this.se = se;
         this.name = name;
         this.id = id;

@@ -80,7 +80,7 @@ public class Exchange {
     }
 
 
-    public Scheduler timer; 
+    //public Scheduler timer; 
 
     //public ArrayList<AutoTraderInterface> traders_old;
     /**
@@ -325,7 +325,7 @@ public class Exchange {
 
         buy_orders = 0;
         sell_orders = 0;
-        timer = new Scheduler();         //  timer = new Scheduler();
+  //      timer = new Scheduler();         //  timer = new Scheduler();
 
    //     random = new SplittableRandom();
 
@@ -355,12 +355,14 @@ public class Exchange {
         }*/
     }
 
+    
+    Sim sim;
     /**
      * Constructor
      */
-    public Exchange() {
+    public Exchange(Sim sim) {
         quoteReceiverList = (new CopyOnWriteArrayList<>());
-
+        this.sim=sim;
         initExchange();
         //       executor.start();
 
@@ -448,7 +450,7 @@ public class Exchange {
         q.bid = q.price;
         q.ask_volume = 0;
         q.bid_volume = 0;
-        q.time = timer.getCurrentTimeMillis();
+        q.time = sim.scheduler.getCurrentTimeMillis();
         quoteHistory.add(q);
         this.updateQuoteReceivers(q);
     }
@@ -1155,7 +1157,7 @@ public class Exchange {
         Quote q = new Quote();
         q.price = money_total / volume_total;
         q.volume = volume_total;
-        q.time = timer.getCurrentTimeMillis();
+        q.time = sim.scheduler.getCurrentTimeMillis();
 
         addQuoteToHistory(q);
 

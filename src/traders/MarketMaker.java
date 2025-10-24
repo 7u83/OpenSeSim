@@ -90,7 +90,7 @@ public class MarketMaker extends AutoTraderBase {
         TIMEREVENT = new Event(this); // Create event object
 
         // Schedule the first timer event
-        se.timer.addEvent(se.timer.getCurrentTimeMillis()
+        sim.addEvent(sim.getCurrentTimeMillis()
                 + (long) (1000f * this.timerInterval), TIMEREVENT);
 
     }
@@ -202,7 +202,7 @@ public class MarketMaker extends AutoTraderBase {
         }
         
         // Schedule the next timer event
-        se.timer.addEvent(se.timer.getCurrentTimeMillis() + (long) (1000f * this.timerInterval), TIMEREVENT);
+        sim.addEvent(sim.getCurrentTimeMillis() + (long) (1000f * this.timerInterval), TIMEREVENT);
         return 0;
     }
 

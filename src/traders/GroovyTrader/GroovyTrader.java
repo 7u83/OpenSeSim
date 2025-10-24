@@ -29,6 +29,7 @@ package traders.GroovyTrader;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import static gui.Globals.sim;
 import org.json.JSONObject;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
@@ -143,7 +144,7 @@ public class GroovyTrader extends AutoTraderBase {
         
         public boolean scheduleOnce(String groovyFun, long timer){
             GroovyEvent g = new GroovyEvent(groovyFun,timer);
-            se.timer.addEvent(se.timer.getCurrentTimeMillis()
+            sim.addEvent(sim.getCurrentTimeMillis()
                 + timer, g);
             
             return true;

@@ -26,10 +26,10 @@
 package sesim;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.SplittableRandom;
 import org.json.JSONObject;
 import org.json.JSONArray;
+import sesim.Scheduler.Event;
 
 /**
  *
@@ -37,6 +37,9 @@ import org.json.JSONArray;
  */
 public class Sim {
 
+    /**
+     * Keys in cconfig file used by Sim
+     */
     public static final class CfgKeys {
 
         public static final String SESIMVERSION = "version";
@@ -73,8 +76,43 @@ public class Sim {
     public Exchange se;
     public AutoTraderLoader tloader;
 
+    Scheduler scheduler;
+
+    public void setAcceleration(double a) {
+        scheduler.setAcceleration(a);
+    }
+
+    public void setPause(boolean p) {
+        scheduler.setPause(p);
+    }
+
+    public boolean getPause() {
+        return scheduler.getPause();
+    }
+
+    public long getCurrentTimeMillis() {
+        return scheduler.getCurrentTimeMillis();
+    }
+
+    public void startScheduler() {
+        scheduler.start();
+    }
+
+    public void terminateScheduler() {
+        scheduler.terminate();
+    }
+
+    public void addEvent(long t, Event e) {
+        scheduler.addEvent(t, e);
+    }
+
+    public boolean delEvent(long t, Event e) {
+        return scheduler.delEvent(t, e);
+    }
+
     public Sim() {
-        se = new Exchange();
+        scheduler = new Scheduler();
+        se = new Exchange(this);
         initAutoTraderLoader();
         reset();
     }
@@ -83,6 +121,7 @@ public class Sim {
 
     public final void reset() {
         traders = new ArrayList();
+        scheduler = new Scheduler(); 
         se.reset();
     }
 
@@ -104,7 +143,7 @@ public class Sim {
             return null;
         }
         ac.setConfig(cfg);
-        ac.init(se, id, name, money, shares, cfg);
+        ac.init(this, id, name, money, shares, cfg);
 
         return ac;
     }
@@ -181,7 +220,6 @@ public class Sim {
 
         se.putConfig(getExchangeCfg(cfg));
 
-   
         long randomSeed = getRandomSeed(cfg);
         boolean useSeed = useRandomSeed(cfg);
 
@@ -204,7 +242,7 @@ public class Sim {
             JSONObject t = tlist.getJSONObject(i);
             String strategy_name = t.getString("Strategy");
             JSONObject strategy = getStrategy(cfg, strategy_name);
-            String base = strategy.getString("base");
+            // String base = strategy.getString("base");
             //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
 
             //     System.out.printf("Load Strat: %s\n", strategy_name);

@@ -42,6 +42,7 @@ import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Exchange.AccountListener;
 import sesim.Order;
+import sesim.Sim;
 
 /**
  *
@@ -62,8 +63,8 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public void init(Exchange se, long id, String name, float money, float shares, JSONObject cfg) {
-        super.init(se, id, name, money, shares, cfg);
+    public void init(Sim sim, long id, String name, float money, float shares, JSONObject cfg) {
+        super.init(sim, id, name, money, shares, cfg);
         getAccount().setListener(this);
     }
     ManTraderConsoleDialog consoleDialog;

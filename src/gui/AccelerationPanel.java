@@ -147,7 +147,7 @@ public class AccelerationPanel extends javax.swing.JPanel {
 
     private void accelSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_accelSpinnerStateChanged
         Double val = (Double) this.accelSpinner.getValue();
-        Globals.sim.se.timer.setAcceleration(val);
+        Globals.sim.setAcceleration(val);
     }//GEN-LAST:event_accelSpinnerStateChanged
 
     private void accelSpinnerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_accelSpinnerPropertyChange

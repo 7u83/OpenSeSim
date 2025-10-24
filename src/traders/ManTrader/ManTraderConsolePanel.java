@@ -345,10 +345,10 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         float stop = this.buyEditOrderPanel.getStop();
         byte type = this.buyEditOrderPanel.getOrderType();
 
-        synchronized (se.timer) {
+    //    synchronized (se.timer) {
             Order o = se.createOrder(account, type, vol, limit, stop);
 
-        }
+    //    }
         this.updateBuyButton();
 
 
@@ -360,10 +360,10 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         float stop = this.sellEditOrderPanel.getStop();
         byte type = this.sellEditOrderPanel.getOrderType();
         
-        synchronized (se.timer) {
+  //      synchronized (se.timer) {
             Order o = se.createOrder(account, type, vol, limit, stop);
 
-        }
+    //    }
         this.updateSellButton();
     }//GEN-LAST:event_sellButtonActionPerformed
 

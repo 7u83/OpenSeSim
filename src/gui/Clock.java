@@ -52,7 +52,7 @@ public class Clock extends javax.swing.JPanel {
         clockUpdater = new TimerTask() {
             @Override
             public void run() {
-                long t = Globals.sim.se.timer.getCurrentTimeMillis();
+                long t = Globals.sim.getCurrentTimeMillis();
 
                 Statistics s = Globals.sim.se.getStatistics();
                 jLabel1.setText(Scheduler.formatTimeMillis(t));

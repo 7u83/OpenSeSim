@@ -87,8 +87,8 @@ public class RandomTraderA extends AutoTraderBase
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000f);
         setStatus("Inital delay: %d", delay);
 
-        tradeEventTime = delay + se.timer.getCurrentTimeMillis();
-        se.timer.addEvent(tradeEventTime, TRADEEVENT);
+        tradeEventTime = delay + sim.getCurrentTimeMillis();
+        sim.addEvent(tradeEventTime, TRADEEVENT);
     }
 
     // boolean intask = false;
@@ -116,8 +116,8 @@ public class RandomTraderA extends AutoTraderBase
 
             }
             //       System.out.printf("Add evebt %d\n", t);
-            tradeEventTime = t + se.timer.getCurrentTimeMillis();
-            se.timer.addEvent(tradeEventTime, e);
+            tradeEventTime = t + sim.getCurrentTimeMillis();
+            sim.addEvent(tradeEventTime, e);
 //System.out.printf("Scheduled for %s - %d\n",getName(),tradeEventTime);
         }
         /*       if (e == this.ORDERFILLEDEVENT) {
@@ -226,7 +226,7 @@ public class RandomTraderA extends AutoTraderBase
         }
 
         //System.out.printf("ORDER Closed: %s\n", this.getName());
-        boolean rc = se.timer.delEvent(tradeEventTime, TRADEEVENT);
+        boolean rc = sim.delEvent(tradeEventTime, TRADEEVENT);
 
         //     System.out.printf("Cancel %s rc for %d = %b\n",getName(),tradeEventTime,rc);
         if (currentOrder.getType() == Order.BUYLIMIT) {
@@ -235,9 +235,9 @@ public class RandomTraderA extends AutoTraderBase
             tradeEventTime = (long) (getRandom(wait_after_sell) * 1000f);
         }
 
-        tradeEventTime += se.timer.getCurrentTimeMillis();
+        tradeEventTime += sim.getCurrentTimeMillis();
         currentOrder = null;
-        se.timer.addEvent(tradeEventTime, TRADEEVENT);
+        sim.addEvent(tradeEventTime, TRADEEVENT);
 
         // System.out.printf("Closed Scheduled for %s - %d\n",getName(),tradeEventTime);
     }

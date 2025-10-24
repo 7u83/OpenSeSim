@@ -490,21 +490,22 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     void pauseSim() {
 
-        if (Globals.sim.se.timer.getPause()) {
+        if (Globals.sim.getPause()) {
             this.runButton.setEnabled(false);
             this.pauseButton.setEnabled(true);
-
+            Globals.sim.setPause(false);
+            
         } else {
             this.runButton.setEnabled(true);
             this.pauseButton.setEnabled(false);
-
+            Globals.sim.setPause(true);
         }
-        Globals.sim.se.timer.pause();
+  
     }
 
     void startSim() {
 
-        if (Globals.sim.se.timer.getPause()) {
+        if (Globals.sim.getPause()) {
 
             pauseSim();
             return;
@@ -516,9 +517,9 @@ public class SeSimApplication extends javax.swing.JFrame {
         //Globals.sim.se.terminate();
         Globals.sim.reset();
         Globals.sim.startTraders(Globals.getConfig());
-        Globals.sim.se.timer.setPause(false);
-        Globals.sim.se.timer.start();
-        Globals.sim.se.timer.setAcceleration((Double) this.accelerationPanel1.accelSpinner.getValue());
+        Globals.sim.setPause(false);
+        Globals.sim.startScheduler();
+        Globals.sim.setAcceleration((Double) this.accelerationPanel1.accelSpinner.getValue());
 
         chartPanel.reset();
         if (this.rawOrderBookDialog != null) {
@@ -543,7 +544,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }
 
     void stopSim() {
-        Globals.sim.se.timer.terminate();
+        Globals.sim.terminateScheduler();
         this.stopButton.setEnabled(false);
         this.pauseButton.setEnabled(false);
         this.runButton.setEnabled(true);
