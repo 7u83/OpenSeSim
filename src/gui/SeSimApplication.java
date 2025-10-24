@@ -428,7 +428,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         viewMenu.add(viewTraderListCheckBox);
 
-        viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, 0));
+        viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, 0));
         viewRawOrderBook.setMnemonic('R');
         viewRawOrderBook.setText("Level 3 Orde Book");
         viewRawOrderBook.setToolTipText("");
