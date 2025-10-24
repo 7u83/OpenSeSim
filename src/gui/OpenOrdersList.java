@@ -144,6 +144,8 @@ public class OpenOrdersList extends javax.swing.JPanel {
         ctxMenuModifyOder.setText("Modify Oder");
         ctxMenu.add(ctxMenuModifyOder);
 
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
         table.setAutoCreateRowSorter(true);
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -177,11 +179,11 @@ public class OpenOrdersList extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

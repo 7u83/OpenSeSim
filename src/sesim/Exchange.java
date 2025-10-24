@@ -327,7 +327,7 @@ public class Exchange {
         sell_orders = 0;
         timer = new Scheduler();         //  timer = new Scheduler();
 
-        random = new SplittableRandom();
+   //     random = new SplittableRandom();
 
         quoteHistory = new ArrayList();
         statistics = new Statistics();

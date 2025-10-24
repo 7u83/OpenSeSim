@@ -84,6 +84,16 @@ public class SeSimApplication extends javax.swing.JFrame {
             resetToDefaults();
             Globals.prefs_new.putBoolean("initilized", true);
         }
+
+    /*    this.accelerationPanel1.accelSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            @Override
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                //accelSpinnerStateChanged(evt);
+                Integer val =  (Integer)accelerationPanel1.accelSpinner.getValue();
+                Globals.sim.se.timer.setAcceleration(val);
+            }
+        });*/
+
 //        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         //this.setLocationRelativeTo(null);
     }
@@ -103,13 +113,12 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane2 = new javax.swing.JSplitPane();
         orderBookNew1 = new gui.orderbook.RawOrderBook();
         jPanel2 = new javax.swing.JPanel();
-        accelSpinner = new javax.swing.JSpinner();
         clock = new gui.Clock();
-        jLabel1 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         runButton = new javax.swing.JButton();
         pauseButton = new javax.swing.JButton();
         stopButton = new javax.swing.JButton();
+        accelerationPanel1 = new gui.AccelerationPanel();
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
         chartPanel = new chart.ChartPanel();
@@ -141,6 +150,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         simMenuStart = new javax.swing.JMenuItem();
         simMenuPause = new javax.swing.JMenuItem();
         simMenuStop = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        randomSeed = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
         viewRawOrderBook = new javax.swing.JCheckBoxMenuItem();
@@ -163,20 +174,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SeSim - Stock Exchange Simmulator");
         setMinimumSize(new java.awt.Dimension(640, 480));
-
-        accelSpinner.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, null, 1.0d));
-        accelSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                accelSpinnerStateChanged(evt);
-            }
-        });
-        accelSpinner.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                accelSpinnerPropertyChange(evt);
-            }
-        });
-
-        jLabel1.setText("Acceleration:");
 
         jToolBar1.setRollover(true);
 
@@ -221,12 +218,10 @@ public class SeSimApplication extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
+                .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(accelSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -234,17 +229,13 @@ public class SeSimApplication extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(accelSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 12, Short.MAX_VALUE))
+                    .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
@@ -413,6 +404,15 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
         });
         simMenu.add(simMenuStop);
+        simMenu.add(jSeparator3);
+
+        randomSeed.setText("Random seed");
+        randomSeed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                randomSeedActionPerformed(evt);
+            }
+        });
+        simMenu.add(randomSeed);
 
         menuBar.add(simMenu);
 
@@ -518,7 +518,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         Globals.sim.startTraders(Globals.getConfig());
         Globals.sim.se.timer.setPause(false);
         Globals.sim.se.timer.start();
-        Globals.sim.se.timer.setAcceleration((Double) this.accelSpinner.getValue());
+        Globals.sim.se.timer.setAcceleration((Double) this.accelerationPanel1.accelSpinner.getValue());
 
         chartPanel.reset();
         if (this.rawOrderBookDialog != null) {
@@ -755,11 +755,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         stopSim();
     }//GEN-LAST:event_simMenuStopActionPerformed
 
-    private void accelSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_accelSpinnerStateChanged
-        Double val = (Double) this.accelSpinner.getValue();
-        Globals.sim.se.timer.setAcceleration(val);
-    }//GEN-LAST:event_accelSpinnerStateChanged
-
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
         //Globals.sim.se.timer.pause();
         pauseSim();
@@ -845,10 +840,6 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_viewTraderListCheckBoxActionPerformed
 
-    private void accelSpinnerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_accelSpinnerPropertyChange
-//        System.out.printf("Accel Spinner PRop Change\n");
-    }//GEN-LAST:event_accelSpinnerPropertyChange
-
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
         saveFile(false);
 
@@ -921,7 +912,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                     stopOrderBookDialog = new RawOrderBookDialog(this, false);
 
-                    stopOrderBookDialog.start(Globals.sim.se, Order.BUYSTOP , Order.SELLSTOP);
+                    stopOrderBookDialog.start(Globals.sim.se, Order.BUYSTOP, Order.SELLSTOP);
                     stopOrderBookDialog.setTitle("Stop Orders");
                     stopOrderBookDialog.setTitles("Stop Buy", "Stop Sell");
                     stopOrderBookDialog.setPriceColumn(Order.STOP);
@@ -950,6 +941,11 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
 
     }//GEN-LAST:event_viewStopOrdersActionPerformed
+
+    private void randomSeedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomSeedActionPerformed
+        JDialog d = new RandomSeedDialog(this, true);
+        d.setVisible(true);
+    }//GEN-LAST:event_randomSeedActionPerformed
 
     /**
      * @param args the command line arguments
@@ -998,7 +994,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JSpinner accelSpinner;
+    private gui.AccelerationPanel accelerationPanel1;
     private chart.ChartPanel chartPanel;
     private javax.swing.JMenuItem clearMenuItem;
     private gui.Clock clock;
@@ -1011,11 +1007,11 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JSplitPane jSplitPane1;
@@ -1032,6 +1028,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JButton pauseButton;
     private gui.orderbook.QuoteVertical quoteVertical1;
+    private javax.swing.JMenuItem randomSeed;
     private javax.swing.JMenuItem resetToDefaultsMenuItem;
     private javax.swing.JButton runButton;
     private javax.swing.JMenuItem saveAsMenuItem;

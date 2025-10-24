@@ -275,7 +275,18 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadValuesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadValuesButtonActionPerformed
-        this.loadFields();
+        Quote q = se.getBestPrice_0();
+      
+
+        if (type == Order.BUY) {
+            this.limitSpinner.setValue((Float)se.roundMoney(q.getPrice()));
+          //  this.volumeSpinner.setValue(se.roundShares(account.getMoney() / price));
+        }
+        if (type == Order.SELL) {
+            this.limitSpinner.setValue((Float)se.roundMoney(q.getPrice()));
+            //this.volumeSpinner.setValue(se.roundShares(account.getShares()));
+        }
+        setPrice();
     }//GEN-LAST:event_loadValuesButtonActionPerformed
 
     private void limitSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_limitSpinnerStateChanged
@@ -290,11 +301,11 @@ public class EditOrderPanel extends javax.swing.JPanel {
         Quote q = se.getBestPrice_0();
        // Float price = q == null ? 0.0f : q.getPrice();
 
-        if (type == Order.BUYLIMIT) {
+        if (type == Order.BUY) {
             //this.limitSpinner.setValue(se.roundMoney(price));
             this.volumeSpinner.setValue(se.roundShares(account.getCashAvailable() / this.getLimit()));
         }
-        if (type == Order.SELLLIMIT) {
+        if (type == Order.SELL) {
              double avail = account.getSharesAvailable();
              
              

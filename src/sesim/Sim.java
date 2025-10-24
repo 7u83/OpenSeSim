@@ -43,8 +43,14 @@ public class Sim {
         public static final String STRATEGIES = "strategies";
         public static final String TRADERS = "traders";
         public static final String EXCHANGE = "exchange";
-
+        public static final String RANDOM = "random";
     }
+
+    public static final String DEFAULT_RANDOM_CFG
+            = "{"
+            + "seed: 0,"
+            + "use_seed: false"
+            + "}";
 
     static SplittableRandom random = new SplittableRandom(12);
 
@@ -63,9 +69,6 @@ public class Sim {
         return random.nextDouble();
 
     }
-    
-    
-    
 
     public Exchange se;
     public AutoTraderLoader tloader;
@@ -152,18 +155,44 @@ public class Sim {
         //return cfg.getJSONObject(CfgKeys.EXCHANGE);
     }
 
+    public static JSONObject getRandomCfg(JSONObject cfg) {
+        JSONObject rand = cfg.optJSONObject(CfgKeys.RANDOM);
+        if (rand != null) {
+            return rand;
+        }
+        return new JSONObject(DEFAULT_RANDOM_CFG);
+    }
+
     static public final void putExchangeCfg(JSONObject sobj, JSONObject exchange) {
         sobj.put(CfgKeys.EXCHANGE, exchange);
     }
-    
-    
 
+    public static boolean useRandomSeed(JSONObject cfg) {
+        JSONObject rand = getRandomCfg(cfg);
+        return rand.optBoolean("use_seed", false);
+    }
+
+    public static long getRandomSeed(JSONObject cfg) {
+        JSONObject rand = getRandomCfg(cfg);
+        return rand.optLong("seed", 0);
+    }
 
     public void startTraders(JSONObject cfg) {
 
-        
         se.putConfig(getExchangeCfg(cfg));
-        
+
+   
+        long randomSeed = getRandomSeed(cfg);
+        boolean useSeed = useRandomSeed(cfg);
+
+        if (useSeed) {
+            se.random = new SplittableRandom(randomSeed);
+        } else {
+            se.random = new SplittableRandom();
+            randomSeed = se.random.nextLong();
+            se.random = new SplittableRandom(randomSeed);
+        }
+
         //   Globals.sim.se.setMoneyDecimals(8);
         //    Globals.sim.se.setSharesDecimals(0);        
         JSONArray tlist = Sim.getTraders(cfg);
@@ -181,10 +210,10 @@ public class Sim {
             //     System.out.printf("Load Strat: %s\n", strategy_name);
             //      System.out.printf("Base %s\n", base);
             Integer count = t.getInt("Count");
-            Float shares = (float)t.getDouble("Shares");
-            Float money = (float)t.getDouble("Cash");
+            Float shares = (float) t.getDouble("Shares");
+            Float money = (float) t.getDouble("Cash");
 
-            Boolean enabled = t.optBoolean("Enabled",false);
+            Boolean enabled = t.optBoolean("Enabled", false);
             if (!enabled) {
                 continue;
             }
@@ -203,21 +232,18 @@ public class Sim {
             }
 
         }
-        
-        
-        float initialPrice=(float)(Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE,100.0f));
-        boolean autoInitialPrice=Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE,true);
-        
-        System.out.printf("Cache total %f, Shares total\n", moneyTotal,sharesTotal);
 
-        if (autoInitialPrice){
+        float initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE, 100.0f));
+        boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE, true);
+
+        System.out.printf("Cache total %f, Shares total\n", moneyTotal, sharesTotal);
+
+        if (autoInitialPrice) {
             this.se.fairValue = moneyTotal / sharesTotal;
-        }
-        else{
+        } else {
             this.se.fairValue = initialPrice;
         }
-        
-        
+
         se.initLastQuote();
 
         //  Globals.sim.se.fairValue = 1.0;
