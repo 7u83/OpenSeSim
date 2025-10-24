@@ -25,18 +25,14 @@
  */
 package traders;
 
-import javax.swing.JDialog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sesim.Account;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
-import sesim.Exchange;
 import sesim.Exchange.AccountListener;
-import sesim.Exchange.Order;
-import sesim.Exchange.OrderStatus;
-import sesim.Exchange.Order;
+import sesim.Order;
 import sesim.Quote;
 import sesim.Scheduler.Event;
 
@@ -47,19 +43,19 @@ import sesim.Scheduler.Event;
 public class RandomTraderA extends AutoTraderBase
         implements AccountListener {
 
-    public Float[] initial_delay = {0f, 7.0f};
+    public float[] initial_delay = {0f, 7.0f};
 
-    public Float[] sell_volume = {100f, 100f};
-    public Float[] sell_limit = {-2f, 2f};
-    public Float[] sell_wait = {10.0f, 50.0f};
-    public Float[] wait_after_sell = {0f, 0f};
+    public float[] sell_volume = {100f, 100f};
+    public float[] sell_limit = {-2f, 2f};
+    public float[] sell_wait = {10.0f, 50.0f};
+    public float[] wait_after_sell = {0f, 0f};
 
-    public Float[] buy_volume = {100f, 100f};
-    public Float[] buy_limit = {-2f, 2f};
-    public Float[] buy_wait = {10f, 50f};
-    public Float[] wait_after_buy = {0f, 0f};
+    public float[] buy_volume = {100f, 100f};
+    public float[] buy_limit = {-2f, 2f};
+    public float[] buy_wait = {10f, 50f};
+    public float[] wait_after_buy = {0f, 0f};
 
-    public Float[] wait_after_fail = {10f, 20f};
+    public float[] wait_after_fail = {1f, 15f};
 
     final String INITIAL_DELAY = "initial_delay";
     final String SELL_VOLUME = "sell_volume";
@@ -88,7 +84,7 @@ public class RandomTraderA extends AutoTraderBase
         Account a = account_id;
         a.setListener(this);
 
-        long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
+        long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000f);
         setStatus("Inital delay: %d", delay);
 
         tradeEventTime = delay + se.timer.getCurrentTimeMillis();
@@ -101,12 +97,17 @@ public class RandomTraderA extends AutoTraderBase
 
         //System.out.printf("Process Event for %s %d\n",this.getName(),time);
         if (time != tradeEventTime) {
-        //    System.out.printf("Wrong Event for %s: %d != %d\n", this.getName(), time, tradeEventTime);
+            //    System.out.printf("Wrong Event for %s: %d != %d\n", this.getName(), time, tradeEventTime);
             return 0;
         }
         if (e == this.TRADEEVENT) {
 
             long t = 0;
+            
+            if (account_id.getShares()==0 && account_id.getMoney()<0.3){
+                setStatus("Ruined");
+                return 0;
+            }
 
             if (currentOrder == null) {
                 t = doBuyOrSell();
@@ -114,6 +115,7 @@ public class RandomTraderA extends AutoTraderBase
                 t = handleCurrentOrder();
 
             }
+            //       System.out.printf("Add evebt %d\n", t);
             tradeEventTime = t + se.timer.getCurrentTimeMillis();
             se.timer.addEvent(tradeEventTime, e);
 //System.out.printf("Scheduled for %s - %d\n",getName(),tradeEventTime);
@@ -140,23 +142,23 @@ public class RandomTraderA extends AutoTraderBase
 
     @Override
     public JSONObject getConfig() {
-        JSONObject jo = new JSONObject();
-        jo.put(INITIAL_DELAY, initial_delay);
-        jo.put(SELL_VOLUME, sell_volume);
-        jo.put(BUY_VOLUME, buy_volume);
-        jo.put(SELL_LIMIT, sell_limit);
-        jo.put(BUY_LIMIT, buy_limit);
-        jo.put(SELL_WAIT, sell_wait);
-        jo.put(BUY_WAIT, buy_wait);
-        jo.put(WAIT_AFTER_SELL, wait_after_sell);
-        jo.put(WAIT_AFTER_BUY, wait_after_buy);
-        jo.put("base", this.getClass().getCanonicalName());
+        JSONObject cfg = new JSONObject();
+        cfg.put(INITIAL_DELAY, initial_delay);
+        cfg.put(SELL_VOLUME, sell_volume);
+        cfg.put(BUY_VOLUME, buy_volume);
+        cfg.put(SELL_LIMIT, sell_limit);
+        cfg.put(BUY_LIMIT, buy_limit);
+        cfg.put(SELL_WAIT, sell_wait);
+        cfg.put(BUY_WAIT, buy_wait);
+        cfg.put(WAIT_AFTER_SELL, wait_after_sell);
+        cfg.put(WAIT_AFTER_BUY, wait_after_buy);
+        cfg.put("base", this.getClass().getCanonicalName());
 
-        return jo;
+        return cfg;
     }
 
-    private Float[] to_float(JSONArray a) {
-        Float[] ret = new Float[a.length()];
+    private float[] to_float(JSONArray a) {
+        float[] ret = new float[a.length()];
         for (int i = 0; i < a.length(); i++) {
             //ret[i] = new Float(a.getDouble(i));
             ret[i] = (float) a.getDouble(i);
@@ -177,13 +179,11 @@ public class RandomTraderA extends AutoTraderBase
     //   Long owait = null;
     @Override
     public void setConfig(JSONObject cfg) {
-        System.out.printf("put config sr: %s\n", cfg.toString(9));
-        
+        //System.out.printf("put config sr: %s\n", cfg.toString(9));
+
         if (cfg == null) {
             return;
         }
-        
-         
 
         try {
             initial_delay = to_float(cfg.getJSONArray(INITIAL_DELAY));
@@ -198,8 +198,8 @@ public class RandomTraderA extends AutoTraderBase
             wait_after_buy = to_float(cfg.getJSONArray(WAIT_AFTER_BUY));
         } catch (JSONException e) {
 
-    //        System.out.printf("Some exception has accoured\n", buy_wait);
-            throw(e);
+            //        System.out.printf("Some exception has accoured\n", buy_wait);
+            throw (e);
         }
 
     }
@@ -209,38 +209,37 @@ public class RandomTraderA extends AutoTraderBase
         return false;
     }
 
- /*   @Override
+    /*   @Override
     public JDialog getGuiConsole() {
         return null;
     }
-*/
+     */
     @Override
-    public void accountUpdated(Account a, Exchange.Order o) {
+    public void accountUpdated(Account a, Order o) {
 
         if (currentOrder == null) {
             return;
         }
 
-        if (currentOrder.getStatus() != OrderStatus.CLOSED) {
+        if (currentOrder.getStatus() != Order.CLOSED) {
             return;
         }
 
         //System.out.printf("ORDER Closed: %s\n", this.getName());
         boolean rc = se.timer.delEvent(tradeEventTime, TRADEEVENT);
 
-   //     System.out.printf("Cancel %s rc for %d = %b\n",getName(),tradeEventTime,rc);
+        //     System.out.printf("Cancel %s rc for %d = %b\n",getName(),tradeEventTime,rc);
         if (currentOrder.getType() == Order.BUYLIMIT) {
-            tradeEventTime = getRandom(wait_after_buy) * 1000;
+            tradeEventTime = (long) (getRandom(wait_after_buy) * 1000f);
         } else {
-            tradeEventTime = getRandom(wait_after_sell) * 1000;
+            tradeEventTime = (long) (getRandom(wait_after_sell) * 1000f);
         }
-        
+
         tradeEventTime += se.timer.getCurrentTimeMillis();
         currentOrder = null;
         se.timer.addEvent(tradeEventTime, TRADEEVENT);
-          
-        // System.out.printf("Closed Scheduled for %s - %d\n",getName(),tradeEventTime);
 
+        // System.out.printf("Closed Scheduled for %s - %d\n",getName(),tradeEventTime);
     }
 
     private enum Action {
@@ -270,23 +269,23 @@ public class RandomTraderA extends AutoTraderBase
     }*/
     private long handleCurrentOrder() {
         Order o = currentOrder;
-        currentOrder=null;
-        
-        OrderStatus s = o.getStatus();
-        if (s == OrderStatus.OPEN || s == OrderStatus.PARTIALLY_EXECUTED) {
+        currentOrder = null;
+
+        byte s = o.getStatus();
+        if (s == Order.OPEN || s == Order.PARTIALLY_EXECUTED) {
             se.cancelOrder(account_id, o.getID());
             currentOrder = null;
             setStatus("Sleep after timeout");
-            return wait_after_timeout;
+            return (long) (getRandom(wait_after_fail) * 1000f);
         }
 
         if (o.getType() == Order.BUYLIMIT) {
             setStatus("Sleep after buy");
-            long r = getRandom(wait_after_buy) * 1000;
+            long r = (long) (getRandom(wait_after_buy) * 1000f);
             return r;
         }
         setStatus("Sleep after sell");
-        return getRandom(wait_after_sell) * 1000;
+        return (long) (getRandom(wait_after_sell) * 1000f);
     }
 
     private long doBuyOrSell() {
@@ -300,36 +299,44 @@ public class RandomTraderA extends AutoTraderBase
                 o = doBuy();
                 if (o == null) {
                     setStatus("Buy failed");
-                    return 5000;
+                    //return getRandom(wait_after_fail) * 1000;
+                    float r = getRandom(wait_after_fail) * 1000f;
+                    //      return 5000;
+                    return (long) r;
+
                 }
-                if (o.getStatus() == OrderStatus.CLOSED) {
+                if (o.getStatus() == Order.CLOSED) {
                     setStatus("Sleep after buy");
-                    return getRandom(wait_after_buy) * 1000;
+                    return (long) (getRandom(wait_after_buy) * 1000f);
 
                 }
                 this.currentOrder = o;
                 setStatus("Waiting for buy order");
-                return getRandom(buy_wait) * 1000;
+                return (long) (getRandom(buy_wait) * 1000f);
 
             case SELL:
                 o = doSell();
                 if (o == null) {
                     setStatus("Sell failed");
-                    return 5000;
+                    float r = getRandom(wait_after_fail) * 1000f;
+                    //   System.out.printf("R: %f",r);
+                    return (long) r;
+                    //  return 5000;
                 }
-                if (o.getStatus() == OrderStatus.CLOSED) {
-                setStatus("Sleep after sell");
-                    return getRandom(wait_after_sell) * 1000;
+                if (o.getStatus() == Order.CLOSED) {
+                    setStatus("Sleep after sell");
+                    return (long) (getRandom(wait_after_sell) * 1000f);
 
                 }
                 this.currentOrder = o;
                 setStatus("Waiting for sell order");
-                return getRandom(sell_wait) * 1000;
+                return (long) (getRandom(sell_wait) * 1000f);
 
         }
 
-        
-        return 5000;
+        return (long) (getRandom(wait_after_fail) * 1000f);
+
+//       return 5000;
     }
 
     /**
@@ -340,15 +347,16 @@ public class RandomTraderA extends AutoTraderBase
      * @return the number
      */
     protected float getRandom(float min, float max) {
-        float r = (float)se.randNextDouble();
+        double r = se.randNextDouble();
 
         // System.out.printf("RD: %f", r);
         // System.exit(0);
-        return (max - min) * r + min;
+        return (float) ((max - min) * r + min);
     }
 
-    protected int getRandom(Float[] minmax) {
-        return (int) Math.round(getRandom(minmax[0], minmax[1]));
+    protected float getRandom(float[] minmax) {
+        return getRandom(minmax[0], minmax[1]);
+//        return  Math.round(getRandom(minmax[0], minmax[1]));
     }
 
     private float getStart() {
@@ -363,39 +371,96 @@ public class RandomTraderA extends AutoTraderBase
      * @param minmax
      * @return
      */
-    private float getRandomAmmount(float val, Float[] minmax) {
+    private float getRandomAmmount(float val, float[] minmax) {
 
         float min = val * minmax[0] / 100.0f;
         float max = val * minmax[1] / 100.0f;
         return getRandom(min, max);
     }
 
-    private Order doBuy() {
+    private Order xdoBuy() {
 
-        byte type = Exchange.Order.BUYLIMIT;
+        byte type = Order.BUYLIMIT;
 
         // how much money we ant to invest?
         float money = getRandomAmmount(account_id.getMoney(), buy_volume);
 
         Quote q = se.getBestPrice_0();
-        //q=se.getLastQuoete();
-        float lp = q == null ? getStart() : q.price;
+
+        float lp = q.getPrice();
 
         float limit;
-        limit = lp + getRandomAmmount(lp, buy_limit);
+        limit = lp + se.random.nextLong(0, 4) - 2;
+        //getRandomAmmount(lp, buy_limit);
 
         float volume = money / limit;
 
         limit = se.roundMoney(limit);
         volume = se.roundShares(volume);
+        if (limit <= 0) {
+            return null;
+        }
 
-        return se.createOrder(account_id, type, volume, limit,0f);
+        return se.createOrder(account_id, type, volume, limit, 0f);
 
     }
 
-    private Order doSell() {
+    
+    
+    
+    
+     double getRandomPrice(double lastPrice, double tickSize, double minPercent, double maxPercent) {
+        
 
-        byte type = Exchange.Order.SELLLIMIT;
+        // 1. Prozentbereich in Ticks umrechnen
+        int minTicks = (int)Math.round(lastPrice * minPercent/100 / tickSize);
+        int maxTicks = (int)Math.round(lastPrice * maxPercent/100 / tickSize);
+
+        if (minTicks>-100 && minTicks<100){
+            minTicks = (minPercent < 0) ? -100 : 100;
+        }
+        if (maxTicks>-100 && maxTicks<100){
+            maxTicks = (maxPercent < 0) ? -100 : 100;
+        }
+        
+
+        // 3. Zufällig eine Tickzahl auswählen
+        int tickChange = se.random.nextInt(maxTicks - minTicks + 1) + minTicks;
+
+        // 4. Neue Order berechnen
+        double newPrice = lastPrice + tickChange * tickSize;
+
+        // Optional: auf Tickgröße runden (um Rundungsfehler zu vermeiden)
+        newPrice = Math.round(newPrice / tickSize) * tickSize;
+
+        return newPrice;
+    }
+    
+
+    private Order doBuy() {
+
+        // how much money we ant to invest?
+        float money = getRandomAmmount(account_id.getMoney(), buy_volume);
+
+        Quote q = se.getBestPrice_0();
+        float lp = q.getPrice();
+        
+        float limit = (float) this.getRandomPrice( lp, 0.01, this.buy_limit[0], this.buy_limit[1] );
+
+        float volume = money / limit;
+   
+        volume = se.roundShares(volume);
+        if (limit <= 0) {
+            return null;
+        }
+
+        return se.createOrder(account_id, Order.BUYLIMIT, volume, limit, 0f);
+
+    }
+    
+    
+    
+    private Order doSell() {
 
         // how many shares we want to sell?
         float volume = getRandomAmmount(account_id.getShares(), sell_volume);
@@ -403,14 +468,19 @@ public class RandomTraderA extends AutoTraderBase
 
         //    float lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getBestPrice_0();
+        float lp = q.getPrice();
+     
 
-        float lp = q == null ? getStart() : q.price;
+        float limit = (float) this.getRandomPrice( lp, 0.01, this.sell_limit[0], this.sell_limit[1] );
+     //   limit = lp + getRandomAmmount(lp, sell_limit);
+      //  limit = lp + se.random.nextLong(0, 4) - 2;
 
-        float limit;
-        limit = lp + getRandomAmmount(lp, sell_limit);
         se.roundMoney(limit);
+        if (limit <= 0) {
+            return null;
+        }
 
-        return se.createOrder(account_id, type, volume, limit,0f);
+        return se.createOrder(account_id, Order.SELLLIMIT, volume, limit, 0f);
 
     }
 

@@ -6,8 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONObject;
 
 /**
@@ -16,7 +14,7 @@ import org.json.JSONObject;
  */
 public class Exchange {
 
-    ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
+ //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
     private float money_df = 10000;
     private int money_decimals = 2;
@@ -81,15 +79,8 @@ public class Exchange {
         return shares_formatter;
     }
 
-    /**
-     * Definition of order types
-     */
-    /*public enum Order {
-        BUYLIMIT, SELLLIMIT, STOPLOSS, STOPBUY, BUY, SELL
-    }*/
-    //  IDGenerator account_id = new IDGenerator();
-    //public static Timer timer = new Timer();
-    public Scheduler timer; // = new Scheduler();
+
+    public Scheduler timer; 
 
     //public ArrayList<AutoTraderInterface> traders_old;
     /**
@@ -107,7 +98,7 @@ public class Exchange {
 
     HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
 
-    public OHLCData buildOHLCData(int timeFrame) {
+    private OHLCData buildOHLCData(int timeFrame) {
         OHLCData data = new OHLCData(timeFrame);
         if (this.quoteHistory == null) {
             return data;
@@ -142,12 +133,7 @@ public class Exchange {
         }
     }
 
-    public enum OrderStatus {
-        OPEN,
-        PARTIALLY_EXECUTED,
-        CLOSED,
-        CANCELED
-    }
+
 
     class OrderComparator implements Comparator<Order> {
 
@@ -248,19 +234,7 @@ public class Exchange {
     //HashMap<Byte, SortedSet<Order>> order_books;
     IDGenerator order_id = new IDGenerator();
 
-    public interface OrderBookEntry {
 
-        public float getVolume();
-
-        public float getLimit();
-
-        public float getStop();
-
-        public String getOwnerName();
-
-        void addVolume(float volume);
-
-    }
 
     public static class CompOrderBookEntry implements OrderBookEntry {
 
@@ -324,159 +298,7 @@ public class Exchange {
         }
     }
 
-    public class Order implements OrderBookEntry {
-
-        public final static byte BUY = 0x00;
-        public final static byte SELL = 0x01;
-        public final static byte LIMIT = 0x02;
-        public final static byte STOP = 0x04;
-        public final static byte TAKEPROFIT = 0x08;
-        public final static byte FOK = 0x10;
-
-        public final static byte SELLLIMIT = SELL | LIMIT;
-        public final static byte BUYLIMIT = BUY | LIMIT;
-        public final static byte STOPBUY = BUY | STOP;
-        public final static byte STOPLOSS = SELL | STOP;
-
-        public final static byte BUYSTOP = BUY | STOP;
-        public final static byte SELLSTOP = SELL | STOP;
-
-        float volume;
-
-        float limit;
-        float stop;
-        float profit;
-
-        OrderStatus status;
-        // Order type;
-        byte type;
-
-        private final float initial_volume;
-        private final long id;
-        private final long created;
-        protected final Account account;
-        float cost;
-
-        Order(Account account, byte type, float volume, float limit) {
-            this.account = account;
-
-            id = order_id.getNext();
-            this.type = type;
-            this.limit = roundMoney(limit);
-            this.volume = roundShares(volume);
-            this.initial_volume = this.volume;
-            this.created = timer.getCurrentTimeMillis();
-            this.status = OrderStatus.OPEN;
-            this.cost = 0;
-
-        }
-
-        Order(Order o) {
-
-            this.account = o.account;
-            id = o.id;
-            type = o.type;
-            limit = o.limit;
-            volume = o.volume;
-            initial_volume = o.initial_volume;
-            created = o.created;
-            status = o.status;
-            cost = o.cost;
-            stop = o.stop;
-        }
-
-        public String getOwnerName() {
-            return account.owner.getName();
-        }
-
-        public Account getAccount() {
-            return account;
-        }
-
-        public long getID() {
-            return id;
-        }
-
-        public byte getType() {
-            return type;
-        }
-
-        public String getTypeAsString() {
-            String s;
-            if (0 != (type & Order.SELL)) {
-                s = "SELL";
-            } else {
-                s = "BUY";
-            }
-            return s;
-        }
-
-        public float getExecuted() {
-            return initial_volume - volume;
-        }
-
-        public float getInitialVolume() {
-            return initial_volume;
-        }
-
-        public float getCost() {
-            return cost;
-        }
-
-        public boolean isSell() {
-            return (type & SELL) != 0;
-        }
-
-        public float getAvaragePrice() {
-            float e = getExecuted();
-            if (e <= 0) {
-                return -1;
-            }
-            return cost / e;
-        }
-
-        public OrderStatus getStatus() {
-            return status;
-        }
-
-        public long getCreated() {
-            return created;
-        }
-
-        public boolean isOpen() {
-            return this.status == OrderStatus.OPEN
-                    || this.status == OrderStatus.PARTIALLY_EXECUTED;
-        }
-
-        @Override
-        public float getVolume() {
-            return volume;
-        }
-
-        @Override
-        public float getLimit() {
-            return limit;
-        }
-
-        public boolean hasLimit() {
-            return (type & LIMIT) != 0;
-        }
-
-        public boolean hasStop() {
-            return (type & STOP) != 0;
-        }
-
-        @Override
-        public void addVolume(float volume) {
-
-        }
-
-        @Override
-        public float getStop() {
-            System.out.printf("Get stop %f\n", stop);
-            return stop;
-        }
-    }
+   
 
     /**
      * Histrory of quotes
@@ -490,6 +312,10 @@ public class Exchange {
     SortedSet stopBuyBook;
     SortedSet stopSellBook;
 
+    //       random = new Random(12);
+    public SplittableRandom random;
+
+    //random = new SplittableRandom(19);
     final void initExchange() {
         //   quoteReceiverList = (new CopyOnWriteArrayList<>());
 
@@ -500,8 +326,8 @@ public class Exchange {
         buy_orders = 0;
         sell_orders = 0;
         timer = new Scheduler();         //  timer = new Scheduler();
-        //       random = new Random(12);
-        random = new Random(19);
+
+        random = new SplittableRandom();
 
         quoteHistory = new ArrayList();
         statistics = new Statistics();
@@ -1078,7 +904,7 @@ public class Exchange {
                 boolean rc = ob.remove(o);
 
                 a.orders.remove(o.id);
-                o.status = OrderStatus.CANCELED;
+                o.status = Order.CANCELED;
                 a.update(o);
                 ret = true;
             }
@@ -1090,8 +916,6 @@ public class Exchange {
 //        System.out.printf("Levave executor %d\n", Thread.currentThread().getId());
         return ret;
     }
-
-    Random random;
 
     public int randNextInt() {
         return random.nextInt();
@@ -1113,15 +937,14 @@ public class Exchange {
      *
      * @param o
      */
-    long nextQuoteId = 0;
-
+    //  long nextQuoteId = 0;
     public float fairValue = 0;
 
     private void removeOrderIfExecuted(Order o) {
 
-        if (o.volume != 0 && o.status != OrderStatus.CLOSED) {
+        if (o.volume != 0 && o.status != Order.CLOSED) {
 
-            o.status = OrderStatus.PARTIALLY_EXECUTED;
+            o.status = Order.PARTIALLY_EXECUTED;
             o.account.update(o);
             return;
         }
@@ -1138,16 +961,15 @@ public class Exchange {
             } else {
                 ulAskBook.remove(o);
             }
-        }
-        else {
+        } else {
             if (o.hasLimit()) {
                 bidBook.remove(o);
             } else {
                 ulBidBook.remove(o);
-            }            
+            }
         }
 
-        o.status = OrderStatus.CLOSED;
+        o.status = Order.CLOSED;
         o.account.update(o);
 
     }
@@ -1256,7 +1078,7 @@ public class Exchange {
                 if (cashAvail < bp) {
                     volume = cashAvail / price;
                     volume = roundShares(volume);
-                    buyer.status = OrderStatus.CLOSED;
+                    buyer.status = Order.CLOSED;
                 }
 
                 finishTrade(buyer, seller, price, volume);
@@ -1279,7 +1101,7 @@ public class Exchange {
                 if (cashAvail < bp) {
                     volume = cashAvail / price;
                     volume = roundShares(volume);
-                    buyer.status = OrderStatus.CLOSED;
+                    buyer.status = Order.CLOSED;
                 }
 
                 finishTrade(buyer, seller, price, volume);
@@ -1387,17 +1209,17 @@ public class Exchange {
      */
     public Order createOrder(Account a, byte type, float volume, float limit, float stop) {
 
-        if (volume <= 0) {
+        if (volume <= 0 || limit <= 0) {
             if ((type & Order.SELL) != 0) {
                 sell_failed++;
             } else {
-                sell_failed--;
+                buy_failed--;
             }
 
             return null;
         }
 
-        Order o = new Order(a, type, volume, limit);
+        Order o = new Order(this,a, type, volume, limit);
         o.stop = stop;
 
         synchronized (executor) {
@@ -1441,4 +1263,5 @@ public class Exchange {
         return a.orders.size();
     }
 
+ 
 }

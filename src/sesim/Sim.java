@@ -27,6 +27,7 @@ package sesim;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.SplittableRandom;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -45,7 +46,7 @@ public class Sim {
 
     }
 
-    static Random random = new Random(12);
+    static SplittableRandom random = new SplittableRandom(12);
 
     public static int randNextInt() {
         return random.nextInt();
@@ -62,6 +63,9 @@ public class Sim {
         return random.nextDouble();
 
     }
+    
+    
+    
 
     public Exchange se;
     public AutoTraderLoader tloader;
@@ -151,6 +155,9 @@ public class Sim {
     static public final void putExchangeCfg(JSONObject sobj, JSONObject exchange) {
         sobj.put(CfgKeys.EXCHANGE, exchange);
     }
+    
+    
+
 
     public void startTraders(JSONObject cfg) {
 

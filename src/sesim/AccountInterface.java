@@ -37,9 +37,9 @@ public interface AccountInterface {
 
     public float getMoney();
 
-    public ConcurrentHashMap<Long, Exchange.Order> getOrders();
+    public ConcurrentHashMap<Long, Order> getOrders();
     
-    public void update(Exchange.Order o);
+    public void update(Order o);
     
     public AutoTraderInterface getOwner();
     

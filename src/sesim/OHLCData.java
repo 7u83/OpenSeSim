@@ -173,7 +173,7 @@ public class OHLCData {
             }
         }
 
-        long nFrame = (data.size()) * frame_size;
+        long nFrame = (long)data.size() * (long)frame_size;
         //System.out.printf("nFrame is: %d, data.size(): %d\n", nFrame, data.size());
         if (time < nFrame) {
             last_price = price;

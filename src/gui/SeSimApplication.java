@@ -50,7 +50,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONObject;
-import sesim.Exchange.Order;
+import sesim.Order;
 
 /**
  *
@@ -221,7 +221,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(accelSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -430,7 +430,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, 0));
         viewRawOrderBook.setMnemonic('R');
-        viewRawOrderBook.setText("Level 3 ordebook");
+        viewRawOrderBook.setText("Level 3 Orde Book");
         viewRawOrderBook.setToolTipText("");
         viewRawOrderBook.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -439,7 +439,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         viewMenu.add(viewRawOrderBook);
 
-        viewUnlimitedOrdes.setText("unlimited orders");
+        viewUnlimitedOrdes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, 0));
+        viewUnlimitedOrdes.setText("Market Orders View");
         viewUnlimitedOrdes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 viewUnlimitedOrdesActionPerformed(evt);
@@ -447,7 +448,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         viewMenu.add(viewUnlimitedOrdes);
 
-        viewStopOrders.setText("stop orders");
+        viewStopOrders.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 0));
+        viewStopOrders.setText("Stop Orders View");
         viewStopOrders.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 viewStopOrdersActionPerformed(evt);

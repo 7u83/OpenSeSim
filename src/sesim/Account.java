@@ -25,13 +25,10 @@
  */
 package sesim;
 
-import groovy.util.MapEntry;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import sesim.Exchange.Order;
-import sesim.Exchange.Order;
 
 /**
  *
@@ -49,7 +46,7 @@ public class Account {
     float money;
     protected AutoTraderInterface owner;
 
-    final ConcurrentHashMap<Long, Exchange.Order> orders;
+    final ConcurrentHashMap<Long, Order> orders;
 
     Account(float money, float shares) {
         //  this.se = se;
@@ -74,7 +71,7 @@ public class Account {
     /*  public ConcurrentHashMap<Long, Exchange.Order> getOrders() {
         return orders;
     }*/
-    public Map<Long, Exchange.Order> getOrders() {
+    public Map<Long, Order> getOrders() {
         return Collections.unmodifiableMap(orders);
     }
 
@@ -82,7 +79,7 @@ public class Account {
         this.listener = al;
     }
 
-    public void update(Exchange.Order o) {
+    public void update(Order o) {
         if (listener == null) {
             return;
         }

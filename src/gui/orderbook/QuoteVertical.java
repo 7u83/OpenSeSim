@@ -125,22 +125,22 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
             return;
         }
 
-        //   javax.swing.SwingUtilities.invokeLater(() -> {
-        String text, vtext;
-        text = dfm.format(q.price);
-        vtext = dfv.format(q.volume);
+    ///*    javax.swing.SwingUtilities.invokeLater(() -> {
+            String text, vtext;
+            text = dfm.format(q.getPrice());
+            vtext = dfv.format(q.getVolume());
 
-        if (last_price == -1) {
-            text = "--";
-        } else if (q.price >= last_price) {
-            text = "<html>" + text + "<font color=\"green\">&#8593;</color></html>";
-        } else if (q.price < last_price) {
-            text = "<html>" + text + "<font color=\"red\">&#8595;</color></html>";
-        }
-        last_price = q.price;
-        this.quoteLabel.setText(text);
-        this.volumeLabel.setText("(" + vtext + ")");
-        //   });
+            if (last_price == -1) {
+                text = "--";
+            } else if (q.getPrice() >= last_price) {
+                text = "<html>" + text + "<font color=\"green\">&#8593;</color></html>";
+            } else if (q.getPrice() < last_price) {
+                text = "<html>" + text + "<font color=\"red\">&#8595;</color></html>";
+            }
+            last_price = q.getPrice();
+            this.quoteLabel.setText(text);
+            this.volumeLabel.setText("(" + vtext + ")");
+      //  });*/
 
     }
 

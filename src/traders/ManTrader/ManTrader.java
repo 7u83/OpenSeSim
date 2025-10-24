@@ -41,7 +41,7 @@ import sesim.AutoTraderGui;
 import sesim.AutoTraderInterface;
 import sesim.Exchange;
 import sesim.Exchange.AccountListener;
-import sesim.Exchange.OrderStatus;
+import sesim.Order;
 
 /**
  *
@@ -54,7 +54,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 //        super();
 //    }
     
-    public final ConcurrentHashMap<Long, Exchange.Order> allOrders=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Long, Order> allOrders=new ConcurrentHashMap<>();
     
     public ManTrader() {
         super();
@@ -131,7 +131,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public void accountUpdated(Account a, Exchange.Order o) {
+    public void accountUpdated(Account a, Order o) {
         
         
         this.allOrders.put(o.getID(), o);
@@ -144,7 +144,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
         //System.out.printf("AccountListener called\n");
 
         //System.out.printf("%d %s\n", o.getID(), o.getStatus().toString());
-        if (o.getStatus() == OrderStatus.CLOSED) {
+        if (o.getStatus() == Order.CLOSED) {
 //            o.getAccount().getOrders().put(o.getID(), o);
         }
         

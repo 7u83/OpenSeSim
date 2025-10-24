@@ -28,7 +28,7 @@ package traders.ManTrader;
 import gui.EscDialog;
 import sesim.Account;
 import sesim.Exchange;
-import sesim.Exchange.Order;
+import sesim.Order;
 
 /**
  *

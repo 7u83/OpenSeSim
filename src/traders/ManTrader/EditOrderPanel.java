@@ -10,8 +10,7 @@ import javax.swing.JSpinner;
 import javax.swing.text.DefaultFormatter;
 import sesim.Account;
 import sesim.Exchange;
-import sesim.Exchange.Order;
-import sesim.Exchange.Order;
+import sesim.Order;
 import sesim.Quote;
 
 /**
@@ -79,7 +78,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         System.out.printf("Load now\n");
 
         Quote q = se.getBestPrice_0();
-        Float price = q == null ? 0.0f : q.price;
+        Float price = q == null ? 0.0f : q.getPrice();
 
         if (type == Order.BUYLIMIT) {
             this.limitSpinner.setValue(se.roundMoney(price));
@@ -289,7 +288,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
     private void setVolButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setVolButtonActionPerformed
         Quote q = se.getBestPrice_0();
-        Float price = q == null ? 0.0f : q.price;
+        Float price = q == null ? 0.0f : q.getPrice();
 
         if (type == Order.BUYLIMIT) {
             //this.limitSpinner.setValue(se.roundMoney(price));

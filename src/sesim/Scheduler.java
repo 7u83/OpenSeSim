@@ -119,6 +119,8 @@ public class Scheduler extends Thread {
         LockSupport.unpark(this);
     }
 
+    long startTime;
+
     /**
      * Starts the scheduler thread, reinitializing it if not already running.
      */
@@ -129,6 +131,7 @@ public class Scheduler extends Thread {
         }
         this.initScheduler();
         super.start();
+        startTime = System.currentTimeMillis();
 
     }
 
@@ -200,10 +203,10 @@ public class Scheduler extends Thread {
             //id = nextTimerTask.getAndAdd(1);
         }
 
-        public Event(){
-            eventProcessor=null;
+        public Event() {
+            eventProcessor = null;
         }
-        
+
     }
 
     public void addEvent(long t, Event e) {
@@ -232,12 +235,25 @@ public class Scheduler extends Thread {
         setPause(!pause);
     }
 
+    long pauseTime;
+
     public void setPause(boolean val) {
         pause = val;
         LockSupport.unpark(this);
-        /*    synchronized (this) {
-            this.notify();
-        }*/
+
+        if (pause) {
+            pauseTime = System.currentTimeMillis();
+        } else {
+            startTime+=System.currentTimeMillis()+pauseTime;
+        }
+
+    }
+    
+    public long getCurrentTime(){
+        if (pause){
+            return pauseTime-startTime;
+        }
+        return System.currentTimeMillis()-startTime;
     }
 
     public boolean getPause() {
@@ -258,12 +274,14 @@ public class Scheduler extends Thread {
         }
 
         if (t < ct) {
-            //  System.out.printf("Time is overslipping: %d\n",ct-t);
+           // System.out.printf("Time is overslipping: %d\n",ct-t);
             this.currentTimeMillis = t;
             this.current_nanos = this.currentTimeMillis * 1000000.0;
         }
 
         LinkedHashSet<Event> s = eventQueue.remove(t);
+        
+      //  System.out.printf("TIME: %d %d \n",t, s.size());
 
         for (Event e : s) {
             e.eventProcessor.processEvent(t, e);

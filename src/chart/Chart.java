@@ -10,17 +10,15 @@ import sesim.OHLCDataItem;
 import sesim.OHLCData;
 import java.awt.*;
 import sesim.Exchange.*;
-import sesim.Quote;
+
 import gui.Globals;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import sesim.MinMax;
+import sesim.Quote;
 
 /**
  *
@@ -128,23 +126,23 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      * Height of X-legend
      */
     //   protected int xl_height;
-    public String formatTimeMillis(long t) {
-        Date date = new Date(t);
-        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+    String formatTimeMillis(long t) {
+    //    Date date = new Date(t);
+     //  DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         // formatter = new SimpleDateFormat("d. MMM, yyyy HH:mm:ss");
-        String dateFormatted = formatter.format(date);
+     //   String dateFormatted = formatter.format(date);
 
         // Datum ohne Zeit
-        DateFormat dateFormatter = new SimpleDateFormat("d. MMM, yyyy");
+//        DateFormat dateFormatter = new SimpleDateFormat("d. MMM, yyyy");
         // Nur Zeit
-        DateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
+  //      DateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
 
-        String formatted = dateFormatter.format(date) + "\n" + timeFormatter.format(date);
+     //   String formatted = dateFormatter.format(date) + "\n" + timeFormatter.format(date);
 
         long seconds = (t / 1000) % 60;
         long minutes = (t / 1000 / 60) % 60;
         long hours = (t / 1000) / (60 * 60);
-
+//System.out.printf("BARTIME %d\n",t);
         //return dateFormatted;
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
@@ -157,7 +155,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
      */
     void drawXLegend_r(Graphics2D g, XLegendDef xld) {
 
-        Rectangle clip = g.getClipBounds();
+        Rectangle clip; // = g.getClipBounds();
         
         clip = getVisibleRect();
 
@@ -184,7 +182,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         Dimension dim = getSize();
 
-        int n;
+        long n;
         double x;
 
         long big_tick = 1;
@@ -196,6 +194,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             xxx = 7 * emWidth;
 
         } while (btl < xxx);
+        
+   //     System.out.printf("FIRST/LAST %d/%d\n", first_bar,last_bar);
 
         for (n = first_bar, x = emWidth * x_unit_width * first_bar; n< last_bar && x < dim.width; x += emWidth * x_unit_width) {
 

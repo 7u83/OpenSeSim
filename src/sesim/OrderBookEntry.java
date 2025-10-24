@@ -29,57 +29,16 @@ package sesim;
  *
  * @author tube
  */
-public class Quote implements Comparable {
+    public interface OrderBookEntry {
 
-    float bid;
-    float bid_volume;
-    float ask;
-    float ask_volume;
+        public float getVolume();
 
-    float price;
-    float volume;
-    long time;
-    //  public long id;
+        public float getLimit();
 
-    public void print() {
-        System.out.print("Quote ("
-                + time
-                + ") :"
-                + price
-                + " / "
-                + volume
-                + "\n"
-        );
+        public float getStop();
+
+        public String getOwnerName();
+
+        void addVolume(float volume);
 
     }
-
-    @Override
-    public int compareTo(Object o) {
-        int ret;
-        Quote q = (Quote) o;
-
-        ret = (int) (this.time - q.time);
-        if (ret != 0) {
-            return ret;
-        }
-        return 0;
-
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public float getBid() {
-        return bid;
-    }
-
-    public float getAsk() {
-        return ask;
-    }
-
-    public float getVolume() {
-        return volume;
-    }
-
-}

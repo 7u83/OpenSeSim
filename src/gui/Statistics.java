@@ -35,6 +35,10 @@ import sesim.Exchange;
  */
 public class Statistics extends javax.swing.JPanel {
 
+    long lastNumTrades0;
+    long lastNumTrades1;
+    long lastNumTrades;
+
     /**
      * Creates new form Statistics
      */
@@ -60,6 +64,32 @@ public class Statistics extends javax.swing.JPanel {
                     labelLow.setText(Globals.sim.se.getMoneyFormatter().format(s.low));
                 }
 
+                float tps;
+
+                //tps = s.trades * 1000 / ct;
+
+                
+                long diff= s.trades-lastNumTrades;
+                lastNumTrades=s.trades;
+                lastNumTrades0 = lastNumTrades1;
+                lastNumTrades1 = diff;
+                
+                tps = (lastNumTrades1+lastNumTrades0)/2;
+
+                //System.out.printf("current time %d\n", ct);
+                tradesPerSec.setText(String.format("%.2f", tps));
+
+                Runtime rt = Runtime.getRuntime();
+                long maxMemory = rt.maxMemory();
+                long totalMemory = rt.totalMemory();
+                long freeMemory = rt.freeMemory();
+                long usedMemory = totalMemory - freeMemory;
+
+                maxMem.setText(String.format("Max: %d MB%n", maxMemory / 1024 / 1024));
+                totalMem.setText(String.format("Total: %d MB%n", totalMemory / 1024 / 1024));
+                freeMem.setText(String.format("Free: %d MB%n", freeMemory / 1024 / 1024));
+                usedMem.setText(String.format("Used: %d MB%n", usedMemory / 1024 / 1024));
+
             }
         }, 1000, 1000);
 
@@ -80,6 +110,17 @@ public class Statistics extends javax.swing.JPanel {
         labelHigh = new javax.swing.JLabel();
         labelLow = new javax.swing.JLabel();
         tradesLabel = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        tradesPerSec = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        maxMem = new javax.swing.JLabel();
+        totalMem = new javax.swing.JLabel();
+        freeMem = new javax.swing.JLabel();
+        usedMem = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -95,6 +136,80 @@ public class Statistics extends javax.swing.JPanel {
 
         tradesLabel.setText("0");
 
+        jLabel1.setText("Trades/sec:");
+
+        tradesPerSec.setText("100");
+
+        jLabel4.setText("Max:");
+
+        jLabel5.setText("Total:");
+
+        jLabel6.setText("Free:");
+
+        jLabel7.setText("Used:");
+
+        maxMem.setText("jLabel8");
+
+        totalMem.setText("jLabel9");
+
+        freeMem.setText("jLabel10");
+
+        usedMem.setText("jLabel11");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(totalMem))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(freeMem))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(usedMem))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addGap(18, 18, 18)
+                            .addComponent(maxMem))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(tradesPerSec))))
+                .addGap(0, 105, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(tradesPerSec))
+                .addGap(32, 32, 32)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(maxMem))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(totalMem))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(freeMem))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(usedMem))
+                .addGap(0, 44, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -103,18 +218,25 @@ public class Statistics extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(numTrades)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tradesLabel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(23, 23, 23)
+                                .addComponent(labelLow)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelHigh))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelLow))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(numTrades)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tradesLabel)))
-                .addContainerGap(302, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelHigh)
+                        .addGap(296, 296, 296))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,17 +253,30 @@ public class Statistics extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(numTrades)
                     .addComponent(tradesLabel))
-                .addContainerGap(235, Short.MAX_VALUE))
+                .addGap(34, 34, 34)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel freeMem;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel labelHigh;
     private javax.swing.JLabel labelLow;
+    private javax.swing.JLabel maxMem;
     private javax.swing.JLabel numTrades;
+    private javax.swing.JLabel totalMem;
     private javax.swing.JLabel tradesLabel;
+    private javax.swing.JLabel tradesPerSec;
+    private javax.swing.JLabel usedMem;
     // End of variables declaration//GEN-END:variables
 }

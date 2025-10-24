@@ -35,8 +35,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import sesim.Exchange;
-import sesim.Exchange.OrderBookEntry;
-import sesim.Exchange.Order;
+import sesim.OrderBookEntry;
+import sesim.Order;
 
 /**
  *

@@ -25,26 +25,19 @@
  */
 package traders;
 
-import gui.Globals;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import javax.swing.JDialog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.Account;
-//import sesim.AccountData;
+
 
 import sesim.AutoTraderBase;
 
 import sesim.AutoTraderGui;
-import sesim.Exchange;
 
-//import sesim.Exchange.Order;
-//import sesim.OrderData;
 import sesim.Quote;
+import sesim.Order;
 import sesim.Scheduler.Event;
 
 /**
@@ -273,7 +266,7 @@ public class RandomTraderB extends AutoTraderBase {
 
         sesim.Account account = account_id;
 
-        byte type = Exchange.Order.BUYLIMIT;
+        byte type = Order.BUYLIMIT;
 
         if (account == null) {
             return false;
@@ -284,7 +277,7 @@ public class RandomTraderB extends AutoTraderBase {
     
         Quote q = se.getBestPrice_0();
         //q=se.getLastQuoete();
-        float lp = q == null ? getStart() : q.price;
+        float lp = q == null ? getStart() : q.getPrice();
 
         float limit;
         limit = lp + getRandomAmmount(lp, buy_limit);
@@ -313,7 +306,7 @@ public class RandomTraderB extends AutoTraderBase {
         
         Account account = account_id;
 
-       byte type = Exchange.Order.SELLLIMIT;
+       byte type = Order.SELLLIMIT;
 
                
         // how much shares we ant to sell?
@@ -324,7 +317,7 @@ public class RandomTraderB extends AutoTraderBase {
         //    float lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getBestPrice_0();
           //      q=se.getLastQuoete();
-        float lp = q == null ? getStart() : q.price;
+        float lp = q == null ? getStart() : q.getPrice();
         
         
         

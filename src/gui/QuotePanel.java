@@ -115,17 +115,17 @@ public class QuotePanel extends javax.swing.JPanel implements sesim.Exchange.Quo
         Updater  u= new Updater();
         u.qp=this;
         
-        if (q.price==q.bid){
+        if (q.getPrice()==q.getBid()){
             u.color=new Color(172,0,0);
         }
-        if (q.price==q.ask){
+        if (q.getPrice()==q.getAsk()){
             u.color=new Color(0,120,0); //.; //new Color(30,0,0);
         }
                
         
                 
         
-        u.text = String.format("%.8f\n(%.0f)", q.price,q.volume);
+        u.text = String.format("%.8f\n(%.0f)", q.getPrice(),q.getVolume());
         
         SwingUtilities.invokeLater(u);
         

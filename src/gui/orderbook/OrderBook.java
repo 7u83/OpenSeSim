@@ -36,8 +36,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import sesim.Exchange;
 import sesim.Exchange.CompOrderBookEntry;
-import sesim.Exchange.OrderBookEntry;
-import sesim.Exchange.Order;
+import sesim.OrderBookEntry;
+import sesim.Order;
 
 /**
  *
@@ -89,7 +89,7 @@ public class OrderBook extends RawOrderBook {
     }
 
     @Override
-    protected ArrayList<? extends Exchange.OrderBookEntry> getOrderBook() {
+    protected ArrayList<? extends OrderBookEntry> getOrderBook() {
         TreeMap<Float, OrderBookEntry> map = Globals.sim.se.getCompressedOrderBook(type, depth);
 
         //TreeMap<Float, OrderBookEntry> cmap = new TreeMap<>();

@@ -27,6 +27,7 @@ package gui.orderbook;
 
 import gui.Globals;
 import sesim.Exchange;
+import sesim.Order;
 
 /**
  *
@@ -47,8 +48,8 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
     }
 
     public final void start() {
-        bidBook.start(Globals.sim.se, Exchange.Order.BUYLIMIT);
-        askBook.start(Globals.sim.se, Exchange.Order.SELLLIMIT);
+        bidBook.start(Globals.sim.se, Order.BUYLIMIT);
+        askBook.start(Globals.sim.se, Order.SELLLIMIT);
         this.quoteVertical2.reset();
         askBook.UpdateOrderBook();
         bidBook.UpdateOrderBook();

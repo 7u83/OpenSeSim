@@ -36,7 +36,7 @@ import javax.swing.event.ChangeListener;
 import sesim.Account;
 
 import sesim.Exchange;
-import sesim.Exchange.Order;
+import sesim.Order;
 
 /**
  *

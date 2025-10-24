@@ -25,19 +25,10 @@
  */
 package gui;
 
-import java.awt.Frame;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
 import javax.swing.table.DefaultTableModel;
-import sesim.Account;
-import sesim.Exchange;
-
-import sesim.Exchange.Order;
-import sesim.Exchange.Order;
+import sesim.Order;
 //import traders.ManTrader.CreateOrderDialog;
 
 /**
@@ -77,7 +68,9 @@ public class OpenOrdersList extends javax.swing.JPanel {
             model.setValueAt(((Order) o).getExecuted(), row, 3);
             model.setValueAt(((Order) o).getAvaragePrice(), row, 4);
             model.setValueAt(((Order) o).getInitialVolume(), row, 5);
-            model.setValueAt(((Order) o).getStatus().toString(), row, 6);
+            
+           // o.getStatus()
+            model.setValueAt((o).getStatusString(), row, 6);
             row++;
         }
         this.table.getRowSorter().allRowsChanged();

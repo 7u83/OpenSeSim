@@ -33,8 +33,7 @@ import org.json.JSONObject;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
-import sesim.Exchange.Order;
-import sesim.Exchange.Order;
+import sesim.Order;
 import sesim.Quote;
 import sesim.Scheduler;
 import sesim.Scheduler.Event;
@@ -104,7 +103,6 @@ public class GroovyTrader extends AutoTraderBase {
             public GroovyEvent(String fun,long t){
                this.eventProcessor=this;
                this.groovyFun=fun;
-                
             }
 
             @Override
@@ -115,13 +113,16 @@ public class GroovyTrader extends AutoTraderBase {
             
         }
         
-        public byte BUYLIMIT=Exchange.Order.BUYLIMIT;
-        public byte SELLIMIT=Exchange.Order.SELLLIMIT;
+        public final byte BUYLIMIT=Order.BUYLIMIT;
+        public final byte SELLIMIT=Order.SELLLIMIT;
+        public final byte SELL=Order.SELL;
+        public final byte BUY=Order.BUY;
         
-        public Order createOrder(byte type,float vol, float limit){
+        
+        public Order createOrder(byte type,double vol, double limit){
             limit = se.roundMoney(limit);
             vol = se.roundShares(vol);
-            return  se.createOrder(account_id, type, vol, limit,0f);
+            return  se.createOrder(account_id, type, (float)vol, (float)limit,0f);
         }
         
      /*   public Order createOrder(Order type, double vol, double limit){
@@ -137,7 +138,7 @@ public class GroovyTrader extends AutoTraderBase {
         }
         
         public float getLastPrice(){
-            return getLastQuote().price;
+            return getLastQuote().getPrice();
         }
         
         public boolean scheduleOnce(String groovyFun, long timer){

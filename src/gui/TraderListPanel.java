@@ -26,26 +26,21 @@
 package gui;
 
 import gui.tools.NummericCellRenderer;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import sesim.Account;
 
 import sesim.AutoTraderInterface;
-import sesim.Exchange;
+import sesim.Quote;
 
 /**
  *
@@ -68,8 +63,8 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        sesim.Quote q = Globals.sim.se.getLastQuoete();
-        float price = q == null ? 0 : q.price;
+        Quote q = Globals.sim.se.getLastQuoete();
+        float price = q == null ? 0 : q.getPrice();
 
         int size = Globals.sim.traders.size();
         model.setRowCount(size);

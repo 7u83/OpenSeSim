@@ -28,10 +28,7 @@ package traders;
 import org.json.JSONObject;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
-import sesim.Exchange;
-import sesim.Exchange.Order;
-import sesim.Exchange.OrderStatus;
-import sesim.Exchange.Order;
+import sesim.Order;
 import sesim.Scheduler;
 import sesim.Scheduler.Event;
 
@@ -125,7 +122,7 @@ public class MarketMaker extends AutoTraderBase {
             orders[i].volume = se.roundShares(cashPerBuyOrder / price);
 
             // Create initial buy order
-            orders[i].o = se.createOrder(account_id, Exchange.Order.BUYLIMIT,
+            orders[i].o = se.createOrder(account_id, Order.BUYLIMIT,
                     orders[i].volume, orders[i].buyLimit,0f);
 
         }
@@ -140,7 +137,7 @@ public class MarketMaker extends AutoTraderBase {
     private void flipOrders() {
         for (int i = 0; i < numPositions; i++) {
             Order o = orders[i].o;
-            if (o.getStatus() == OrderStatus.CLOSED) {
+            if (o.getStatus() == Order.CLOSED) {
                 if (o.getType() == Order.SELLLIMIT) {
                     // Create new buy order if previous was sell
                     Order n = se.createOrder(account_id, Order.BUYLIMIT,
@@ -170,8 +167,8 @@ public class MarketMaker extends AutoTraderBase {
 
         // Do nothing if any order is still open
         for (int i = 0; i < numPositions; i++) {
-            OrderStatus s = orders[i].o.getStatus();
-            if (s != OrderStatus.OPEN) {
+            byte s = orders[i].o.getStatus();
+            if (s != Order.OPEN) {
                 return false;
             }
         }
