@@ -31,12 +31,12 @@ package sesim;
  */
 public class OHLCDataItem {
 
-    public float open;
-    public float high;
-    public float low;
-    public float close;
-    public float volume;
-    public long time;
+    float open;
+    float high;
+    float low;
+    float close;
+    float volume;
+    long time;
     
     
     public OHLCDataItem(long time,float price, float volume){
@@ -59,6 +59,30 @@ public class OHLCDataItem {
         this.volume += volume;
         this.close = price;
         return ret;
+    }
+    
+    public float getOpen() {
+        return open;
+    }
+
+    public float getHigh() {
+        return high;
+    }
+
+    public float getLow() {
+        return low;
+    }
+
+    public float getClose() {
+        return close;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public long getTime() {
+        return time;
     }
 
 }

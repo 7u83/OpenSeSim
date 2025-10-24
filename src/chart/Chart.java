@@ -280,8 +280,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (prev == null) {
             prev = i;
         }
-        int y1 = (int) ctx.getY(prev.close);
-        int y2 = (int) ctx.getY(i.close);
+        int y1 = (int) ctx.getY(prev.getClose());
+        int y2 = (int) ctx.getY(i.getClose());
         Color cur = g.getColor();
         g.setColor(Color.RED);
         g.drawLine(prevx, y1, x, y2);
@@ -292,33 +292,33 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         Graphics2D g = ctx.g;
 
-        if (i.open < i.close) {
+        if (i.getOpen() < i.getClose()) {
             int xl = (int) (x + candleWidth / 2);
 
             g.setColor(Color.BLACK);
-            g.drawLine(xl, (int) ctx.getY(i.close), xl, (int) ctx.getY(i.high));
-            g.drawLine(xl, (int) ctx.getY(i.low), xl, (int) ctx.getY(i.open));
+            g.drawLine(xl, (int) ctx.getY(i.getClose()), xl, (int) ctx.getY(i.getHigh()));
+            g.drawLine(xl, (int) ctx.getY(i.getLow()), xl, (int) ctx.getY(i.getOpen()));
 
             float w = candleWidth;
-            float h = (int) (ctx.getY(i.open) - ctx.getY(i.close));
+            float h = (int) (ctx.getY(i.getOpen()) - ctx.getY(i.getClose()));
 
             g.setColor(Color.GREEN);
-            g.fillRect((int) (x), (int) ctx.getY(i.close), (int) w, (int) h);
+            g.fillRect((int) (x), (int) ctx.getY(i.getClose()), (int) w, (int) h);
             g.setColor(Color.BLACK);
-            g.drawRect((int) (x), (int) ctx.getY(i.close), (int) w, (int) h);
+            g.drawRect((int) (x), (int) ctx.getY(i.getClose()), (int) w, (int) h);
 
         } else {
             int xl = (int) (x + candleWidth / 2);
             g.setColor(Color.RED);
-            g.drawLine(xl, (int) ctx.getY(i.high), xl, (int) ctx.getY(i.close));
-            g.drawLine(xl, (int) ctx.getY(i.open), xl, (int) ctx.getY(i.low));
+            g.drawLine(xl, (int) ctx.getY(i.getHigh()), xl, (int) ctx.getY(i.getClose()));
+            g.drawLine(xl, (int) ctx.getY(i.getOpen()), xl, (int) ctx.getY(i.getLow()));
 
             float w = candleWidth;
-            float h = (int) (ctx.getY(i.close) - ctx.getY(i.open));
+            float h = (int) (ctx.getY(i.getClose()) - ctx.getY(i.getOpen()));
 
-            g.fillRect((int) (x), (int) ctx.getY(i.open), (int) w, (int) h);
+            g.fillRect((int) (x), (int) ctx.getY(i.getOpen()), (int) w, (int) h);
             g.setColor(Color.BLACK);
-            g.drawRect((int) (x), (int) ctx.getY(i.open), (int) w, (int) h);
+            g.drawRect((int) (x), (int) ctx.getY(i.getOpen()), (int) w, (int) h);
 
         }
 
@@ -328,10 +328,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Graphics2D g = ctx.g;
         g.setColor(Color.gray);
 
-        g.drawLine(x, (int) ctx.getY(0), x, (int) ctx.getY(i.volume));
+        g.drawLine(x, (int) ctx.getY(0), x, (int) ctx.getY(i.getVolume()));
              float w = candleWidth;
-            //float h = (int) (ctx.getY(0) - ctx.getY(i.close));
-      g.fillRect(x,(int) ctx.getY(i.volume),(int)w, (int) ctx.getY(0) );
+            //float h = (int) (ctx.getY(0) - ctx.getY(i.getClose()));
+      g.fillRect(x,(int) ctx.getY(i.getVolume()),(int)w, (int) ctx.getY(0) );
 
         Rectangle r = ctx.rect;
     }

@@ -288,17 +288,23 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
     private void setVolButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setVolButtonActionPerformed
         Quote q = se.getBestPrice_0();
-        Float price = q == null ? 0.0f : q.getPrice();
+       // Float price = q == null ? 0.0f : q.getPrice();
 
         if (type == Order.BUYLIMIT) {
             //this.limitSpinner.setValue(se.roundMoney(price));
             this.volumeSpinner.setValue(se.roundShares(account.getCashAvailable() / this.getLimit()));
         }
         if (type == Order.SELLLIMIT) {
-            //  double avail = account.getSharesAvailable();
+             double avail = account.getSharesAvailable();
+             
+             
+             
             this.volumeSpinner.setValue(se.roundShares(account.getSharesAvailable()));
         }        // TODO add your handling code here:
         this.volumeSpinner.revalidate();
+        
+        System.out.printf("SetVol\n");
+        
     }//GEN-LAST:event_setVolButtonActionPerformed
 
     private void stopCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopCheckBoxActionPerformed

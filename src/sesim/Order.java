@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, tube
+ * Copyright (c) 2025, 7u83
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@ package sesim;
  */
 public class Order implements OrderBookEntry {
 
+    // Order types
     public final static byte BUY = 0x00;
     public final static byte SELL = 0x01;
     public final static byte LIMIT = 0x02;
@@ -46,19 +47,19 @@ public class Order implements OrderBookEntry {
     public final static byte BUYSTOP = BUY | STOP;
     public final static byte SELLSTOP = SELL | STOP;
 
-    float volume;
+    // Order states
+    public final static byte OPEN = 0x01;
+    public final static byte PARTIALLY_EXECUTED = 0x3;
+    public final static byte CLOSED = 0x04;
+    public final static byte CANCELED = 0x08;
 
+    float volume;
     float limit;
     float stop;
     float profit;
 
     //Exchange.OrderStatus status;
     byte status;
-
-    public final static byte OPEN = 0x01;
-    public final static byte PARTIALLY_EXECUTED = 0x3;
-    public final static byte CLOSED = 0x04;
-    public final static byte CANCELED = 0x08;
 
     // Order type;
     byte type;
