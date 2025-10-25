@@ -290,7 +290,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     private void drawCandleItem(DrawCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
-        System.out.printf("Draw ohlc: %f %f %f %f\n", i.getOpen(), i.getHigh(),i.getLow(),i.getClose());
+    //    System.out.printf("Draw ohlc: %f %f %f %f\n", i.getOpen(), i.getHigh(),i.getLow(),i.getClose());
         
         Graphics2D g = ctx.g;
 
