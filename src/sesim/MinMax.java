@@ -31,43 +31,46 @@ package sesim;
  */
 public class MinMax {
 
-    protected float min;
-    protected float max;
+    protected long min;
+    protected long max;
     protected float min_log;
     protected float max_log;    
     
     private boolean log;
+    
+    float df;
 
-    MinMax(float min, float max) {
+    MinMax(float df, long min, long max) {
+        this.df=df;
         this.min = min;
         this.max = max;
         this.log = false;
     }
 
     public float getDiff() {
-        return !log ? max - min : max_log - min_log;
+        return !log ? (max - min)/df : max_log - min_log;
     }
 
     public float getDiff(boolean plog) {
-        return !plog ? max - min : max_log - min_log;
+        return !plog ? (max - min)/df : max_log - min_log;
     }
 
     
     public float getMin() {
-        return !log ? min : min_log;
+        return !log ? min/df : min_log;
     }
     
     public float getMin(boolean plog) {
-        return !plog ? min : min_log;
+        return !plog ? min/df : min_log;
     }
     
 
     public float getMax() {
-        return !log ? max : max_log;
+        return !log ? max/df : max_log;
     }
 
     public float getMax(boolean plog) {
-        return !plog ? max : max_log;
+        return !plog ? max/df : max_log;
     }
     
     
@@ -77,13 +80,13 @@ public class MinMax {
         this.log=log;
     }
     
-    public void setMin(float min){
-        this.min=min;
+   public void setMin(float min){
+        this.min=(long)(min*df);
     }
     
-    public void setMax(float max){
+   /* public void setMax(float max){
         this.max=max;
-    }
+    }*/
 
     public boolean isLog(){
         return log;
