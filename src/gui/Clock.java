@@ -53,6 +53,11 @@ public class Clock extends javax.swing.JPanel {
             @Override
             public void run() {
                 long t = Globals.sim.getCurrentTimeMillis();
+                
+                /*if (t>600000){
+                    System.out.printf("TIME IS %d\n",t);
+                    System.exit(0);
+                }*/
 
                 Statistics s = Globals.sim.se.getStatistics();
                 jLabel1.setText(Scheduler.formatTimeMillis(t));

@@ -208,7 +208,7 @@ public class Order implements OrderBookEntry {
     }
 
     @Override
-    public void addVolume(float volume) {
+    public void addVolume(long volume) {
 
     }
 

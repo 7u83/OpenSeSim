@@ -129,7 +129,6 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookLis
             @Override
             public void run() {
                 try {
-
                     while (update) {
                         update=false;
                         ArrayList<? extends OrderBookEntry> newOb = getOrderBook(); // Globals.sim.se.getRawOrderBook(type, depth);

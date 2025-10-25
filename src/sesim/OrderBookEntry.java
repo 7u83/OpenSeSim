@@ -48,6 +48,6 @@ package sesim;
 
         public String getOwnerName();
 
-        void addVolume(float volume);
+        void addVolume(long volume);
 
     }

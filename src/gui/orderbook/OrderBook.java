@@ -63,8 +63,6 @@ public class OrderBook extends RawOrderBook {
         }
 
     }
-    
-    
 
     @Override
     public void setGodMode(boolean on) {
@@ -72,7 +70,7 @@ public class OrderBook extends RawOrderBook {
     }
 
     private OrderBookEntry getDiffedEntry(OrderBookEntry oe) {
-        OrderBookEntry prev = lastMap.get(oe.getLimit());
+        OrderBookEntry prev = lastMap.get(oe.getLimit_Long());
         ColoredOrderBookEntry ce = new ColoredOrderBookEntry(oe);
         if (prev == null) {
             ce.color = "Gray";
@@ -94,6 +92,7 @@ public class OrderBook extends RawOrderBook {
 
         //TreeMap<Float, OrderBookEntry> cmap = new TreeMap<>();
         ArrayList<OrderBookEntry> r = new ArrayList<>();
+
         if (type == Order.BUYLIMIT) {
             for (Map.Entry<Long, OrderBookEntry> oe : ((TreeMap<Long, OrderBookEntry>) map).descendingMap().entrySet()) {
                 r.add(this.getDiffedEntry(oe.getValue()));
@@ -129,13 +128,13 @@ public class OrderBook extends RawOrderBook {
             Object firstColValue = getModel().getValueAt(modelRow, 0);
 
             if ("Red".equals(firstColValue)) {
-                c.setBackground(new Color(255,200,200));
+                c.setBackground(new Color(255, 200, 200));
             } else if ("Gray".equals(firstColValue)) {
-                c.setBackground(new Color(220,220,220));
+                c.setBackground(new Color(220, 220, 220));
             } else if ("Green".equals(firstColValue)) {
-                c.setBackground(new Color(200,255,200));
-            } else{
-                        c.setBackground(list.getBackground());
+                c.setBackground(new Color(200, 255, 200));
+            } else {
+                c.setBackground(list.getBackground());
             }
 
             return c;

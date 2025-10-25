@@ -247,7 +247,7 @@ public class Exchange {
 
         }*/
         @Override
-        public void addVolume(float v) {
+        public void addVolume(long v) {
             volume += v;
         }
 
@@ -828,25 +828,6 @@ public class Exchange {
             }
 
         }
-
-
-        /*
-        book = this.getRawOrderBook(type, depth*4);
-        int d=0;
-        for (Order o : book) {
-            OrderBookEntry oe = map.get(o.limit);
-            if (oe == null) {
-                map.put(o.limit, new OrderBookEntry(o));
-                     d++;
-            } else {
-                oe.volume += o.volume;
-                map.put(o.limit, oe);
-            }
-       
-            if (d>=depth)
-                break;
-
-        }*/
         return map;
 
     }
