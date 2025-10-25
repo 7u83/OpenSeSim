@@ -123,7 +123,7 @@ public class MarketMaker extends AutoTraderBase {
 
             // Create initial buy order
             orders[i].o = se.createOrder(account_id, Order.BUYLIMIT,
-                    orders[i].volume, orders[i].buyLimit,0f);
+                    orders[i].volume, orders[i].buyLimit, 0f);
 
         }
 
@@ -137,18 +137,22 @@ public class MarketMaker extends AutoTraderBase {
     private void flipOrders() {
         for (int i = 0; i < numPositions; i++) {
             Order o = orders[i].o;
+            if (orders[i].o == null) {
+                continue;
+            }
+
             if (o.getStatus() == Order.CLOSED) {
                 if (o.getType() == Order.SELLLIMIT) {
                     // Create new buy order if previous was sell
                     Order n = se.createOrder(account_id, Order.BUYLIMIT,
-                            orders[i].volume, orders[i].buyLimit,0f);
+                            orders[i].volume, orders[i].buyLimit, 0f);
                     if (n != null) {
                         orders[i].o = n;
                     }
                 } else {
                     // Create new sell order if previous was buy
                     Order n = se.createOrder(account_id, Order.SELLLIMIT,
-                            orders[i].volume, orders[i].sellLimit,0f);
+                            orders[i].volume, orders[i].sellLimit, 0f);
                     if (n != null) {
                         orders[i].o = n;
                     }
@@ -167,6 +171,9 @@ public class MarketMaker extends AutoTraderBase {
 
         // Do nothing if any order is still open
         for (int i = 0; i < numPositions; i++) {
+            if (orders[i].o == null) {
+                continue;
+            }
             byte s = orders[i].o.getStatus();
             if (s != Order.OPEN) {
                 return false;
@@ -180,6 +187,8 @@ public class MarketMaker extends AutoTraderBase {
 
         // Cancel all current orders
         for (int i = 0; i < numPositions; i++) {
+            if (orders[i].o==null)
+                continue;
             se.cancelOrder(account_id, orders[i].o.getID());
         }
 
@@ -200,7 +209,7 @@ public class MarketMaker extends AutoTraderBase {
         if (!readjustOrders()) {
             this.flipOrders();  // Flip orders if no readjustment
         }
-        
+
         // Schedule the next timer event
         sim.addEvent(sim.getCurrentTimeMillis() + (long) (1000f * this.timerInterval), TIMEREVENT);
         return 0;

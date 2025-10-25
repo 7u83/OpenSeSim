@@ -1211,7 +1211,7 @@ public class Exchange {
      */
     public Order createOrder(Account a, byte type, float volume, float limit, float stop) {
 
-        if (volume <= 0 || limit <= 0) {
+        if (volume <= 0 || limit <= 0.01) {
             if ((type & Order.SELL) != 0) {
                 sell_failed++;
             } else {

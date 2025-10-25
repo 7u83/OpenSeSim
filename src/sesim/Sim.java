@@ -217,7 +217,7 @@ public class Sim {
         return rand.optLong("seed", 0);
     }
 
-    public static Random random = new Random(12);
+    public static SplittableRandom random = new SplittableRandom(12);
     public void startTraders(JSONObject cfg) {
 
         se.putConfig(getExchangeCfg(cfg));
@@ -226,11 +226,11 @@ public class Sim {
         boolean useSeed = useRandomSeed(cfg);
 
         if (useSeed) {
-            random = new Random(randomSeed);
+            random = new SplittableRandom(randomSeed);
         } else {
-            random = new Random();
+            random = new SplittableRandom();
             randomSeed = random.nextLong();
-            random = new Random(randomSeed);
+            random = new SplittableRandom(randomSeed);
         }
 
         //   Globals.sim.se.setMoneyDecimals(8);

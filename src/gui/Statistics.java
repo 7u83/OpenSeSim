@@ -36,8 +36,8 @@ import sesim.Exchange;
 public class Statistics extends javax.swing.JPanel {
 
     long lastNumTrades0;
-    long lastNumTrades1;
-    long lastNumTrades;
+    long lastNumTrades1=0;
+    long lastNumTrades=0;
 
     /**
      * Creates new form Statistics
@@ -70,6 +70,12 @@ public class Statistics extends javax.swing.JPanel {
 
                 
                 long diff= s.trades-lastNumTrades;
+                if (diff<0){
+                    lastNumTrades1=0;
+                    lastNumTrades0=0;
+                    lastNumTrades=0;
+                    diff=s.trades;
+                }
                 lastNumTrades=s.trades;
                 lastNumTrades0 = lastNumTrades1;
                 lastNumTrades1 = diff;

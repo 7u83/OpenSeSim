@@ -152,6 +152,8 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
                     while (update) {
                         Quote q=quote;
                         update = false;
+                        if (q==null)
+                            return;
                         javax.swing.SwingUtilities.invokeLater(() -> {
                             String text, vtext;
                             text = dfm.format(q.getPrice());

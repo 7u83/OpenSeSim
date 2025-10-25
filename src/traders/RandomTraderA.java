@@ -416,11 +416,11 @@ public class RandomTraderA extends AutoTraderBase
         int minTicks = (int)Math.round(lastPrice * minPercent/100 / tickSize);
         int maxTicks = (int)Math.round(lastPrice * maxPercent/100 / tickSize);
 
-        if (minTicks>-100 && minTicks<100){
-            minTicks = (minPercent < 0) ? -100 : 100;
+        if (minTicks>-1 && minTicks<1){
+            minTicks = (minPercent < 0) ? -1 : 1;
         }
-        if (maxTicks>-100 && maxTicks<100){
-            maxTicks = (maxPercent < 0) ? -100 : 100;
+        if (maxTicks>-1 && maxTicks<1){
+            maxTicks = (maxPercent < 0) ? -1 : 1;
         }
         
 
