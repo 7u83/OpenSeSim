@@ -31,20 +31,20 @@ import org.json.JSONObject;
 import sesim.Scheduler.EventProcessor;
 
 /**
- * 
+ *
  * @author 7u83 <7u83@mail.ru>
  */
 public abstract class AutoTraderBase implements AutoTraderInterface, EventProcessor {
 
-  //  protected float account_id;
-      protected Account account_id;
+    //  protected float account_id;
+    protected Account account_id;
     protected Exchange se;
     protected Sim sim;
-   // protected AutoTraderConfig config;
+    // protected AutoTraderConfig config;
 
     protected String name;
 
-/*    public AutoTraderBase(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
+    /*    public AutoTraderBase(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
         Exchange.Account a = se.getAccount(account_id);
 
@@ -55,7 +55,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         this.id = id;
 
     }
-*/
+     */
     public AutoTraderBase() {
         se = null;
         id = 0;
@@ -70,7 +70,6 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         return name;
     }
 
-   
 //    @Override
     public long getID() {
         return id;
@@ -84,12 +83,12 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     @Override
     public void init(Sim sim, long id, String name, float money, float shares, JSONObject cfg) {
-        this.account_id = new Account(money,shares); // se.createAccount(money, shares);
- //       se.getAccount(account_id).owner = this;
- 
- this.sim=sim;
- this.se=sim.se;
- this.account_id.owner=this;
+        this.account_id = new Account(sim.se, money, shares); // se.createAccount(money, shares);
+        //       se.getAccount(account_id).owner = this;
+
+        this.sim = sim;
+        this.se = sim.se;
+        this.account_id.owner = this;
         this.se = se;
         this.name = name;
         this.id = id;
@@ -102,21 +101,22 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     @Override
     public abstract void start();
-    
-    String status="";
-        protected void setStatus(String format, Object... arguments) {
-            
-            status = String.format(format, arguments);
-     //  System.out.printf("%s: %s\n", this.getName(), status);
-    }
-       @Override
-        public String getStatus(){
-            return status;
-        }
 
-        
-        @Override
-        public JDialog getGuiConsole(JFrame parent){
-            return null;
-        }
+    String status = "";
+
+    protected void setStatus(String format, Object... arguments) {
+
+        status = String.format(format, arguments);
+        //  System.out.printf("%s: %s\n", this.getName(), status);
+    }
+
+    @Override
+    public String getStatus() {
+        return status;
+    }
+
+    @Override
+    public JDialog getGuiConsole(JFrame parent) {
+        return null;
+    }
 }

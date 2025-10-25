@@ -16,7 +16,7 @@ public class Exchange {
 
  //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
 
-    private float money_df = 10000;
+    public float money_df = 100;
     private int money_decimals = 2;
     DecimalFormat money_formatter;
 
@@ -31,7 +31,7 @@ public class Exchange {
         money_formatter = getFormatter(n);
     }
 
-    private float shares_df = 1;
+    public float shares_df = 1;
     private float shares_decimals = 0;
     private DecimalFormat shares_formatter;
 
@@ -877,10 +877,11 @@ public class Exchange {
     }
 
     private void transferMoneyAndShares(Account buyer, Account seller, float money, float shares) {
-        buyer.money -= money;
-        seller.money += money;
-        buyer.shares += shares;
-        seller.shares -= shares;
+        // FLOAT_CONVERT
+        buyer.money -= (long)(money*money_df);
+        seller.money += (long)(money*money_df);
+        buyer.shares += (long)(shares*shares_df);
+        seller.shares -= (long)(shares*shares_df);
 
     }
 

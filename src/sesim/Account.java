@@ -38,30 +38,32 @@ import java.util.concurrent.ConcurrentHashMap;
  * Implements a trading account
  */
 public class Account {
-    //   private Exchange se;
+    private Exchange se;
 
     private Exchange.AccountListener listener = null;
 
-    float shares;
-    float money;
+     long shares;
+     long money;
     protected AutoTraderInterface owner;
 
     final ConcurrentHashMap<Long, Order> orders;
 
-    Account(float money, float shares) {
-        //  this.se = se;
+    Account(Exchange se, float money, float shares) {
+        this.se = se;
 
         orders = new ConcurrentHashMap();
-        this.money = money;
-        this.shares = shares;
+        
+        // FLOAT_CONVERT
+        this.money = (long)(money*se.money_df);
+        this.shares = (long)(shares*se.shares_df);
     }
 
     public float getShares() {
-        return shares;
+        return shares/se.shares_df;
     }
 
     public float getMoney() {
-        return money;
+        return money/se.money_df;
     }
 
     public AutoTraderInterface getOwner() {
@@ -91,9 +93,9 @@ public class Account {
         return orders.size();
     }
 
-    public float getCashInOpenOrders() {
+    public long getCashInOpenOrders_Long() {
         Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
-        float cash = 0f;
+        long cash=0;
 
         while (it.hasNext()) {
             Map.Entry e = it.next();
@@ -105,10 +107,14 @@ public class Account {
         return cash;
 
     }
+    
+    public float getCashInOpenOrders(){
+        return getCashInOpenOrders_Long()/se.money_df;
+    }
 
-    public float getSharesInOpenOrders() {
+    public long getSharesInOpenOrders_Long() {
         Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
-        float volume = 0f;
+        long volume = 0;
 
         while (it.hasNext()) {
             Map.Entry e = it.next();
@@ -118,6 +124,10 @@ public class Account {
             }
         }
         return volume;
+    }
+    
+    public float getSharesInOpenOrders(){
+        return getSharesInOpenOrders_Long()/se.shares_df;
     }
 
     public boolean couldBuy(float volume, float limit) {
