@@ -313,7 +313,7 @@ public class Exchange {
     SortedSet stopSellBook;
 
     //       random = new Random(12);
-    public SplittableRandom random;
+    //public SplittableRandom random;
 
     //random = new SplittableRandom(19);
     final void initExchange() {
@@ -919,7 +919,7 @@ public class Exchange {
         return ret;
     }
 
-    public int randNextInt() {
+/*    public int randNextInt() {
         return random.nextInt();
 
     }
@@ -934,7 +934,7 @@ public class Exchange {
         return random.nextDouble();
 
     }
-
+*/
     /**
      *
      * @param o

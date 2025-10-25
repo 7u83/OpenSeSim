@@ -247,7 +247,7 @@ public class RandomTraderA extends AutoTraderBase
     }
 
     private Action getAction() {
-        if (se.randNextInt(2) == 0) {
+        if (sim.randNextInt(2) == 0) {
             return Action.BUY;
         } else {
             return Action.SELL;
@@ -347,7 +347,7 @@ public class RandomTraderA extends AutoTraderBase
      * @return the number
      */
     protected float getRandom(float min, float max) {
-        double r = se.randNextDouble();
+        double r = sim.randNextDouble();
 
         // System.out.printf("RD: %f", r);
         // System.exit(0);
@@ -390,7 +390,7 @@ public class RandomTraderA extends AutoTraderBase
         float lp = q.getPrice();
 
         float limit;
-        limit = lp + se.random.nextLong(0, 4) - 2;
+        limit = lp + sim.random.nextLong(0, 4) - 2;
         //getRandomAmmount(lp, buy_limit);
 
         float volume = money / limit;
@@ -425,7 +425,7 @@ public class RandomTraderA extends AutoTraderBase
         
 
         // 3. Zufällig eine Tickzahl auswählen
-        int tickChange = se.random.nextInt(maxTicks - minTicks + 1) + minTicks;
+        int tickChange = sim.random.nextInt(maxTicks - minTicks + 1) + minTicks;
 
         // 4. Neue Order berechnen
         double newPrice = lastPrice + tickChange * tickSize;

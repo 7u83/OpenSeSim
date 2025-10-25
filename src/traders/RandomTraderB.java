@@ -181,7 +181,7 @@ public class RandomTraderB extends AutoTraderBase {
     }
 
     protected Action getAction() {
-        if (se.randNextInt(2) == 0) {
+        if (sim.randNextInt(2) == 0) {
             return Action.BUY;
         } else {
             return Action.SELL;
@@ -229,7 +229,7 @@ public class RandomTraderB extends AutoTraderBase {
      * @return the number
      */
     protected float getRandom(float min, float max) {
-        float r = (float)se.randNextDouble();
+        float r = (float)sim.randNextDouble();
 
         // System.out.printf("RD: %f", r);
         // System.exit(0);

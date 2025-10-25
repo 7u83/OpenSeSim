@@ -26,6 +26,7 @@
 package sesim;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.SplittableRandom;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -55,7 +56,7 @@ public class Sim {
             + "use_seed: false"
             + "}";
 
-    static SplittableRandom random = new SplittableRandom(12);
+    
 
     public static int randNextInt() {
         return random.nextInt();
@@ -216,6 +217,7 @@ public class Sim {
         return rand.optLong("seed", 0);
     }
 
+    public static Random random = new Random(12);
     public void startTraders(JSONObject cfg) {
 
         se.putConfig(getExchangeCfg(cfg));
@@ -224,11 +226,11 @@ public class Sim {
         boolean useSeed = useRandomSeed(cfg);
 
         if (useSeed) {
-            se.random = new SplittableRandom(randomSeed);
+            random = new Random(randomSeed);
         } else {
-            se.random = new SplittableRandom();
-            randomSeed = se.random.nextLong();
-            se.random = new SplittableRandom(randomSeed);
+            random = new Random();
+            randomSeed = random.nextLong();
+            random = new Random(randomSeed);
         }
 
         //   Globals.sim.se.setMoneyDecimals(8);

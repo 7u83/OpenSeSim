@@ -26,8 +26,14 @@
 package gui.orderbook;
 
 import gui.Globals;
+import gui.tools.NummericCellRenderer;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.swing.SwingUtilities;
 import sesim.Exchange.QuoteReceiver;
+import sesim.OrderBookEntry;
 import sesim.Quote;
 
 /**
@@ -38,6 +44,7 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
 
     DecimalFormat dfm = new DecimalFormat("0.00#");
     DecimalFormat dfv = new DecimalFormat("0.#");
+    ExecutorService executor = Executors.newSingleThreadExecutor();
 
     /**
      * Creates new form QuoteVertical
@@ -119,28 +126,60 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
 
     float last_price = -1;
 
+    boolean busy;
+    boolean update;
+    Quote quote;
+
     @Override
     public void UpdateQuote(Quote q) {
         if (q == null) {
             return;
         }
 
-    ///*    javax.swing.SwingUtilities.invokeLater(() -> {
-            String text, vtext;
-            text = dfm.format(q.getPrice());
-            vtext = dfv.format(q.getVolume());
+        if (busy) {
+            quote=q;
+            update = true;
+            return;
+        }
+        busy = true;
+        update = true;
 
-            if (last_price == -1) {
-                text = "--";
-            } else if (q.getPrice() >= last_price) {
-                text = "<html>" + text + "<font color=\"green\">&#8593;</color></html>";
-            } else if (q.getPrice() < last_price) {
-                text = "<html>" + text + "<font color=\"red\">&#8595;</color></html>";
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    while (update) {
+                        Quote q=quote;
+                        update = false;
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            String text, vtext;
+                            text = dfm.format(q.getPrice());
+                            vtext = dfv.format(q.getVolume());
+
+                            if (last_price == -1) {
+                                text = "--";
+                            } else if (q.getPrice() >= last_price) {
+                                text = "<html>" + text + "<font color=\"green\">&#8593;</color></html>";
+                            } else if (q.getPrice() < last_price) {
+                                text = "<html>" + text + "<font color=\"red\">&#8595;</color></html>";
+                            }
+                            last_price = q.getPrice();
+                            quoteLabel.setText(text);
+                            volumeLabel.setText("(" + vtext + ")");
+                        });
+
+                        try {
+                            Thread.sleep(50);   // update rate is limited 50 Hz
+                        } catch (InterruptedException e) {
+                        }
+                    }
+
+                } finally {
+                    busy = false;
+                }
             }
-            last_price = q.getPrice();
-            this.quoteLabel.setText(text);
-            this.volumeLabel.setText("(" + vtext + ")");
-      //  });*/
+        });
 
     }
 
