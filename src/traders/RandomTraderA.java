@@ -359,11 +359,11 @@ public class RandomTraderA extends AutoTraderBase
 //        return  Math.round(getRandom(minmax[0], minmax[1]));
     }
 
-    private float getStart() {
+/*    private float getStart() {
 
         return this.se.fairValue;
 
-    }
+    }*/
 
     /**
      *

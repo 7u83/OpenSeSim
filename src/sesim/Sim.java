@@ -279,15 +279,15 @@ public class Sim {
         System.out.printf("Cache total %f, Shares total\n", moneyTotal, sharesTotal);
 
         if (autoInitialPrice) {
-            this.se.fairValue = moneyTotal / sharesTotal;
+            this.se.setFairValue(moneyTotal / sharesTotal);
         } else {
-            this.se.fairValue = initialPrice;
+            this.se.setFairValue(initialPrice);
         }
 
         se.initLastQuote();
 
         //  Globals.sim.se.fairValue = 1.0;
-        System.out.printf("Failr Value is %f\n", se.fairValue);
+        //System.out.printf("Failr Value is %f\n", se.fairValue);
 
         for (int i = 0; i < traders.size(); i++) {
             traders.get(i).start();

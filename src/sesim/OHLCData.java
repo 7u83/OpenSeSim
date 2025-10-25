@@ -33,11 +33,12 @@ import java.util.*;
  */
 public class OHLCData {
 
-    private float max = 0;
-    private float min = 0;
+    private long max = 0;
+    private long min = 0;
 
     private int frame_size = 60000;
     int max_size = 100;
+    Exchange se;
 
     public OHLCData() {
 
@@ -46,21 +47,22 @@ public class OHLCData {
     /**
      * Create an OHLCData object that stores OHLCDataItems
      *
+     * @param se
      * @param frame_size Time frame stored in one OHLCDataItem
      */
-    public OHLCData(int frame_size) {
-
+    public OHLCData(Exchange se, int frame_size) {
+        this.se=se;
         this.frame_size = frame_size;
         this.current_frame_start = 0;
         this.current_frame_end = frame_size;
     }
 
     public float getMax() {
-        return max;
+        return max/se.money_df;
     }
 
     public float getMin() {
-        return min;
+        return min/se.money_df;
     }
 
     public int size() {
@@ -86,11 +88,11 @@ public class OHLCData {
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
-            return new MinMax(di.low, di.high);
+            return new MinMax(se.money_df, di.low, di.high);
         }
 
         OHLCDataItem di = data.get(first);
-        MinMax minmax = new MinMax(di.low, di.high);
+        MinMax minmax = new MinMax(se.money_df, di.low, di.high);
 
         for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);
@@ -108,11 +110,11 @@ public class OHLCData {
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
-            return new MinMax(di.volume, di.volume);
+            return new MinMax(se.shares_df, di.volume, di.volume);
         }
 
         OHLCDataItem di = data.get(first);
-        MinMax minmax = new MinMax(di.volume, di.volume);
+        MinMax minmax = new MinMax(se.shares_df, di.volume, di.volume);
 
         for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);
@@ -139,7 +141,7 @@ public class OHLCData {
         return data.get(n);
     }
 
-    private void updateMinMax(float price) {
+    private void updateMinMax(long price) {
         if (price > max) {
 
             max = price;
@@ -157,9 +159,9 @@ public class OHLCData {
     // Start and end of current frame
     private long current_frame_end = 0;
     private long current_frame_start = 0;
-    private float last_price = 0;
+    private long last_price = 0;
 
-    public boolean realTimeAdd(long time, float price, float volume) {
+     boolean realTimeAdd(long time, long price, long volume) {
 
        // System.out.printf("REALTIME ADD QUOTE time: %d, vol:%f\n",time,volume);
 
@@ -167,7 +169,7 @@ public class OHLCData {
             //System.out.printf("Data ist empty\n");
             if (time < frame_size) {
                 //System.out.printf("Adding Qute to frame 0\n");
-                data.add(new OHLCDataItem(0, price, volume));
+                data.add(new OHLCDataItem(se,0, price, volume));
                 last_price = price;
                 return true;
             }
@@ -187,13 +189,13 @@ public class OHLCData {
 
         while (time > nFrame+frame_size ) {
 
-            data.add(new OHLCDataItem(nFrame, last_price, 0));
+            data.add(new OHLCDataItem(se, nFrame, last_price, 0));
           //  System.out.printf("Add empty frame %d\n", nFrame);            
             nFrame += frame_size;
         }
 
         //System.out.printf("Add a new Frame %d\n", nFrame);
-        data.add(new OHLCDataItem(nFrame, price, volume));
+        data.add(new OHLCDataItem(se, nFrame, price, volume));
         last_price = price;
         return true;
 

@@ -31,21 +31,23 @@ package sesim;
  */
 public class OHLCDataItem {
 
-    float open;
-    float high;
-    float low;
-    float close;
-    float volume;
+    Exchange se;
+    long open;
+    long high;
+    long low;
+    long close;
+    long volume;
     long time;
     
     
-    public OHLCDataItem(long time,float price, float volume){
+    public OHLCDataItem(Exchange se, long time,long price, long volume){
+        this.se=se;
         this.time=time;
         open=low=high=close=price;
         this.volume=volume;
     }
 
-    public boolean update(float price, float volume) {
+    boolean update(long price, long volume) {
         boolean ret = false;
         if (price > high) {
             high = price;
@@ -62,23 +64,23 @@ public class OHLCDataItem {
     }
     
     public float getOpen() {
-        return open;
+        return open/se.money_df;
     }
 
     public float getHigh() {
-        return high;
+        return high/se.money_df;
     }
 
     public float getLow() {
-        return low;
+        return low/se.money_df;
     }
 
     public float getClose() {
-        return close;
+        return close/se.money_df;
     }
 
     public float getVolume() {
-        return volume;
+        return volume/se.shares_df;
     }
 
     public long getTime() {

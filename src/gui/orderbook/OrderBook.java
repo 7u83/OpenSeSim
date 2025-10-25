@@ -45,7 +45,7 @@ import sesim.Order;
  */
 public class OrderBook extends RawOrderBook {
 
-    TreeMap<Float, OrderBookEntry> lastMap = new TreeMap<>();
+    TreeMap<Long, OrderBookEntry> lastMap = new TreeMap<>();
 
     ;
     
@@ -90,17 +90,17 @@ public class OrderBook extends RawOrderBook {
 
     @Override
     protected ArrayList<? extends OrderBookEntry> getOrderBook() {
-        TreeMap<Float, OrderBookEntry> map = Globals.sim.se.getCompressedOrderBook(type, depth);
+        TreeMap<Long, OrderBookEntry> map = Globals.sim.se.getCompressedOrderBook(type, depth);
 
         //TreeMap<Float, OrderBookEntry> cmap = new TreeMap<>();
         ArrayList<OrderBookEntry> r = new ArrayList<>();
         if (type == Order.BUYLIMIT) {
-            for (Map.Entry<Float, OrderBookEntry> oe : ((TreeMap<Float, OrderBookEntry>) map).descendingMap().entrySet()) {
+            for (Map.Entry<Long, OrderBookEntry> oe : ((TreeMap<Long, OrderBookEntry>) map).descendingMap().entrySet()) {
                 r.add(this.getDiffedEntry(oe.getValue()));
             }
         } else {
 
-            for (Map.Entry<Float, OrderBookEntry> oe : map.entrySet()) {
+            for (Map.Entry<Long, OrderBookEntry> oe : map.entrySet()) {
                 r.add(this.getDiffedEntry(oe.getValue()));
 
             }

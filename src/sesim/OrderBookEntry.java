@@ -36,6 +36,15 @@ package sesim;
         public float getLimit();
 
         public float getStop();
+        
+        public long getVolume_Long();
+        
+        public long getLimit_Long();
+        
+        public long getStop_Long();
+        
+        public Exchange getSe();
+        
 
         public String getOwnerName();
 

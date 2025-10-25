@@ -101,7 +101,7 @@ public class Account {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
             if (o.type == Order.BUYLIMIT) {
-                cash += (o.getInitialVolume() - o.getExecuted()) * o.limit;
+                cash += (o.getInitialVolume() - o.getExecuted_Long()) * o.getLimit_Long();
             }
         }
         return cash;
@@ -144,6 +144,10 @@ public class Account {
 
     public float getSharesAvailable() {
         return getShares() - getSharesInOpenOrders();
+    }
+    
+    public long getCashAvailabale_Long(){
+        return this.money-this.getCashInOpenOrders_Long();
     }
 
     public float getCashAvailable() {

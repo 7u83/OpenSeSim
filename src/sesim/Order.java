@@ -53,10 +53,10 @@ public class Order implements OrderBookEntry {
     public final static byte CLOSED = 0x04;
     public final static byte CANCELED = 0x08;
 
-    float volume;
-    float limit;
-    float stop;
-    float profit;
+     long volume;
+     long limit;
+     long stop;
+     long profit;
 
     //Exchange.OrderStatus status;
     byte status;
@@ -64,20 +64,20 @@ public class Order implements OrderBookEntry {
     // Order type;
     byte type;
 
-    public final float initial_volume;
+    final long initial_volume;
     public final long id;
-    public final long created;
+    private final long created;
     public final Account account;
-    float cost;
+    long cost;
     Exchange se;
 
-    Order(Exchange se, Account account, byte type, float volume, float limit) {
+    Order(Exchange se, Account account, byte type, long volume, long limit) {
         this.account = account;
         this.se = se;
         id = se.order_id.getNext();
         this.type = type;
-        this.limit = se.roundMoney(limit);
-        this.volume = se.roundShares(volume);
+        this.limit = limit; //se.roundMoney(limit);
+        this.volume = volume; //se.roundShares(volume);
         this.initial_volume = this.volume;
         this.created = se.sim.scheduler.getCurrentTimeMillis();
         this.status = OPEN; //Exchange.OrderStatus.OPEN;
@@ -124,29 +124,37 @@ public class Order implements OrderBookEntry {
         }
         return s;
     }
-
-    public float getExecuted() {
+    
+    public long getExecuted_Long(){
         return initial_volume - volume;
     }
 
+    public float getExecuted() {
+        return getExecuted_Long()/se.money_df;
+    }
+
     public float getInitialVolume() {
-        return initial_volume;
+        return initial_volume/se.shares_df;
     }
 
     public float getCost() {
-        return cost;
+        return cost/se.money_df;
     }
 
     public boolean isSell() {
         return (type & SELL) != 0;
     }
 
-    public float getAvaragePrice() {
-        float e = getExecuted();
+    public long getAvaragePrice_Long() {
+        long e = getExecuted_Long();
         if (e <= 0) {
             return -1;
         }
         return cost / e;
+    }
+    
+    public float getAvaragePrice(){
+        return getAvaragePrice_Long()/se.money_df;
     }
 
     public byte getStatus() {
@@ -179,14 +187,18 @@ public class Order implements OrderBookEntry {
 
     @Override
     public float getVolume() {
-        return volume;
+        return volume/se.shares_df;
     }
 
     @Override
     public float getLimit() {
-        return limit;
+        return limit/se.money_df;
     }
 
+    public long getLimit_Long(){
+        return limit;
+    }
+    
     public boolean hasLimit() {
         return (type & LIMIT) != 0;
     }
@@ -203,6 +215,21 @@ public class Order implements OrderBookEntry {
     @Override
     public float getStop() {
         System.out.printf("Get stop %f\n", stop);
+        return stop/se.money_df;
+    }
+
+    @Override
+    public long getVolume_Long() {
+        return volume;
+    }
+
+    @Override
+    public long getStop_Long() {
         return stop;
+    }
+
+    @Override
+    public Exchange getSe() {
+        return se;
     }
 }

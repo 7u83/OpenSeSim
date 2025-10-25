@@ -157,7 +157,7 @@ public class RandomTraderB extends AutoTraderBase {
     }
 
     public long cancelOrders() {
-        int n = se.getNumberOfOpenOrders(account_id);
+        int n = account_id.getNumberOfOpenOrders(); //.getNumberOfOpenOrders(account_id);
         if (n > 0) {
             sesim.Account ad = account_id;
             
@@ -242,7 +242,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     float getStart() {
 
-        return this.se.fairValue;
+    return 0;
 
     }
 
