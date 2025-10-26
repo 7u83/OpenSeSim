@@ -35,77 +35,94 @@ import sesim.AutoTraderGui;
  */
 public class RandomTraderLGui extends AutoTraderGui {
 
-    private RandomTraderL cfg;
+    private final RandomTraderL cfg;
 
     /**
      * Creates new form RandomTraderConfigForm
+     * @param cfg
      */
     public RandomTraderLGui(RandomTraderL cfg) {
         initComponents();
-        
+
         this.setPreferredSize(new java.awt.Dimension(600, 400));
         this.cfg = cfg;
 
-        JDialog d;
 
-        try {
-            this.initialDelayMin.setValue(cfg.initial_delay[0]);
-            this.initialDelayMax.setValue(cfg.initial_delay[1]);
+        this.initialDelayMin.setValue((Float) (Math.round((cfg.initialDelay[0] / 1000f) * 10f) / 10f));
+        this.initialDelayMax.setValue((Float) (Math.round((cfg.initialDelay[1] / 1000f) * 10f) / 10f));
 
-            this.buyVolMin.setValue(cfg.buy_volume[0]);
-            this.buyVolMax.setValue(cfg.buy_volume[1]);
-            this.sellVolMin.setValue(cfg.sell_volume[0]);
-            this.sellVolMax.setValue(cfg.sell_volume[1]);
-            this.buyLimitMin.setValue(cfg.buy_limit[0]);
-            this.buyLimitMax.setValue(cfg.buy_limit[1]);
-            this.sellLimitMin.setValue(cfg.sell_limit[0]);
-            this.sellLimitMax.setValue(cfg.sell_limit[1]);
+        this.buyVolMin.setValue(cfg.amountToBuy[0]);
+        this.buyVolMax.setValue(cfg.amountToBuy[1]);
+        this.sellVolMin.setValue(cfg.amountToSell[0]);
+        this.sellVolMax.setValue(cfg.amountToSell[1]);
 
-            this.buyWaitMin.setValue(cfg.buy_wait[0]);
-            this.buyWaitMax.setValue(cfg.buy_wait[1]);
-            this.sellWaitMin.setValue(cfg.sell_wait[0]);
-            this.sellWaitMax.setValue(cfg.sell_wait[1]);
+        this.buyLimitMin.setValue((Float) (Math.round((cfg.buyLimit[0] / 10f) * 10f) / 10f));
+        this.buyLimitMax.setValue((Float) (Math.round((cfg.buyLimit[1] / 10f) * 10f) / 10f));
 
-            this.waitAfterBuyMin.setValue(cfg.wait_after_buy[0]);
-            this.waitAfterBuyMax.setValue(cfg.wait_after_buy[1]);
+        this.sellLimitMin.setValue((Float) (Math.round((cfg.sellLimit[0] / 10f) * 10f) / 10f));
+        this.sellLimitMax.setValue((Float) (Math.round((cfg.sellLimit[1] / 10f) * 10f) / 10f));
 
-            this.waitAfterSellMin.setValue(cfg.wait_after_sell[0]);
-            this.waitAfterSellMax.setValue(cfg.wait_after_sell[1]);
-        } catch (Exception e) {
+        // this.buyWaitMin.setValue(cfg.buy_wait[0]);
+        //  this.buyWaitMax.setValue(cfg.buy_wait[1]);
+        this.buyWaitMin.setValue((Float) (Math.round((cfg.buyOrderTimeout[0] / 1000f) * 10f) / 10f));
+        this.buyWaitMax.setValue((Float) (Math.round((cfg.buyOrderTimeout[1] / 1000f) * 10f) / 10f));
 
-        }
+        this.sellWaitMin.setValue((Float) (Math.round((cfg.sellOrderTimeout[0] / 1000f) * 10f) / 10f));
+        this.sellWaitMax.setValue((Float) (Math.round((cfg.sellOrderTimeout[1] / 1000f) * 10f) / 10f));
+
+        
+        this.waitAfterBuyMin.setValue((Float) (Math.round((cfg.sleeAfterBuy[0] / 1000f) * 10f) / 10f));
+        this.waitAfterBuyMax.setValue((Float) (Math.round((cfg.sleeAfterBuy[1] / 1000f) * 10f) / 10f));        
+        
+        this.waitAfterSellMin.setValue((Float) (Math.round((cfg.sleepAfterSell[0] / 1000f) * 10f) / 10f));
+        this.waitAfterSellMax.setValue((Float) (Math.round((cfg.sleepAfterSell[1] / 1000f) * 10f) / 10f));        
+
+        
+        //    } catch (Exception e) {
+
+        //  }
     }
 
     @Override
     public void save() {
-/*
-        cfg.initial_delay[0] = (Float) this.initialDelayMin.getValue();
-        cfg.initial_delay[1] = (Float) this.initialDelayMax.getValue();
 
-        cfg.buy_volume[0] = (Float) this.buyVolMin.getValue();
-        cfg.buy_volume[1] = (Float) this.buyVolMax.getValue();
-        cfg.sell_volume[0] = (Float) this.sellVolMin.getValue();
-        cfg.sell_volume[1] = (Float) this.sellVolMax.getValue();
-        cfg.buy_limit[0] = (Float) this.buyLimitMin.getValue();
-        cfg.buy_limit[1] = (Float) this.buyLimitMax.getValue();
-        cfg.sell_limit[0] = (Float) this.sellLimitMin.getValue();
-        cfg.sell_limit[1] = (Float) this.sellLimitMax.getValue();
-        cfg.buy_wait[0] = (Float) this.buyWaitMin.getValue();
-        cfg.buy_wait[1] = (Float) this.buyWaitMax.getValue();
-        cfg.sell_wait[0] = (Float) this.sellWaitMin.getValue();
-        cfg.sell_wait[1] = (Float) this.sellWaitMax.getValue();
+        cfg.initialDelay[0] = (long) (1000f * (Float) this.initialDelayMin.getValue());
+        cfg.initialDelay[1] = (long) (1000f * (Float) this.initialDelayMax.getValue());
 
-        cfg.wait_after_buy[0] = (Float) this.waitAfterBuyMin.getValue();
-        cfg.wait_after_buy[1] = (Float) this.waitAfterBuyMax.getValue();
-        cfg.wait_after_sell[0] = (Float) this.waitAfterSellMin.getValue();
-        cfg.wait_after_sell[1] = (Float) this.waitAfterSellMax.getValue();
-*/
-        //  cfg.buy_volume[0] = Float.parseFloat(this.buyVolMin.getText());
-        //  cfg.buy_volume[1] = Float.parseFloat(this.buyVolMax.getText());
-        //         cfg.sell_volume[0] = Float.parseFloat(this.sellVolMin.getText());
-        //  cfg.sell_volume[1] = Float.parseFloat(this.sellVolMax.getText());
-        JSONObject j = cfg.getConfig();
-        System.out.printf("JSON: %s\n", j.toString(3));
+        cfg.amountToBuy[0] = (Float) this.buyVolMin.getValue();
+        cfg.amountToBuy[1] = (Float) this.buyVolMax.getValue();
+        cfg.amountToSell[0] = (Float) this.sellVolMin.getValue();
+        cfg.amountToSell[1] = (Float) this.sellVolMax.getValue();
+
+        cfg.buyLimit[0] = (long) (10f * (Float) this.buyLimitMin.getValue());
+        cfg.buyLimit[1] = (long) (10f * (Float) this.buyLimitMax.getValue());
+
+        cfg.sellLimit[0] = (long) (10f * (Float) this.sellLimitMin.getValue());
+        cfg.sellLimit[1] = (long) (10f * (Float) this.sellLimitMax.getValue());
+
+        cfg.buyOrderTimeout[0] = (long) (1000f * (Float) this.buyWaitMin.getValue());
+        cfg.buyOrderTimeout[1] = (long) (1000f * (Float) this.buyWaitMax.getValue());
+
+        cfg.sellOrderTimeout[0] = (long) (1000f * (Float) this.sellWaitMin.getValue());
+        cfg.sellOrderTimeout[1] = (long) (1000f * (Float) this.sellWaitMax.getValue());
+        
+        
+        cfg.sleeAfterBuy[0] = (long) (1000f * (Float) this.waitAfterBuyMin.getValue());
+        cfg.buyOrderTimeout[1] = (long) (1000f * (Float) this.buyWaitMax.getValue());
+
+        cfg.sellOrderTimeout[0] = (long) (1000f * (Float) this.sellWaitMin.getValue());
+        cfg.sellOrderTimeout[1] = (long) (1000f * (Float) this.sellWaitMax.getValue());
+        
+        
+        cfg.sleeAfterBuy[0] = (long) (1000f * (Float) this.waitAfterBuyMin.getValue());
+        cfg.sleeAfterBuy[1] = (long) (1000f * (Float) this.waitAfterBuyMax.getValue());        
+
+        cfg.sleepAfterSell[0] = (long) (1000f * (Float) this.waitAfterSellMin.getValue());
+        cfg.sleepAfterSell[1] = (long) (1000f * (Float) this.waitAfterSellMax.getValue());        
+        
+
+        //JSONObject j = cfg.getConfig();
+
     }
 
     /**
