@@ -44,7 +44,7 @@ import sesim.Sim;
 public class RandomTraderL extends AutoTraderBase
         implements AccountListener {
 
-    public long[] initialDelay = {0, 7312};
+    public long[] initialDelay = {0, 0};
 
     public float[] amountToBuy = {100f, 100f};
     public float[] amountToSell = {100f, 100f};
@@ -55,10 +55,16 @@ public class RandomTraderL extends AutoTraderBase
     public long[] buyOrderTimeout = {10000, 50000};
     public long[] sellOrderTimeout = {10000, 50000};
 
-    public long[] sleeAfterBuy = {0, 0};
+    public long[] sleepAfterBuy = {0, 0};
     public long[] sleepAfterSell = {0, 0};
 
-    public float[] wait_after_fail = {1f, 15f};
+    public float[] wait_after_fail = {1f, 5f};
+
+    public float bankrupt_shares_cfg = 1f;
+    public float bankrupt_cash_cfg = 1f;
+
+    public long bankrupt_shares = 0;
+    public long bankrupt_cash = 0;
 
     final String INITIAL_DELAY = "initial_delay";
     final String AMOUNT_TO_SELL = "amount_to_sell";
@@ -69,7 +75,10 @@ public class RandomTraderL extends AutoTraderBase
     final String BUY_ORDER_TIMEOUT = "buy_order_timeout";
     final String SLEEP_AFTER_SELL = "sleep_after_sell";
     final String SLEEP_AFTER_BUY = "sleep_after_buy";
-    
+
+    final String BANKRUPT_SHARES = "bankrupt_shares";
+    final String BANKRUPT_CASH = "bankrupt_cash";
+
     final String WAIT_AFTER_FAIL = "wait_after_fail";
     long wait_after_timeout = 1000;
 
@@ -82,6 +91,8 @@ public class RandomTraderL extends AutoTraderBase
 
     @Override
     public void start() {
+        bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
+        bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
         this.TRADEEVENT.name = this.getName();
         this.ORDERFILLEDEVENT.name = this.getName();
         Account a = account_id;
@@ -108,7 +119,7 @@ public class RandomTraderL extends AutoTraderBase
 
             long t = 0;
 
-            if (account_id.getShares() == 0 && account_id.getMoney() < 0.3) {
+            if (account_id.getShares_Long() < this.bankrupt_shares && account_id.getMoney_Long() < this.bankrupt_cash) {
                 setStatus("Ruined");
                 return 0;
             }
@@ -177,14 +188,18 @@ public class RandomTraderL extends AutoTraderBase
         cfg.put(SELL_ORDER_TIMEOUT, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((sleeAfterBuy[0] / 1000.0) * 10) / 10.0;
-        fields[1] = Math.round((sleeAfterBuy[1] / 1000.0) * 10) / 10.0;
+        fields[0] = Math.round((sleepAfterBuy[0] / 1000.0) * 10) / 10.0;
+        fields[1] = Math.round((sleepAfterBuy[1] / 1000.0) * 10) / 10.0;
         cfg.put(SLEEP_AFTER_BUY, fields);
 
         fields = new double[2];
         fields[0] = Math.round((sleepAfterSell[0] / 1000.0) * 10) / 10.0;
         fields[1] = Math.round((sleepAfterSell[1] / 1000.0) * 10) / 10.0;
         cfg.put(SLEEP_AFTER_SELL, fields);
+
+        cfg.put(BANKRUPT_SHARES, bankrupt_shares_cfg);
+        cfg.put(BANKRUPT_CASH, bankrupt_cash_cfg);
+
 
         /*     cfg.put(SELL_VOLUME, sell_volume);
         cfg.put(BUY_VOLUME, buy_volume);
@@ -250,11 +265,20 @@ public class RandomTraderL extends AutoTraderBase
             sellOrderTimeout[0] = (long) (1000 * cfg.getJSONArray(SELL_ORDER_TIMEOUT).getDouble(0));
             sellOrderTimeout[1] = (long) (1000 * cfg.getJSONArray(SELL_ORDER_TIMEOUT).getDouble(1));
 
-            sleeAfterBuy[0] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_BUY).getDouble(0));
-            sleeAfterBuy[1] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_BUY).getDouble(1));
+            sleepAfterBuy[0] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_BUY).getDouble(0));
+            sleepAfterBuy[1] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_BUY).getDouble(1));
 
             sleepAfterSell[0] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_SELL).getDouble(0));
             sleepAfterSell[1] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_SELL).getDouble(1));
+
+            bankrupt_shares_cfg = (float) cfg.getDouble(BANKRUPT_SHARES);
+            bankrupt_cash_cfg = (float) cfg.getDouble(BANKRUPT_CASH);
+
+            if (se != null) {
+                bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
+                bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
+            }
+
 
             /*
             sell_wait[0] = (long) (1000 * cfg.getJSONArray(SELL_WAIT).getDouble(0));
@@ -304,7 +328,7 @@ public class RandomTraderL extends AutoTraderBase
 
         //     System.out.printf("Cancel %s rc for %d = %b\n",getName(),tradeEventTime,rc);
         if (currentOrder.getType() == Order.BUYLIMIT) {
-            tradeEventTime = getRandom(sleeAfterBuy[0], sleeAfterBuy[1]);
+            tradeEventTime = getRandom(sleepAfterBuy[0], sleepAfterBuy[1]);
         } else {
             tradeEventTime = getRandom(sleepAfterSell[0], sleepAfterSell[1]);
         }
@@ -355,7 +379,7 @@ public class RandomTraderL extends AutoTraderBase
 
         if (o.getType() == Order.BUYLIMIT) {
             setStatus("Sleep after buy");
-            long r = getRandom(sleeAfterBuy[0], sleeAfterBuy[1]);
+            long r = getRandom(sleepAfterBuy[0], sleepAfterBuy[1]);
             return r;
         }
         setStatus("Sleep after sell");
@@ -381,7 +405,7 @@ public class RandomTraderL extends AutoTraderBase
                 }
                 if (o.getStatus() == Order.CLOSED) {
                     setStatus("Sleep after buy");
-                    return getRandom(sleeAfterBuy[0], sleeAfterBuy[1]);
+                    return getRandom(sleepAfterBuy[0], sleepAfterBuy[1]);
 
                 }
                 this.currentOrder = o;

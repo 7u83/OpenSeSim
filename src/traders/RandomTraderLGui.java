@@ -71,12 +71,14 @@ public class RandomTraderLGui extends AutoTraderGui {
         this.sellWaitMax.setValue((Float) (Math.round((cfg.sellOrderTimeout[1] / 1000f) * 10f) / 10f));
 
         
-        this.waitAfterBuyMin.setValue((Float) (Math.round((cfg.sleeAfterBuy[0] / 1000f) * 10f) / 10f));
-        this.waitAfterBuyMax.setValue((Float) (Math.round((cfg.sleeAfterBuy[1] / 1000f) * 10f) / 10f));        
+        this.waitAfterBuyMin.setValue((Float) (Math.round((cfg.sleepAfterBuy[0] / 1000f) * 10f) / 10f));
+        this.waitAfterBuyMax.setValue((Float) (Math.round((cfg.sleepAfterBuy[1] / 1000f) * 10f) / 10f));        
         
         this.waitAfterSellMin.setValue((Float) (Math.round((cfg.sleepAfterSell[0] / 1000f) * 10f) / 10f));
         this.waitAfterSellMax.setValue((Float) (Math.round((cfg.sleepAfterSell[1] / 1000f) * 10f) / 10f));        
 
+        this.bankruptShares.setValue(cfg.bankrupt_shares_cfg);
+        this.bankruptCash.setValue(cfg.bankrupt_cash_cfg);        
         
         //    } catch (Exception e) {
 
@@ -107,19 +109,21 @@ public class RandomTraderLGui extends AutoTraderGui {
         cfg.sellOrderTimeout[1] = (long) (1000f * (Float) this.sellWaitMax.getValue());
         
         
-        cfg.sleeAfterBuy[0] = (long) (1000f * (Float) this.waitAfterBuyMin.getValue());
+        cfg.sleepAfterBuy[0] = (long) (1000f * (Float) this.waitAfterBuyMin.getValue());
         cfg.buyOrderTimeout[1] = (long) (1000f * (Float) this.buyWaitMax.getValue());
 
         cfg.sellOrderTimeout[0] = (long) (1000f * (Float) this.sellWaitMin.getValue());
         cfg.sellOrderTimeout[1] = (long) (1000f * (Float) this.sellWaitMax.getValue());
         
         
-        cfg.sleeAfterBuy[0] = (long) (1000f * (Float) this.waitAfterBuyMin.getValue());
-        cfg.sleeAfterBuy[1] = (long) (1000f * (Float) this.waitAfterBuyMax.getValue());        
+        cfg.sleepAfterBuy[0] = (long) (1000f * (Float) this.waitAfterBuyMin.getValue());
+        cfg.sleepAfterBuy[1] = (long) (1000f * (Float) this.waitAfterBuyMax.getValue());        
 
         cfg.sleepAfterSell[0] = (long) (1000f * (Float) this.waitAfterSellMin.getValue());
         cfg.sleepAfterSell[1] = (long) (1000f * (Float) this.waitAfterSellMax.getValue());        
-        
+
+        cfg.bankrupt_shares_cfg = (Float) this.bankruptShares.getValue();
+        cfg.bankrupt_cash_cfg = (Float) this.bankruptCash.getValue();
 
         //JSONObject j = cfg.getConfig();
 
@@ -164,6 +168,11 @@ public class RandomTraderLGui extends AutoTraderGui {
         jLabel25 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        bankruptShares = new javax.swing.JSpinner();
+        bankruptCash = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         jTextField1.setText("jTextField1");
 
@@ -244,6 +253,14 @@ public class RandomTraderLGui extends AutoTraderGui {
         jLabel27.setText("Initial delay (sec):");
         jLabel27.setToolTipText("Time to wait before the bot starts trading.");
 
+        jLabel1.setText("Bankrupt if sahres are less than ");
+
+        bankruptShares.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 0.5f));
+
+        bankruptCash.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 0.1f));
+
+        jLabel2.setText("and cash is below");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -251,22 +268,11 @@ public class RandomTraderLGui extends AutoTraderGui {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(waitAfterBuyMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(waitAfterSellMin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(waitAfterSellMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(waitAfterBuyMax, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                             .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -294,7 +300,26 @@ public class RandomTraderLGui extends AutoTraderGui {
                                 .addComponent(sellVolMax, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
                                 .addComponent(buyVolMax, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
                                 .addComponent(initialDelayMax, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
-                                .addComponent(jLabel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                .addComponent(jLabel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(bankruptCash)
+                            .addComponent(waitAfterBuyMin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                            .addComponent(waitAfterSellMin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                            .addComponent(bankruptShares, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(waitAfterSellMax, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                            .addComponent(waitAfterBuyMax, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -349,12 +374,24 @@ public class RandomTraderLGui extends AutoTraderGui {
                     .addComponent(waitAfterSellMin, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(waitAfterSellMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel24))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bankruptShares, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bankruptCash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner bankruptCash;
+    private javax.swing.JSpinner bankruptShares;
     private javax.swing.JSpinner buyLimitMax;
     private javax.swing.JSpinner buyLimitMin;
     private javax.swing.JSpinner buyVolMax;
@@ -363,17 +400,20 @@ public class RandomTraderLGui extends AutoTraderGui {
     private javax.swing.JSpinner buyWaitMin;
     private javax.swing.JSpinner initialDelayMax;
     private javax.swing.JSpinner initialDelayMin;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JSpinner sellLimitMax;
     private javax.swing.JSpinner sellLimitMin;

@@ -179,7 +179,7 @@ public class RandomTraderA extends AutoTraderBase
     //   Long owait = null;
     @Override
     public void setConfig(JSONObject cfg) {
-        //System.out.printf("put config sr: %s\n", cfg.toString(9));
+       
 
         if (cfg == null) {
             return;
@@ -206,7 +206,7 @@ public class RandomTraderA extends AutoTraderBase
 
     @Override
     public boolean getDevelStatus() {
-        return false;
+        return true;
     }
 
     /*   @Override
