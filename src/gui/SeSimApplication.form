@@ -496,10 +496,10 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="gui.TraderListPanel" name="traderListPanel1">
+            <Component class="gui.LogPanel" name="logPanel1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
-                  <JSplitPaneConstraints position="bottom"/>
+                  <JSplitPaneConstraints position="right"/>
                 </Constraint>
               </Constraints>
             </Component>

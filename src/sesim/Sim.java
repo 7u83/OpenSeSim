@@ -229,9 +229,11 @@ public class Sim {
             random = new SplittableRandom(randomSeed);
         } else {
             random = new SplittableRandom();
-            randomSeed = random.nextLong();
+            randomSeed = random.nextLong(Long.MAX_VALUE);
             random = new SplittableRandom(randomSeed);
         }
+        
+        Logger.info("Ranndom seed is %d",randomSeed);
 
         //   Globals.sim.se.setMoneyDecimals(8);
         //    Globals.sim.se.setSharesDecimals(0);        

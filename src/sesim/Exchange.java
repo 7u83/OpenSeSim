@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -14,8 +15,7 @@ import org.json.JSONObject;
  */
 public class Exchange {
 
- //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
-
+    //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
     public float money_df = 100;
     private int money_decimals = 2;
     DecimalFormat money_formatter;
@@ -79,9 +79,7 @@ public class Exchange {
         return shares_formatter;
     }
 
-
     //public Scheduler timer; 
-
     //public ArrayList<AutoTraderInterface> traders_old;
     /**
      *
@@ -99,7 +97,7 @@ public class Exchange {
     HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
 
     private OHLCData buildOHLCData(int timeFrame) {
-        OHLCData data = new OHLCData(this,timeFrame);
+        OHLCData data = new OHLCData(this, timeFrame);
         if (this.quoteHistory == null) {
             return data;
         }
@@ -129,11 +127,9 @@ public class Exchange {
 
     void updateOHLCData(Quote q) {
         for (OHLCData data : ohlc_data.values()) {
-            data.realTimeAdd(q.time,  q.price, q.volume);
+            data.realTimeAdd(q.time, q.price, q.volume);
         }
     }
-
-
 
     class OrderComparator implements Comparator<Order> {
 
@@ -183,44 +179,41 @@ public class Exchange {
 
     }
 
-  
     //HashMap<Byte, SortedSet<Order>> order_books;
     IDGenerator order_id = new IDGenerator();
-
-
 
     public static class CompOrderBookEntry implements OrderBookEntry {
 
         long limit;
         long volume;
         Exchange se;
-        
+
         long stop;
 
         public CompOrderBookEntry(Exchange se) {
-            this.se=se;
+            this.se = se;
         }
 
         public CompOrderBookEntry(Order oe) {
-            this.se=oe.se;
+            this.se = oe.se;
             this.volume = oe.volume;
             this.limit = oe.limit;
         }
 
         public CompOrderBookEntry(OrderBookEntry oe) {
-            this.se=oe.getSe();
+            this.se = oe.getSe();
             this.volume = oe.getVolume_Long();
             this.limit = oe.getLimit_Long();
         }
 
         @Override
         public float getVolume() {
-            return volume/se.shares_df;
+            return volume / se.shares_df;
         }
 
         @Override
         public float getLimit() {
-            return limit/se.money_df;
+            return limit / se.money_df;
         }
 
         @Override
@@ -277,8 +270,6 @@ public class Exchange {
         }
     }
 
-   
-
     /**
      * Histrory of quotes
      */
@@ -293,7 +284,6 @@ public class Exchange {
 
     //       random = new Random(12);
     //public SplittableRandom random;
-
     //random = new SplittableRandom(19);
     final void initExchange() {
         //   quoteReceiverList = (new CopyOnWriteArrayList<>());
@@ -304,10 +294,9 @@ public class Exchange {
 
         buy_orders = 0;
         sell_orders = 0;
-  //      timer = new Scheduler();         //  timer = new Scheduler();
+        //      timer = new Scheduler();         //  timer = new Scheduler();
 
-   //     random = new SplittableRandom();
-
+        //     random = new SplittableRandom();
         quoteHistory = new ArrayList();
         statistics = new Statistics();
 
@@ -334,14 +323,14 @@ public class Exchange {
         }*/
     }
 
-    
     Sim sim;
+
     /**
      * Constructor
      */
     public Exchange(Sim sim) {
         quoteReceiverList = (new CopyOnWriteArrayList<>());
-        this.sim=sim;
+        this.sim = sim;
         initExchange();
         //       executor.start();
 
@@ -417,10 +406,9 @@ public class Exchange {
     public void reset() {
         initExchange();
     }
-    
-    
-    void setFairValue(float v){
-        this.fairValue = (long)(v*money_df);
+
+    void setFairValue(float v) {
+        this.fairValue = (long) (v * money_df);
     }
 
     /*   public void terminate() {
@@ -445,7 +433,7 @@ public class Exchange {
             System.out.printf("get last quote failed\n");
             return 0f;
         }
-        return q.price/money_df;
+        return q.price / money_df;
     }
 
     /*
@@ -477,13 +465,8 @@ public class Exchange {
     public final String CFG_INITIAL_PRICE = "initial_price";
 
     public void putConfig(JSONObject cfg) {
-        try {
-            this.setMoneyDecimals(cfg.getInt(CFG_MONEY_DECIMALS));
-            this.setSharesDecimals(cfg.getInt(CFG_SHARES_DECIMALS));
-        } catch (Exception e) {
-
-        }
-
+        this.setMoneyDecimals(cfg.optInt(CFG_MONEY_DECIMALS, 2));
+        this.setSharesDecimals(cfg.optInt(CFG_SHARES_DECIMALS, 0));
     }
 
     private Long getBestPrice_Long() {
@@ -682,11 +665,6 @@ public class Exchange {
     }
 
     public void addBookListener(byte type, BookListener bl) {
-        sesim.Logger.debug("Add book listener %s", bl.toString());
-        if (bl == null) {
-            return;
-        }
-
         Set<BookListener> booklisteners = selectBookReceiver(type);
         if (booklisteners == null) {
             return;
@@ -842,7 +820,7 @@ public class Exchange {
     }
 
     private void transferMoneyAndShares(Account buyer, Account seller, long money, long shares) {
-     
+
         buyer.money -= money;
         seller.money += money;
         buyer.shares += shares;
@@ -885,7 +863,7 @@ public class Exchange {
         return ret;
     }
 
-/*    public int randNextInt() {
+    /*    public int randNextInt() {
         return random.nextInt();
 
     }
@@ -900,7 +878,7 @@ public class Exchange {
         return random.nextDouble();
 
     }
-*/
+     */
     /**
      *
      * @param o
@@ -995,14 +973,14 @@ public class Exchange {
 
     void addQuoteToHistory(Quote q) {
         if (statistics.heigh == null) {
-            statistics.heigh = (float)q.price/money_df;
+            statistics.heigh = (float) q.price / money_df;
         } else if (statistics.heigh < q.price) {
-            statistics.heigh = q.price/money_df;
+            statistics.heigh = q.price / money_df;
         }
         if (statistics.low == null) {
-            statistics.low = q.price/money_df;
+            statistics.low = q.price / money_df;
         } else if (statistics.low > q.price) {
-            statistics.low = q.price/money_df;
+            statistics.low = q.price / money_df;
         }
 
         //  statistics.trades++;
@@ -1187,7 +1165,7 @@ public class Exchange {
             return null;
         }
 
-        Order o = new Order(this,a, type, volume, limit);
+        Order o = new Order(this, a, type, volume, limit);
         o.stop = stop;
 
         synchronized (executor) {
@@ -1212,18 +1190,17 @@ public class Exchange {
 
         return o;
     }
-    
-    
+
     public Order createOrder(Account a, byte type, float volume, float limit, float stop) {
-        return createOrder_Long(a,type,
-                (long)(volume*shares_df), 
-                (long)(limit*money_df),
-                (long)(stop*money_df)
-                );
-        
+        return createOrder_Long(a, type,
+                (long) (volume * shares_df),
+                (long) (limit * money_df),
+                (long) (stop * money_df)
+        );
+
     }
 
-/*   private float getBestLimit(Order type) {
+    /*   private float getBestLimit(Order type) {
         //Order o = order_books.get(type).first();
         Order o = getBook(type.type).first();
 
@@ -1232,9 +1209,8 @@ public class Exchange {
         }
         return o.limit;
     }
-*/
-    
-/*    private  int getNumberOfOpenOrders(Account a) {
+     */
+ /*    private  int getNumberOfOpenOrders(Account a) {
         //    Account a = accounts.get(account_id);
         if (a == null) {
             return 0;
@@ -1242,6 +1218,5 @@ public class Exchange {
         return a.orders.size();
     }
 
- */
-    
+     */
 }
