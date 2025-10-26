@@ -45,6 +45,10 @@ public class Logger {
     public static void debug(String fmt, Object... args) {
         logf(simLogger, FINE, fmt, args);
     }
+    
+    public static void error (String fmt, Object... args){
+         logf(simLogger, SEVERE, fmt, args);
+    }
 
     static boolean dbg = true;
     static boolean info = true;

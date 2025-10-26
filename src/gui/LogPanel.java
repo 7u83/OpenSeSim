@@ -25,12 +25,14 @@
  */
 package gui;
 
+
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.swing.SwingUtilities;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
 /**
  *
@@ -66,6 +68,28 @@ public class LogPanel extends javax.swing.JPanel {
             // nichts nötig
         }
     }
+    
+    public class MessageOnlyFormatter extends Formatter {
+    @Override
+        public String format(LogRecord record) {
+        String levelStr;
+        switch (record.getLevel().getName()) {
+            case "SEVERE":
+                levelStr = "ERROR";
+                break;
+            case "WARNING":
+                levelStr = "WARN";
+                break;
+            default:
+                levelStr = record.getLevel().getName(); // INFO, FINE, etc.
+        }
+        return "[" + levelStr + "] " + record.getMessage() + "\n";
+    }
+    
+    
+
+}
+
 
     private final Logger logger = Logger.getLogger(sesim.Logger.NAME);
 
@@ -79,7 +103,10 @@ public class LogPanel extends javax.swing.JPanel {
             Level level = record.getLevel();
             return level == Level.INFO || level == Level.SEVERE;
         });
-        logger.addHandler(new LogPanelHandler(this));
+        LogPanelHandler handler = new LogPanelHandler(this);
+        handler.setFormatter(new MessageOnlyFormatter());
+        logger.addHandler(handler);
+    
     }
 
     public void appendLog(String text) {

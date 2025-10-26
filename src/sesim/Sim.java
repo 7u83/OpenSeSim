@@ -178,7 +178,7 @@ public class Sim {
     }
 
     static public JSONObject getStrategy(JSONObject cfg, String name) {
-        return getStrategies(cfg).getJSONObject(name);
+        return getStrategies(cfg).optJSONObject(name);
     }
     public static String DEFAULT_EXCHANGE_CFG
             = "{"
@@ -246,6 +246,7 @@ public class Sim {
             JSONObject t = tlist.getJSONObject(i);
             String strategy_name = t.getString("Strategy");
             JSONObject strategy = getStrategy(cfg, strategy_name);
+            
             // String base = strategy.getString("base");
             //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
 
@@ -259,6 +260,12 @@ public class Sim {
             if (!enabled) {
                 continue;
             }
+            
+            if (strategy==null){
+                sesim.Logger.error("Strategy '%s' does't exists, will not start '%s'",strategy_name,t.getString("Name"));
+                continue;
+            }
+
 
             //      System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
             for (int i1 = 0; i1 < count; i1++) {
@@ -281,10 +288,13 @@ public class Sim {
         System.out.printf("Cache total %f, Shares total\n", moneyTotal, sharesTotal);
 
         if (autoInitialPrice) {
-            this.se.setFairValue(moneyTotal / sharesTotal);
-        } else {
-            this.se.setFairValue(initialPrice);
-        }
+            initialPrice = moneyTotal / sharesTotal;
+
+        } 
+        
+        Logger.info("Initial prices is: %f",initialPrice);
+        this.se.setFairValue(initialPrice);
+        
 
         se.initLastQuote();
 
