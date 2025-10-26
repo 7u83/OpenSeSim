@@ -25,14 +25,17 @@
  */
 package gui;
 
-
+//import static com.sun.tools.javac.util.Constants.format;
+import java.awt.Color;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import javax.swing.SwingUtilities;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -44,52 +47,55 @@ public class LogPanel extends javax.swing.JPanel {
 
         private final LogPanel logPanel;
 
-        public LogPanelHandler(LogPanel logPanel) {
-            this.logPanel = logPanel;
-            setFormatter(new SimpleFormatter());
+        public LogPanelHandler(LogPanel l) {
+            this.logPanel = l;
         }
 
         @Override
         public void publish(LogRecord record) {
-            if (!isLoggable(record)) {
+            System.out.printf("Publish Record %s\n", record.getMessage());
+            if (!isLoggable(record))
                 return;
-            }
+            
+            
+        
             String msg = getFormatter().format(record);
-            logPanel.appendLog(msg.stripTrailing());
+            logPanel.appendLog(record.getLevel().getName(),msg.stripTrailing());
+            
+  
         }
 
         @Override
         public void flush() {
-            // nichts nötig
+            
         }
 
         @Override
         public void close() throws SecurityException {
-            // nichts nötig
+            
         }
+
     }
-    
+
     public class MessageOnlyFormatter extends Formatter {
-    @Override
+
+        @Override
         public String format(LogRecord record) {
-        String levelStr;
-        switch (record.getLevel().getName()) {
-            case "SEVERE":
-                levelStr = "ERROR";
-                break;
-            case "WARNING":
-                levelStr = "WARN";
-                break;
-            default:
-                levelStr = record.getLevel().getName(); // INFO, FINE, etc.
+            String levelStr;
+            switch (record.getLevel().getName()) {
+                case "SEVERE":
+                    levelStr = "ERROR";
+                    break;
+                case "WARNING":
+                    levelStr = "WARN";
+                    break;
+                default:
+                    levelStr = record.getLevel().getName(); // INFO, FINE, etc.
+            }
+            return "[" + levelStr + "] " + record.getMessage() + "\n";
         }
-        return "[" + levelStr + "] " + record.getMessage() + "\n";
+
     }
-    
-    
-
-}
-
 
     private final Logger logger = Logger.getLogger(sesim.Logger.NAME);
 
@@ -106,16 +112,43 @@ public class LogPanel extends javax.swing.JPanel {
         LogPanelHandler handler = new LogPanelHandler(this);
         handler.setFormatter(new MessageOnlyFormatter());
         logger.addHandler(handler);
-    
+
     }
 
-    public void appendLog(String text) {
+    public void appendLog(String level, String text) {
+        
         SwingUtilities.invokeLater(() -> {
-            logArea.append(text + "\n");
-            /*   if (autoScroll) {
-                logArea.setCaretPosition(logArea.getDocument().getLength());
+            StyledDocument doc = logArea.getStyledDocument();
+            javax.swing.text.Style style = logArea.addStyle("Style", null);
+
+            // Farben nach Level
+            switch (level) {
+                case "SEVERE":
+                    StyleConstants.setForeground(style, Color.RED);
+                    break;
+                case "WARN":
+                    StyleConstants.setForeground(style, Color.ORANGE.darker());
+                    break;
+                default:
+                    StyleConstants.setForeground(style, Color.BLACK);
+            }
+
+            try {
+                doc.insertString(doc.getLength(), text + "\n", style);
+            } catch (BadLocationException e) {
+            }
+
+            /*            if (autoScroll) {
+                logPane.setCaretPosition(doc.getLength());
             }*/
         });
+
+        /*        SwingUtilities.invokeLater(() -> {
+            logArea.append(text + "\n");
+            //   if (autoScroll) {
+                logArea.setCaretPosition(logArea.getDocument().getLength());
+            }//
+        });*/
     }
 
     /**
@@ -128,10 +161,8 @@ public class LogPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        logArea = new javax.swing.JTextArea();
+        logArea = new javax.swing.JTextPane();
 
-        logArea.setColumns(20);
-        logArea.setRows(5);
         jScrollPane1.setViewportView(logArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -155,6 +186,6 @@ public class LogPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea logArea;
+    private javax.swing.JTextPane logArea;
     // End of variables declaration//GEN-END:variables
 }

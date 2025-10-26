@@ -41,7 +41,7 @@ import sesim.Sim;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderLong extends AutoTraderBase
+public class RandomTraderL extends AutoTraderBase
         implements AccountListener {
 
     public long[] initial_delay = {0, 7000};
@@ -139,7 +139,7 @@ public class RandomTraderLong extends AutoTraderBase
 
     @Override
     public AutoTraderGui getGui() {
-        return null; //new RandomTraderGuiA(this);
+        return new RandomTraderLGui(this);
     }
 
     @Override

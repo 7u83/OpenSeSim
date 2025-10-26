@@ -257,9 +257,11 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
 
+        fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
         openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        openMenuItem.setMnemonic('o');
         openMenuItem.setText("Open");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -269,6 +271,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(openMenuItem);
 
         saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        saveMenuItem.setMnemonic('s');
         saveMenuItem.setText("Save");
         saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -277,6 +280,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         fileMenu.add(saveMenuItem);
 
+        saveAsMenuItem.setMnemonic('a');
         saveAsMenuItem.setText("Save As ...");
         saveAsMenuItem.setDisplayedMnemonicIndex(5);
         saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -286,6 +290,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         fileMenu.add(saveAsMenuItem);
 
+        closeMenuItem.setMnemonic('c');
         closeMenuItem.setText("Close");
         closeMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -295,6 +300,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(closeMenuItem);
         fileMenu.add(jSeparator5);
 
+        resetToDefaultsMenuItem.setMnemonic('r');
         resetToDefaultsMenuItem.setText("Reset to defaults");
         resetToDefaultsMenuItem.setToolTipText("");
         resetToDefaultsMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -304,6 +310,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         fileMenu.add(resetToDefaultsMenuItem);
 
+        clearMenuItem.setMnemonic('c');
         clearMenuItem.setText("Clear All");
         clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -314,6 +321,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(jSeparator4);
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -324,8 +332,10 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(fileMenu);
 
+        editMenu.setMnemonic('e');
         editMenu.setText("Edit");
 
+        editExchangeMenuItem.setMnemonic('y');
         editExchangeMenuItem.setText("Exchange ...");
         editExchangeMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -335,6 +345,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         editMenu.add(editExchangeMenuItem);
         editMenu.add(jSeparator1);
 
+        pasteMenuItem.setMnemonic('s');
         pasteMenuItem.setText("Strategies ...");
         pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -343,6 +354,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         editMenu.add(pasteMenuItem);
 
+        deleteMenuItem.setMnemonic('d');
         deleteMenuItem.setText("Traders ...");
         deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -352,6 +364,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         editMenu.add(deleteMenuItem);
         editMenu.add(jSeparator2);
 
+        editPreferences.setMnemonic('p');
         editPreferences.setText("Preferences ...");
         editPreferences.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -362,8 +375,10 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(editMenu);
 
+        simMenu.setMnemonic('s');
         simMenu.setText("Sim");
 
+        simMenuStart.setMnemonic('s');
         simMenuStart.setText("Start");
         simMenuStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -372,6 +387,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         simMenu.add(simMenuStart);
 
+        simMenuPause.setMnemonic('p');
         simMenuPause.setText("Pause");
         simMenuPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -380,6 +396,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         simMenu.add(simMenuPause);
 
+        simMenuStop.setMnemonic('t');
         simMenuStop.setText("Stop");
         simMenuStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -399,8 +416,11 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(simMenu);
 
+        viewMenu.setMnemonic('v');
         viewMenu.setText("View");
 
+        viewTraderListCheckBox.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, 0));
+        viewTraderListCheckBox.setMnemonic('t');
         viewTraderListCheckBox.setText("Traders");
         viewTraderListCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -410,6 +430,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         viewMenu.add(viewTraderListCheckBox);
 
         viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, 0));
+        viewRawOrderBook.setMnemonic('R');
         viewRawOrderBook.setText("Level 3 Orde Book");
         viewRawOrderBook.setToolTipText("");
         viewRawOrderBook.addActionListener(new java.awt.event.ActionListener() {
@@ -439,8 +460,10 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(viewMenu);
 
+        helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
 
+        aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText("About");
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

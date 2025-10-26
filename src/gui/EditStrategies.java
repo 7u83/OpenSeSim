@@ -301,10 +301,7 @@ setMinimumSize(getSize());
         //Globals.LOGGER.info(String.format("Base %s\n", base));
         ac = Globals.sim.tloader.getStrategyBase(base);
         if (ac == null) {
-            //  System.out.print("BASE IST NULL\n");
-            Globals.LOGGER.info(String.format("Can't load: %s\n", base));
-            //System.exit(0);
-
+            sesim.Logger.error(String.format("Can't load trader: %s\n", base));
             return;
         }
 

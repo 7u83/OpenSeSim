@@ -272,7 +272,12 @@ public class Sim {
                 AutoTraderInterface trader;
 
                 trader = this.createTraderNew(this.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
-
+                if (trader==null){
+                    String base = strategy.getString("base");
+                    sesim.Logger.error("Could not load base '%s', not starting %s", base,t.getString("Name"));
+                    break;
+                }
+                
                 this.traders.add(trader);
 
                 moneyTotal += money;
