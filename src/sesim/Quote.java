@@ -30,6 +30,7 @@ package sesim;
  * @author tube
  */
 public class Quote implements Comparable {
+
     Exchange se;
     long bid;
     long bid_volume;
@@ -52,9 +53,9 @@ public class Quote implements Comparable {
         );
 
     }
-    
-    public Quote(Exchange se){
-        this.se=se;
+
+    public Quote(Exchange se) {
+        this.se = se;
     }
 
     @Override
@@ -71,19 +72,27 @@ public class Quote implements Comparable {
     }
 
     public float getPrice() {
-        return price/se.money_df;
+        return price / se.money_df;
     }
 
     public float getBid() {
-        return bid/se.money_df;
+        return bid / se.money_df;
     }
 
     public float getAsk() {
-        return ask/se.money_df;
+        return ask / se.money_df;
     }
 
     public float getVolume() {
-        return volume/se.shares_df;
+        return volume / se.shares_df;
+    }
+
+    public long getPrice_Long() {
+        return price;
+    }
+
+    public long getVolume_Long() {
+        return volume;
     }
 
 }

@@ -47,13 +47,13 @@ public class RandomTraderLong extends AutoTraderBase
     public long[] initial_delay = {0, 7000};
 
     public float[] sell_volume = {100f, 100f};
-    public float[] sell_limit = {-2f, 2f};
+    public long[] sell_limit = {-20, 20};
     public long[] sell_wait = {10000, 50000};
     public long[] wait_after_sell = {0, 0};
 
     public float[] buy_volume = {100f, 100f};
-    public float[] buy_limit = {-2f, 2f};
-    public float[] buy_wait = {10f, 50f};
+    public long[] buy_limit = {-20, 20};
+    public long[] buy_wait = {0, 50000};
     public long[] wait_after_buy = {0, 0};
 
     public float[] wait_after_fail = {1f, 15f};
@@ -193,13 +193,20 @@ public class RandomTraderLong extends AutoTraderBase
 
             sell_volume = to_float(cfg.getJSONArray(SELL_VOLUME));
             buy_volume = to_float(cfg.getJSONArray(BUY_VOLUME));
-            sell_limit = to_float(cfg.getJSONArray(SELL_LIMIT));
-            buy_limit = to_float(cfg.getJSONArray(BUY_LIMIT));
 
+            sell_limit[0] = (long) (10 * cfg.getJSONArray(SELL_LIMIT).getDouble(0));
+            sell_limit[1] = (long) (10 * cfg.getJSONArray(SELL_LIMIT).getDouble(1));
+
+            buy_limit[0] = (long) (10 * cfg.getJSONArray(BUY_LIMIT).getDouble(0));
+            buy_limit[1] = (long) (10 * cfg.getJSONArray(BUY_LIMIT).getDouble(1));
+
+      
             sell_wait[0] = (long) (1000 * cfg.getJSONArray(SELL_WAIT).getDouble(0));
-            sell_wait[1] = (long) (1000 * cfg.getJSONArray(SELL_WAIT).getDouble(0));
+            sell_wait[1] = (long) (1000 * cfg.getJSONArray(SELL_WAIT).getDouble(1));
 
-            buy_wait = to_float(cfg.getJSONArray(BUY_WAIT));
+            buy_wait[0] = (long) (1000 * cfg.getJSONArray(BUY_WAIT).getDouble(0));
+            buy_wait[1] = (long) (1000 * cfg.getJSONArray(BUY_WAIT).getDouble(1));
+            //buy_wait = to_float(cfg.getJSONArray(BUY_WAIT));
 
             wait_after_sell[0] = (long) (1000 * cfg.getJSONArray(WAIT_AFTER_SELL).getDouble(0));
             wait_after_sell[1] = (long) (1000 * cfg.getJSONArray(WAIT_AFTER_SELL).getDouble(1));
@@ -293,11 +300,11 @@ public class RandomTraderLong extends AutoTraderBase
 
         if (o.getType() == Order.BUYLIMIT) {
             setStatus("Sleep after buy");
-            long r = getRandom(wait_after_buy[0],wait_after_buy[1]);
+            long r = getRandom(wait_after_buy[0], wait_after_buy[1]);
             return r;
         }
         setStatus("Sleep after sell");
-        return getRandom(wait_after_sell[0],wait_after_sell[1]);
+        return getRandom(wait_after_sell[0], wait_after_sell[1]);
     }
 
     private long doBuyOrSell() {
@@ -319,12 +326,12 @@ public class RandomTraderLong extends AutoTraderBase
                 }
                 if (o.getStatus() == Order.CLOSED) {
                     setStatus("Sleep after buy");
-                    return getRandom(wait_after_buy[0],wait_after_buy[1]);
+                    return getRandom(wait_after_buy[0], wait_after_buy[1]);
 
                 }
                 this.currentOrder = o;
                 setStatus("Waiting for buy order");
-                return (long) (getRandom(buy_wait) * 1000f);
+                return getRandom(buy_wait[0], buy_wait[1]);
 
             case SELL:
                 o = doSell();
@@ -337,12 +344,12 @@ public class RandomTraderLong extends AutoTraderBase
                 }
                 if (o.getStatus() == Order.CLOSED) {
                     setStatus("Sleep after sell");
-                    return getRandom(wait_after_sell[0],wait_after_sell[1]);
+                    return getRandom(wait_after_sell[0], wait_after_sell[1]);
 
                 }
                 this.currentOrder = o;
                 setStatus("Waiting for sell order");
-                return getRandom(sell_wait[0],sell_wait[1]);
+                return getRandom(sell_wait[0], sell_wait[1]);
 
         }
 
@@ -367,7 +374,8 @@ public class RandomTraderLong extends AutoTraderBase
     }
 
     protected long getRandom(long min, long max) {
-        return Sim.random.nextLong(min, max);
+        double r = sesim.Sim.randNextDouble();
+        return (long) ((max - min) * r + min);
     }
 
     protected float getRandom(float[] minmax) {
@@ -393,31 +401,34 @@ public class RandomTraderLong extends AutoTraderBase
         return getRandom(min, max);
     }
 
-    private Order xdoBuy() {
+    long getRandomPrice_Long(long lastPrice, long minPercent, long maxPercent) {
+        // minPercent/maxPercent sind Fixkommawerte mit 1 Nachkommastelle
+        // Beispiel: -50 = -5.0%, +25 = +2.5%
 
-        byte type = Order.BUYLIMIT;
+        // 1. Preisänderungsspanne berechnen (in Cent)
+        long minDelta = (lastPrice * minPercent) / 1000;
+        long maxDelta = (lastPrice * maxPercent) / 1000;
 
-        // how much money we ant to invest?
-        float money = getRandomAmmount(account_id.getMoney(), buy_volume);
-
-        Quote q = se.getBestPrice_0();
-
-        float lp = q.getPrice();
-
-        float limit;
-        limit = lp + sim.random.nextLong(0, 4) - 2;
-        //getRandomAmmount(lp, buy_limit);
-
-        float volume = money / limit;
-
-        limit = se.roundMoney(limit);
-        volume = se.roundShares(volume);
-        if (limit <= 0) {
-            return null;
+        // 2. Sicherheitskorrektur, falls Rundung zu 0 führt
+        if (minDelta == 0 && minPercent != 0) {
+            minDelta = (minPercent < 0) ? -1 : 1;
+        }
+        if (maxDelta == 0 && maxPercent != 0) {
+            maxDelta = (maxPercent < 0) ? -1 : 1;
         }
 
-        return se.createOrder(account_id, type, volume, limit, 0f);
+        // 3. Zufällige Preisänderung zwischen minDelta und maxDelta
+        long delta = Sim.random.nextLong(maxDelta - minDelta + 1) + minDelta;
 
+        // 4. Neuer Preis in Cent
+        long newPrice = lastPrice + delta;
+
+        // Optional: Absicherung gegen negative Preise
+        if (newPrice < 1) {
+            newPrice = 1;
+        }
+
+        return newPrice;
     }
 
     double getRandomPrice(double lastPrice, double tickSize, double minPercent, double maxPercent) {
@@ -448,44 +459,37 @@ public class RandomTraderLong extends AutoTraderBase
     private Order doBuy() {
 
         // how much money we ant to invest?
-        float money = getRandomAmmount(account_id.getMoney(), buy_volume);
+        long money = (long)getRandomAmmount(account_id.getMoney_Long(), buy_volume);
 
         Quote q = se.getBestPrice_0();
-        float lp = q.getPrice();
+        long lp = q.getPrice_Long();
 
-        float limit = (float) this.getRandomPrice(lp, 0.01, this.buy_limit[0], this.buy_limit[1]);
+        long limit = this.getRandomPrice_Long(lp,  this.buy_limit[0], this.buy_limit[1]);
 
-        float volume = money / limit;
+        long volume = money / limit;
 
-        volume = se.roundShares(volume);
-        if (limit <= 0) {
-            return null;
-        }
+ 
 
-        return se.createOrder(account_id, Order.BUYLIMIT, volume, limit, 0f);
+        return se.createOrder_Long(account_id, Order.BUYLIMIT, volume, limit, 0);
 
     }
 
     private Order doSell() {
 
         // how many shares we want to sell?
-        float volume = getRandomAmmount(account_id.getShares(), sell_volume);
-        volume = se.roundShares(volume);
+        long volume = (long)getRandomAmmount(account_id.getShares_Long(), sell_volume);
+      //  volume = se.roundShares(volume);
 
         //    float lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getBestPrice_0();
-        float lp = q.getPrice();
+        long lp = q.getPrice_Long();
 
-        float limit = (float) this.getRandomPrice(lp, 0.01, this.sell_limit[0], this.sell_limit[1]);
+        long limit =  this.getRandomPrice_Long(lp, this.sell_limit[0], this.sell_limit[1]);
         //   limit = lp + getRandomAmmount(lp, sell_limit);
         //  limit = lp + se.random.nextLong(0, 4) - 2;
 
-        se.roundMoney(limit);
-        if (limit <= 0) {
-            return null;
-        }
-
-        return se.createOrder(account_id, Order.SELLLIMIT, volume, limit, 0f);
+ 
+        return se.createOrder_Long(account_id, Order.SELLLIMIT, volume, limit, 0);
 
     }
 

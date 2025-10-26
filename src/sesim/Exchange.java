@@ -445,7 +445,7 @@ public class Exchange {
             System.out.printf("get last quote failed\n");
             return 0f;
         }
-        return q.price;
+        return q.price/money_df;
     }
 
     /*
@@ -1175,7 +1175,7 @@ public class Exchange {
      * @param limit
      * @return
      */
-    private Order createOrder_Long(Account a, byte type, long volume, long limit, long stop) {
+    public Order createOrder_Long(Account a, byte type, long volume, long limit, long stop) {
 
         if (volume <= 0 || limit <= 1) {
             if ((type & Order.SELL) != 0) {

@@ -38,12 +38,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * Implements a trading account
  */
 public class Account {
+
     private Exchange se;
 
     private Exchange.AccountListener listener = null;
 
-     long shares;
-     long money;
+    long shares;
+    long money;
     protected AutoTraderInterface owner;
 
     final ConcurrentHashMap<Long, Order> orders;
@@ -52,18 +53,26 @@ public class Account {
         this.se = se;
 
         orders = new ConcurrentHashMap();
-        
+
         // FLOAT_CONVERT
-        this.money = (long)(money*se.money_df);
-        this.shares = (long)(shares*se.shares_df);
+        this.money = (long) (money * se.money_df);
+        this.shares = (long) (shares * se.shares_df);
     }
 
     public float getShares() {
-        return shares/se.shares_df;
+        return shares / se.shares_df;
+    }
+
+    public long getShares_Long() {
+        return shares;
     }
 
     public float getMoney() {
-        return money/se.money_df;
+        return money / se.money_df;
+    }
+
+    public long getMoney_Long() {
+        return money;
     }
 
     public AutoTraderInterface getOwner() {
@@ -95,7 +104,7 @@ public class Account {
 
     public long getCashInOpenOrders_Long() {
         Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
-        long cash=0;
+        long cash = 0;
 
         while (it.hasNext()) {
             Map.Entry e = it.next();
@@ -107,9 +116,9 @@ public class Account {
         return cash;
 
     }
-    
-    public float getCashInOpenOrders(){
-        return getCashInOpenOrders_Long()/se.money_df;
+
+    public float getCashInOpenOrders() {
+        return getCashInOpenOrders_Long() / se.money_df;
     }
 
     public long getSharesInOpenOrders_Long() {
@@ -125,9 +134,9 @@ public class Account {
         }
         return volume;
     }
-    
-    public float getSharesInOpenOrders(){
-        return getSharesInOpenOrders_Long()/se.shares_df;
+
+    public float getSharesInOpenOrders() {
+        return getSharesInOpenOrders_Long() / se.shares_df;
     }
 
     public boolean couldBuy(float volume, float limit) {
@@ -145,30 +154,29 @@ public class Account {
     public float getSharesAvailable() {
         return getShares() - getSharesInOpenOrders();
     }
-    
-    public long getCashAvailabale_Long(){
-        return this.money-this.getCashInOpenOrders_Long();
+
+    public long getCashAvailabale_Long() {
+        return this.money - this.getCashInOpenOrders_Long();
     }
 
     public float getCashAvailable() {
         return this.getMoney() - this.getCashInOpenOrders();
     }
-    
-    public Order getOrderByID(long oid){
+
+    public Order getOrderByID(long oid) {
         return orders.get(oid);
     }
-    
-    public boolean isOrderCovered(byte type, float volume, float limit){
-      
-        
-        switch (type){
+
+    public boolean isOrderCovered(byte type, float volume, float limit) {
+
+        switch (type) {
             case Order.BUYLIMIT:
             case Order.BUY:
                 return this.couldBuy(volume, limit);
             case Order.SELLLIMIT:
             case Order.SELL:
                 return this.couldSell(volume);
-                
+
         }
         return false;
     }
