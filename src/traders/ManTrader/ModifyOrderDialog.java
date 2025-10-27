@@ -66,15 +66,23 @@ public class ModifyOrderDialog extends EscDialog {
     private void initComponents() {
 
         editOrderPanel1 = new EditOrderPanel(se,account,order);
-        jButton1 = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        modifyButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Modify Order");
 
-        jButton1.setText("Delete");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                deleteButtonActionPerformed(evt);
+            }
+        });
+
+        modifyButton.setText("Modify");
+        modifyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifyButtonActionPerformed(evt);
             }
         });
 
@@ -88,7 +96,9 @@ public class ModifyOrderDialog extends EscDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(modifyButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(deleteButton)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -97,21 +107,39 @@ public class ModifyOrderDialog extends EscDialog {
                 .addContainerGap()
                 .addComponent(editOrderPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(deleteButton)
+                    .addComponent(modifyButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         se.cancelOrder(account,order.getID());
         dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void modifyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyButtonActionPerformed
+        
+        byte type = this.editOrderPanel1.getOrderType();
+        
+       boolean rc  = account.isOrderCovered(type, this.editOrderPanel1.getVolume(), this.editOrderPanel1.getLimit());
+       if (!rc){
+           sesim.Logger.error("Order is not covered");
+           return;
+       }
+       
+       se.cancelOrder(account, order.getID());
+       se.createOrder(account, type, this.editOrderPanel1.getVolume() , this.editOrderPanel1.getLimit(), 0);
+       dispose();
+    }//GEN-LAST:event_modifyButtonActionPerformed
 
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton deleteButton;
     private traders.ManTrader.EditOrderPanel editOrderPanel1;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton modifyButton;
     // End of variables declaration//GEN-END:variables
 }

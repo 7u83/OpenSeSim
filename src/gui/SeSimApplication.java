@@ -51,6 +51,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONObject;
 import sesim.Order;
+//import javafx.application.Platform;
 
 /**
  *
@@ -944,11 +945,13 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_viewStopOrdersActionPerformed
 
+
+
     private void randomSeedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomSeedActionPerformed
         JDialog d = new RandomSeedDialog(this, true);
         d.setVisible(true);
     }//GEN-LAST:event_randomSeedActionPerformed
-
+static boolean f=false;
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
@@ -956,6 +959,10 @@ public class SeSimApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
 
+    //    Platform.startup(() -> {
+    // JavaFX Runtime wird initialisiert
+//});
+        
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
 

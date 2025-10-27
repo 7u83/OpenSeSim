@@ -23,13 +23,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package traders.GroovyTrader;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import groovy.lang.MissingMethodException;
 import groovy.lang.Script;
 import static gui.Globals.sim;
+import java.awt.Frame;
+import java.util.Arrays;
+import javax.swing.JDialog;
+import org.codehaus.groovy.control.CompilationFailedException;
 import org.json.JSONObject;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
@@ -61,13 +65,17 @@ public class GroovyTrader extends AutoTraderBase {
         Binding binding = new Binding();
         binding.setVariable("account", accountApi);
         binding.setVariable("sesim", sesimApi);
-        
+
         GroovyShell shell = new GroovyShell(binding);
 
         try {
-            // 1. Skript parsen, um die Script-Klasse zu erhalten
-
             groovyScript = shell.parse(this.groovySourceCode);
+        } catch (CompilationFailedException e) {
+            sesim.Logger.error("Starting %s:\n%s ",getName(), e.getMessage());
+            return;
+        }
+
+        try {
 
             // 2. Die Methode (Funktion) mit Argumenten aufrufen
             //    Der erste Parameter ist der Name der Funktion.
@@ -78,11 +86,16 @@ public class GroovyTrader extends AutoTraderBase {
             return;
 
         } catch (Exception e) {
-            System.err.println("Fehler beim Ausführen der Groovy-Funktion: " + e.getMessage());
-            e.printStackTrace();
-            return;
+
+            sesim.Logger.error( e.getMessage() );
+            throw (e);
         }
 
+    }
+
+    @Override
+    public JDialog getGuiConsole(Frame parent) {
+        return null;
     }
 
     public class AccountApi {
@@ -90,20 +103,22 @@ public class GroovyTrader extends AutoTraderBase {
         public float getCashBalance() {
             return account_id.getMoney();
         }
+
         public float getShares() {
             return account_id.getShares();
         }
-        
+
     }
-    
-    public class SeSimApi{
-        
-        private class GroovyEvent extends Event implements EventProcessor{
+
+    public class SeSimApi {
+
+        private class GroovyEvent extends Event implements EventProcessor {
+
             final String groovyFun;
 
-            public GroovyEvent(String fun,long t){
-               this.eventProcessor=this;
-               this.groovyFun=fun;
+            public GroovyEvent(String fun, long t) {
+                this.eventProcessor = this;
+                this.groovyFun = fun;
             }
 
             @Override
@@ -111,42 +126,40 @@ public class GroovyTrader extends AutoTraderBase {
                 Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
                 return 0;
             }
-            
+
         }
-        
-        public final byte BUYLIMIT=Order.BUYLIMIT;
-        public final byte SELLIMIT=Order.SELLLIMIT;
-        public final byte SELL=Order.SELL;
-        public final byte BUY=Order.BUY;
-        
-        
-        public Order createOrder(byte type,double vol, double limit){
+
+        public final byte BUYLIMIT = Order.BUYLIMIT;
+        public final byte SELLIMIT = Order.SELLLIMIT;
+        public final byte SELL = Order.SELL;
+        public final byte BUY = Order.BUY;
+
+        public Order createOrder(byte type, double vol, double limit) {
             limit = se.roundMoney(limit);
             vol = se.roundShares(vol);
-            return  se.createOrder(account_id, type, (float)vol, (float)limit,0f);
+            return se.createOrder(account_id, type, (float) vol, (float) limit, 0f);
         }
-        
-     /*   public Order createOrder(Order type, double vol, double limit){
+
+        /*   public Order createOrder(Order type, double vol, double limit){
             return createOrder(type, (float)vol, (float)limit);
         }*/
-        
-        public boolean cancleOrder(Order o){
+        public boolean cancleOrder(Order o) {
             return se.cancelOrder(account_id, o.getID());
         }
-        
-        public Quote getLastQuote(){
+
+        public Quote getLastQuote() {
             return se.getLastQuoete();
         }
-        
-        public float getLastPrice(){
+
+        public float getLastPrice() {
             return getLastQuote().getPrice();
         }
-        
-        public boolean scheduleOnce(String groovyFun, long timer){
-            GroovyEvent g = new GroovyEvent(groovyFun,timer);
+
+        public boolean scheduleOnce(String groovyFun, long timer) {
+            GroovyEvent g = new GroovyEvent(groovyFun, timer);
             sim.addEvent(sim.getCurrentTimeMillis()
-                + timer, g);
-            
+                    + timer, g);
+
             return true;
         }
     }

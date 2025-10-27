@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Dialog;
+import java.awt.Frame;
 
 /*
  * Copyright (c) 2017, 7u83 <7u83@mail.ru>
@@ -33,6 +34,8 @@ import java.awt.Dialog;
  */
 public class TraderListDialog extends javax.swing.JDialog {
 
+    Frame parentFrame;
+
     /**
      * Creates new form TraderList
      *
@@ -41,8 +44,10 @@ public class TraderListDialog extends javax.swing.JDialog {
      */
     public TraderListDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        parentFrame = parent;
         initComponents();
         setLocationRelativeTo(parent);
+
     }
 
     /**
@@ -54,7 +59,7 @@ public class TraderListDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        traderListPanel22 = new gui.TraderListPanel();
+        traderListPanel22 = new TraderListPanel(parentFrame);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Trader List");
@@ -63,11 +68,21 @@ public class TraderListDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(traderListPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
+            .addGap(0, 696, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(traderListPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(traderListPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+            .addGap(0, 344, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(traderListPanel22, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         pack();

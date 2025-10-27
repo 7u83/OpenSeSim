@@ -27,9 +27,20 @@ package traders.ManTrader;
 
 import gui.Globals;
 import gui.OpenOrdersList;
+import java.awt.Frame;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import sesim.Scheduler.Event;
 import org.json.JSONObject;
 import sesim.Account;
@@ -50,16 +61,18 @@ import sesim.Sim;
  */
 public class ManTrader extends AutoTraderBase implements AccountListener, AutoTraderInterface {
 
+    String soundFile = null;
+    int soundVolume = 50;
+
 //    public ManTrader(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
 //        //  super(se, id, name, money, shares, null);
 //        super();
 //    }
-    
-    public final ConcurrentHashMap<Long, Order> allOrders=new ConcurrentHashMap<>();
-    
+    public final ConcurrentHashMap<Long, Order> allOrders = new ConcurrentHashMap<>();
+
     public ManTrader() {
         super();
-       
+
     }
 
     @Override
@@ -71,16 +84,15 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     @Override
     public void start() {
-        
+
         account_id.setListener(this);
         //se.timer.createEvent(this, 0);
-     //   consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, account_id);
+        //   consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, account_id);
 
 //        this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
         // consoleDialog.     rdersList1.account=trader.getAccount();
 //        consoleDialog.getConsole().trader=this;
-     //   consoleDialog.setVisible(true);
-
+        //   consoleDialog.setVisible(true);
     }
 
     @Override
@@ -98,18 +110,22 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     @Override
     public AutoTraderGui getGui() {
-        return null;
+        return new ManTraderGui(this);
+
     }
 
     @Override
     public JSONObject getConfig() {
-        System.out.printf("return new json object\n");
-        return new JSONObject();
+
+        JSONObject cfg = new JSONObject();
+        cfg.put("sound_file", soundFile);
+        return cfg;
     }
 
     @Override
     public void setConfig(JSONObject cfg) {
-        return;
+        soundFile = cfg.optString("sound_file", null);
+
     }
 
     @Override
@@ -118,41 +134,117 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public JDialog getGuiConsole(JFrame parent) {
+    public JDialog getGuiConsole(Frame parent) {
 
-        consoleDialog = new ManTraderConsoleDialog(parent, false, se,account_id,this);
-        
+        consoleDialog = new ManTraderConsoleDialog(parent, false, se, account_id, this);
+
         consoleDialog.init(se, account_id);
-        consoleDialog.doUpdate(account_id,this);
+        consoleDialog.doUpdate(account_id, this);
 //        this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
         // consoleDialog.     rdersList1.account=trader.getAccount();
 //        consoleDialog.getConsole().trader=this;
-      //  consoleDialog.setVisible(true);
+        //  consoleDialog.setVisible(true);
         return this.consoleDialog;
+    }
+
+    volatile Clip clip;
+
+    /**
+     * Startet einen neuen Thread, der die angegebene WAV-Datei abspielt und
+     * wartet, bis die Wiedergabe abgeschlossen ist, bevor der Thread endet. Die
+     * Funktion kehrt SOFORT zurück.
+     *
+     * @param filePath Der Pfad zur WAV-Datei.
+     */
+    public void startSoundAsynchronously(String filePath) {
+        /*        if (clip != null) {
+            clip.stop();
+        }
+        clip = null;*/
+
+        // Erstellen Sie einen neuen Thread (oder Runnable) für die Sound-Wiedergabe
+        Thread soundThread = new Thread(() -> {
+            try {
+                if (clip != null) {
+                    clip.stop();
+                    while (clip.isRunning()) {
+                        Thread.sleep(5);
+                    }
+                }
+
+                Thread.sleep(50);
+
+                clip = null;
+
+                File soundFile = new File(filePath);
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+                clip = AudioSystem.getClip();
+
+                if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                    System.out.printf("Gain Control in Action\n");
+                    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                    // Stellt die Lautstärke auf einen leiseren Wert (z.B. -15 dB)
+                    gainControl.setValue(-85.0f);
+                }
+
+                // Ein Lock-Objekt ist hier nicht mehr nötig, da der Thread auf sich selbst wartet
+                // Fügt den LineListener hinzu
+                clip.addLineListener(event -> {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        // Stoppt die Clip-Wiedergabe und schließt den Clip
+                        clip.close();
+                    }
+                });
+
+                clip.open(audioIn);
+                clip.start();
+
+                // Da dieser Thread *nur* für den Sound existiert, lassen wir ihn laufen, 
+                // bis der Clip beendet wird.
+                // Wir verwenden eine Schleife, die läuft, solange der Clip aktiv ist.
+                while (clip.isRunning()) {
+                    System.out.printf("Clip is running\n");
+                    Thread.sleep(100);
+                }
+
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                System.err.println("Fehler beim Laden/Öffnen des Sounds: " + e.getMessage());
+            } catch (InterruptedException e) {
+                // Thread wurde extern unterbrochen
+                Thread.currentThread().interrupt();
+                System.err.println("Sound-Thread unterbrochen.");
+            }
+        });
+        soundThread.start();
     }
 
     @Override
     public void accountUpdated(Account a, Order o) {
-        
-        
+
         this.allOrders.put(o.getID(), o);
-        System.out.printf("Update received %d\n",this.allOrders.size());
-        
-        if (this.consoleDialog==null)
+        System.out.printf("Update received %d\n", this.allOrders.size());
+
+        if (o.getStatus() == Order.CLOSED) {
+            if (soundFile != null && soundFile.length() > 0) {
+                startSoundAsynchronously(soundFile);
+            }
+        }
+
+        if (this.consoleDialog == null) {
             return;
-        
+        }
+
         //this.consoleDialog.cons
         //System.out.printf("AccountListener called\n");
-
         //System.out.printf("%d %s\n", o.getID(), o.getStatus().toString());
         if (o.getStatus() == Order.CLOSED) {
 //            o.getAccount().getOrders().put(o.getID(), o);
         }
-        
-        consoleDialog.doUpdate(a,this);
-        
-      //  this.consoleDialog.getOrderList().updateModel();
-      //  this.consoleDialog.getBalancePanel().updateBalance(o.getAccount());
+
+        consoleDialog.doUpdate(a, this);
+
+        //  this.consoleDialog.getOrderList().updateModel();
+        //  this.consoleDialog.getBalancePanel().updateBalance(o.getAccount());
     }
 
 }

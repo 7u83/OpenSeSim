@@ -26,6 +26,7 @@
 package gui;
 
 import gui.tools.NummericCellRenderer;
+import java.awt.Frame;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,6 +50,14 @@ import sesim.Quote;
 public class TraderListPanel extends javax.swing.JPanel {
 
     DefaultTableModel model;
+    Frame parentFrame=null;
+    
+
+    public TraderListPanel(Frame parent){
+        this();
+        parentFrame=parent;
+    }
+    
 
     final void updateModel() {
         if (Globals.sim == null) {
@@ -224,7 +233,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             Integer tid = (Integer) model.getValueAt(index, 0);
             // System.out.printf("Trader ID %d\n", tid);
 
-            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+          //  JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             JDialog console = Globals.sim.traders.get(tid).getGuiConsole(parentFrame);
             if (console == null) {
                 return;

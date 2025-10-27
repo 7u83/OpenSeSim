@@ -12,7 +12,8 @@
     <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.6.0" />
     <dependency org="com.fifesoft" name="rstaui" rev="3.3.1" /> 
         
-        
+    <!--<dependency org="org.openjfx" name="javafx-media" rev="21.0.1" />
+    <dependency org="org.openjfx" name="javafx-base" rev="21.0.1" />    -->
     </dependencies>
 
 </ivy-module>

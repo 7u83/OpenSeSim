@@ -1155,14 +1155,20 @@ public class Exchange {
      */
     public Order createOrder_Long(Account a, byte type, long volume, long limit, long stop) {
 
-        if (volume <= 0 || limit <= 1) {
+        if (volume <= 0 ) {
             if ((type & Order.SELL) != 0) {
                 sell_failed++;
             } else {
                 buy_failed--;
             }
-
             return null;
+        }
+        
+        if ( (type&Order.LIMIT) !=0 ){
+            if(limit<=0) 
+            {
+                return null;
+            }
         }
 
         Order o = new Order(this, a, type, volume, limit);

@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import java.awt.Frame;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import org.json.JSONObject;
@@ -116,7 +117,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     }
 
     @Override
-    public JDialog getGuiConsole(JFrame parent) {
+    public JDialog getGuiConsole(Frame parent) {
         return null;
     }
 }

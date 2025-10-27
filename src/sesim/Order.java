@@ -46,6 +46,8 @@ public class Order implements OrderBookEntry {
 
     public final static byte BUYSTOP = BUY | STOP;
     public final static byte SELLSTOP = SELL | STOP;
+    
+    
 
     // Order states
     public final static byte OPEN = 0x01;
@@ -144,6 +146,9 @@ public class Order implements OrderBookEntry {
     public boolean isSell() {
         return (type & SELL) != 0;
     }
+    public boolean isBuy(){
+        return !isSell();
+    }
 
     public long getAvaragePrice_Long() {
         long e = getExecuted_Long();
@@ -214,7 +219,7 @@ public class Order implements OrderBookEntry {
 
     @Override
     public float getStop() {
-        System.out.printf("Get stop %f\n", stop);
+//        System.out.printf("Get stop %f\n", stop);
         return stop/se.money_df;
     }
 

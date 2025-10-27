@@ -52,7 +52,7 @@ import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import sesim.AutoTraderGui;
-import static sun.jvm.hotspot.HelloWorld.e;
+//import static sun.jvm.hotspot.HelloWorld.e;
 
 /**
  *

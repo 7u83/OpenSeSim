@@ -65,11 +65,19 @@ public class EditOrderPanel extends javax.swing.JPanel {
         account = a;
         se = e;
         type = o.getType();
-        this.limitSpinner.setValue(o.getLimit());
+        
         this.volumeSpinner.setValue(o.getVolume());
+        
+        this.limitSpinner.setValue(o.getLimit());
+        this.limitCheckBox.setSelected(o.hasLimit());
+        this.limitSpinner.setEnabled(o.hasLimit());
+        
+        this.stopCheckBox.setSelected(o.hasStop());
+        this.stopSpinner.setValue(o.getStop());
+        this.stopSpinner.setEnabled(o.hasStop());        
     }
 
-    private void loadFields() {
+  /*  private void loadFields() {
         System.out.printf("Load pressed\n");
         if (se == null) {
             return;
@@ -89,7 +97,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
             this.volumeSpinner.setValue(se.roundShares(account.getShares()));
         }
         setPrice();
-    }
+    }*/
 
     private void setPrice() {
         float price = this.getPrice();
@@ -117,7 +125,8 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }
 
     public byte getOrderType() {
-        byte t = this.type;
+        byte t = (byte)(this.type & 0x01);
+        
         if (this.limitCheckBox.isSelected()) {
             t |= Order.LIMIT;
         }
@@ -278,14 +287,14 @@ public class EditOrderPanel extends javax.swing.JPanel {
         Quote q = se.getBestPrice_0();
       
 
-        if (type == Order.BUY) {
+        //if (type == Order.BUY) {
             this.limitSpinner.setValue((Float)se.roundMoney(q.getPrice()));
           //  this.volumeSpinner.setValue(se.roundShares(account.getMoney() / price));
-        }
-        if (type == Order.SELL) {
+        //}
+        //if (type == Order.SELL) {
             this.limitSpinner.setValue((Float)se.roundMoney(q.getPrice()));
             //this.volumeSpinner.setValue(se.roundShares(account.getShares()));
-        }
+        //}
         setPrice();
     }//GEN-LAST:event_loadValuesButtonActionPerformed
 
@@ -314,7 +323,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         }        // TODO add your handling code here:
         this.volumeSpinner.revalidate();
         
-        System.out.printf("SetVol\n");
+  
         
     }//GEN-LAST:event_setVolButtonActionPerformed
 
