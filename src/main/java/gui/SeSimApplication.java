@@ -738,7 +738,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_editExchangeMenuItemActionPerformed
 
     private void resetToDefaults() {
-        InputStream is = getClass().getResourceAsStream("/resources/files/defaultcfg.json");
+        InputStream is = getClass().getResourceAsStream("/files/defaultcfg.json");
         String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
 
         try {
