@@ -86,7 +86,13 @@ public class SeSimApplication extends javax.swing.JFrame {
             Globals.prefs_new.putBoolean("initilized", true);
         }
 
-    /*    this.accelerationPanel1.accelSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        if (logDialog == null) {
+            logDialog = new LogDialog(this, false);
+            logDialog.setLocationRelativeTo(this);
+            
+        }
+
+        /*    this.accelerationPanel1.accelSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             @Override
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 //accelSpinnerStateChanged(evt);
@@ -94,7 +100,6 @@ public class SeSimApplication extends javax.swing.JFrame {
                 Globals.sim.se.timer.setAcceleration(val);
             }
         });*/
-
 //        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         //this.setLocationRelativeTo(null);
     }
@@ -128,7 +133,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
         clock1 = new gui.Clock();
-        logPanel1 = new gui.LogPanel();
+        traderListPanel1 = new gui.TraderListPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -158,6 +163,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         viewRawOrderBook = new javax.swing.JCheckBoxMenuItem();
         viewUnlimitedOrdes = new javax.swing.JCheckBoxMenuItem();
         viewStopOrders = new javax.swing.JCheckBoxMenuItem();
+        viewLog = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -252,7 +258,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane5.setTopComponent(statistics1);
         jSplitPane5.setRightComponent(clock1);
-        jSplitPane5.setRightComponent(logPanel1);
+        jSplitPane5.setRightComponent(traderListPanel1);
 
         jSplitPane3.setLeftComponent(jSplitPane5);
 
@@ -459,6 +465,15 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         viewMenu.add(viewStopOrders);
 
+        viewLog.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, 0));
+        viewLog.setText("Log Window");
+        viewLog.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewLogActionPerformed(evt);
+            }
+        });
+        viewMenu.add(viewLog);
+
         menuBar.add(viewMenu);
 
         helpMenu.setMnemonic('h');
@@ -496,13 +511,13 @@ public class SeSimApplication extends javax.swing.JFrame {
             this.runButton.setEnabled(false);
             this.pauseButton.setEnabled(true);
             Globals.sim.setPause(false);
-            
+
         } else {
             this.runButton.setEnabled(true);
             this.pauseButton.setEnabled(false);
             Globals.sim.setPause(true);
         }
-  
+
     }
 
     void startSim() {
@@ -946,12 +961,22 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_viewStopOrdersActionPerformed
 
 
-
     private void randomSeedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomSeedActionPerformed
         JDialog d = new RandomSeedDialog(this, true);
         d.setVisible(true);
     }//GEN-LAST:event_randomSeedActionPerformed
-static boolean f=false;
+
+    LogDialog logDialog;
+    private void viewLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewLogActionPerformed
+        if (logDialog == null) {
+            logDialog = new LogDialog(this, false);
+            logDialog.setLocationRelativeTo(this);
+        }
+        logDialog.setVisible(viewLog.isSelected());
+
+    }//GEN-LAST:event_viewLogActionPerformed
+    static boolean f = false;
+
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
@@ -959,10 +984,9 @@ static boolean f=false;
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
 
-    //    Platform.startup(() -> {
-    // JavaFX Runtime wird initialisiert
+        //    Platform.startup(() -> {
+        // JavaFX Runtime wird initialisiert
 //});
-        
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
 
@@ -1030,7 +1054,6 @@ static boolean f=false;
     private javax.swing.JSplitPane jSplitPane5;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToolBar jToolBar1;
-    private gui.LogPanel logPanel1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private gui.orderbook.RawOrderBook orderBookNew1;
@@ -1049,6 +1072,8 @@ static boolean f=false;
     private javax.swing.JMenuItem simMenuStop;
     private gui.Statistics statistics1;
     private javax.swing.JButton stopButton;
+    private gui.TraderListPanel traderListPanel1;
+    private javax.swing.JCheckBoxMenuItem viewLog;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JCheckBoxMenuItem viewRawOrderBook;
     private javax.swing.JCheckBoxMenuItem viewStopOrders;

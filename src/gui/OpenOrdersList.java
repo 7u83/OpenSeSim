@@ -37,7 +37,7 @@ import sesim.Order;
  */
 public class OpenOrdersList extends javax.swing.JPanel {
 
- //   private Account account;
+    //   private Account account;
     DefaultTableModel model;
     private Map list = null;
 
@@ -46,14 +46,11 @@ public class OpenOrdersList extends javax.swing.JPanel {
             return;
         }
 
-        
-
-  //      Iterator<Map.Entry<Long, Order>> it = account.getOrders().entrySet().iterator();
-  //        model.setRowCount(account.getOrders().size());
-  
+        //      Iterator<Map.Entry<Long, Order>> it = account.getOrders().entrySet().iterator();
+        //        model.setRowCount(account.getOrders().size());
         Iterator<Map.Entry<Long, Order>> it = list.entrySet().iterator();
         model.setRowCount(list.size());
-  
+
         int row = 0;
         while (it.hasNext()) {
             Map.Entry e = it.next();
@@ -63,14 +60,31 @@ public class OpenOrdersList extends javax.swing.JPanel {
             model.setValueAt(k, row, 0);
 
             model.setValueAt(((Order) o).getTypeAsString(), row, 1);
+            model.setValueAt(((Order) o).getInitialVolume(), row, 2);
+            if (o.hasLimit()) {
+                model.setValueAt(((Order) o).getLimit(), row, 3);
+            } else {
+                model.setValueAt(null, row, 3);
+            }
 
-            model.setValueAt(((Order) o).getLimit(), row, 2);
-            model.setValueAt(((Order) o).getExecuted(), row, 3);
-            model.setValueAt(((Order) o).getAvaragePrice(), row, 4);
-            model.setValueAt(((Order) o).getInitialVolume(), row, 5);
-            
-           // o.getStatus()
-            model.setValueAt((o).getStatusString(), row, 6);
+            if (o.hasStop()) {
+                model.setValueAt(((Order) o).getStop(), row, 4);
+            } else {
+                model.setValueAt(null, row, 4);
+            }
+
+            model.setValueAt(((Order) o).getExecuted(), row, 5);
+
+            double av = ((Order) o).getAvaragePrice();
+            if (av < 0) {
+                model.setValueAt(null, row, 6);
+
+            } else {
+                model.setValueAt(av, row, 6);
+            }
+
+            // o.getStatus()
+            model.setValueAt((o).getStatusString(), row, 7);
             row++;
         }
         this.table.getRowSorter().allRowsChanged();
@@ -85,7 +99,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
         model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         table.setFillsViewportHeight(true);
-      //  updateModel();
+        //  updateModel();
 
     }
 
@@ -94,7 +108,6 @@ public class OpenOrdersList extends javax.swing.JPanel {
         javax.swing.SwingUtilities.invokeLater(this::updateModel);
 
     }*/
-
     public void setOrderList(Map m) {
         this.list = m;
         javax.swing.SwingUtilities.invokeLater(this::updateModel);
@@ -149,19 +162,19 @@ public class OpenOrdersList extends javax.swing.JPanel {
         table.setAutoCreateRowSorter(true);
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Type", "Limit", "Vol. Executed", "Av. Price", "Volume", "Status"
+                "ID", "Type", "Volume", "Limit", "Stop", "Vol. Executed", "Av. Price", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
+                java.lang.Long.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -174,6 +187,9 @@ public class OpenOrdersList extends javax.swing.JPanel {
         });
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setPreferredWidth(80);
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -209,7 +225,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
         Long id = (Long) model.getValueAt(r, 0);
 
         System.out.printf("Should cancel %d\n", id);
-  //      Globals.sim.se.cancelOrder(account, id);
+        //      Globals.sim.se.cancelOrder(account, id);
 
     }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
 

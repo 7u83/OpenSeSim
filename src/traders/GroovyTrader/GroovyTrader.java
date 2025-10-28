@@ -35,14 +35,18 @@ import java.util.Arrays;
 import javax.swing.JDialog;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.json.JSONObject;
+import sesim.Account;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
 import sesim.Exchange;
+import sesim.Exchange.AccountListener;
+import sesim.Exchange.PriceEvent;
 import sesim.Order;
 import sesim.Quote;
 import sesim.Scheduler;
 import sesim.Scheduler.Event;
 import sesim.Scheduler.EventProcessor;
+import sesim.Sim;
 
 /**
  *
@@ -69,26 +73,20 @@ public class GroovyTrader extends AutoTraderBase {
         GroovyShell shell = new GroovyShell(binding);
 
         try {
-            groovyScript = shell.parse(this.groovySourceCode);
+            groovyScript = shell.parse(this.groovySourceCode, "trader.groovy");
         } catch (CompilationFailedException e) {
-            sesim.Logger.error("Starting %s:\n%s ",getName(), e.getMessage());
+            sesim.Logger.error("Starting %s:\n%s ", getName(), e.getMessage());
             return;
         }
 
         try {
 
-            // 2. Die Methode (Funktion) mit Argumenten aufrufen
-            //    Der erste Parameter ist der Name der Funktion.
-            //    Der zweite Parameter ist ein Array von Argumenten (Object...).
             Object result = groovyScript.invokeMethod("start", new Object[]{});
 
-            System.out.println("Ergebnis aus Groovy: " + result);
-            return;
-
+            //     System.out.println("Ergebnis aus Groovy: " + result);
         } catch (Exception e) {
-
-            sesim.Logger.error( e.getMessage() );
-            throw (e);
+            sesim.Logger.error("Executing %s\n,%s", getName(), e.getMessage());
+            // throw (e);
         }
 
     }
@@ -110,13 +108,26 @@ public class GroovyTrader extends AutoTraderBase {
 
     }
 
-    public class SeSimApi {
+    public class SeSimApi implements AccountListener {
 
-        private class GroovyEvent extends Event implements EventProcessor {
+        public final byte BUYLIMIT = Order.BUYLIMIT;
+        public final byte SELLIMIT = Order.SELLLIMIT;
+        public final byte SELL = Order.SELL;
+        public final byte BUY = Order.BUY;
+        public final byte STOPLOSS = Order.STOPLOSS;
+        
+        
+        
+
+        SeSimApi() {
+            account_id.setListener(this);
+        }
+
+        private class GroovyTimerEvent extends Event implements EventProcessor {
 
             final String groovyFun;
 
-            public GroovyEvent(String fun, long t) {
+            public GroovyTimerEvent(String fun, long t) {
                 this.eventProcessor = this;
                 this.groovyFun = fun;
             }
@@ -129,21 +140,26 @@ public class GroovyTrader extends AutoTraderBase {
 
         }
 
-        public final byte BUYLIMIT = Order.BUYLIMIT;
-        public final byte SELLIMIT = Order.SELLLIMIT;
-        public final byte SELL = Order.SELL;
-        public final byte BUY = Order.BUY;
-
-        public Order createOrder(byte type, double vol, double limit) {
+        public Order createOrder(byte type, double vol, double limit,double stop) {
             limit = se.roundMoney(limit);
             vol = se.roundShares(vol);
-            return se.createOrder(account_id, type, (float) vol, (float) limit, 0f);
+            return se.createOrder(account_id, type, (float) vol, (float) limit, (float)stop);
+        }
+
+        public void logError(String msg, Object... args) {
+            sesim.Logger.error(msg, args);
+        }
+
+        public void logInfo(String msg, Object... args) {
+            sesim.Logger.info(msg, args);
         }
 
         /*   public Order createOrder(Order type, double vol, double limit){
             return createOrder(type, (float)vol, (float)limit);
         }*/
         public boolean cancleOrder(Order o) {
+            if (o==null)
+                return false;
             return se.cancelOrder(account_id, o.getID());
         }
 
@@ -156,12 +172,67 @@ public class GroovyTrader extends AutoTraderBase {
         }
 
         public boolean scheduleOnce(String groovyFun, long timer) {
-            GroovyEvent g = new GroovyEvent(groovyFun, timer);
+            GroovyTimerEvent g = new GroovyTimerEvent(groovyFun, timer);
             sim.addEvent(sim.getCurrentTimeMillis()
                     + timer, g);
 
             return true;
         }
+
+        public long getRandom(long a, long b) {
+            return Sim.random.nextLong(a, b);
+        }
+
+        public double getRandom(double a, double b) {
+            return Sim.random.nextDouble(a, b);
+        }
+
+        public void setStatus(String s, Object... args) {
+            GroovyTrader.this.setStatus(s, args);
+        }
+
+        public class GroovyPriceEvent extends PriceEvent implements EventProcessor {
+
+            final String groovyFun;
+
+            public GroovyPriceEvent(String fun, Exchange se, double price) {
+                super(se, price);
+                this.eventProcessor = this;
+                this.groovyFun = fun;
+            }
+
+            @Override
+            public long processEvent(long time, Event e) {
+                Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
+                return 0;
+            }
+
+        }
+
+        public GroovyPriceEvent scheduleOnPriceAbove(String groovyFun, double price) {
+            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.se, price);
+            sim.se.sheduleOnPriceAbove(e);
+            return e;
+        }
+        
+        public void cancelSchedulePriceAboce(GroovyPriceEvent e){
+            sim.se.cancelScheduleOnPriceAbove(e);
+        }
+
+        String groovyAccountUpdateFun = null;
+
+        @Override
+        public void accountUpdated(Account a, Order o) {
+            if (groovyAccountUpdateFun != null) {
+                Object result = groovyScript.invokeMethod(this.groovyAccountUpdateFun, new Object[]{o});
+            }
+
+        }
+
+        public void onAccountUpdate(String groovyFun) {
+            groovyAccountUpdateFun = groovyFun;
+        }
+
     }
 
     @Override

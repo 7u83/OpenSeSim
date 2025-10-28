@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
+import sesim.Scheduler.Event;
 
 /**
  * @desc Echchange class
@@ -179,6 +180,45 @@ public class Exchange {
 
     }
 
+    class StopComparator implements Comparator<Order> {
+
+        boolean reverse;
+
+        StopComparator(boolean reverse) {
+            this.reverse = reverse;
+        }
+
+        @Override
+        public int compare(Order left, Order right) {
+            long d;
+            if (reverse) {
+                d = right.stop - left.stop;
+            } else {
+                d = left.stop - right.stop;
+            }
+
+            if (d != 0) {
+                return d > 0 ? 1 : -1;
+            }
+
+            d = right.initial_volume - left.initial_volume;
+            if (d != 0) {
+                return d > 0 ? 1 : -1;
+            }
+
+            if (left.id < right.id) {
+                return -1;
+            }
+            if (left.id > right.id) {
+                return 1;
+            }
+
+            return 0;
+
+        }
+
+    }
+
     //HashMap<Byte, SortedSet<Order>> order_books;
     IDGenerator order_id = new IDGenerator();
 
@@ -282,6 +322,9 @@ public class Exchange {
     SortedSet stopBuyBook;
     SortedSet stopSellBook;
 
+    SortedSet priceEventsAbove;
+    SortedSet priceEventsBelow;
+
     //       random = new Random(12);
     //public SplittableRandom random;
     //random = new SplittableRandom(19);
@@ -308,8 +351,10 @@ public class Exchange {
         askBook = new ConcurrentSkipListSet(new OrderComparator(Order.SELLLIMIT));
         ulBidBook = new ConcurrentSkipListSet(new OrderComparator(Order.BUY));
         ulAskBook = new ConcurrentSkipListSet(new OrderComparator(Order.SELL));
-        stopSellBook = new ConcurrentSkipListSet(new OrderComparator(Order.STOPLOSS));
-        stopBuyBook = new ConcurrentSkipListSet(new OrderComparator(Order.BUY));
+        stopSellBook = new ConcurrentSkipListSet(new StopComparator(true));
+        stopBuyBook = new ConcurrentSkipListSet(new StopComparator(false));
+
+        priceEventsAbove = new TreeSet();
 
         /*   order_books.put(Order.BUYLIMIT, new ConcurrentSkipListSet(new OrderComparator(Order.BUYLIMIT)));
         order_books.put(Order.SELLLIMIT, new ConcurrentSkipListSet(new OrderComparator(Order.SELLLIMIT)));
@@ -324,6 +369,40 @@ public class Exchange {
     }
 
     Sim sim;
+
+    public void sheduleOnPriceAbove(PriceEvent e) {
+        priceEventsAbove.add(e);
+    }
+
+    public void cancelScheduleOnPriceAbove(PriceEvent e) {
+        priceEventsAbove.remove(e);
+    }
+
+    public static class PriceEvent extends Event implements Comparable {
+
+        long price;
+
+        @Override
+        public int compareTo(Object o) {
+            PriceEvent pe = (PriceEvent) o;
+            if (pe.price > price) {
+                return -1;
+            }
+            if (pe.price < price) {
+                return 1;
+            }
+            return 0;
+        }
+
+        public PriceEvent(Exchange se, double price) {
+            this.price = (long) (price * se.money_df);
+        }
+
+        public PriceEvent(long price) {
+            this.price = price;
+        }
+
+    }
 
     /**
      * Constructor
@@ -673,7 +752,7 @@ public class Exchange {
     }
 
     public void removeBookListener(BookListener bl) {
-        sesim.Logger.debug("Remove book listener %s", bl.toString());
+        //    sesim.Logger.debug("Remove book listener %s", bl.toString());
         askBookListeners.remove(bl);
         bidBookListeners.remove(bl);
         ulAskBookListeners.remove(bl);
@@ -845,10 +924,30 @@ public class Exchange {
 
             //   System.out.print("The Order:"+o.limit+"\n");
             if (o != null) {
-                SortedSet ob = getBook(o.type); //order_books.get(o.type);
+                if (o.isBuy()) {
+                    if (o.hasLimit()) {
+                        bidBook.remove(o);
+                    } else {
+                        ulBidBook.remove(o);
+                    }
+                    if (o.hasStop()) {
+                        this.stopBuyBook.remove(o);
+                    }
 
-                boolean rc = ob.remove(o);
+                } else {
+                    if (o.hasLimit()) {
+                        askBook.remove(o);
+                    } else {
+                        ulAskBook.remove(o);
 
+                    }
+                    if (o.hasStop()) {
+                        stopSellBook.remove(o);
+                    }
+                }
+
+                //SortedSet ob = getBook(o.type); //order_books.get(o.type);
+                //boolean rc = ob.remove(o);
                 a.orders.remove(o.id);
                 o.status = Order.CANCELED;
                 a.update(o);
@@ -939,7 +1038,7 @@ public class Exchange {
 
         while (!sb.isEmpty()) {
             Order s = sb.first();
-            if (price > s.stop) {
+            if (price < s.stop) {
                 break;
             }
             sb.remove(s);
@@ -949,10 +1048,6 @@ public class Exchange {
                 ulBidBook.add(s);
             }
         }
-
-    }
-
-    public void executeUnlimitedOrders() {
 
     }
 
@@ -993,7 +1088,7 @@ public class Exchange {
     /**
      *
      */
-    public void executeOrders() {
+    private void executeOrders() {
 
 //        System.out.printf("Exec Orders\n");
         SortedSet<Order> bid = bidBook; //order_books.get(Order.BUYLIMIT);
@@ -1105,9 +1200,25 @@ public class Exchange {
 
         addQuoteToHistory(q);
 
+        checkPriceEvents(q.price);
+
         //this.quoteHistory.add(q);
         //this.updateOHLCData(q);
         //this.updateQuoteReceivers(q);
+    }
+
+    void checkPriceEvents(long price) {
+        SortedSet<PriceEvent> up = priceEventsAbove;
+
+        while (!priceEventsAbove.isEmpty()) {
+            PriceEvent e = up.first();
+            if (price <= e.price) {
+                break;
+            }
+            up.remove(e);
+            sim.scheduler.addEvent(sim.getCurrentTimeMillis(), e);
+        }
+
     }
 
     long buy_orders = 0;
@@ -1151,11 +1262,12 @@ public class Exchange {
      * @param type
      * @param volume
      * @param limit
+     * @param stop
      * @return
      */
     public Order createOrder_Long(Account a, byte type, long volume, long limit, long stop) {
 
-        if (volume <= 0 ) {
+        if (volume <= 0) {
             if ((type & Order.SELL) != 0) {
                 sell_failed++;
             } else {
@@ -1163,16 +1275,14 @@ public class Exchange {
             }
             return null;
         }
-        
-        if ( (type&Order.LIMIT) !=0 ){
-            if(limit<=0) 
-            {
+
+        if ((type & Order.LIMIT) != 0) {
+            if (limit <= 0) {
                 return null;
             }
         }
 
-        Order o = new Order(this, a, type, volume, limit);
-        o.stop = stop;
+        Order o = new Order(this, a, type, volume, limit, stop);
 
         synchronized (executor) {
 

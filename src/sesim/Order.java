@@ -73,7 +73,7 @@ public class Order implements OrderBookEntry {
     long cost;
     Exchange se;
 
-    Order(Exchange se, Account account, byte type, long volume, long limit) {
+    Order(Exchange se, Account account, byte type, long volume, long limit, long stop) {
         this.account = account;
         this.se = se;
         id = se.order_id.getNext();
@@ -84,6 +84,7 @@ public class Order implements OrderBookEntry {
         this.created = se.sim.scheduler.getCurrentTimeMillis();
         this.status = OPEN; //Exchange.OrderStatus.OPEN;
         this.cost = 0;
+        this.stop=stop;
 
     }
 
@@ -124,6 +125,12 @@ public class Order implements OrderBookEntry {
         } else {
             s = "BUY";
         }
+        if (hasStop()){
+            s += "|STOP";
+        }
+        if (hasLimit()){
+            s += "|LIMIT";
+        }
         return s;
     }
     
@@ -132,7 +139,7 @@ public class Order implements OrderBookEntry {
     }
 
     public float getExecuted() {
-        return getExecuted_Long()/se.money_df;
+        return getExecuted_Long()/se.shares_df;
     }
 
     public float getInitialVolume() {
@@ -188,6 +195,10 @@ public class Order implements OrderBookEntry {
     public boolean isOpen() {
         return this.status == OPEN
                 || this.status == PARTIALLY_EXECUTED;
+    }
+    
+    public boolean isClosed() {
+        return this.status == CLOSED;
     }
 
     @Override
