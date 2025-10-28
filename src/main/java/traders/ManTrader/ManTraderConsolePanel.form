@@ -57,15 +57,15 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="orderPanel" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="accountBalance2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="tradingPanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="tradingPanel" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -75,9 +75,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="orderPanel" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="tradingPanel" max="32767" attributes="0"/>
-                  <Component id="accountBalance2" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="accountBalance2" min="-2" pref="198" max="-2" attributes="0"/>
+                  <Component id="tradingPanel" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
           </Group>
@@ -91,9 +91,9 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="70" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="buyEditOrderPanel" pref="412" max="32767" attributes="0"/>
+                      <Component id="buyEditOrderPanel" pref="387" max="32767" attributes="0"/>
                       <Component id="sellEditOrderPanel" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -118,7 +118,7 @@
                       <Component id="sellButton" min="-2" pref="87" max="-2" attributes="0"/>
                       <Component id="sellEditOrderPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="12" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -167,7 +167,7 @@
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="orderTabs" pref="756" max="32767" attributes="0"/>
+                      <Component id="orderTabs" pref="795" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -175,11 +175,11 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="201" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="184" max="32767" attributes="0"/>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="orderTabs" pref="184" max="32767" attributes="0"/>
+                      <Component id="orderTabs" pref="186" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -217,6 +217,9 @@
       </SubComponents>
     </Container>
     <Component class="traders.ManTrader.AccountBalance" name="accountBalance2">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new AccountBalance(account)"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

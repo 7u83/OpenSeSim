@@ -268,6 +268,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
                 File file = new File(filePath);
                 Media sound = new Media(file.toURI().toString());
                 MediaPlayer player = new MediaPlayer(sound);
+   
 
                 // 1. Lautstärke setzen (optional, aber empfohlen)
                 // Hier steuern Sie die interne JavaFX-Lautstärke (0.0 bis 1.0)
@@ -288,8 +289,8 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
             });
 
         } catch (Exception e) {
-            System.err.println("Fehler beim Abspielen des JavaFX Sounds: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Fehler beim Abspielen des JavaFX Sounds: " + e.getMessage());
+            //e.printStackTrace();
         }
     }
 

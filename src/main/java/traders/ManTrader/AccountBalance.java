@@ -26,34 +26,106 @@
 package traders.ManTrader;
 
 //import sesim.Exchange.Account;
-
+import gui.Globals;
+import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Formatter;
 import sesim.Account;
 import sesim.Exchange;
 import sesim.Exchange.AccountListener;
-
+import sesim.Exchange.QuoteReceiver;
+import sesim.Quote;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class AccountBalance extends javax.swing.JPanel{
+public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver {
+
+    Account account;
 
     /**
      * Creates new form AccountBalance
      */
-    public AccountBalance() {
+    public AccountBalance(Account a) {
         initComponents();
+        this.account = a;
+        if (a == null) {
+            return;
+        }
+        a.getSe().addQuoteReceiver(this);
     }
-    
-      
-    public void updateBalance (Account account){
-        this.moneyLabel.setText(Float.toString(account.getMoney()));
-        this.sharesLabel.setText(Float.toString(account.getShares()));
-        this.cashAvail.setText(Float.toString(account.getCashAvailable()));
-        this.sharesAvail.setText(Float.toString(account.getSharesAvailable()));        
+
+    public void updateBalance(Account account) {
+        DecimalFormat mf = account.getSe().getMoneyFormatter();
+        //String s = mf.format(account.getMoney());
+        cashLabel.setText(mf.format(account.getMoney()));
+        DecimalFormat sf = account.getSe().getSharesFormatter();
+        this.sharesLabel.setText(sf.format(account.getShares()));
+
+        this.cashAvail.setText(mf.format(account.getCashAvailable()));
+        this.sharesAvail.setText(sf.format(account.getSharesAvailable()));
+
+        float lp = account.getSe().getLastPrice();
+        float total = lp * account.getShares() + account.getMoney();
+        float iniTotal = lp * account.getInitialShares() + account.getInitialMoney();
+
+        float perc =  total/(iniTotal/100)-100 ;
+
+        String s = String.format("%s (%.1f%%)", (String) mf.format(total), perc);
+
+        this.totalLabel.setText(s);
     }
-    
-   
+
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    boolean busy;
+    boolean update;
+    Quote quote;
+
+    @Override
+    public void UpdateQuote(Quote q) {
+        if (q == null) {
+            return;
+        }
+
+        if (busy) {
+            quote = q;
+            update = true;
+            return;
+        }
+        busy = true;
+        update = true;
+
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    while (update) {
+                        Quote q = quote;
+                        update = false;
+                        if (q == null) {
+                            return;
+                        }
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+
+                            updateBalance(account);
+                        });
+
+                        try {
+                            Thread.sleep(500);   // update rate is limited 50 Hz
+                        } catch (InterruptedException e) {
+                        }
+                    }
+
+                } finally {
+                    busy = false;
+                }
+            }
+        });
+
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -68,10 +140,12 @@ public class AccountBalance extends javax.swing.JPanel{
         sharesLabelText = new javax.swing.JLabel();
         cashAvail = new javax.swing.JLabel();
         volAvailLabel = new javax.swing.JLabel();
-        moneyLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         sharesLabel = new javax.swing.JLabel();
+        sharesLabelText1 = new javax.swing.JLabel();
+        cashLabel = new javax.swing.JLabel();
         sharesAvail = new javax.swing.JLabel();
+        totalLabel = new javax.swing.JLabel();
 
         moneyLabelText.setFont(new java.awt.Font("Noto Sans", 0, 24)); // NOI18N
         moneyLabelText.setText("Cash:");
@@ -83,36 +157,40 @@ public class AccountBalance extends javax.swing.JPanel{
 
         volAvailLabel.setText("Avail:");
 
-        moneyLabel.setFont(new java.awt.Font("Noto Sans", 0, 24)); // NOI18N
-        moneyLabel.setText("0.0000");
-
         jLabel1.setText("Avail:");
 
         sharesLabel.setFont(new java.awt.Font("Noto Sans", 0, 24)); // NOI18N
         sharesLabel.setText("0");
 
+        sharesLabelText1.setFont(new java.awt.Font("Noto Sans", 0, 24)); // NOI18N
+        sharesLabelText1.setText("Total:");
+
+        cashLabel.setFont(new java.awt.Font("Noto Sans", 0, 24)); // NOI18N
+        cashLabel.setText("0.0000");
+
         sharesAvail.setText("0");
+
+        totalLabel.setFont(new java.awt.Font("Noto Sans", 0, 24)); // NOI18N
+        totalLabel.setText("0.0000");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(moneyLabelText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(volAvailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(sharesLabelText, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(sharesLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(moneyLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                    .addComponent(cashAvail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(sharesAvail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(sharesLabelText1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(volAvailLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sharesLabelText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                    .addComponent(moneyLabelText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cashAvail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sharesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sharesAvail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(totalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                    .addComponent(cashLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -120,34 +198,39 @@ public class AccountBalance extends javax.swing.JPanel{
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(moneyLabelText)
-                    .addComponent(moneyLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(cashLabel))
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(volAvailLabel)
                     .addComponent(cashAvail))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sharesLabelText)
                     .addComponent(sharesLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(sharesAvail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sharesAvail))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sharesLabelText1)
+                    .addComponent(totalLabel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel cashAvail;
+    private javax.swing.JLabel cashLabel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel moneyLabel;
     private javax.swing.JLabel moneyLabelText;
     private javax.swing.JLabel sharesAvail;
     private javax.swing.JLabel sharesLabel;
     private javax.swing.JLabel sharesLabelText;
+    private javax.swing.JLabel sharesLabelText1;
+    private javax.swing.JLabel totalLabel;
     private javax.swing.JLabel volAvailLabel;
     // End of variables declaration//GEN-END:variables
-
 
 }

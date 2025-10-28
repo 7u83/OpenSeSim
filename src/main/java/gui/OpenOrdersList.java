@@ -157,8 +157,6 @@ public class OpenOrdersList extends javax.swing.JPanel {
         ctxMenuModifyOder.setText("Modify Oder");
         ctxMenu.add(ctxMenuModifyOder);
 
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
         table.setAutoCreateRowSorter(true);
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

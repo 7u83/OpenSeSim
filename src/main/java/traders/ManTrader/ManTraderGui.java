@@ -64,9 +64,7 @@ public class ManTraderGui extends AutoTraderGui {
     private void initComponents() {
 
         soundFile = new javax.swing.JTextField();
-        volumeSlider = new javax.swing.JSlider();
         soundFileSelectButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
         soundFile.addActionListener(new java.awt.event.ActionListener() {
@@ -82,8 +80,6 @@ public class ManTraderGui extends AutoTraderGui {
             }
         });
 
-        jLabel1.setText("Volume");
-
         jLabel2.setText("Play sound when order is closed");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -94,16 +90,12 @@ public class ManTraderGui extends AutoTraderGui {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(soundFile)
-                            .addComponent(volumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE))
+                        .addComponent(soundFile)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(soundFileSelectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 247, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -115,11 +107,7 @@ public class ManTraderGui extends AutoTraderGui {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(soundFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(soundFileSelectButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(volumeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addContainerGap(193, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -140,10 +128,8 @@ public class ManTraderGui extends AutoTraderGui {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField soundFile;
     private javax.swing.JButton soundFileSelectButton;
-    private javax.swing.JSlider volumeSlider;
     // End of variables declaration//GEN-END:variables
 }
