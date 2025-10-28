@@ -133,7 +133,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
         <exec.mainClass>OpenSeSim</exec.mainClass>
-        <javafx.version>21.0.1</javafx.version>
+        <javafx.version>11.0.2</javafx.version>
     </properties>
     
     
