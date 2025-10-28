@@ -51,7 +51,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONObject;
 import sesim.Order;
-//import javafx.application.Platform;
+import javafx.application.Platform;
 
 /**
  *
@@ -185,7 +185,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         jToolBar1.setRollover(true);
 
         runButton.setFont(runButton.getFont());
-        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/run.gif"))); // NOI18N
+        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run.gif"))); // NOI18N
         runButton.setText("Run sim!");
         runButton.setToolTipText("Run the simmulation");
         runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -197,7 +197,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         jToolBar1.add(runButton);
 
-        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/pause.gif"))); // NOI18N
+        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
         pauseButton.setText("Pause");
         pauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         pauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -208,7 +208,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         jToolBar1.add(pauseButton);
 
-        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/stop.gif"))); // NOI18N
+        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stop.gif"))); // NOI18N
         stopButton.setText("Stop");
         stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         stopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

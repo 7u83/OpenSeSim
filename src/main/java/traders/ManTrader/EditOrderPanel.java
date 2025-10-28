@@ -238,6 +238,11 @@ public class EditOrderPanel extends javax.swing.JPanel {
         });
 
         jButton1.setText("Set stop");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -297,7 +302,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         //  this.volumeSpinner.setValue(se.roundShares(account.getMoney() / price));
         //}
         //if (type == Order.SELL) {
-        this.limitSpinner.setValue((Float) se.roundMoney(q.getPrice()));
+        //       this.limitSpinner.setValue((Float) se.roundMoney(q.getPrice()));
         //this.volumeSpinner.setValue(se.roundShares(account.getShares()));
         //}
         setPrice();
@@ -345,6 +350,14 @@ public class EditOrderPanel extends javax.swing.JPanel {
     private void limitCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limitCheckBoxActionPerformed
         limitSpinner.setEnabled(this.limitCheckBox.isSelected());
     }//GEN-LAST:event_limitCheckBoxActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Quote q = se.getBestPrice_0();
+
+        //if (type == Order.BUY) {
+        this.stopSpinner.setValue((Float) se.roundMoney(q.getPrice()));
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
