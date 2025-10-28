@@ -984,9 +984,9 @@ public class SeSimApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
 
-        //    Platform.startup(() -> {
+            Platform.startup(() -> {
         // JavaFX Runtime wird initialisiert
-//});
+        });
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
 

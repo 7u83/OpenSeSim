@@ -55,6 +55,11 @@ import sesim.Exchange.AccountListener;
 import sesim.Order;
 import sesim.Sim;
 
+    import java.io.File;
+import javafx.application.Platform;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -226,7 +231,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
         if (o.getStatus() == Order.CLOSED) {
             if (soundFile != null && soundFile.length() > 0) {
-                startSoundAsynchronously(soundFile);
+                ManTrader.startSoundFX(soundFile);
             }
         }
 
@@ -245,6 +250,47 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
         //  this.consoleDialog.getOrderList().updateModel();
         //  this.consoleDialog.getBalancePanel().updateBalance(o.getAccount());
+    }
+
+    private static MediaPlayer currentMediaPlayer;
+
+    public static void startSoundFX(String filePath) {
+        // Stoppe den vorherigen Player
+        if (currentMediaPlayer != null) {
+            currentMediaPlayer.stop();
+            currentMediaPlayer.dispose(); // Ressourcen freigeben
+            currentMediaPlayer = null;
+        }
+
+        try {
+            // Da JavaFX asynchron läuft, muss der gesamte Aufruf in einem Platform.runLater erfolgen
+            Platform.runLater(() -> {
+                File file = new File(filePath);
+                Media sound = new Media(file.toURI().toString());
+                MediaPlayer player = new MediaPlayer(sound);
+
+                // 1. Lautstärke setzen (optional, aber empfohlen)
+                // Hier steuern Sie die interne JavaFX-Lautstärke (0.0 bis 1.0)
+                player.setVolume(0.5);
+
+                // 2. Registrieren des aktuellen Players für die Abbruchlogik
+                currentMediaPlayer = player;
+
+                // 3. Wiedergabe starten und automatisch nach dem Ende bereinigen
+                player.setOnEndOfMedia(() -> {
+                    player.dispose(); // Wichtig: Ressourcen freigeben
+                    if (currentMediaPlayer == player) {
+                        currentMediaPlayer = null;
+                    }
+                });
+
+                player.play();
+            });
+
+        } catch (Exception e) {
+            System.err.println("Fehler beim Abspielen des JavaFX Sounds: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }
