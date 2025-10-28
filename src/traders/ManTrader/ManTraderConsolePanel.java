@@ -105,7 +105,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
             }
         });
 
-        this.buyEditOrderPanel.limitSpinner.addChangeListener(
+        this.buyEditOrderPanel.addChangeListeners(
                 new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -117,7 +117,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         }
         );
 
-        this.buyEditOrderPanel.volumeSpinner.addChangeListener(
+        this.sellEditOrderPanel.addChangeListeners(
                 new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -129,44 +129,24 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         }
         );
 
-        this.sellEditOrderPanel.limitSpinner.addChangeListener(
-                new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                updateBuyButton();
-                updateSellButton();
-
-            }
-
-        }
-        );
-
-        this.sellEditOrderPanel.volumeSpinner.addChangeListener(
-                new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                updateBuyButton();
-                updateSellButton();
-
-            }
-
-        }
-        );
 
     }
 
     private boolean updateBuyButton() {
         float vol = this.buyEditOrderPanel.getVolume();
         float limit = this.buyEditOrderPanel.getLimit();
+        byte type = this.buyEditOrderPanel.getOrderType();
+        boolean b = account.isOrderCovered(type, vol, limit);
 
-        boolean b = account.couldBuy(vol, limit);
         this.buyButton.setEnabled(b);
         return b;
     }
 
     private boolean updateSellButton() {
         float vol = this.sellEditOrderPanel.getVolume();
-        boolean b = account.couldSell(vol);
+        float limit = this.sellEditOrderPanel.getLimit();
+        byte type = this.sellEditOrderPanel.getOrderType();
+        boolean b = account.isOrderCovered(type, vol, limit);
         this.sellButton.setEnabled(b);
         return b;
     }
@@ -345,10 +325,10 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         float stop = this.buyEditOrderPanel.getStop();
         byte type = this.buyEditOrderPanel.getOrderType();
 
-    //    synchronized (se.timer) {
-            Order o = se.createOrder(account, type, vol, limit, stop);
+        //    synchronized (se.timer) {
+        Order o = se.createOrder(account, type, vol, limit, stop);
 
-    //    }
+        //    }
         this.updateBuyButton();
 
 
@@ -359,11 +339,11 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         float limit = this.sellEditOrderPanel.getLimit();
         float stop = this.sellEditOrderPanel.getStop();
         byte type = this.sellEditOrderPanel.getOrderType();
-        
-  //      synchronized (se.timer) {
-            Order o = se.createOrder(account, type, vol, limit, stop);
 
-    //    }
+        //      synchronized (se.timer) {
+        Order o = se.createOrder(account, type, vol, limit, stop);
+
+        //    }
         this.updateSellButton();
     }//GEN-LAST:event_sellButtonActionPerformed
 

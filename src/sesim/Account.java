@@ -102,14 +102,14 @@ public class Account {
         return orders.size();
     }
 
-    public long getCashInOpenOrders_Long() {
+    public long getCashInOpenOrders_Long(long exclude) {
         Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
         long cash = 0;
 
         while (it.hasNext()) {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
-            if (o.type == Order.BUYLIMIT) {
+            if (o.isBuy() && o.hasLimit() && o.id != exclude) {
                 cash += (o.getInitialVolume() - o.getExecuted_Long()) * o.getLimit_Long();
             }
         }
@@ -117,29 +117,37 @@ public class Account {
 
     }
 
+    public long getCashInOpenOrders_Long() {
+        return getCashInOpenOrders_Long(-1);
+    }
+
     public float getCashInOpenOrders() {
         return getCashInOpenOrders_Long() / se.money_df;
     }
 
-    public long getSharesInOpenOrders_Long() {
+    public long getSharesInOpenOrders_Long(long exclude) {
         Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
         long volume = 0;
 
         while (it.hasNext()) {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
-            if (o.type == Order.SELLLIMIT) {
+            if (o.isSell() && o.id != exclude) {
                 volume += o.getInitialVolume() - o.getExecuted();
             }
         }
         return volume;
     }
 
+    public long getSharesInOpenOrders_Long() {
+        return getSharesInOpenOrders_Long(-1);
+    }
+
     public float getSharesInOpenOrders() {
         return getSharesInOpenOrders_Long() / se.shares_df;
     }
 
-    public boolean couldBuy(float volume, float limit) {
+    /*    public boolean couldBuy(float volume, float limit) {
         float avail = this.getMoney() - this.getCashInOpenOrders();
 
         System.out.printf("CouldBuy %f<%f\n", volume * limit, avail);
@@ -149,8 +157,7 @@ public class Account {
     public boolean couldSell(float volume) {
         float avail = this.getShares() - this.getSharesInOpenOrders();
         return volume <= avail;
-    }
-
+    }*/
     public float getSharesAvailable() {
         return getShares() - getSharesInOpenOrders();
     }
@@ -167,17 +174,70 @@ public class Account {
         return orders.get(oid);
     }
 
-    public boolean isOrderCovered(byte type, float volume, float limit) {
+    /**
+     * Checks whether an order is covered using long-integer arithmetic.
+     * <p>
+     * Sell orders are checked against available shares. Limited buy orders are
+     * checked against available cash. Other order types are assumed to be
+     * covered and are handled by the matching engine.
+     * <p>
+     * The order type is a bit field. Relevant flags for this method:
+     * <ul>
+     * <li>{@code Order.SELL = 0x01} – sell order</li>
+     * <li>{@code Order.LIMIT = 0x02} – limited order</li>
+     * </ul>
+     * Other flags (e.g., {@code Order.BUY = 0x00}, {@code Order.STOP = 0x04})
+     * are ignored here.
+     *
+     * @param type The order type as a bit field (see above).
+     * @param volume The number of shares to buy or sell, represented as a long
+     * integer.
+     * @param limit The price limit for limited orders, represented as a long
+     * integer.
+     * @return true if the order is covered; false if there are insufficient
+     * shares or cash.
+     */
+    public boolean isOrderCovered_Long(byte type, long volume, long limit, long exclude) {
 
-        switch (type) {
-            case Order.BUYLIMIT:
-            case Order.BUY:
-                return this.couldBuy(volume, limit);
-            case Order.SELLLIMIT:
-            case Order.SELL:
-                return this.couldSell(volume);
-
+        // In case of a sell order just check the number of available shares
+        if ((type & Order.SELL) != 0) {
+            return volume <= this.getShares_Long() - this.getSharesInOpenOrders_Long(exclude);
         }
-        return false;
+
+        // It's a buy order, we have just to check for limited orders
+        if ((type & Order.LIMIT) != 0) {
+            return volume * limit <= this.getMoney_Long() - this.getCashInOpenOrders_Long(exclude);
+        }
+
+        // all other types will be cecked by the matching engine
+        return true;
     }
+
+    /**
+     * Checks whether an order is covered using floating-point inputs.
+     * <p>
+     * Converts the float volume and limit to long integers using the scaling
+     * factors se.shares_df and se.money_df, and delegates to
+     * {@link #isOrderCovered_Long(byte, long, long)}.
+     *
+     * @param type The order type, e.g., Order.SELL | Order.LIMIT.
+     * @param volume The number of shares to buy or sell, as a float.
+     * @param limit The price limit for limited orders, as a float.
+     * @return true if the order is covered; false if there are insufficient
+     * shares or cash.
+     */
+    public boolean isOrderCovered(byte type, float volume, float limit) {
+        return isOrderCovered_Long(type,
+                (long) (volume * se.shares_df),
+                (long) (limit * se.money_df), -1
+        );
+    }
+
+    public boolean isOrderCovered(byte type, float volume, float limit, long exclude) {
+        return isOrderCovered_Long(type,
+                (long) (volume * se.shares_df),
+                (long) (limit * se.money_df), exclude
+        );
+    }
+
 }
