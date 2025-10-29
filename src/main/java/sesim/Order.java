@@ -46,8 +46,6 @@ public class Order implements OrderBookEntry {
 
     public final static byte BUYSTOP = BUY | STOP;
     public final static byte SELLSTOP = SELL | STOP;
-    
-    
 
     // Order states
     public final static byte OPEN = 0x01;
@@ -55,10 +53,10 @@ public class Order implements OrderBookEntry {
     public final static byte CLOSED = 0x04;
     public final static byte CANCELED = 0x08;
 
-     long volume;
-     long limit;
-     long stop;
-     long profit;
+    long volume;
+    long limit;
+    long stop;
+    long profit;
 
     //Exchange.OrderStatus status;
     byte status;
@@ -84,7 +82,7 @@ public class Order implements OrderBookEntry {
         this.created = se.sim.scheduler.getCurrentTimeMillis();
         this.status = OPEN; //Exchange.OrderStatus.OPEN;
         this.cost = 0;
-        this.stop=stop;
+        this.stop = stop;
 
     }
 
@@ -118,42 +116,62 @@ public class Order implements OrderBookEntry {
         return type;
     }
 
-    public String getTypeAsString() {
+    /**
+     * Returns a string representation of the given order type. The result
+     * indicates whether it is a BUY or SELL order, and appends additional flags
+     * such as STOP and/or LIMIT if applicable.
+     *
+     * @param t the byte value representing the order type
+     * @return a string describing the order type (e.g., "BUY|LIMIT" or
+     * "SELL|STOP")
+     */
+    public static String getTypeAsString(byte t) {
         String s;
-        if (0 != (type & Order.SELL)) {
+        if (0 != (t & Order.SELL)) {
             s = "SELL";
         } else {
             s = "BUY";
         }
-        if (hasStop()){
+        if (0 != (t & Order.STOP)) {
             s += "|STOP";
         }
-        if (hasLimit()){
+        if (0 != (t & Order.LIMIT)) {
             s += "|LIMIT";
         }
         return s;
     }
-    
-    public long getExecuted_Long(){
+
+    /**
+     * Returns a string representation of this order's type. Delegates to
+     * {@link #getTypeAsString(byte)} using the instance's type field.
+     *
+     * @return a string describing this order's type
+     */
+    public String getTypeAsString() {
+        return getTypeAsString(this.type);
+    }
+
+    public long getExecuted_Long() {
         return initial_volume - volume;
     }
 
     public float getExecuted() {
-        return getExecuted_Long()/se.shares_df;
+        return getExecuted_Long() / se.shares_df;
     }
 
     public float getInitialVolume() {
-        return initial_volume/se.shares_df;
+        return initial_volume / se.shares_df;
     }
 
     public float getCost() {
-        return cost/se.money_df;
+        return cost / se.money_df;
     }
 
     public boolean isSell() {
         return (type & SELL) != 0;
     }
-    public boolean isBuy(){
+
+    public boolean isBuy() {
         return !isSell();
     }
 
@@ -164,9 +182,9 @@ public class Order implements OrderBookEntry {
         }
         return cost / e;
     }
-    
-    public float getAvaragePrice(){
-        return getAvaragePrice_Long()/se.money_df;
+
+    public float getAvaragePrice() {
+        return getAvaragePrice_Long() / se.money_df;
     }
 
     public byte getStatus() {
@@ -196,25 +214,25 @@ public class Order implements OrderBookEntry {
         return this.status == OPEN
                 || this.status == PARTIALLY_EXECUTED;
     }
-    
+
     public boolean isClosed() {
         return this.status == CLOSED;
     }
 
     @Override
     public float getVolume() {
-        return volume/se.shares_df;
+        return volume / se.shares_df;
     }
 
     @Override
     public float getLimit() {
-        return limit/se.money_df;
+        return limit / se.money_df;
     }
 
-    public long getLimit_Long(){
+    public long getLimit_Long() {
         return limit;
     }
-    
+
     public boolean hasLimit() {
         return (type & LIMIT) != 0;
     }
@@ -231,7 +249,7 @@ public class Order implements OrderBookEntry {
     @Override
     public float getStop() {
 //        System.out.printf("Get stop %f\n", stop);
-        return stop/se.money_df;
+        return stop / se.money_df;
     }
 
     @Override

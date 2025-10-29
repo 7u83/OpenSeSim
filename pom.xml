@@ -52,6 +52,12 @@
             <artifactId>org.abego.treelayout.core</artifactId>
             <version>1.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>javax.help</groupId>
+            <artifactId>javahelp</artifactId>
+            <version>2.0.05</version>
+        </dependency>
+        
     </dependencies>
     <build>
         <plugins>
@@ -60,7 +66,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <debug>false</debug> 
+                    <debug>true</debug>
+                    <compilerArgs>
+                        <arg>-Xlint</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 

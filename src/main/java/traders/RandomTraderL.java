@@ -46,11 +46,17 @@ public class RandomTraderL extends AutoTraderBase
 
     public long[] initialDelay = {0, 0};
 
-    public float[] amountToBuy = {100f, 100f};
-    public float[] amountToSell = {100f, 100f};
+    public long[] amountToBuy = {1000, 1000};
+    public long[] amountToSell = {1000, 1000};
+
+    public long minAmountToBuyDeviation = 0;
+    public long minAmountToSellDeviation = 0;
 
     public long[] buyLimit = {-20, 20};
     public long[] sellLimit = {-20, 20};
+
+    public long minBuyDeviation = 1;
+    public long minSellDeviation = 1;
 
     public long[] buyOrderTimeout = {10000, 50000};
     public long[] sellOrderTimeout = {10000, 50000};
@@ -78,6 +84,11 @@ public class RandomTraderL extends AutoTraderBase
 
     final String BANKRUPT_SHARES = "bankrupt_shares";
     final String BANKRUPT_CASH = "bankrupt_cash";
+
+    final String MIN_AMOUNT_TO_SELL_DEVIATION = "min_amount_to_sell_deviation";
+    final String MIN_AMOUNT_TO_BUY_DEVIATION = "min_amount_to_buy_deviation";
+    final String MIN_BUY_DEVIATION = "min_buy_deviation";
+    final String MIN_SELL_DEVIATION = "min_sell_deviation";
 
     final String WAIT_AFTER_FAIL = "wait_after_fail";
     long wait_after_timeout = 1000;
@@ -109,7 +120,9 @@ public class RandomTraderL extends AutoTraderBase
     // boolean intask = false;
     @Override
     public long processEvent(long time, Event e) {
-
+        if (getName().equals("Alice-0")) {
+            System.out.printf("Alice is alive\n");
+        }
         //System.out.printf("Process Event for %s %d\n",this.getName(),time);
         if (time != tradeEventTime) {
             //    System.out.printf("Wrong Event for %s: %d != %d\n", this.getName(), time, tradeEventTime);
@@ -164,8 +177,17 @@ public class RandomTraderL extends AutoTraderBase
         fields[1] = Math.round((initialDelay[1] / 1000.0) * 10) / 10.0;
         cfg.put(INITIAL_DELAY, fields);
 
-        cfg.put(AMOUNT_TO_BUY, amountToBuy);
-        cfg.put(AMOUNT_TO_SELL, amountToSell);
+//        cfg.put(AMOUNT_TO_BUY, amountToBuy);
+//        cfg.put(AMOUNT_TO_SELL, amountToSell);
+        fields = new double[2];
+        fields[0] = Math.round((amountToBuy[0] / 10.0) * 10) / 10.0;
+        fields[1] = Math.round((amountToBuy[1] / 10.0) * 10) / 10.0;
+        cfg.put(AMOUNT_TO_BUY, fields);
+
+        fields = new double[2];
+        fields[0] = Math.round((amountToSell[0] / 10.0) * 10) / 10.0;
+        fields[1] = Math.round((amountToSell[1] / 10.0) * 10) / 10.0;
+        cfg.put(AMOUNT_TO_SELL, fields);
 
         fields = new double[2];
         fields[0] = Math.round((buyLimit[0] / 10.0) * 10) / 10.0;
@@ -199,6 +221,11 @@ public class RandomTraderL extends AutoTraderBase
 
         cfg.put(BANKRUPT_SHARES, bankrupt_shares_cfg);
         cfg.put(BANKRUPT_CASH, bankrupt_cash_cfg);
+
+        cfg.put(MIN_AMOUNT_TO_BUY_DEVIATION, this.minAmountToBuyDeviation);
+        cfg.put(MIN_AMOUNT_TO_SELL_DEVIATION, this.minAmountToSellDeviation);
+        cfg.put(MIN_BUY_DEVIATION, this.minBuyDeviation);
+        cfg.put(MIN_SELL_DEVIATION, this.minSellDeviation);
 
 
         /*     cfg.put(SELL_VOLUME, sell_volume);
@@ -250,8 +277,13 @@ public class RandomTraderL extends AutoTraderBase
             initialDelay[0] = (long) (1000 * cfg.getJSONArray(INITIAL_DELAY).getDouble(0));
             initialDelay[1] = (long) (1000 * cfg.getJSONArray(INITIAL_DELAY).getDouble(1));
 
-            amountToBuy = to_float(cfg.getJSONArray(AMOUNT_TO_BUY));
-            amountToSell = to_float(cfg.getJSONArray(AMOUNT_TO_SELL));
+            //amountToBuy = to_float(cfg.getJSONArray(AMOUNT_TO_BUY));
+            //amountToSell = to_float(cfg.getJSONArray(AMOUNT_TO_SELL));
+            amountToBuy[0] = (long) (10 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(0));
+            amountToBuy[1] = (long) (10 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(1));
+
+            amountToSell[0] = (long) (10 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(0));
+            amountToSell[1] = (long) (10 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(1));
 
             buyLimit[0] = (long) (10 * cfg.getJSONArray(BUY_LIMIT).getDouble(0));
             buyLimit[1] = (long) (10 * cfg.getJSONArray(BUY_LIMIT).getDouble(1));
@@ -279,6 +311,11 @@ public class RandomTraderL extends AutoTraderBase
                 bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
             }
 
+            minAmountToBuyDeviation = cfg.getLong(MIN_AMOUNT_TO_BUY_DEVIATION);
+            minAmountToSellDeviation = cfg.getLong(MIN_AMOUNT_TO_SELL_DEVIATION);
+
+            minBuyDeviation = cfg.getLong(MIN_BUY_DEVIATION);
+            minSellDeviation = cfg.getLong(MIN_SELL_DEVIATION);
 
             /*
             sell_wait[0] = (long) (1000 * cfg.getJSONArray(SELL_WAIT).getDouble(0));
@@ -480,29 +517,63 @@ public class RandomTraderL extends AutoTraderBase
         return getRandom(min, max);
     }
 
-    long getRandomPrice_Long(long lastPrice, long minPercent, long maxPercent) {
+    static public long getRandomDelta_Long(long lastPrice, long minDeviation, long maxDeviation, long minAbsoluteDeviation) {
         // minPercent/maxPercent sind Fixkommawerte mit 1 Nachkommastelle
         // Beispiel: -50 = -5.0%, +25 = +2.5%
 
         // 1. Preisänderungsspanne berechnen (in Cent)
-        long minDelta = (lastPrice * minPercent) / 1000;
-        long maxDelta = (lastPrice * maxPercent) / 1000;
+        long minDelta = (lastPrice * minDeviation) / 1000;
+        long maxDelta = (lastPrice * maxDeviation) / 1000;
 
         // 2. Sicherheitskorrektur, falls Rundung zu 0 führt
-        if (minDelta == 0 && minPercent != 0) {
-            minDelta = (minPercent < 0) ? -1 : 1;
+        if (Math.abs(minDelta) < minAbsoluteDeviation && minDeviation != 0) {
+            minDelta = (minDeviation < 0) ? -minAbsoluteDeviation : minAbsoluteDeviation;
         }
-        if (maxDelta == 0 && maxPercent != 0) {
-            maxDelta = (maxPercent < 0) ? -1 : 1;
+        if (Math.abs(maxDelta) < minAbsoluteDeviation && maxDeviation != 0) {
+            maxDelta = (maxDeviation < 0) ? -minAbsoluteDeviation : minAbsoluteDeviation;
         }
 
-        // 3. Zufällige Preisänderung zwischen minDelta und maxDelta
-        long delta = Sim.random.nextLong(maxDelta - minDelta + 1) + minDelta;
+        if (minDelta + lastPrice < 0) {
+            minDelta = -lastPrice;
+        }
 
+        long range = maxDelta - minDelta + 1;
+
+        //     long delta;
+        long delta = Sim.random.nextLong(range) + minDelta;
+
+        return delta;
+
+        /*delta = 0 + minDelta;
+      System.out.printf("MinDelat: %d\n",delta);
+      delta = (range-1)/2 + minDelta;
+      System.out.printf("MidDelta: %d\n",delta);      
+      delta = range-1 + minDelta;
+      System.out.printf("MaxDelta: %d\n",delta);
+         */
         // 4. Neuer Preis in Cent
+        /*      long newPrice = lastPrice + delta;
+
+        if (newPrice < 1) {
+            newPrice = 1;
+        }
+return delta;
+    /*    if (newPrice < minn) {
+            minn = newPrice;
+
+        }
+        if (newPrice > maxn) {
+            maxn = newPrice;
+        }*/
+        //    System.out.printf("MINMAX %d , %d\n",minn,maxn);
+        //  return newPrice;
+    }
+
+    public long getRandomPrice_Long(long lastPrice, long minDeviation, long maxDeviation, long minAbsDeviation) {
+        long delta = getRandomDelta_Long(lastPrice, minDeviation, maxDeviation, minAbsDeviation);
+
         long newPrice = lastPrice + delta;
 
-        // Optional: Absicherung gegen negative Preise
         if (newPrice < 1) {
             newPrice = 1;
         }
@@ -510,7 +581,10 @@ public class RandomTraderL extends AutoTraderBase
         return newPrice;
     }
 
-    double getRandomPrice(double lastPrice, double tickSize, double minPercent, double maxPercent) {
+    // static long minn = 10000000;
+    //  static long maxn = -10;
+
+    /*   double getRandomPrice(double lastPrice, double tickSize, double minPercent, double maxPercent) {
 
         // 1. Prozentbereich in Ticks umrechnen
         int minTicks = (int) Math.round(lastPrice * minPercent / 100 / tickSize);
@@ -533,17 +607,16 @@ public class RandomTraderL extends AutoTraderBase
         newPrice = Math.round(newPrice / tickSize) * tickSize;
 
         return newPrice;
-    }
-
+    }*/
     private Order doBuy() {
 
         // how much money we ant to invest?
-        long money = (long) getRandomAmmount(account_id.getMoney_Long(), amountToBuy);
+        long money = getRandomDelta_Long(account_id.getMoney_Long(), amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
 
         Quote q = se.getBestPrice_0();
         long lp = q.getPrice_Long();
 
-        long limit = this.getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1]);
+        long limit = this.getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
 
         long volume = money / limit;
 
@@ -554,14 +627,14 @@ public class RandomTraderL extends AutoTraderBase
     private Order doSell() {
 
         // how many shares we want to sell?
-        long volume = (long) getRandomAmmount(account_id.getShares_Long(), amountToSell);
+        long volume = getRandomDelta_Long(account_id.getShares_Long(), amountToSell[0], amountToSell[1], minAmountToSellDeviation);
         //  volume = se.roundShares(volume);
 
         //    float lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getBestPrice_0();
         long lp = q.getPrice_Long();
 
-        long limit = this.getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1]);
+        long limit = this.getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1], minSellDeviation);
         //   limit = lp + getRandomAmmount(lp, sell_limit);
         //  limit = lp + se.random.nextLong(0, 4) - 2;
 

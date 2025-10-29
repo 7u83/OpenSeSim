@@ -52,6 +52,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONObject;
 import sesim.Order;
 import javafx.application.Platform;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import sesim.AppHelp;
+import traders.RandomTraderL;
 
 /**
  *
@@ -102,6 +106,12 @@ public class SeSimApplication extends javax.swing.JFrame {
         });*/
 //        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         //this.setLocationRelativeTo(null);
+        
+                HelpBroker hb = AppHelp.getHelpBroker();
+        HelpSet hs = AppHelp.getHelpSet();
+
+        hb.enableHelpKey(getRootPane(), "intro", hs);
+        
     }
 
     /**
@@ -127,8 +137,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         accelerationPanel1 = new gui.AccelerationPanel();
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
-        chartPanel = new chart.ChartPanel();
         orderBooksHorizontal = new gui.orderbook.OrderBooksHorizontal();
+        chartPanel = new chart.ChartPanel();
         quoteVertical1 = new gui.orderbook.QuoteVertical();
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
@@ -218,16 +228,15 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(stopButton);
+        jToolBar1.add(accelerationPanel1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
-                .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
                 .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -240,17 +249,16 @@ public class SeSimApplication extends javax.swing.JFrame {
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
-                        .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 6, Short.MAX_VALUE))
+                        .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 7, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
         jSplitPane4.setDividerLocation(300);
         jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane4.setLeftComponent(chartPanel);
         jSplitPane4.setRightComponent(orderBooksHorizontal);
+        jSplitPane4.setLeftComponent(chartPanel);
 
         jSplitPane3.setRightComponent(jSplitPane4);
         jSplitPane3.setLeftComponent(quoteVertical1);
@@ -983,6 +991,14 @@ public class SeSimApplication extends javax.swing.JFrame {
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
+        
+        
+    /*    long rc = RandomTraderL.getRandomDelta_Long(800, 0, 1000);
+        System.out.printf("Price=%d", rc);
+        if (rc!=0){
+            System.exit(0);
+        }*/
+     
 
             Platform.startup(() -> {
         // JavaFX Runtime wird initialisiert

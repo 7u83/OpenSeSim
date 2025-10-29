@@ -55,9 +55,10 @@ import sesim.Exchange.AccountListener;
 import sesim.Order;
 import sesim.Sim;
 
-    import java.io.File;
+import java.io.File;
 import javafx.application.Platform;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 
 /**
@@ -265,27 +266,35 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
         try {
             // Da JavaFX asynchron läuft, muss der gesamte Aufruf in einem Platform.runLater erfolgen
             Platform.runLater(() -> {
-                File file = new File(filePath);
-                Media sound = new Media(file.toURI().toString());
-                MediaPlayer player = new MediaPlayer(sound);
-   
+                try {
+                    File file = new File(filePath);
+                    Media sound = new Media(file.toURI().toString());
+                    MediaPlayer player = new MediaPlayer(sound);
 
-                // 1. Lautstärke setzen (optional, aber empfohlen)
-                // Hier steuern Sie die interne JavaFX-Lautstärke (0.0 bis 1.0)
-                player.setVolume(0.5);
+                    // 1. Lautstärke setzen (optional, aber empfohlen)
+                    // Hier steuern Sie die interne JavaFX-Lautstärke (0.0 bis 1.0)
+                    player.setVolume(0.5);
 
-                // 2. Registrieren des aktuellen Players für die Abbruchlogik
-                currentMediaPlayer = player;
+                    // 2. Registrieren des aktuellen Players für die Abbruchlogik
+                    currentMediaPlayer = player;
 
-                // 3. Wiedergabe starten und automatisch nach dem Ende bereinigen
-                player.setOnEndOfMedia(() -> {
-                    player.dispose(); // Wichtig: Ressourcen freigeben
-                    if (currentMediaPlayer == player) {
-                        currentMediaPlayer = null;
-                    }
-                });
+                    // 3. Wiedergabe starten und automatisch nach dem Ende bereinigen
+                    player.setOnEndOfMedia(() -> {
+                        player.dispose(); // Wichtig: Ressourcen freigeben
+                        if (currentMediaPlayer == player) {
+                            currentMediaPlayer = null;
+                        }
+                    });
 
-                player.play();
+                    player.play();
+                } catch (MediaException me) {
+                    // Fangen Sie spezifisch die JavaFX MediaException ab
+                    System.out.println("Fehler im JavaFX-Thread beim Erstellen des Players: " + me.getMessage());
+                } catch (Exception e) {
+                    // Fangen Sie andere Laufzeitfehler innerhalb des Lambda ab
+                    System.out.println("Unerwarteter Fehler im JavaFX-Thread: " + e.getMessage());
+                }
+
             });
 
         } catch (Exception e) {

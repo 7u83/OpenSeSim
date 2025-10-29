@@ -152,9 +152,13 @@ public class ModifyOrderDialog extends EscDialog {
         
         byte type = this.editOrderPanel1.getOrderType();
         
-        boolean rc = account.isOrderCovered(type, this.editOrderPanel1.getVolume(), this.editOrderPanel1.getLimit());
+        boolean rc = account.isOrderCovered(type, this.editOrderPanel1.getVolume(), this.editOrderPanel1.getLimit(),order.getID());
         if (!rc) {
-            sesim.Logger.error("Order is not covered");
+            sesim.Logger.error("Order is not covered: %s, vol: %f, lim: %f", Order.getTypeAsString(type),
+                    this.editOrderPanel1.getVolume(),
+                    this.editOrderPanel1.getLimit()
+            
+            );
             return;
         }
         

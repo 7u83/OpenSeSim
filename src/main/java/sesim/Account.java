@@ -45,10 +45,10 @@ public class Account {
 
     long shares;
     long money;
-    
+
     long initial_shares;
     long initial_money;
-    
+
     protected AutoTraderInterface owner;
 
     final ConcurrentHashMap<Long, Order> orders;
@@ -60,16 +60,16 @@ public class Account {
 
         // FLOAT_CONVERT
         this.money = (long) (money * se.money_df);
-        initial_money=this.money;
+        initial_money = this.money;
         this.shares = (long) (shares * se.shares_df);
-        initial_shares=this.shares;
+        initial_shares = this.shares;
     }
 
     public float getShares() {
         return shares / se.shares_df;
     }
-    
-    public float getInitialShares(){
+
+    public float getInitialShares() {
         return initial_shares / se.shares_df;
     }
 
@@ -80,8 +80,8 @@ public class Account {
     public float getMoney() {
         return money / se.money_df;
     }
-    
-    public float getInitialMoney(){
+
+    public float getInitialMoney() {
         return initial_money / se.money_df;
     }
 
@@ -253,9 +253,19 @@ public class Account {
                 (long) (limit * se.money_df), exclude
         );
     }
-    
-    public Exchange getSe(){
+
+    public Exchange getSe() {
         return se;
+    }
+
+    public float gerPerformance(float lp) {
+        float total = lp * getShares() + getMoney();
+        float iniTotal = lp * getInitialShares() + getInitialMoney();
+        return total / (iniTotal / 100) - 100;
+    }
+
+    public float getTotal(float lp) {
+        return lp * getShares() + getMoney();
     }
 
 }
