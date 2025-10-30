@@ -52,7 +52,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     private int mouseX = -1;
     private int mouseY = -1;
-    private boolean mouseInside=false;
+    private boolean mouseInside = false;
 
     /**
      * Creates new form Chart
@@ -195,8 +195,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         // Draw background
         if (this.xl_bgcolor != null) {
             g.setColor(xl_bgcolor);
-            g.fillRect(clip.x, clip.y, clip.width, (int) (emWidth * this.xAxisAreaHight));
-            g.drawRect(clip.y, clip.y, clip.width, (int) (emWidth * this.xAxisAreaHight));
+            g.fillRect(clip.x, clip.y, clip.width, (emWidth * this.xAxisAreaHight));
+            g.drawRect(clip.y, clip.y, clip.width, (emWidth * this.xAxisAreaHight));
             g.setColor(cur);
         }
 
@@ -298,16 +298,6 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         }
 
-    }
-
-    void drawCross(Graphics2D g) {
-        if (!mouseInside)
-            return;
-        if (mouseX >= 0 && mouseY >= 0) {
-            g.setColor(Color.RED);
-            g.drawLine(0, mouseY, getWidth(), mouseY);   // horizontale Linie
-            g.drawLine(mouseX, 0, mouseX, getHeight());  // vertikale Linie
-        }
     }
 
     private void drawLineItem(DrawCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
@@ -513,6 +503,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
          */
         public boolean log = false;
 
+        public Color crossColor;
+
     }
 
     protected OHLCData data;
@@ -525,17 +517,99 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
-    void drawAll(Graphics2D g) {
+    void drawCross(Graphics2D g) {
+        if (!mouseInside) {
+            return;
+        }
+        
+        // Mausposition absolut auf dem Bildschirm
+    Point mouseOnScreen = MouseInfo.getPointerInfo().getLocation();
 
-        Rectangle clip = g.getClipBounds();
-        clip = this.getVisibleRect();
+    // Position relativ zum Panel
+    Point panelLocationOnScreen = this.getLocationOnScreen();
+     mouseX = mouseOnScreen.x - panelLocationOnScreen.x;
+     mouseY = mouseOnScreen.y - panelLocationOnScreen.y;
+
+    // Kreuz zeichnen
+    int size = 10;
+    g.drawLine(mouseX - size, mouseY, mouseX + size, mouseY);
+    g.drawLine(mouseX, mouseY - size, mouseX, mouseY + size);
+
+        Rectangle clip = getVisibleRect();
+
+        int h1 = 0;
+
+        Color c = Color.BLUE;
 
         for (SubChartDef d : charts) {
+            // Calculate the height for all sub-charts
+            // this is the height of out panel minus the height of x-legend
+            int chartwin_height = clip.height - this.xAxisAreaHight * emWidth;
+            // Caclulate the height of our sub-chart 
+            int subchartwin_height = (int) (chartwin_height * d.height);
 
+            if (mouseY < h1 + subchartwin_height) {
+                c = d.crossColor;
+                break;
+            }
+
+            h1 = h1 + subchartwin_height;
         }
 
-        int w = (int) (clip.width - (this.leftYAxisAreaWidth * this.emWidth + this.rightYAxisAreaWidth * this.emWidth));
-        int y = clip.height - (int) (this.xAxisAreaHight * this.emWidth);
+        if (mouseX >= 0 && mouseY >= 0) {
+            g.setColor(c);
+            g.drawLine(0, mouseY, getWidth(), mouseY);   // horizontale Linie
+            g.drawLine(mouseX, 0, mouseX, getHeight());  // vertikale Linie
+        }
+
+        /*         long x  =        (long)(emWidth * x_unit_width * time);
+         x/time =  (long)(emWidth * x_unit_width);
+         1/time = (long)(emWidth * x_unit_width)/x;*/
+        long n = (long) (mouseX * emWidth * x_unit_width);
+
+        double bars = clip.width / (emWidth * x_unit_width) * data.getFrameSize();
+
+        n = (long) (bars * (mouseX + 1) / clip.width);
+        System.out.printf("bars: %f, em*uw: %d, pwidth: %d, clip.width: %d\n",
+                bars, (int) (emWidth * x_unit_width), 0, clip.width);
+
+        String text = formatTimeMillis(n); // first_bar* data.getFrameSize()+(long)(mouseX*emWidth * x_unit_width));
+        System.out.printf("Current X: %s - ? %d %d\n", text, mouseX, first_bar);
+
+        // FontMetrics für die aktuelle Schriftart
+        FontMetrics fm = g.getFontMetrics();
+
+        // Breite und Höhe des Textes
+        int textWidth = fm.stringWidth(text);
+        int textHeight = fm.getHeight(); // Gesamthöhe (Ascent + Descent + Leading)
+
+        // Optional: Offset für besseren Abstand
+        int padding = 4;
+
+        // Rechteck zeichnen
+        int x = mouseX-(textWidth + 2 * padding)/2; // Beispielkoordinaten
+        int y = clip.height-(textHeight + 2 * padding);
+        g.setColor(Color.WHITE);
+        g.fillRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
+        g.setColor(c);
+        g.drawRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
+        // Text innerhalb des Rechtecks zeichnen
+        g.drawString(text, x + padding, y + fm.getAscent() + padding);
+        
+        
+
+    }
+
+    void drawAll(Graphics2D g) {
+
+        Rectangle clip; // = g.getClipBounds();
+        clip = this.getVisibleRect();
+
+        /*     for (SubChartDef d : charts) {
+
+        }*/
+        int w = (clip.width - (this.leftYAxisAreaWidth * this.emWidth + this.rightYAxisAreaWidth * this.emWidth));
+        //  int y = clip.height - (this.xAxisAreaHight * this.emWidth);
 
         first_bar = (int) (clip.x / (this.x_unit_width * this.emWidth));
         last_bar = 1 + (int) ((clip.x + w) / (this.x_unit_width * this.emWidth));
@@ -710,7 +784,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     @Override
     public void repaint() {
         updateView();
-        super.repaint(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+        super.repaint();
     }
 
     void updateView() {

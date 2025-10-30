@@ -24,8 +24,8 @@ import sesim.OHLCData;
  * @author 7u83 <7u83@mail.ru>
  */
 public class MainChart extends chart.Chart {
-    
-    ButtonGroup typeGroup=new ButtonGroup();
+
+    ButtonGroup typeGroup = new ButtonGroup();
 
     /**
      * Creates new form MainChart
@@ -38,14 +38,12 @@ public class MainChart extends chart.Chart {
         initCtxMenu();
 
         setCompression();
-        
+
         this.candleTypeMEnuItem.setSelected(true);
 
-      //xl_bgcolor = Color.ORANGE;
-      //  xl_color = Color.RED;
+        //xl_bgcolor = Color.ORANGE;
+        //  xl_color = Color.RED;
         //this.xl_height = 3;
-        
-      
     }
 
     //OHLCData data;
@@ -60,21 +58,23 @@ public class MainChart extends chart.Chart {
         main.paddingTop = 0.02f;
         //main.rightYData(data);
         main.log = logMenu.isSelected();
-        main.rightYData=data;
-        main.rightYColor=Color.WHITE;
-        
+        main.rightYData = data;
+        main.rightYColor = Color.WHITE;
+        main.crossColor = Color.RED;
+
         addChart(main);
 
         Chart.SubChartDef vol = new Chart.SubChartDef();
         vol.height = 0.2f;
         vol.paddingTop = 0.08f;
-       vol.type = ChartType.VOL;
+        vol.type = ChartType.VOL;
         vol.data = data;
         vol.bgcolor = Color.WHITE;
-           vol.rightYData=data;
-    vol.rightYColor=Color.WHITE;
+        vol.rightYData = data;
+        vol.rightYColor = Color.WHITE;
+        vol.crossColor = Color.GREEN;
 
-       addChart(vol);
+        addChart(vol);
     }
 
     private void showCtxMenu(java.awt.event.MouseEvent evt) {
@@ -99,14 +99,18 @@ public class MainChart extends chart.Chart {
     };
 
     private final Integer default_cmopression = 60 * 60 * 1000;
-    
-    
-    
+
     abstract class PopupMenuAdapter implements PopupMenuListener {
-    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
-    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
-    public void popupMenuCanceled(PopupMenuEvent e) {}
-}
+
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        }
+
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        }
+
+        public void popupMenuCanceled(PopupMenuEvent e) {
+        }
+    }
 
     private void initCtxMenu() {
         ButtonGroup group = new ButtonGroup();
@@ -123,13 +127,15 @@ public class MainChart extends chart.Chart {
             });
             this.compMenu.add(item);
         }
-        
-        ctxMenu.addPopupMenuListener(new PopupMenuAdapter() {
-    @Override public void popupMenuWillBecomeInvisible(PopupMenuEvent e) { repaint(); }
-});
 
-        
-      /*      ctxMenu.addPopupMenuListener(new PopupMenuListener() {
+        ctxMenu.addPopupMenuListener(new PopupMenuAdapter() {
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                repaint();
+            }
+        });
+
+        /*      ctxMenu.addPopupMenuListener(new PopupMenuListener() {
         @Override
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
             // nichts nötig
@@ -164,10 +170,10 @@ public class MainChart extends chart.Chart {
             }
         }
     }
-    
-    private ChartType chart_type=ChartType.CANDLESTICK;
 
-/*
+    private ChartType chart_type = ChartType.CANDLESTICK;
+
+    /*
     void setType(){
         for (int i = 0; i < this.typeMenu.getItemCount(); i++) {
             JRadioButtonMenuItem item = (JRadioButtonMenuItem) compMenu.getItem(i);
@@ -184,23 +190,21 @@ public class MainChart extends chart.Chart {
         } 
         doRedraw();
     }
-    */
-
-   // boolean log = false;
-
+     */
+    // boolean log = false;
     protected void doRedraw() {
-    //    log = this.logMenu.isSelected();
+        //    log = this.logMenu.isSelected();
         javax.swing.SwingUtilities.invokeLater(() -> {
             invalidate();
             repaint();
         });
-        
+
     }
 
     public void initChart() {
         setCompression();
         doRedraw();
-        
+
     }
 
     private void ctxMenuCompActionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,7 +308,7 @@ public class MainChart extends chart.Chart {
     private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
         double n = evt.getPreciseWheelRotation() * (-1.0);
         double u = this.getXUnitWidth();
-        
+
         if (n < 0) {
             if (u > 0.3) {
                 this.setXUnitWidth(u + 0.1 * n);
@@ -341,19 +345,19 @@ public class MainChart extends chart.Chart {
     }//GEN-LAST:event_lineTypeItemActionPerformed
 
     private void candleTypeMEnuItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_candleTypeMEnuItemItemStateChanged
-       if (this.candleTypeMEnuItem.isSelected()){
-            this.chart_type=ChartType.CANDLESTICK;
+        if (this.candleTypeMEnuItem.isSelected()) {
+            this.chart_type = ChartType.CANDLESTICK;
             //System.out.printf("Set Set Candlestick\n");
         }
-       doRedraw();
+        doRedraw();
     }//GEN-LAST:event_candleTypeMEnuItemItemStateChanged
 
     private void lineTypeItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lineTypeItemItemStateChanged
-       if (this.lineTypeItem.isSelected()){
-            this.chart_type=ChartType.LINE;
+        if (this.lineTypeItem.isSelected()) {
+            this.chart_type = ChartType.LINE;
             System.out.printf("Set LIne\n");
         }
-       doRedraw();
+        doRedraw();
     }//GEN-LAST:event_lineTypeItemItemStateChanged
 
 
