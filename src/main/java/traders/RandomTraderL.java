@@ -120,9 +120,9 @@ public class RandomTraderL extends AutoTraderBase
     // boolean intask = false;
     @Override
     public long processEvent(long time, Event e) {
-        if (getName().equals("Alice-0")) {
+   /*     if (getName().equals("Alice-0")) {
             System.out.printf("Alice is alive\n");
-        }
+        }*/
         //System.out.printf("Process Event for %s %d\n",this.getName(),time);
         if (time != tradeEventTime) {
             //    System.out.printf("Wrong Event for %s: %d != %d\n", this.getName(), time, tradeEventTime);

@@ -613,7 +613,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteMenuItemActionPerformed
 
     private void pasteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteMenuItemActionPerformed
-        EditStrategies s = new EditStrategies(this, false);
+        EditStrategiesDialog s = new EditStrategiesDialog(this, false);
 
         s.setVisible(rootPaneCheckingEnabled);
 

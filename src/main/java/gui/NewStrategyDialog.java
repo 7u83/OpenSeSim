@@ -46,7 +46,7 @@ public class NewStrategyDialog extends EscDialog {
         }
     }
 
-    Result result = null;
+    transient Result result;
 
     /**
      * Creates new form NewStrategyDialog
@@ -55,12 +55,13 @@ public class NewStrategyDialog extends EscDialog {
      */
     public NewStrategyDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        this.result = null;
         initComponents();
-        this.setLocationRelativeTo(this.getParent());
+   //     this.setLocationRelativeTo(this.getParent());
 
         boolean devel = Globals.prefs_new.get(Globals.DEVELSTATUS, "false").equals("true");
         ArrayList<String> names = Globals.sim.tloader.getDefaultStrategyNames(devel);
-        this.jStrategyComboBox.removeAllItems();
+        this.baseComboBox.removeAllItems();
 
         for (String name : names) {
             AutoTraderInterface ac = Globals.sim.tloader.getStrategyBase(name);
@@ -69,17 +70,30 @@ public class NewStrategyDialog extends EscDialog {
             r.base = name;
             r.displayName = ac.getDisplayName()+ (ac.getDevelStatus() ? "  (Experimenatl)" : "");
 
-            this.jStrategyComboBox.addItem(r);
+            this.baseComboBox.addItem(r);
         }
+    }
+    
+    public NewStrategyDialog(java.awt.Frame parent, boolean modal, String base){
+        this(parent,modal);
+        for (int i=0; i<baseComboBox.getItemCount(); i++){
+            Result r = baseComboBox.getItemAt(i);
+            if (r.base.equals(base)){
+                baseComboBox.setSelectedIndex(i);
+                break;
+            }
+        }
+        
+        this.baseComboBox.setEnabled(false);
     }
 
     private void saveResult() {
-        String name = this.jTextField1.getText();
+        String name = this.nameInput.getText();
         if (name.equals("")) {
             return;
         }
 
-        this.result = (Result) this.jStrategyComboBox.getSelectedItem();
+        this.result = (Result) this.baseComboBox.getSelectedItem();
         this.result.name = name;
 
         this.dispose();
@@ -95,43 +109,43 @@ public class NewStrategyDialog extends EscDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jStrategyComboBox = new javax.swing.JComboBox<>();
-        jOkButton = new javax.swing.JButton();
-        jCancelButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        baseComboBox = new javax.swing.JComboBox<>();
+        okButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
+        baseText = new javax.swing.JLabel();
+        nameInput = new javax.swing.JTextField();
+        nameText = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create Strategy");
 
-        jStrategyComboBox.setModel(new javax.swing.DefaultComboBoxModel<Result>());
+        baseComboBox.setModel(new javax.swing.DefaultComboBoxModel<Result>());
 
-        jOkButton.setText("Ok");
-        jOkButton.addActionListener(new java.awt.event.ActionListener() {
+        okButton.setText("Ok");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jOkButtonActionPerformed(evt);
+                okButtonActionPerformed(evt);
             }
         });
 
-        jCancelButton.setMnemonic('c');
-        jCancelButton.setText("Cancel");
-        jCancelButton.setToolTipText("");
-        jCancelButton.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setMnemonic('c');
+        cancelButton.setText("Cancel");
+        cancelButton.setToolTipText("");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCancelButtonActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Base:");
+        baseText.setText("Base:");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        nameInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                nameInputActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("Name:");
+        nameText.setText("Name:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,17 +156,17 @@ public class NewStrategyDialog extends EscDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 268, Short.MAX_VALUE)
-                        .addComponent(jOkButton)
+                        .addComponent(okButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCancelButton))
+                        .addComponent(cancelButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
+                            .addComponent(baseText)
+                            .addComponent(nameText))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jStrategyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jTextField1))))
+                            .addComponent(baseComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(nameInput))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -160,43 +174,43 @@ public class NewStrategyDialog extends EscDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jStrategyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(baseComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(baseText))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(nameInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nameText))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jOkButton)
-                    .addComponent(jCancelButton))
+                    .addComponent(okButton)
+                    .addComponent(cancelButton))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void nameInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameInputActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_nameInputActionPerformed
 
 
-    private void jOkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jOkButtonActionPerformed
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         this.saveResult();
-    }//GEN-LAST:event_jOkButtonActionPerformed
+    }//GEN-LAST:event_okButtonActionPerformed
 
-    private void jCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCancelButtonActionPerformed
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.result=null;
         this.dispose();
-    }//GEN-LAST:event_jCancelButtonActionPerformed
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jCancelButton;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JButton jOkButton;
-    private javax.swing.JComboBox<Result> jStrategyComboBox;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JComboBox<Result> baseComboBox;
+    private javax.swing.JLabel baseText;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JTextField nameInput;
+    private javax.swing.JLabel nameText;
+    private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
 }

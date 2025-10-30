@@ -52,16 +52,14 @@ public class ManTraderConsoleDialog extends EscDialog {
         super(parent, modal);
         se = e;
         account = a;
+    
         initComponents();
+        
+        manTraderConsole.init(account, mt);
 
-        this.pack(); // Größe basierend auf Komponenten berechnen
-        this.setMinimumSize(this.getSize()); // Minimalgröße setzen
-
-        this.manTraderConsole.init(account,mt);
-
-        /*  this.ordersList.initOrderList(account); */
-        this.setTitle(account.getOwner().getName() + " - Trading Console");
-        this.setLocationRelativeTo(parent);
+        // Minimalgröße setzen
+        //manTraderConsole.init(account, mt);
+ 
     }
 
     /*  public gui.OpenOrdersList getOrderList() {
@@ -77,7 +75,7 @@ public class ManTraderConsoleDialog extends EscDialog {
     }
 
     void doUpdate(Account a, ManTrader mt) {
-        this.manTraderConsole.doUpdate(a,mt);
+        this.manTraderConsole.doUpdate(a, mt);
     }
 
     // public ManTraderConsole getConsole(){
@@ -143,18 +141,18 @@ public class ManTraderConsoleDialog extends EscDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ctxMenuCreateBuyOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateBuyOrderActionPerformed
-      //  createOrder(Order.BUYLIMIT);
+        //  createOrder(Order.BUYLIMIT);
     }//GEN-LAST:event_ctxMenuCreateBuyOrderActionPerformed
 
     private void ctxMenuCreateSellOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCreateSellOrderActionPerformed
-       // createOrder(Order.SELLLIMIT);
+        // createOrder(Order.SELLLIMIT);
     }//GEN-LAST:event_ctxMenuCreateSellOrderActionPerformed
 
     private void ctxMenuCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctxMenuCancelOrderActionPerformed
-   //     int r = table.getSelectedRow();
-   //    Long id = (Long) model.getValueAt(r, 0);
+        //     int r = table.getSelectedRow();
+        //    Long id = (Long) model.getValueAt(r, 0);
 
-   //    System.out.printf("Should cancel %d\n", id);
+        //    System.out.printf("Should cancel %d\n", id);
         //      Globals.sim.se.cancelOrder(account, id);
     }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
 

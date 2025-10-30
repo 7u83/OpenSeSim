@@ -146,10 +146,10 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
         consoleDialog.init(se, account_id);
         consoleDialog.doUpdate(account_id, this);
-//        this.consoleDialog.getBalancePanel().updateBalance(this.getAccount());
-        // consoleDialog.     rdersList1.account=trader.getAccount();
-//        consoleDialog.getConsole().trader=this;
-        //  consoleDialog.setVisible(true);
+        consoleDialog.setLocationRelativeTo(parent);
+        consoleDialog.pack(); // Größe basierend auf Komponenten berechnen
+        consoleDialog.setMinimumSize(consoleDialog.getSize());        
+        consoleDialog.setTitle(account_id.getOwner().getName() + " - Trading Console");
         return this.consoleDialog;
     }
 
