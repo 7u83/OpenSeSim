@@ -244,7 +244,9 @@ public class Sim {
         long id = 0;
         for (int i = 0; i < tlist.length(); i++) {
             JSONObject t = tlist.getJSONObject(i);
-            String strategy_name = t.getString("Strategy");
+            String strategy_name = t.optString("Strategy",null);
+            if (strategy_name==null)
+                continue;
             JSONObject strategy = getStrategy(cfg, strategy_name);
             
             // String base = strategy.getString("base");
@@ -253,8 +255,8 @@ public class Sim {
             //     System.out.printf("Load Strat: %s\n", strategy_name);
             //      System.out.printf("Base %s\n", base);
             Integer count = t.getInt("Count");
-            Float shares = (float) t.getDouble("Shares");
-            Float money = (float) t.getDouble("Cash");
+            Float shares = (float) t.optDouble("Shares",0);
+            Float money = (float) t.optDouble("Cash",0);
 
             Boolean enabled = t.optBoolean("Enabled", false);
             if (!enabled) {

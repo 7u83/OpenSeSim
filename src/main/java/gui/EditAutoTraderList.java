@@ -25,20 +25,12 @@
  */
 package gui;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 //import sesim.AutoTraderConfig;
@@ -56,7 +48,17 @@ public class EditAutoTraderList extends javax.swing.JPanel {
     }
 
     void save() {
-        DefaultTableModel model = (DefaultTableModel) list.getModel();
+        // 1. Hole den Zell-Editor der JTable
+        TableCellEditor editor = list.getCellEditor();
+
+        // 2. Prüfe, ob aktuell eine Zelle bearbeitet wird
+        if (editor != null) {
+            // 3. Stoppe die Bearbeitung und zwinge die Tabelle, den neuen Wert 
+            //    in das TableModel zu übernehmen.
+            editor.stopCellEditing();
+        }
+
+        DefaultTableModel m = (DefaultTableModel) list.getModel();
         JTableHeader th = list.getTableHeader();
         /*
         for (int i = 0; i < model.getColumnCount(); i++) {
@@ -65,10 +67,10 @@ public class EditAutoTraderList extends javax.swing.JPanel {
          */
         JSONArray ja = new JSONArray();
 
-        for (int i = 0; i < model.getRowCount(); i++) {
+        for (int i = 0; i < m.getRowCount(); i++) {
             JSONObject jo = new JSONObject();
-            for (int x = 0; x < model.getColumnCount(); x++) {
-                Object cw = model.getValueAt(i, x);
+            for (int x = 0; x < m.getColumnCount(); x++) {
+                Object cw = m.getValueAt(i, x);
 
                 //System.out.printf("CWSaver: %s\n",cw.getClass().toString());
                 if (cw != null) {
@@ -82,7 +84,6 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 //        Globals.prefs.put(Globals.PrefKeys.TRADERS, ja.toString());
 // TUBE GLOB
         Globals.putTraders(ja);
-        
 
     }
 
@@ -105,14 +106,13 @@ public class EditAutoTraderList extends javax.swing.JPanel {
                     continue;
                 }
 
-             //   System.out.printf("Want to set (%d,%d): %s\n", row, col, val);
-
+                //   System.out.printf("Want to set (%d,%d): %s\n", row, col, val);
                 //list.getModel().setValueAt(val, row, col);
                 Class cl = list.getModel().getColumnClass(col);
-             //   System.out.printf("The Class is: %s\n", cl.getName());
+                //   System.out.printf("The Class is: %s\n", cl.getName());
                 Object cv = new Object();
                 if (cl == Float.class) {
-                    cv = (float)rowobj.optDouble(h,0);
+                    cv = (float) rowobj.optDouble(h, 0);
                 }
                 if (cl == String.class) {
                     cv = rowobj.getString(h);
@@ -133,24 +133,79 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         }
 
     }
+    
+    
+    /**
+     * Löscht alle ausgewählten Zeilen aus der JTable 'list' und dem zugrundeliegenden DefaultTableModel.
+     */
+    public void deleteSelectedRows() {
+        // 1. Hole das Model und die ausgewählten Zeilen-Indizes (View-Indizes).
+        DefaultTableModel model = (DefaultTableModel) list.getModel();
+        int[] selectedRows = list.getSelectedRows();
+
+        // Keine Zeilen ausgewählt
+        if (selectedRows.length == 0) {
+            // Optionale Meldung, falls keine Zeile ausgewählt ist
+            // JOptionPane.showMessageDialog(this, "Bitte wählen Sie mindestens eine Zeile zum Löschen aus.", "Hinweis", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // 2. Konvertiere View-Indizes in Model-Indizes (wichtig bei Sortierung!)
+        for (int i = 0; i < selectedRows.length; i++) {
+            selectedRows[i] = list.convertRowIndexToModel(selectedRows[i]);
+        }
+
+        // 3. Sortiere die Indizes absteigend und lösche von hinten nach vorne
+        java.util.Arrays.sort(selectedRows); // Stellt sicher, dass die Indizes sortiert sind
+
+        // Iteriere rückwärts, um Index-Verschiebungen zu vermeiden
+        for (int i = selectedRows.length - 1; i >= 0; i--) {
+            int modelRowIndex = selectedRows[i];
+            model.removeRow(modelRowIndex);
+        }
+
+        // 4. Cleanup
+        list.clearSelection();
+        
+        // Da das Model geändert wurde, aktualisiere die Zusammenfassung
+        this.summary.setText(String.format("Initial price: %.2f", this.caclculateInitialPrice()));
+        
+        System.out.println(selectedRows.length + " Zeile(n) aus der Tabelle gelöscht.");
+    }
+    
 
     DefaultTableModel model;
 
-    private float getFairValue() {
+    private float caclculateInitialPrice() {
         float money = 0.0f;
         float shares = 0.0f;
 
         for (int r = 0; r < model.getRowCount(); r++) {
-            Boolean e = (Boolean) list.getValueAt(r, list.getColumn("Enabled").getModelIndex());
+            Boolean e = (Boolean) model.getValueAt(r, list.getColumn("Enabled").getModelIndex());
             if (e == null) {
                 continue;
             }
             if (!e) {
                 continue;
             }
-            money += (float) list.getValueAt(r, list.getColumn("Cash").getModelIndex());
-            shares += (float) list.getValueAt(r, list.getColumn("Shares").getModelIndex());
-//            System.out.printf("Row: %d %f %f\n", r, money, shares);
+
+            int count = 0;
+            try {
+                count = (int) model.getValueAt(r, list.getColumn("Count").getModelIndex());
+            } catch (Exception ex) {
+
+            }
+
+            try {
+                money += (float) model.getValueAt(r, list.getColumn("Cash").getModelIndex()) * count;
+            } catch (Exception ex) {
+            }
+
+            try {
+                shares += (float) model.getValueAt(r, list.getColumn("Shares").getModelIndex()) * count;
+            } catch (Exception ex) {
+            }
+
         }
         return money / shares;
     }
@@ -179,15 +234,16 @@ public class EditAutoTraderList extends javax.swing.JPanel {
         list.setRowHeight(30);
 
         list.getModel().addTableModelListener((TableModelEvent e) -> {
-            this.summary.setText(String.format("Fair Value: %.5f", this.getFairValue()));
+            this.summary.setText(String.format("Initial price: %.2f", this.caclculateInitialPrice()));
 
         });
-        this.summary.setText(String.format("Fair Value: %.5f", this.getFairValue()));
+        this.summary.setText(String.format("Initial price: %.2f", this.caclculateInitialPrice()));
     }
 
     void add() {
         DefaultTableModel model = (DefaultTableModel) list.getModel();
         model.setRowCount(model.getRowCount() + 1);
+        model.setValueAt("New Trader", model.getRowCount() - 1, 0);
     }
 
     // JLabel summary = null;
@@ -226,7 +282,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
             list.getColumnModel().getColumn(1).setPreferredWidth(30);
         }
 
-        summary.setText("jLabel1");
+        summary.setText("Text");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

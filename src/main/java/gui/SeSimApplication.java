@@ -112,6 +112,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         hb.enableHelpKey(getRootPane(), "intro", hs);
         
+        this.meinToolBar.setFloatable(false);
     }
 
     /**
@@ -128,12 +129,13 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane2 = new javax.swing.JSplitPane();
         orderBookNew1 = new gui.orderbook.RawOrderBook();
+        meinToolBar = new javax.swing.JToolBar();
         jPanel2 = new javax.swing.JPanel();
         clock = new gui.Clock();
-        jToolBar1 = new javax.swing.JToolBar();
-        runButton = new javax.swing.JButton();
-        pauseButton = new javax.swing.JButton();
+        runControls = new javax.swing.JPanel();
         stopButton = new javax.swing.JButton();
+        pauseButton = new javax.swing.JButton();
+        runButton = new javax.swing.JButton();
         accelerationPanel1 = new gui.AccelerationPanel();
         jSplitPane3 = new javax.swing.JSplitPane();
         jSplitPane4 = new javax.swing.JSplitPane();
@@ -188,11 +190,31 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         jSplitPane1.setTopComponent(jSplitPane2);
 
+        meinToolBar.setRollover(true);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SeSim - Stock Exchange Simmulator");
         setMinimumSize(new java.awt.Dimension(640, 480));
 
-        jToolBar1.setRollover(true);
+        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stop.gif"))); // NOI18N
+        stopButton.setText("Stop");
+        stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        stopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        stopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopButtonActionPerformed(evt);
+            }
+        });
+
+        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
+        pauseButton.setText("Pause");
+        pauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        pauseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pauseButtonActionPerformed(evt);
+            }
+        });
 
         runButton.setFont(runButton.getFont());
         runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run.gif"))); // NOI18N
@@ -205,38 +227,36 @@ public class SeSimApplication extends javax.swing.JFrame {
                 runButtonActionPerformed(evt);
             }
         });
-        jToolBar1.add(runButton);
 
-        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
-        pauseButton.setText("Pause");
-        pauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        pauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        pauseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pauseButtonActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(pauseButton);
-
-        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stop.gif"))); // NOI18N
-        stopButton.setText("Stop");
-        stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        stopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        stopButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stopButtonActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(stopButton);
-        jToolBar1.add(accelerationPanel1);
+        javax.swing.GroupLayout runControlsLayout = new javax.swing.GroupLayout(runControls);
+        runControls.setLayout(runControlsLayout);
+        runControlsLayout.setHorizontalGroup(
+            runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runControlsLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(runButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pauseButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(stopButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        runControlsLayout.setVerticalGroup(
+            runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(stopButton, javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pauseButton, javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(runButton, javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(accelerationPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
+                .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 502, Short.MAX_VALUE)
                 .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -245,12 +265,12 @@ public class SeSimApplication extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
-                        .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 7, Short.MAX_VALUE))
+                        .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
@@ -272,11 +292,9 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
 
-        fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
         openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        openMenuItem.setMnemonic('o');
         openMenuItem.setText("Open");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -286,7 +304,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(openMenuItem);
 
         saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        saveMenuItem.setMnemonic('s');
         saveMenuItem.setText("Save");
         saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -295,7 +312,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         fileMenu.add(saveMenuItem);
 
-        saveAsMenuItem.setMnemonic('a');
         saveAsMenuItem.setText("Save As ...");
         saveAsMenuItem.setDisplayedMnemonicIndex(5);
         saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -305,7 +321,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         fileMenu.add(saveAsMenuItem);
 
-        closeMenuItem.setMnemonic('c');
         closeMenuItem.setText("Close");
         closeMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -315,7 +330,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(closeMenuItem);
         fileMenu.add(jSeparator5);
 
-        resetToDefaultsMenuItem.setMnemonic('r');
         resetToDefaultsMenuItem.setText("Reset to defaults");
         resetToDefaultsMenuItem.setToolTipText("");
         resetToDefaultsMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -325,7 +339,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         fileMenu.add(resetToDefaultsMenuItem);
 
-        clearMenuItem.setMnemonic('c');
         clearMenuItem.setText("Clear All");
         clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -336,7 +349,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(jSeparator4);
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -347,10 +359,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(fileMenu);
 
-        editMenu.setMnemonic('e');
         editMenu.setText("Edit");
 
-        editExchangeMenuItem.setMnemonic('y');
         editExchangeMenuItem.setText("Exchange ...");
         editExchangeMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -360,7 +370,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         editMenu.add(editExchangeMenuItem);
         editMenu.add(jSeparator1);
 
-        pasteMenuItem.setMnemonic('s');
         pasteMenuItem.setText("Strategies ...");
         pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -369,7 +378,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         editMenu.add(pasteMenuItem);
 
-        deleteMenuItem.setMnemonic('d');
         deleteMenuItem.setText("Traders ...");
         deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -379,7 +387,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         editMenu.add(deleteMenuItem);
         editMenu.add(jSeparator2);
 
-        editPreferences.setMnemonic('p');
         editPreferences.setText("Preferences ...");
         editPreferences.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -390,10 +397,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(editMenu);
 
-        simMenu.setMnemonic('s');
         simMenu.setText("Sim");
 
-        simMenuStart.setMnemonic('s');
         simMenuStart.setText("Start");
         simMenuStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -402,7 +407,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         simMenu.add(simMenuStart);
 
-        simMenuPause.setMnemonic('p');
         simMenuPause.setText("Pause");
         simMenuPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -411,7 +415,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         simMenu.add(simMenuPause);
 
-        simMenuStop.setMnemonic('t');
         simMenuStop.setText("Stop");
         simMenuStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -431,11 +434,9 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(simMenu);
 
-        viewMenu.setMnemonic('v');
         viewMenu.setText("View");
 
         viewTraderListCheckBox.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, 0));
-        viewTraderListCheckBox.setMnemonic('t');
         viewTraderListCheckBox.setText("Traders");
         viewTraderListCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -445,7 +446,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         viewMenu.add(viewTraderListCheckBox);
 
         viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, 0));
-        viewRawOrderBook.setMnemonic('R');
         viewRawOrderBook.setText("Level 3 Orde Book");
         viewRawOrderBook.setToolTipText("");
         viewRawOrderBook.addActionListener(new java.awt.event.ActionListener() {
@@ -484,10 +484,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(viewMenu);
 
-        helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
 
-        aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText("About");
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1069,7 +1067,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane4;
     private javax.swing.JSplitPane jSplitPane5;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar meinToolBar;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private gui.orderbook.RawOrderBook orderBookNew1;
@@ -1080,6 +1078,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem randomSeed;
     private javax.swing.JMenuItem resetToDefaultsMenuItem;
     private javax.swing.JButton runButton;
+    private javax.swing.JPanel runControls;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenu simMenu;
