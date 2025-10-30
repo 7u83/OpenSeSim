@@ -60,7 +60,9 @@ public class MainChart extends chart.Chart {
         main.log = logMenu.isSelected();
         main.rightYData = data;
         main.rightYColor = Color.WHITE;
-        main.crossColor = Color.RED;
+        main.crossColor = Color.BLACK;
+        main.pad_top=1;
+        main.pad_bot=1;
 
         addChart(main);
 
@@ -72,7 +74,8 @@ public class MainChart extends chart.Chart {
         vol.bgcolor = Color.WHITE;
         vol.rightYData = data;
         vol.rightYColor = Color.WHITE;
-        vol.crossColor = Color.GREEN;
+        vol.crossColor = Color.BLACK;
+        vol.pad_top=1;
 
         addChart(vol);
     }

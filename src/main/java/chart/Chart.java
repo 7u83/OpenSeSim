@@ -285,7 +285,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         float getValAtY(float y) {
-            float val = 0;
+            //  float val = 0;
 
             if (c_mm.isLog()) {
                 float ys = rect.height / c_mm.getDiff();
@@ -317,7 +317,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         //    System.out.printf("Draw ohlc: %f %f %f %f\n", i.getOpen(), i.getHigh(),i.getLow(),i.getClose());
         Graphics2D g = ctx.g;
-
+        
         if (i.getOpen() < i.getClose()) {
             int xl = (int) (x + candleWidth / 2);
 
@@ -357,8 +357,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         g.drawLine(x, (int) ctx.getY(0), x, (int) ctx.getY(i.getVolume()));
         float w = candleWidth;
         //float h = (int) (ctx.getY(0) - ctx.getY(i.getClose()));
-        g.fillRect(x, (int) ctx.getY(i.getVolume()), (int) w, (int) ctx.getY(0));
+       
+        int h = (int) ctx.getY(0) - (int) ctx.getY(i.getVolume());
+        
+    //   g.fillRect(x, (int) ctx.getY(i.getVolume()), (int) w, (int) ctx.getY(0));
 
+         g.fillRect(x, (int) ctx.getY(0)-h, (int) w, h);
         Rectangle r = ctx.rect;
     }
 
@@ -408,7 +412,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         dim = clip; //this.clip_bounds;
 
         // Dimension rv = this.getSize();
-        int yw = (int) (this.rightYAxisAreaWidth * this.emWidth);
+        int yw = (this.rightYAxisAreaWidth * this.emWidth);
 
         g.drawLine(dim.width + dim.x - yw, 0, dim.width + dim.x - yw, dim.height);
 
@@ -419,7 +423,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         for (int yp = (int) y2; yp < y1; yp += emWidth * 5) {
             g.drawLine(dim.width + dim.x - yw, yp, dim.width + dim.x - yw + emWidth, yp);
             float v1 = ctx.getValAtY(yp);
-            g.drawString(String.format("%.2f", v1), dim.width + dim.x - yw + emWidth * 1.5f, yp + c_font_height / 3);
+            g.drawString(String.format("%.2f", v1), dim.width + dim.x
+                    - yw + emWidth * 1.5f, yp + c_font_height / 3);
         }
 
         /*     float v1, v2;
@@ -504,6 +509,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         public boolean log = false;
 
         public Color crossColor;
+        
+        public float pad_top=0;
+        public float pad_bot=0;
 
     }
 
@@ -521,25 +529,26 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (!mouseInside) {
             return;
         }
-        
+
         // Mausposition absolut auf dem Bildschirm
-    Point mouseOnScreen = MouseInfo.getPointerInfo().getLocation();
+        Point mouseOnScreen = MouseInfo.getPointerInfo().getLocation();
 
-    // Position relativ zum Panel
-    Point panelLocationOnScreen = this.getLocationOnScreen();
-     mouseX = mouseOnScreen.x - panelLocationOnScreen.x;
-     mouseY = mouseOnScreen.y - panelLocationOnScreen.y;
+        // Position relativ zum Panel
+        Point panelLocationOnScreen = this.getLocationOnScreen();
+        mouseX = mouseOnScreen.x - panelLocationOnScreen.x;
+        mouseY = mouseOnScreen.y - panelLocationOnScreen.y;
 
-    // Kreuz zeichnen
-    int size = 10;
-    g.drawLine(mouseX - size, mouseY, mouseX + size, mouseY);
-    g.drawLine(mouseX, mouseY - size, mouseX, mouseY + size);
+        // Kreuz zeichnen
+        int size = 10;
+        g.drawLine(mouseX - size, mouseY, mouseX + size, mouseY);
+        g.drawLine(mouseX, mouseY - size, mouseX, mouseY + size);
 
         Rectangle clip = getVisibleRect();
 
         int h1 = 0;
 
         Color c = Color.BLUE;
+        SubChartDef cd = null;
 
         for (SubChartDef d : charts) {
             // Calculate the height for all sub-charts
@@ -550,6 +559,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             if (mouseY < h1 + subchartwin_height) {
                 c = d.crossColor;
+                cd = d;
                 break;
             }
 
@@ -570,11 +580,11 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         double bars = clip.width / (emWidth * x_unit_width) * data.getFrameSize();
 
         n = (long) (bars * (mouseX + 1) / clip.width);
-        System.out.printf("bars: %f, em*uw: %d, pwidth: %d, clip.width: %d\n",
-                bars, (int) (emWidth * x_unit_width), 0, clip.width);
+        //  System.out.printf("bars: %f, em*uw: %d, pwidth: %d, clip.width: %d\n",
+        //             bars, (int) (emWidth * x_unit_width), 0, clip.width);
 
         String text = formatTimeMillis(n); // first_bar* data.getFrameSize()+(long)(mouseX*emWidth * x_unit_width));
-        System.out.printf("Current X: %s - ? %d %d\n", text, mouseX, first_bar);
+        //     System.out.printf("Current X: %s - ? %d %d\n", text, mouseX, first_bar);
 
         // FontMetrics für die aktuelle Schriftart
         FontMetrics fm = g.getFontMetrics();
@@ -587,17 +597,75 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         int padding = 4;
 
         // Rechteck zeichnen
-        int x = mouseX-(textWidth + 2 * padding)/2; // Beispielkoordinaten
-        int y = clip.height-(textHeight + 2 * padding);
+        int x = mouseX - (textWidth + 2 * padding) / 2; // Beispielkoordinaten
+        int y = clip.height - (textHeight + 2 * padding);
         g.setColor(Color.WHITE);
         g.fillRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
         g.setColor(c);
         g.drawRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
         // Text innerhalb des Rechtecks zeichnen
         g.drawString(text, x + padding, y + fm.getAscent() + padding);
-        
-        
 
+        DrawCtx ctx = this.makeDrawCtx(cd);
+        if (ctx==null)
+            return;
+        Graphics2D g2 = (Graphics2D) g.create();
+        ctx.g = g2;
+        int w = (clip.width - (this.leftYAxisAreaWidth * this.emWidth + this.rightYAxisAreaWidth * this.emWidth));
+        ctx.g.translate(this.leftYAxisAreaWidth * this.emWidth + w, h1);
+        int chartwin_height = clip.height - this.xAxisAreaHight * emWidth;
+        int subchartwin_height = (int) (chartwin_height * cd.height);
+        ctx.g.setClip(clip.x, clip.y, this.rightYAxisAreaWidth * this.emWidth, subchartwin_height);
+
+        float val = ctx.getValAtY(mouseY-h1);
+        text = String.format("%.2f", val);
+       
+        textWidth = fm.stringWidth(text);
+         x = clip.x+20; //mouseX - (textWidth + 2 * padding) / 2; // Beispielkoordinaten
+         y = mouseY-h1; //clip.height - (textHeight + 2 * padding);
+               g2.setColor(Color.WHITE);
+        g2.fillRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
+        g2.setColor(c);
+        g2.drawRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
+        // Text innerhalb des Rechtecks zeichnen
+        g2.drawString(text, x + padding, y + fm.getAscent() + padding);
+        g2.dispose();
+
+    //    System.out.printf("yval %f\n", val);
+
+    }
+
+    DrawCtx makeDrawCtx(SubChartDef d) {
+        if (d==null)
+            return null;
+        Rectangle clip = this.getVisibleRect();
+        DrawCtx ctx = new DrawCtx();
+        // calclulate the min/max values
+        switch (d.type) {
+            case VOL:
+                ctx.c_mm = d.data.getVolMinMax(first_bar, last_bar);
+                ctx.c_mm.setMin(0);
+                break;
+            default:
+                ctx.c_mm = d.data.getMinMax(first_bar, last_bar);
+        }
+        // Calculate the height for all sub-charts
+        // this is the height of out panel minus the height of x-legend
+        int chartwin_height = clip.height - this.xAxisAreaHight * emWidth;
+
+        // Caclulate the height of our sub-chart 
+        int subchartwin_height = (int) (chartwin_height * d.height);
+
+        int pad_top; // = (int) (subchartwin_height * d.paddingTop);
+        pad_top = (int)(this.emWidth * d.pad_top);
+        int pad_bot = (int)(this.emWidth*d.pad_bot);
+
+        int pwidth = (int) (emWidth * x_unit_width * (num_bars + 1))
+                + clip.width - 100;
+        ctx.rect = new Rectangle(0, pad_top, pwidth, subchartwin_height - pad_top - pad_bot);
+        ctx.c_yscaling = ctx.rect.height / ctx.c_mm.getDiff();
+
+        return ctx;
     }
 
     void drawAll(Graphics2D g) {
@@ -658,7 +726,13 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             // Caclulate the top padding 
             int pad_top; // = (int) (subchartwin_height * d.paddingTop);
             pad_top = this.emWidth;
+            
+        
+            
             int pad_bot = this.emWidth;
+            
+                        pad_top = (int)(this.emWidth * d.pad_top);
+                 pad_bot = (int)(this.emWidth*d.pad_bot);
             ctx.rect = new Rectangle(0, pad_top, pwidth, subchartwin_height - pad_top - pad_bot);
 //            ctx.scaling = (float) ctx.rect.height / (c_mm.getMax() - c_mm.getMin());
 //            ctx.min = c_mm.getMin();
