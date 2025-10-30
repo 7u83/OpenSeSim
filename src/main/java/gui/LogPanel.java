@@ -60,7 +60,7 @@ public class LogPanel extends javax.swing.JPanel {
             
         
             String msg = getFormatter().format(record);
-            logPanel.appendLog(record.getLevel().getName(),msg.stripTrailing());
+            logPanel.appendLog(record.getLevel().getName(),msg /*.stripTrailing()*/);
             
   
         }
@@ -163,6 +163,7 @@ public class LogPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         logArea = new javax.swing.JTextPane();
 
+        logArea.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jScrollPane1.setViewportView(logArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

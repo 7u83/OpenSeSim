@@ -42,7 +42,7 @@ public class LoggerDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
-        this.setTitle("Logger Window");
+      setTitle("Logger Window");
 
         class LogHandler extends Handler {
 

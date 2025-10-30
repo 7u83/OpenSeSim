@@ -39,6 +39,7 @@ public class LogDialog extends  EscDialog {
     public LogDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setTitle("SeSim Log");
     }
 
     /**

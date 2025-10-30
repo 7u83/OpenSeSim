@@ -31,8 +31,10 @@ import groovy.lang.MissingMethodException;
 import groovy.lang.Script;
 import static gui.Globals.sim;
 import java.awt.Frame;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import javax.swing.JDialog;
@@ -57,28 +59,37 @@ import sesim.Sim;
  */
 public class GroovyTrader extends AutoTraderBase {
 
-    String groovySourceCode = "";    
+    String groovySourceCode = "";
     Script groovyScript;
 
     final String CFG_SRC = "src";
     AccountApi accountApi;
     SeSimApi sesimApi;
-    
-    
-    public GroovyTrader(){
-                //"/resources/files/GroovyTrader/"
+
+    public GroovyTrader() {
+        //"/resources/files/GroovyTrader/"
         try (InputStream is = getClass().getResourceAsStream("/files/GroovyTrader/default.groovy")) {
-            
+
             if (is == null) {
                 // Dies tritt ein, wenn die Datei im JAR nicht gefunden wird.
-                throw new IOException("SQL-Resource nicht im JAR gefunden: " );
+                throw new IOException("SQL-Resource nicht im JAR gefunden: ");
+            }
+
+            String content;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                content = sb.toString();
             }
             
-            // Java 9+ Methode: Stream in String lesen
-            this.groovySourceCode = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            
+            this.groovySourceCode = content;
+
         } catch (IOException ex) {
-            System.getLogger(GroovyTrader.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+            // System.getLogger(GroovyTrader.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
 
@@ -109,9 +120,6 @@ public class GroovyTrader extends AutoTraderBase {
             sesim.Logger.error("Executing %s\n,%s", getName(), e.getMessage());
             // throw (e);
         }
-        
-
-        
 
     }
 
@@ -139,9 +147,6 @@ public class GroovyTrader extends AutoTraderBase {
         public final byte SELL = Order.SELL;
         public final byte BUY = Order.BUY;
         public final byte STOPLOSS = Order.STOPLOSS;
-        
-        
-        
 
         SeSimApi() {
             account_id.setListener(this);
@@ -164,10 +169,10 @@ public class GroovyTrader extends AutoTraderBase {
 
         }
 
-        public Order createOrder(byte type, double vol, double limit,double stop) {
+        public Order createOrder(byte type, double vol, double limit, double stop) {
             limit = se.roundMoney(limit);
             vol = se.roundShares(vol);
-            return se.createOrder(account_id, type, (float) vol, (float) limit, (float)stop);
+            return se.createOrder(account_id, type, (float) vol, (float) limit, (float) stop);
         }
 
         public void logError(String msg, Object... args) {
@@ -182,8 +187,9 @@ public class GroovyTrader extends AutoTraderBase {
             return createOrder(type, (float)vol, (float)limit);
         }*/
         public boolean cancleOrder(Order o) {
-            if (o==null)
+            if (o == null) {
                 return false;
+            }
             return se.cancelOrder(account_id, o.getID());
         }
 
@@ -238,8 +244,8 @@ public class GroovyTrader extends AutoTraderBase {
             sim.se.sheduleOnPriceAbove(e);
             return e;
         }
-        
-        public void cancelSchedulePriceAboce(GroovyPriceEvent e){
+
+        public void cancelSchedulePriceAboce(GroovyPriceEvent e) {
             sim.se.cancelScheduleOnPriceAbove(e);
         }
 
@@ -294,9 +300,5 @@ public class GroovyTrader extends AutoTraderBase {
     public long processEvent(long time, Scheduler.Event e) {
         return 0;
     }
-    
-    
-    
-    
 
 }
