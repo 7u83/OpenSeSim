@@ -31,6 +31,9 @@ import groovy.lang.MissingMethodException;
 import groovy.lang.Script;
 import static gui.Globals.sim;
 import java.awt.Frame;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import javax.swing.JDialog;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -54,12 +57,30 @@ import sesim.Sim;
  */
 public class GroovyTrader extends AutoTraderBase {
 
-    String groovySourceCode = "";
+    String groovySourceCode = "";    
     Script groovyScript;
 
     final String CFG_SRC = "src";
     AccountApi accountApi;
     SeSimApi sesimApi;
+    
+    
+    public GroovyTrader(){
+                //"/resources/files/GroovyTrader/"
+        try (InputStream is = getClass().getResourceAsStream("/files/GroovyTrader/default.groovy")) {
+            
+            if (is == null) {
+                // Dies tritt ein, wenn die Datei im JAR nicht gefunden wird.
+                throw new IOException("SQL-Resource nicht im JAR gefunden: " );
+            }
+            
+            // Java 9+ Methode: Stream in String lesen
+            this.groovySourceCode = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            
+        } catch (IOException ex) {
+            System.getLogger(GroovyTrader.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
 
     @Override
     public void start() {
@@ -88,6 +109,9 @@ public class GroovyTrader extends AutoTraderBase {
             sesim.Logger.error("Executing %s\n,%s", getName(), e.getMessage());
             // throw (e);
         }
+        
+
+        
 
     }
 
@@ -270,5 +294,9 @@ public class GroovyTrader extends AutoTraderBase {
     public long processEvent(long time, Scheduler.Event e) {
         return 0;
     }
+    
+    
+    
+    
 
 }

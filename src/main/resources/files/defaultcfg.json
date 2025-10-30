@@ -17,52 +17,46 @@
             "Name": "Bob"
         }
     ],
-    "strategies": {
-        "Groovy Example": {
-            "src": "\nimport groovy.transform.Field\n\n@Field INITIAL_DELAY_MIN = 60000\n@Field INITIAL_DELAY_MAX = 240000\n\n\ndef start(){\n\t// deactivate acount update notifications\n\tsesim.onAccountUpdate(null);\n\n\t// start with an initial delay\n\tdef delay = sesim.getRandom(INITIAL_DELAY_MIN,INITIAL_DELAY_MAX);\n\tsesim.setStatus(\"Initial delay %d\",delay);\n\tsesim.scheduleOnce(\"runTrader\",delay);\n}\n\ndef myEvent;\ndef myOrder;\n\ndef runTrader(){\n\t// buy 100000 shares (or as many as cash is available)\n\tsesim.createOrder(sesim.BUY,100000,0.0d,0.0d);\n\t// enable account update notifications\n\tsesim.onAccountUpdate(\"accountUpdated\");\n\n\t// calculate stop loss and take profit\n\tlastPrice = sesim.getLastPrice();\n\ttakeProfitPrice = lastPrice+lastPrice/100*10;\n\tstopLoss = lastPrice-lastPrice/100*10;\n\n\t// create a stop loss order\n\tmyOrder = sesim.createOrder(sesim.STOPLOSS,account.getShares(),0,stopLoss);\n\n\t// register a notificate when price hits take profit price\n\tmyEvent = sesim.scheduleOnPriceAbove(\"takeProfit\",takeProfitPrice);\n\n\t\n}\n\ndef takeProfit(){\n\t// take profit price hit, cancel the stop loss order\n\tsesim.cancleOrder(myOrder);\n\t// sell all shares\n\tsesim.createOrder(sesim.SELL,account.getShares(),0,0);\n\t// start over\n\tstart();\n}\n\ndef accountUpdated(def o){\n\tif (o.isClosed() && o.hasStop() ){\n\t\t// our stop loss order was executed\n\t\t// cancel the take profit event\n\t\tsesim.cancelSchedulePriceAboce(myEvent);\n\n\t\t// start over\n\t\tstart();\n\t}\n\t\n}\n",
-            "base": "traders.GroovyTrader.GroovyTrader"
-        },
-        "Simple Random": {
-            "initial_delay": [
-                0,
-                0
-            ],
-            "buy_order_timeout": [
-                10,
-                50
-            ],
-            "amount_to_sell": [
-                100,
-                100
-            ],
-            "sleep_after_sell": [
-                0,
-                0
-            ],
-            "sell_limit": [
-                -2,
-                2
-            ],
-            "sleep_after_buy": [
-                0,
-                0
-            ],
-            "amount_to_buy": [
-                100,
-                100
-            ],
-            "bankrupt_cash": 1,
-            "bankrupt_shares": 1,
-            "sell_order_timeout": [
-                10,
-                50
-            ],
-            "buy_limit": [
-                -2,
-                2
-            ],
-            "base": "traders.RandomTraderL"
-        }
-    },
+    "strategies": {"Simple Random": {
+        "initial_delay": [
+            0,
+            0
+        ],
+        "buy_order_timeout": [
+            10,
+            50
+        ],
+        "amount_to_sell": [
+            100,
+            100
+        ],
+        "sleep_after_sell": [
+            0,
+            0
+        ],
+        "sell_limit": [
+            -2,
+            2
+        ],
+        "sleep_after_buy": [
+            0,
+            0
+        ],
+        "amount_to_buy": [
+            100,
+            100
+        ],
+        "bankrupt_cash": 1,
+        "bankrupt_shares": 1,
+        "sell_order_timeout": [
+            10,
+            50
+        ],
+        "buy_limit": [
+            -2,
+            2
+        ],
+        "base": "traders.RandomTraderL"
+    }},
     "version": 0.1
 }
