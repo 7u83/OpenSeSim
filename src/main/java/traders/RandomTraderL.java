@@ -518,8 +518,7 @@ public class RandomTraderL extends AutoTraderBase
     }
 
     static public long getRandomDelta_Long(long lastPrice, long minDeviation, long maxDeviation, long minAbsoluteDeviation) {
-        // minPercent/maxPercent sind Fixkommawerte mit 1 Nachkommastelle
-        // Beispiel: -50 = -5.0%, +25 = +2.5%
+
 
         // 1. Preisänderungsspanne berechnen (in Cent)
         long minDelta = (lastPrice * minDeviation) / 1000;
@@ -609,9 +608,12 @@ return delta;
         return newPrice;
     }*/
     private Order doBuy() {
-
+        long money_avail = account_id.getMoney_Long();
         // how much money we ant to invest?
-        long money = getRandomDelta_Long(account_id.getMoney_Long(), amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
+        long money = getRandomDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
+        if (money>money_avail){
+            money=money_avail;
+        }
 
         Quote q = se.getBestPrice_0();
         long lp = q.getPrice_Long();
@@ -625,10 +627,12 @@ return delta;
     }
 
     private Order doSell() {
-
+        long shares = account_id.getShares_Long();
         // how many shares we want to sell?
-        long volume = getRandomDelta_Long(account_id.getShares_Long(), amountToSell[0], amountToSell[1], minAmountToSellDeviation);
-        //  volume = se.roundShares(volume);
+        long volume = getRandomDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
+        if (volume>shares){
+            volume=shares;
+        }
 
         //    float lp = 100.0; //se.getBestLimit(type);
         Quote q = se.getBestPrice_0();

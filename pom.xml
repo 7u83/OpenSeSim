@@ -67,9 +67,6 @@
                 <version>3.11.0</version>
                 <configuration>
                     <debug>true</debug>
-                    <compilerArgs>
-                        <arg>-Xlint</arg>
-                    </compilerArgs>
                 </configuration>
             </plugin>
 
