@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 /**
  * Interface for auto traders
+ *
  * @author 7u83 <7u83@mail.ru>
  */
 public interface AutoTraderInterface {
@@ -42,8 +43,9 @@ public interface AutoTraderInterface {
 
     /**
      * Get a graphical user interface to configure the auto trader.
-     * @return an AutoTraderGui object or null if there is no graphical
-     * user interface available.
+     *
+     * @return an AutoTraderGui object or null if there is no graphical user
+     * interface available.
      */
     public abstract AutoTraderGui getGui();
 
@@ -51,37 +53,43 @@ public interface AutoTraderInterface {
 
     /**
      * Get current configuration of the auto trader as JSON object.
+     *
      * @return JSONObject containing the configuration
      */
     public abstract JSONObject getConfig();
 
     /**
      * Set the configuration for auto trader by a JSON object.
+     *
      * @param cfg the configuration
      */
     public abstract void setConfig(JSONObject cfg);
 
     /**
      * Return the name of the auto trader.
+     *
      * @return name
      */
     public abstract String getName();
 
     /**
      * Initialize the auto trader
+     *
      * @param se Exechange to trade on
-     * @param id 
+     * @param id
      * @param name Name of auto trader
-     * @param money Money 
+     * @param money Money
      * @param shares Number of shares
-     * @param cfg 
+     * @param cfg
      */
-    public void init(Sim sim, long id, String name, float money, float shares, JSONObject cfg);
+    public void init(Sim sim, long id, String name, float money, float shares, String strategy, JSONObject cfg);
 
     public Account getAccount();
 
     public void start();
+
+    public String getStatus();
     
-        public String getStatus();
+    public void reset();
 
 }

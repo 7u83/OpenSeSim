@@ -75,7 +75,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
 
             model.setValueAt(((Order) o).getExecuted(), row, 5);
 
-            double av = ((Order) o).getAvaragePrice();
+            double av = ((Order) o).getAveragePrice();
             if (av < 0) {
                 model.setValueAt(null, row, 6);
 

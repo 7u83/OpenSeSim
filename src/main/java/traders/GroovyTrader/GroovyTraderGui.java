@@ -86,7 +86,7 @@ public class GroovyTraderGui extends AutoTraderGui implements SearchListener {
         // Optional: Zeilennummern anzeigen, etc.
         textArea.setCodeFoldingEnabled(true);
 
-        this.setText(trader.groovySourceCode);
+        this.setText(trader.getSourceCode());
 
         RTextScrollPane sp = new RTextScrollPane(textArea);
 
@@ -135,7 +135,7 @@ public class GroovyTraderGui extends AutoTraderGui implements SearchListener {
 
     @Override
     public void save() {
-        this.trader.groovySourceCode = getText();
+        this.trader.setSeourceCode(getText());
     }
 
     /**

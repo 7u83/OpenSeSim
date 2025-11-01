@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+    <head>
+        <title>SeSim API Reference</title>
+        <style type="text/css">
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #ffffff;
+                color: #000000;
+            }
+            h1 {
+                color: #003366;
+            }
+            h2 {
+                color: #0055aa;
+            }
+            a {
+                color: #0066cc;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            table {
+                border-collapse: collapse;
+            }
+            td, th {
+                border: 1px solid #000000;
+                padding: 4px;
+            }
+            li {
+                padding-bottom: 8px;
+            }
+
+            li p {
+                line-height: 16px;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <h1>SeSim API (Groovy)</h1>
+
+        <p>The <b>sesim</b> object provides trading simulation functions for Groovy scripts.</p>
+
+        <h2>Constants</h2>
+        <ul>
+            <li><b>BUYLIMIT</b> - Buy limit order type</li>
+            <li><b>SELLIMIT</b> - Sell limit order type</li>
+            <li><b>SELL</b> - Market sell order type</li>
+            <li><b>BUY</b> - Market buy order type</li>
+            <li><b>STOPLOSS</b> - Stop-loss order type</li>
+        </ul>
+
+        <h2>Order Management</h2>
+
+
+
+        <ul>
+            <li>
+                <b>createOrder(byte type, double vol, double limit, double stop)</b><br/>
+                Create a new order. Returns an Order object.<br/><br>
+                <i>type:</i> Can be one of <i>BUY,SELL,BUYLIMIT,SELLIMIT. STOPLOSS</i>.<br>
+                <i>vol</i>: Number of shares to trade<br>
+                <i>limit</i>: limit price, must be set if type ist <i>BUYLIMIT</i> OR <i>SELLLIMIT</i>.
+            </li>
+            <li><b>cancleOrder(Order o)</b><br/>
+                Cancel an existing order. Returns true if successful.</li>
+            <li><b>getLastQuote()</b><br/>
+                Returns the last Quote object.</li>
+            <li><b>getLastPrice()</b><br/>
+                Returns the price from the last quote.</li>
+        </ul>
+
+        <h2>Logging</h2>
+        <ul>
+            <li><b>logInfo(String msg, Object... args)</b> - Log an info message</li>
+            <li><b>logError(String msg, Object... args)</b> - Log an error message</li>
+        </ul>
+
+        <h2>Event Scheduling</h2>
+        <ul>
+            <li><b>scheduleOnce(String groovyFun, long timer)</b><br/>
+                Schedule a one-time call to a Groovy function after timer milliseconds.</li>
+            <li><b>scheduleOnPriceAbove(String groovyFun, double price)</b><br/>
+                Call a Groovy function when the price goes above price. Returns a GroovyPriceEvent.</li>
+            <li><b>cancelSchedulePriceAboce(GroovyPriceEvent e)</b><br/>
+                Cancel a scheduled "price above" event.</li>
+            <li><b>scheduleOnPriceBelow(String groovyFun, double price)</b><br/>
+                Call a Groovy function when the price goes below price. Returns a GroovyPriceEvent.</li>
+            <li><b>cancelSchedulePriceBelow(GroovyPriceEvent e)</b><br/>
+                Cancel a scheduled "price below" event.</li>
+        </ul>
+
+        <h2>Random Numbers</h2>
+        <ul>
+            <li><b>getRandom(long a, long b)</b> - Returns a random long between a and b.</li>
+            <li><b>getRandom(double a, double b)</b> - Returns a random double between a and b.</li>
+        </ul>
+
+        <h2>Status</h2>
+        <ul>
+            <li><b>setStatus(String s, Object... args)</b> - Set the current status message.</li>
+            <li><b>getName()</b> - Returns the name of the trader.</li>
+        </ul>
+        
+
+        <h2>Account Updates</h2>
+        <ul>
+            <li><b>onAccountUpdate(String groovyFun)</b><br/>
+                Register a Groovy function to be called whenever the account is updated. 
+                The function receives the Order that triggered the update.</li>
+        </ul>
+
+    </body>
+</html>

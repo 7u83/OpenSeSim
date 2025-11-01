@@ -44,6 +44,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     // protected AutoTraderConfig config;
 
     protected String name;
+    private String strategyName="default";
 
     /*    public AutoTraderBase(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
@@ -83,7 +84,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     }
 
     @Override
-    public void init(Sim sim, long id, String name, float money, float shares, JSONObject cfg) {
+    public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
         this.account_id = new Account(sim.se, money, shares); // se.createAccount(money, shares);
         //       se.getAccount(account_id).owner = this;
 
@@ -93,6 +94,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         this.se = se;
         this.name = name;
         this.id = id;
+        this.strategyName=strat;
 
     }
 
@@ -120,4 +122,20 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     public JDialog getGuiConsole(Frame parent) {
         return null;
     }
+    
+    
+
+    public String getStrategyName(){
+        return strategyName;
+    }
+    
+    public void setStrategyName(String s){
+        strategyName=s;
+    }
+    
+    @Override
+    public void reset(){
+        
+    }
+    
 }

@@ -5,4 +5,5 @@
     <mapID target="intro" url="pages/intro.html"/>
     <mapID target="usage" url="pages/usage.html"/>
     <mapID target="simple_random_l" url="pages/traders/simple_random_l.html"/>
+       <mapID target="groovy" url="pages/traders/groovy.html"/>
 </map>

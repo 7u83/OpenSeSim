@@ -175,7 +175,7 @@ public class Order implements OrderBookEntry {
         return !isSell();
     }
 
-    public long getAvaragePrice_Long() {
+    public long getAveragePrice_Long() {
         long e = getExecuted_Long();
         if (e <= 0) {
             return -1;
@@ -183,8 +183,8 @@ public class Order implements OrderBookEntry {
         return cost / e;
     }
 
-    public float getAvaragePrice() {
-        return getAvaragePrice_Long() / se.money_df;
+    public float getAveragePrice() {
+        return getAveragePrice_Long() / se.money_df;
     }
 
     public byte getStatus() {

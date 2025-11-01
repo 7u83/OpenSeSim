@@ -26,6 +26,7 @@
 package traders.GroovyTrader;
 
 import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import groovy.lang.MissingMethodException;
 import groovy.lang.Script;
@@ -37,6 +38,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import javax.swing.JDialog;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.json.JSONObject;
@@ -59,15 +61,27 @@ import sesim.Sim;
  */
 public class GroovyTrader extends AutoTraderBase {
 
-    String groovySourceCode = "";
+    static HashMap<String, Class<? extends Script>> scripts = new HashMap<>();
+    //static HashMap<String, String> sourceCode = new HashMap<>();
+
+    String sourceCode = "";
     Script groovyScript;
 
     final String CFG_SRC = "src";
     AccountApi accountApi;
     SeSimApi sesimApi;
 
+    @Override
+    public void reset() {
+    //    sourceCode = new HashMap<>();
+        scripts = new HashMap<>();
+    }
+
     public GroovyTrader() {
-        //"/resources/files/GroovyTrader/"
+        if (this.getSourceCode() != null) {
+            return;
+        }
+
         try (InputStream is = getClass().getResourceAsStream("/files/GroovyTrader/default.groovy")) {
 
             if (is == null) {
@@ -84,15 +98,58 @@ public class GroovyTrader extends AutoTraderBase {
                 }
                 content = sb.toString();
             }
-            
-            this.groovySourceCode = content;
+
+            //this.groovySourceCode = content;
+            this.setSeourceCode(content);
 
         } catch (IOException ex) {
 
-            // System.getLogger(GroovyTrader.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
 
+    /*@Override
+    public void init(Sim sim, long id, String name, float money, float shares, JSONObject cfg) {
+        super.init(sim, id, name, money, shares, cfg);
+
+
+            sesim.Logger.error("Error load groovy soure code");
+
+        
+    }*/
+
+ /*public void init(){
+              if (this.getSourceCode() != null) {
+            return;
+        }
+
+        try (InputStream is = getClass().getResourceAsStream("/files/GroovyTrader/default.groovy")) {
+
+            if (is == null) {
+                // Dies tritt ein, wenn die Datei im JAR nicht gefunden wird.
+                throw new IOException("SQL-Resource nicht im JAR gefunden: ");
+            }
+
+            String content;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                content = sb.toString();
+            }
+
+            //this.groovySourceCode = content;
+            this.setSeourceCode(content);
+
+        } catch (IOException ex) {
+
+            sesim.Logger.error("Error load groovy soure code");
+
+        }
+    }*/
+    
+    
     @Override
     public void start() {
         accountApi = new AccountApi();
@@ -102,10 +159,10 @@ public class GroovyTrader extends AutoTraderBase {
         binding.setVariable("account", accountApi);
         binding.setVariable("sesim", sesimApi);
 
-        GroovyShell shell = new GroovyShell(binding);
+        //      GroovyShell shell = new GroovyShell(binding);
 
-        try {
-            groovyScript = shell.parse(this.groovySourceCode, "trader.groovy");
+        /*    try {
+            groovyScript = shell.parse(sourceCode.get(getStrategyName()), "trader.groovy");
         } catch (CompilationFailedException e) {
             sesim.Logger.error("Starting %s:\n%s ", getName(), e.getMessage());
             return;
@@ -119,12 +176,21 @@ public class GroovyTrader extends AutoTraderBase {
         } catch (Exception e) {
             sesim.Logger.error("Executing %s\n,%s", getName(), e.getMessage());
             // throw (e);
+        }*/
+        try {
+            Class<? extends Script> groovyScriptClass = this.getGroovyClass();
+            groovyScript = groovyScriptClass.getDeclaredConstructor().newInstance();
+            groovyScript.setBinding(binding);
+            groovyScript.invokeMethod("start", new Object[]{});
+        } catch (Exception e) {
+            sesim.Logger.error("Executing %s\n,%s", getName(), e.getMessage());
         }
 
     }
 
     @Override
-    public JDialog getGuiConsole(Frame parent) {
+    public JDialog getGuiConsole(Frame parent
+    ) {
         return null;
     }
 
@@ -220,6 +286,10 @@ public class GroovyTrader extends AutoTraderBase {
         public void setStatus(String s, Object... args) {
             GroovyTrader.this.setStatus(s, args);
         }
+        
+        public String getName(){
+            return GroovyTrader.this.getName();
+        }
 
         public class GroovyPriceEvent extends PriceEvent implements EventProcessor {
 
@@ -245,8 +315,18 @@ public class GroovyTrader extends AutoTraderBase {
             return e;
         }
 
-        public void cancelSchedulePriceAboce(GroovyPriceEvent e) {
+        public void cancelScheduleOnPriceAbove(GroovyPriceEvent e) {
             sim.se.cancelScheduleOnPriceAbove(e);
+        }
+
+        public GroovyPriceEvent scheduleOnPriceBelow(String groovyFun, double price) {
+            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.se, price);
+            sim.se.sheduleOnPriceBelow(e);
+            return e;
+        }
+
+        public void cancelSchedulePriceBelow(GroovyPriceEvent e) {
+            sim.se.cancelScheduleOnPriceBelow(e);
         }
 
         String groovyAccountUpdateFun = null;
@@ -287,18 +367,52 @@ public class GroovyTrader extends AutoTraderBase {
     @Override
     public JSONObject getConfig() {
         JSONObject r = new JSONObject();
-        r.put(CFG_SRC, this.groovySourceCode);
+        r.put(CFG_SRC, this.getSourceCode());
         return r;
     }
 
     @Override
     public void setConfig(JSONObject cfg) {
-        this.groovySourceCode = cfg.optString(CFG_SRC, "");
+        //this.groovySourceCode = cfg.optString(CFG_SRC, "");
+        setSeourceCode(cfg.optString(CFG_SRC, ""));
     }
 
     @Override
     public long processEvent(long time, Scheduler.Event e) {
         return 0;
+    }
+
+    final String getSourceCode() {
+        return sourceCode;
+        
+    /*    String strtegyName = this.getStrategyName();
+        String code = sourceCode.get(strtegyName);
+        return code;*/
+        //return sourceCode.get(this.getStrategyName());
+    }
+
+    final void setSeourceCode(String s) {
+        sourceCode=s;
+        //sourceCode.put(this.getStrategyName(), s);
+    }
+
+    Class<? extends Script> getGroovyClass() {
+        Class<? extends Script> c = scripts.get(this.getStrategyName());
+        if (c != null) {
+            return c;
+        }
+
+        return compileSource();
+    }
+
+    Class<? extends Script> compileSource() {
+
+        Class<? extends Script> groovyScriptClass;
+        GroovyClassLoader loader = new GroovyClassLoader();
+        String source = getSourceCode();
+        groovyScriptClass = loader.parseClass(source);
+        scripts.put(this.getStrategyName(), groovyScriptClass);
+        return groovyScriptClass;
     }
 
 }

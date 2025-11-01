@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import gui.Globals;
+import gui.NewStrategyDialog;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.SplittableRandom;
@@ -136,7 +138,7 @@ public class Sim {
      * @param cfg
      * @return
      */
-    public AutoTraderInterface createTraderNew(Exchange se, long id, String name, float money, float shares, JSONObject cfg) {
+    public AutoTraderInterface createTraderNew(Exchange se, long id, String name, float money, float shares, String strat, JSONObject cfg) {
 
         String base = cfg.getString("base");
         AutoTraderInterface ac = tloader.getStrategyBase(base);
@@ -144,9 +146,18 @@ public class Sim {
             return null;
         }
         ac.setConfig(cfg);
-        ac.init(this, id, name, money, shares, cfg);
+        ac.init(this, id, name, money, shares, strat,cfg);
 
         return ac;
+    }
+    
+    
+    void resetAutoTraders(){
+        ArrayList<String> names = tloader.getDefaultStrategyNames();
+        for (String name : names) {
+            AutoTraderInterface ac = tloader.getStrategyBase(name);
+            ac.reset();
+        }
     }
 
     private void initAutoTraderLoader() {
@@ -220,11 +231,13 @@ public class Sim {
     public static SplittableRandom random = new SplittableRandom(12);
     public void startTraders(JSONObject cfg) {
 
+
         se.putConfig(getExchangeCfg(cfg));
 
         long randomSeed = getRandomSeed(cfg);
         boolean useSeed = useRandomSeed(cfg);
-
+        resetAutoTraders();
+        
         if (useSeed) {
             random = new SplittableRandom(randomSeed);
         } else {
@@ -273,13 +286,15 @@ public class Sim {
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
 
-                trader = this.createTraderNew(this.se, id, t.getString("Name") + "-" + i1, money, shares, strategy);
+                trader = this.createTraderNew(this.se, id, t.getString("Name") + "-" + i1, money, shares, strategy_name,strategy);
                 if (trader==null){
                     String base = strategy.getString("base");
                     sesim.Logger.error("Could not load base '%s', not starting %s", base,t.getString("Name"));
                     break;
                 }
                 
+                ((AutoTraderBase)trader).setStrategyName(strategy_name);
+  
                 this.traders.add(trader);
 
                 moneyTotal += money;

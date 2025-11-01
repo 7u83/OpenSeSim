@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sesim.Scheduler.Event;
@@ -355,6 +356,7 @@ public class Exchange {
         stopBuyBook = new ConcurrentSkipListSet(new StopComparator(false));
 
         priceEventsAbove = new TreeSet();
+        priceEventsBelow = new TreeSet();
 
         /*   order_books.put(Order.BUYLIMIT, new ConcurrentSkipListSet(new OrderComparator(Order.BUYLIMIT)));
         order_books.put(Order.SELLLIMIT, new ConcurrentSkipListSet(new OrderComparator(Order.SELLLIMIT)));
@@ -378,27 +380,44 @@ public class Exchange {
         priceEventsAbove.remove(e);
     }
 
+    public void sheduleOnPriceBelow(PriceEvent e) {
+        priceEventsBelow.add(e);
+    }
+
+    public void cancelScheduleOnPriceBelow(PriceEvent e) {
+        priceEventsBelow.remove(e);
+    }
+
     public static class PriceEvent extends Event implements Comparable {
 
         long price;
 
+        private static final AtomicLong ID_GEN = new AtomicLong(0);
+        private final long id;
+
         @Override
         public int compareTo(Object o) {
             PriceEvent pe = (PriceEvent) o;
-            if (pe.price > price) {
-                return -1;
+
+            int cmp = Long.compare(this.price, pe.price);
+            if (cmp != 0) {
+                return cmp;
             }
-            if (pe.price < price) {
-                return 1;
-            }
-            return 0;
+            return Long.compare(id, pe.id);
+
+        }
+
+        PriceEvent() {
+            id = ID_GEN.incrementAndGet();
         }
 
         public PriceEvent(Exchange se, double price) {
+            this();
             this.price = (long) (price * se.money_df);
         }
 
         public PriceEvent(long price) {
+            this();
             this.price = price;
         }
 
@@ -1209,13 +1228,24 @@ public class Exchange {
 
     void checkPriceEvents(long price) {
         SortedSet<PriceEvent> up = priceEventsAbove;
+        SortedSet<PriceEvent> down = priceEventsBelow;
 
         while (!priceEventsAbove.isEmpty()) {
             PriceEvent e = up.first();
+
             if (price <= e.price) {
                 break;
             }
             up.remove(e);
+            sim.scheduler.addEvent(sim.getCurrentTimeMillis(), e);
+        }
+
+        while (!priceEventsBelow.isEmpty()) {
+            PriceEvent e = down.last();
+            if (price >= e.price) {
+                break;
+            }
+            down.remove(e);
             sim.scheduler.addEvent(sim.getCurrentTimeMillis(), e);
         }
 

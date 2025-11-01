@@ -82,8 +82,8 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     }
 
     @Override
-    public void init(Sim sim, long id, String name, float money, float shares, JSONObject cfg) {
-        super.init(sim, id, name, money, shares, cfg);
+    public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
+        super.init(sim, id, name, money, shares, strat, cfg);
         getAccount().setListener(this);
     }
     ManTraderConsoleDialog consoleDialog;

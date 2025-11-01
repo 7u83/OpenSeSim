@@ -7,6 +7,7 @@
     </tocitem>
     <tocitem text="Stratgies" target="strategies"> 
                 <tocitem text="SimpleRandomL" target="simple_random_l"/>
+                 <tocitem text="Groovy" target="groovy"/>
     </tocitem>
 </toc>
 

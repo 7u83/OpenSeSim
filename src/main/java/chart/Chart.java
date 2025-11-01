@@ -679,7 +679,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Point2D mouse = new Point(mouseX, mouseY);
         Point2D p = inverse.transform(mouse, null);
 
-        System.out.printf("DrawCrss Point %f, %f\n", p.getX(), p.getY());
+       // System.out.printf("DrawCrss Point %f, %f\n", p.getX(), p.getY());
 
         y = (int) p.getY() - (textHeight + 2 * padding) / 2;
         x = this.emWidth * this.rightYAxisAreaWidth - (textWidth + 2 * padding);

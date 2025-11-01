@@ -43,6 +43,10 @@ public interface AccountInterface {
     
     public AutoTraderInterface getOwner();
     
+    
+    
+   // public void steStrategyName(String s);
+    
     //  public float getID();
     
 }

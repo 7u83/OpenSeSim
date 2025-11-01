@@ -190,7 +190,6 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookLis
                 case 1:
                     switch (priceColumn){
                         case Order.STOP:
-                            System.out.printf("Stop switch\n");
                             return myOb.get(rowIndex).getStop();
                         default:
                             return myOb.get(rowIndex).getLimit();

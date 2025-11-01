@@ -25,11 +25,15 @@
  */
 package gui;
 
+import java.awt.AWTEvent;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.AWTEventListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -54,6 +58,10 @@ import sesim.Order;
 import javafx.application.Platform;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import sesim.AppHelp;
 import traders.RandomTraderL;
 
@@ -107,11 +115,16 @@ public class SeSimApplication extends javax.swing.JFrame {
 //        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
         //this.setLocationRelativeTo(null);
         
-                HelpBroker hb = AppHelp.getHelpBroker();
+        HelpBroker hb = AppHelp.getHelpBroker();
         HelpSet hs = AppHelp.getHelpSet();
 
-        hb.enableHelpKey(getRootPane(), "intro", hs);
+   //     hb.enableHelpKey(getRootPane(), "intro", hs);
         
+CustomHelpHandler.installHelp(this, hs);
+
+
+ 
+
         this.meinToolBar.setFloatable(false);
     }
 
