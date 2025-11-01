@@ -158,7 +158,7 @@ CustomHelpHandler.installHelp(this, hs);
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
         clock1 = new gui.Clock();
-        traderListPanel1 = new gui.TraderListPanel();
+        traderListPanel1 = new TraderListPanel(this);
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -580,7 +580,7 @@ CustomHelpHandler.installHelp(this, hs);
     }
 
     void stopSim() {
-        Globals.sim.terminateScheduler();
+        Globals.sim.stop();
         this.stopButton.setEnabled(false);
         this.pauseButton.setEnabled(false);
         this.runButton.setEnabled(true);

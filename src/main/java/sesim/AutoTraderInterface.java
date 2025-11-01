@@ -75,6 +75,7 @@ public interface AutoTraderInterface {
     /**
      * Initialize the auto trader
      *
+     * @param sim
      * @param se Exechange to trade on
      * @param id
      * @param name Name of auto trader
@@ -91,5 +92,7 @@ public interface AutoTraderInterface {
     public String getStatus();
     
     public void reset();
+    
+    public void stop();
 
 }

@@ -86,7 +86,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
         super.init(sim, id, name, money, shares, strat, cfg);
         getAccount().setListener(this);
     }
-    ManTraderConsoleDialog consoleDialog;
+    ManTraderConsoleDialog consoleDialog=null;
 
     @Override
     public void start() {
@@ -141,16 +141,25 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     @Override
     public JDialog getGuiConsole(Frame parent) {
-
+        if (consoleDialog!=null){
+            return consoleDialog;
+        }
+        
         consoleDialog = new ManTraderConsoleDialog(parent, false, se, account_id, this);
 
         consoleDialog.init(se, account_id);
         consoleDialog.doUpdate(account_id, this);
         consoleDialog.setLocationRelativeTo(parent);
-        consoleDialog.pack(); // Größe basierend auf Komponenten berechnen
+        consoleDialog.pack(); //
         consoleDialog.setMinimumSize(consoleDialog.getSize());        
         consoleDialog.setTitle(account_id.getOwner().getName() + " - Trading Console");
         return this.consoleDialog;
+    }
+    
+    @Override
+    public void stop(){
+        if (consoleDialog!=null)
+            consoleDialog.dispose();
     }
 
     volatile Clip clip;

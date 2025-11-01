@@ -138,4 +138,9 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         
     }
     
+    @Override
+    public void stop(){
+        
+    }
+    
 }

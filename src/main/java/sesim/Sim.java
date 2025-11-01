@@ -58,8 +58,6 @@ public class Sim {
             + "use_seed: false"
             + "}";
 
-    
-
     public static int randNextInt() {
         return random.nextInt();
 
@@ -101,7 +99,7 @@ public class Sim {
         scheduler.start();
     }
 
-    public void terminateScheduler() {
+    public void stop() {
         scheduler.terminate();
     }
 
@@ -120,11 +118,16 @@ public class Sim {
         reset();
     }
 
-    public ArrayList<AutoTraderInterface> traders;
+    public ArrayList<AutoTraderInterface> traders = null;
 
     public final void reset() {
+        if (traders != null) {
+            for (AutoTraderInterface t : traders) {
+                t.stop();
+            }
+        }
         traders = new ArrayList();
-        scheduler = new Scheduler(); 
+        scheduler = new Scheduler();
         se.reset();
     }
 
@@ -146,13 +149,12 @@ public class Sim {
             return null;
         }
         ac.setConfig(cfg);
-        ac.init(this, id, name, money, shares, strat,cfg);
+        ac.init(this, id, name, money, shares, strat, cfg);
 
         return ac;
     }
-    
-    
-    void resetAutoTraders(){
+
+    void resetAutoTraders() {
         ArrayList<String> names = tloader.getDefaultStrategyNames();
         for (String name : names) {
             AutoTraderInterface ac = tloader.getStrategyBase(name);
@@ -229,15 +231,15 @@ public class Sim {
     }
 
     public static SplittableRandom random = new SplittableRandom(12);
-    public void startTraders(JSONObject cfg) {
 
+    public void startTraders(JSONObject cfg) {
 
         se.putConfig(getExchangeCfg(cfg));
 
         long randomSeed = getRandomSeed(cfg);
         boolean useSeed = useRandomSeed(cfg);
         resetAutoTraders();
-        
+
         if (useSeed) {
             random = new SplittableRandom(randomSeed);
         } else {
@@ -245,8 +247,8 @@ public class Sim {
             randomSeed = random.nextLong(Long.MAX_VALUE);
             random = new SplittableRandom(randomSeed);
         }
-        
-        Logger.info("Ranndom seed is %d",randomSeed);
+
+        Logger.info("Ranndom seed is %d", randomSeed);
 
         //   Globals.sim.se.setMoneyDecimals(8);
         //    Globals.sim.se.setSharesDecimals(0);        
@@ -257,44 +259,43 @@ public class Sim {
         long id = 0;
         for (int i = 0; i < tlist.length(); i++) {
             JSONObject t = tlist.getJSONObject(i);
-            String strategy_name = t.optString("Strategy",null);
-            if (strategy_name==null)
+            String strategy_name = t.optString("Strategy", null);
+            if (strategy_name == null) {
                 continue;
+            }
             JSONObject strategy = getStrategy(cfg, strategy_name);
-            
+
             // String base = strategy.getString("base");
             //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
-
             //     System.out.printf("Load Strat: %s\n", strategy_name);
             //      System.out.printf("Base %s\n", base);
             Integer count = t.getInt("Count");
-            Float shares = (float) t.optDouble("Shares",0);
-            Float money = (float) t.optDouble("Cash",0);
+            Float shares = (float) t.optDouble("Shares", 0);
+            Float money = (float) t.optDouble("Cash", 0);
 
             Boolean enabled = t.optBoolean("Enabled", false);
             if (!enabled) {
                 continue;
             }
-            
-            if (strategy==null){
-                sesim.Logger.error("Strategy '%s' does't exists, will not start '%s'",strategy_name,t.getString("Name"));
+
+            if (strategy == null) {
+                sesim.Logger.error("Strategy '%s' does't exists, will not start '%s'", strategy_name, t.getString("Name"));
                 continue;
             }
-
 
             //      System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
 
-                trader = this.createTraderNew(this.se, id, t.getString("Name") + "-" + i1, money, shares, strategy_name,strategy);
-                if (trader==null){
+                trader = this.createTraderNew(this.se, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategy);
+                if (trader == null) {
                     String base = strategy.getString("base");
-                    sesim.Logger.error("Could not load base '%s', not starting %s", base,t.getString("Name"));
+                    sesim.Logger.error("Could not load base '%s', not starting %s", base, t.getString("Name"));
                     break;
                 }
-                
-                ((AutoTraderBase)trader).setStrategyName(strategy_name);
-  
+
+                ((AutoTraderBase) trader).setStrategyName(strategy_name);
+
                 this.traders.add(trader);
 
                 moneyTotal += money;
@@ -312,17 +313,15 @@ public class Sim {
         if (autoInitialPrice) {
             initialPrice = moneyTotal / sharesTotal;
 
-        } 
-        
-        Logger.info("Initial prices is: %f",initialPrice);
+        }
+
+        Logger.info("Initial prices is: %f", initialPrice);
         this.se.setFairValue(initialPrice);
-        
 
         se.initLastQuote();
 
         //  Globals.sim.se.fairValue = 1.0;
         //System.out.printf("Failr Value is %f\n", se.fairValue);
-
         for (int i = 0; i < traders.size(); i++) {
             traders.get(i).start();
         }
