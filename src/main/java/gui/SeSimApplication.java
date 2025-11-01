@@ -253,7 +253,8 @@ CustomHelpHandler.installHelp(this, hs);
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(stopButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         runControlsLayout.setVerticalGroup(
             runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -269,7 +270,7 @@ CustomHelpHandler.installHelp(this, hs);
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 502, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 478, Short.MAX_VALUE)
                 .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -555,7 +556,11 @@ CustomHelpHandler.installHelp(this, hs);
         Globals.sim.startTraders(Globals.getConfig());
         Globals.sim.setPause(false);
         Globals.sim.startScheduler();
+        
+        this.accelerationPanel1.initAcceleration();
+        
         Globals.sim.setAcceleration((Double) this.accelerationPanel1.accelSpinner.getValue());
+        
 
         chartPanel.reset();
         if (this.rawOrderBookDialog != null) {

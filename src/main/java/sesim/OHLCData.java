@@ -37,7 +37,7 @@ public class OHLCData {
     private long min = 0;
 
     private int frame_size = 60000;
-    int max_size = 100;
+ //   int max_size = 100;
     Exchange se;
 
     public OHLCData() {
@@ -53,8 +53,8 @@ public class OHLCData {
     public OHLCData(Exchange se, int frame_size) {
         this.se=se;
         this.frame_size = frame_size;
-        this.current_frame_start = 0;
-        this.current_frame_end = frame_size;
+//        this.current_frame_start = 0;
+//        this.current_frame_end = frame_size;
     }
 
     public float getMax() {
@@ -128,12 +128,12 @@ public class OHLCData {
         return minmax;
     }
 
-    long getFrameStart(long time) {
+ /*   long getFrameStart(long time) {
 
         long rt = time / frame_size;
         return rt * frame_size;
 
-    }
+    }*/
 
     public ArrayList<OHLCDataItem> data = new ArrayList<>();
 
@@ -152,13 +152,13 @@ public class OHLCData {
 
     }
 
-    public Iterator<OHLCDataItem> iterator() {
+  /*  public Iterator<OHLCDataItem> iterator() {
         return data.iterator();
-    }
+    }*/
 
     // Start and end of current frame
-    private long current_frame_end = 0;
-    private long current_frame_start = 0;
+ //   private long current_frame_end = 0;
+//    private long current_frame_start = 0;
     private long last_price = 0;
 
      boolean realTimeAdd(long time, long price, long volume) {

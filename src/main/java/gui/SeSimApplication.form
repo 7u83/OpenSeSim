@@ -358,7 +358,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="runControls" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="502" max="32767" attributes="0"/>
+                  <EmptySpace pref="478" max="32767" attributes="0"/>
                   <Component id="clock" min="-2" pref="122" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -398,7 +398,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="stopButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="accelerationPanel1" min="-2" pref="437" max="-2" attributes="0"/>
+                      <Component id="accelerationPanel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

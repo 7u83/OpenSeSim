@@ -38,6 +38,20 @@ public class AccelerationPanel extends javax.swing.JPanel {
         initComponents();
     }
 
+    public void initAcceleration() {
+        Globals.sim.setAcceleration((Double) this.accelSpinner.getValue());
+        if (maxButton.isSelected()) {
+            this.accelSpinner.setEnabled(false);
+            Globals.sim.getScheduler().setMaxAcceleration(true);
+        }
+    }
+    
+    public void initAcceleartion(double a){
+        this.accelSpinner.setValue(a);
+        this.maxButton.setSelected(false);
+        this.initAcceleration();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -54,6 +68,7 @@ public class AccelerationPanel extends javax.swing.JPanel {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        maxButton = new javax.swing.JToggleButton();
 
         jLabel1.setText("Acceleration:");
 
@@ -76,7 +91,7 @@ public class AccelerationPanel extends javax.swing.JPanel {
             }
         });
 
-        jButton2.setText("2x");
+        jButton2.setText("10x");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -104,6 +119,13 @@ public class AccelerationPanel extends javax.swing.JPanel {
             }
         });
 
+        maxButton.setText("max");
+        maxButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maxButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,10 +135,10 @@ public class AccelerationPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(accelSpinner))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 45, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
@@ -125,7 +147,9 @@ public class AccelerationPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)))
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(maxButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -140,7 +164,8 @@ public class AccelerationPanel extends javax.swing.JPanel {
                     .addComponent(jButton4)
                     .addComponent(jButton5)
                     .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(maxButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -148,6 +173,10 @@ public class AccelerationPanel extends javax.swing.JPanel {
     private void accelSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_accelSpinnerStateChanged
         Double val = (Double) this.accelSpinner.getValue();
         Globals.sim.setAcceleration(val);
+        Globals.sim.getScheduler().setMaxAcceleration(false);
+        this.accelSpinner.setEnabled(true);
+        this.maxButton.setSelected(false);
+
     }//GEN-LAST:event_accelSpinnerStateChanged
 
     private void accelSpinnerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_accelSpinnerPropertyChange
@@ -155,24 +184,35 @@ public class AccelerationPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_accelSpinnerPropertyChange
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.accelSpinner.setValue(1.0);
+        initAcceleartion(1.0);
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.accelSpinner.setValue(2.0);
+        initAcceleartion(10.0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-           this.accelSpinner.setValue(100.0);
+        initAcceleartion(100.0);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-         this.accelSpinner.setValue(1000.0);
+        initAcceleartion(1000.0);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        this.accelSpinner.setValue(10000.0);
+        initAcceleartion(10000.0);
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void maxButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maxButtonActionPerformed
+        if (maxButton.isSelected()) {
+            this.accelSpinner.setEnabled(false);
+            Globals.sim.getScheduler().setMaxAcceleration(true);
+        } else {
+            this.accelSpinner.setEnabled(true);
+            Globals.sim.getScheduler().setMaxAcceleration(false);
+        }
+    }//GEN-LAST:event_maxButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -183,5 +223,6 @@ public class AccelerationPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JToggleButton maxButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -327,5 +327,9 @@ public class Sim {
         }
 
     }
+    
+    public Scheduler getScheduler(){
+        return scheduler;
+    }
 
 }

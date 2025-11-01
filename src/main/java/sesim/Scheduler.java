@@ -78,6 +78,8 @@ public class Scheduler extends Thread {
      */
     private double current_nanos = 0;
 
+    private boolean maxAcceleartion = false;
+
     /**
      * Sets the time acceleration factor.
      *
@@ -95,6 +97,14 @@ public class Scheduler extends Thread {
      */
     public double getAcceleration() {
         return this.acceleration;
+    }
+
+    public void setMaxAcceleration(boolean val) {
+        maxAcceleartion = val;
+    }
+
+    public boolean getMaxAcceleration() {
+        return maxAcceleartion;
     }
 
     /**
@@ -244,16 +254,16 @@ public class Scheduler extends Thread {
         if (pause) {
             pauseTime = System.currentTimeMillis();
         } else {
-            startTime+=System.currentTimeMillis()+pauseTime;
+            startTime += System.currentTimeMillis() + pauseTime;
         }
 
     }
-    
-    public long getCurrentTime(){
-        if (pause){
-            return pauseTime-startTime;
+
+    public long getCurrentTime() {
+        if (pause) {
+            return pauseTime - startTime;
         }
-        return System.currentTimeMillis()-startTime;
+        return System.currentTimeMillis() - startTime;
     }
 
     public boolean getPause() {
@@ -267,22 +277,29 @@ public class Scheduler extends Thread {
         }
 
         long t = eventQueue.firstKey();
-        long ct = calculateCurrentTimeMillis();
+
+        long ct;
+
+        if (this.maxAcceleartion) {
+            ct = t;
+        } else {
+            ct = calculateCurrentTimeMillis();
+        }
+        //long ct = t+1; //calculateCurrentTimeMillis();
 
         if (t > ct) {
             return (long) (((double) t - this.getCurrentTimeMillis()) / this.acceleration);
         }
 
-        if (t < ct) {
-           // System.out.printf("Time is overslipping: %d\n",ct-t);
+        if (t <= ct) {
+            // System.out.printf("Time is overslipping: %d\n",ct-t);
             this.currentTimeMillis = t;
             this.current_nanos = this.currentTimeMillis * 1000000.0;
         }
 
         LinkedHashSet<Event> s = eventQueue.remove(t);
-        
-      //  System.out.printf("TIME: %d %d \n",t, s.size());
 
+        //  System.out.printf("TIME: %d %d \n",t, s.size());
         for (Event e : s) {
             e.eventProcessor.processEvent(t, e);
         }
@@ -319,7 +336,7 @@ public class Scheduler extends Thread {
     public void run() {
 
         while (!terminate) {
-            long wMillis = 0;
+            long wMillis; // = 0;
 
             synchronized (this) {
                 wMillis = runEvents();
