@@ -10,7 +10,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <debug>false</debug>
+          <debug>true</debug>
         </configuration>
       </plugin>
       <plugin>
@@ -45,6 +45,18 @@
                       <mainClass>gui.SeSimApplication</mainClass>
                     </transformer>
                   </transformers>
+                  <filters>
+                    <filter>
+                      <artifact>*:*</artifact>
+                      <excludes>
+                        <exclude>META-INF/versions/**</exclude>
+                        <exclude>META-INF/MANIFEST.MF</exclude>
+                        <exclude>META-INF/*.SF</exclude>
+                        <exclude>META-INF/*.DSA</exclude>
+                        <exclude>META-INF/*.RSA</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
                 </configuration>
               </execution>
             </executions>
@@ -54,7 +66,7 @@
     </profile>
   </profiles>
   <properties>
-    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.release>8</maven.compiler.release>
     <exec.mainClass>OpenSeSim</exec.mainClass>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.version>11.0.2</javafx.version>

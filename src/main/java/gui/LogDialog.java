@@ -25,11 +25,13 @@
  */
 package gui;
 
+import javax.swing.JDialog;
+
 /**
  *
  * @author tube
  */
-public class LogDialog extends  EscDialog {
+public class LogDialog  extends JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LogDialog.class.getName());
 

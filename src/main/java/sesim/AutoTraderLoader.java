@@ -197,7 +197,7 @@ public class AutoTraderLoader {
 
         for (String classPathEntry : pathList) {
             
-            sesim.Logger.info("Looking for auto-traders in %s",classPathEntry);
+            //sesim.Logger.info("Looking for auto-traders in %s",classPathEntry);
 
             //           Globals.LOGGER.info(String.format("Here we ar looking now %s", classpathEntry));
             Consumer<? super Path> pf = (Object t) -> {

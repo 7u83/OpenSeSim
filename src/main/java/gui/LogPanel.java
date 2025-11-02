@@ -27,6 +27,10 @@ package gui;
 
 //import static com.sun.tools.javac.util.Constants.format;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,33 +58,38 @@ public class LogPanel extends javax.swing.JPanel {
         @Override
         public void publish(LogRecord record) {
             System.out.printf("Publish Record %s\n", record.getMessage());
-            if (!isLoggable(record))
+            if (!isLoggable(record)) {
                 return;
-            
-            
-        
+            }
+
             String msg = getFormatter().format(record);
-            logPanel.appendLog(record.getLevel().getName(),msg /*.stripTrailing()*/);
-            
-  
+            logPanel.appendLog(record.getLevel().getName(), msg /*.stripTrailing()*/);
+
         }
 
         @Override
         public void flush() {
-            
+
         }
 
         @Override
         public void close() throws SecurityException {
-            
+
         }
 
     }
 
     public class MessageOnlyFormatter extends Formatter {
 
+        private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        private String formatTime(long millis) {
+            return dateFormat.format(new Date(millis));
+        }
+
         @Override
         public String format(LogRecord record) {
+            String timeStr = formatTime(record.getMillis());
             String levelStr;
             switch (record.getLevel().getName()) {
                 case "SEVERE":
@@ -92,7 +101,8 @@ public class LogPanel extends javax.swing.JPanel {
                 default:
                     levelStr = record.getLevel().getName(); // INFO, FINE, etc.
             }
-            return "[" + levelStr + "] " + record.getMessage() + "\n";
+            //return "[" + levelStr + "] " + record.getMessage() + "\n";
+            return String.format("[%s] [%s] %s\n", timeStr, levelStr, record.getMessage());
         }
 
     }
@@ -104,6 +114,53 @@ public class LogPanel extends javax.swing.JPanel {
      */
     public LogPanel() {
         initComponents();
+
+        logArea = new javax.swing.JTextPane() {
+            @Override
+            public boolean getScrollableTracksViewportWidth() {
+                return false; // Kein Wordwrap → horizontaler Scrollbalken
+            }
+
+            @Override
+            public boolean getScrollableTracksViewportHeight() {
+                return true;
+            }
+
+            @Override
+            public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+                return 16;
+            }
+
+            @Override
+            public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+                return 64;
+            }
+
+            @Override
+            public Dimension getPreferredScrollableViewportSize() {
+                return getPreferredSize();
+            }
+        };
+
+        logArea.setEditable(true);
+        logArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
+
+        // ScrollPane neu konfigurieren
+        jScrollPane1.setViewportView(logArea);
+        jScrollPane1.setHorizontalScrollBarPolicy(
+                javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane1.setVerticalScrollBarPolicy(
+                javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        // Nachdem du logArea neu erstellt hast:
+        logArea.setBackground(Color.WHITE);  // Weißer Text-Hintergrund
+
+// WICHTIG: Viewport-Hintergrund auch weiß machen
+        jScrollPane1.getViewport().setBackground(Color.WHITE);
+
+        // Optional: ScrollPane-Rahmen entfernen (falls gewünscht)
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+
         logger.setLevel(Level.INFO);
         logger.setFilter(record -> {
             Level level = record.getLevel();
@@ -116,7 +173,7 @@ public class LogPanel extends javax.swing.JPanel {
     }
 
     public void appendLog(String level, String text) {
-        
+
         SwingUtilities.invokeLater(() -> {
             StyledDocument doc = logArea.getStyledDocument();
             javax.swing.text.Style style = logArea.addStyle("Style", null);
@@ -134,7 +191,7 @@ public class LogPanel extends javax.swing.JPanel {
             }
 
             try {
-                doc.insertString(doc.getLength(), text + "\n", style);
+                doc.insertString(doc.getLength(), text, style);
             } catch (BadLocationException e) {
             }
 
@@ -143,12 +200,6 @@ public class LogPanel extends javax.swing.JPanel {
             }*/
         });
 
-        /*        SwingUtilities.invokeLater(() -> {
-            logArea.append(text + "\n");
-            //   if (autoScroll) {
-                logArea.setCaretPosition(logArea.getDocument().getLength());
-            }//
-        });*/
     }
 
     /**
@@ -163,7 +214,7 @@ public class LogPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         logArea = new javax.swing.JTextPane();
 
-        logArea.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        logArea.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         jScrollPane1.setViewportView(logArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

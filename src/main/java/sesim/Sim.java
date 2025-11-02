@@ -100,6 +100,7 @@ public class Sim {
     }
 
     public void stop() {
+        Logger.info("Sim stopped");
         scheduler.terminate();
     }
 
@@ -234,6 +235,7 @@ public class Sim {
 
     public void startTraders(JSONObject cfg) {
 
+        Logger.info("Sim started");      
         se.putConfig(getExchangeCfg(cfg));
 
         long randomSeed = getRandomSeed(cfg);
@@ -248,7 +250,8 @@ public class Sim {
             random = new SplittableRandom(randomSeed);
         }
 
-        Logger.info("Ranndom seed is %d", randomSeed);
+ 
+        Logger.info("Random seed is %d", randomSeed);
 
         //   Globals.sim.se.setMoneyDecimals(8);
         //    Globals.sim.se.setSharesDecimals(0);        
@@ -308,7 +311,7 @@ public class Sim {
         float initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE, 100.0f));
         boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE, true);
 
-        System.out.printf("Cache total %f, Shares total\n", moneyTotal, sharesTotal);
+//        System.out.printf("Cache total %f, Shares total\n", moneyTotal, sharesTotal);
 
         if (autoInitialPrice) {
             initialPrice = moneyTotal / sharesTotal;

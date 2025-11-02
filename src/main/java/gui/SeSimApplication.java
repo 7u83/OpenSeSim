@@ -34,6 +34,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -101,29 +102,28 @@ public class SeSimApplication extends javax.swing.JFrame {
         if (logDialog == null) {
             logDialog = new LogDialog(this, false);
             logDialog.setLocationRelativeTo(this);
-            
-        }
 
-        /*    this.accelerationPanel1.accelSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        }
+        logDialog.addWindowListener(new WindowAdapter() {
             @Override
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                //accelSpinnerStateChanged(evt);
-                Integer val =  (Integer)accelerationPanel1.accelSpinner.getValue();
-                Globals.sim.se.timer.setAcceleration(val);
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                viewLog.setState(false);
+                logDialog.setVisible(false);
             }
-        });*/
-//        this.chartSrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
-        //this.setLocationRelativeTo(null);
-        
+        });
+
+        logDialog.getRootPane().registerKeyboardAction(e -> {
+            // Simuliere X-Button-Klick
+            logDialog.dispatchEvent(new WindowEvent(logDialog, WindowEvent.WINDOW_CLOSING));
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+
         HelpBroker hb = AppHelp.getHelpBroker();
         HelpSet hs = AppHelp.getHelpSet();
 
-   //     hb.enableHelpKey(getRootPane(), "intro", hs);
-        
-CustomHelpHandler.installHelp(this, hs);
-
-
- 
+        //     hb.enableHelpKey(getRootPane(), "intro", hs);
+        CustomHelpHandler.installHelp(this, hs);
 
         this.meinToolBar.setFloatable(false);
     }
@@ -556,11 +556,10 @@ CustomHelpHandler.installHelp(this, hs);
         Globals.sim.startTraders(Globals.getConfig());
         Globals.sim.setPause(false);
         Globals.sim.startScheduler();
-        
+
         this.accelerationPanel1.initAcceleration();
-        
+
         Globals.sim.setAcceleration((Double) this.accelerationPanel1.accelSpinner.getValue());
-        
 
         chartPanel.reset();
         if (this.rawOrderBookDialog != null) {
@@ -844,7 +843,7 @@ CustomHelpHandler.installHelp(this, hs);
 
                 rawOrderBookDialog.setVisible(true);
             } else if (rawOrderBookDialog != null) {
-                System.out.printf("Set visible = false\n");
+                //         System.out.printf("Set visible = false\n");
                 rawOrderBookDialog.setVisible(false);
 
             }
@@ -996,6 +995,7 @@ CustomHelpHandler.installHelp(this, hs);
             logDialog = new LogDialog(this, false);
             logDialog.setLocationRelativeTo(this);
         }
+
         logDialog.setVisible(viewLog.isSelected());
 
     }//GEN-LAST:event_viewLogActionPerformed
@@ -1007,17 +1007,14 @@ CustomHelpHandler.installHelp(this, hs);
      * @throws java.lang.InstantiationException
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
-        
-        
-    /*    long rc = RandomTraderL.getRandomDelta_Long(800, 0, 1000);
+
+        /*    long rc = RandomTraderL.getRandomDelta_Long(800, 0, 1000);
         System.out.printf("Price=%d", rc);
         if (rc!=0){
             System.exit(0);
         }*/
-     
-
-            Platform.startup(() -> {
-        // JavaFX Runtime wird initialisiert
+        Platform.startup(() -> {
+            // JavaFX Runtime wird initialisiert
         });
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
