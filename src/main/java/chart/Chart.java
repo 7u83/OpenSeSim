@@ -38,10 +38,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
+import javax.swing.SwingUtilities;
 import sesim.MinMax;
 import sesim.Quote;
 
@@ -121,12 +124,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     @Override
     public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return 1;
+        return this.getVisibleRect().width/10;
     }
 
     @Override
     public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return 100;
+        return this.getVisibleRect().width/2;
     }
 
     @Override
@@ -613,37 +616,34 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         // Optional: Offset für besseren Abstand
         int padding = 4;
-        
-                DrawCtx ctx = this.makeDrawCtx(cd, g, h1);
+
+        DrawCtx ctx = this.makeDrawCtx(cd, g, h1);
         if (ctx == null) {
             return;
         }
 
         // Rechteck zeichnen
-        int x = mouseX - (textWidth + 2 * padding) / 2; 
-        if (x<0)
-            x=0;
-        if(x +(textWidth + 2 * padding) >=ctx.g.getClipBounds().width){
-            x = ctx.g.getClipBounds().width-(textWidth + 2 * padding);
+        int x = mouseX - (textWidth + 2 * padding) / 2;
+        if (x < 0) {
+            x = 0;
         }
-  
-        
+        if (x + (textWidth + 2 * padding) >= ctx.g.getClipBounds().width) {
+            x = ctx.g.getClipBounds().width - (textWidth + 2 * padding);
+        }
+
 // Beispielkoordinaten
         int y = clip.height - (textHeight + 2 * padding);
-        g.setColor(new Color(255,255,200));
+        g.setColor(new Color(255, 255, 200));
         g.fillRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
         g.setColor(c);
         g.drawRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
         // Text innerhalb des Rechtecks zeichnen
         g.drawString(text, x + padding, y + fm.getAscent() + padding);
 
-        
-        
         /*DrawCtx ctx = this.makeDrawCtx(cd, g, h1);
         if (ctx == null) {
             return;
         }*/
-
         AffineTransform inverse = null;
         try {
             inverse = ctx.gyr.getTransform().createInverse();
@@ -679,19 +679,18 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Point2D mouse = new Point(mouseX, mouseY);
         Point2D p = inverse.transform(mouse, null);
 
-       // System.out.printf("DrawCrss Point %f, %f\n", p.getX(), p.getY());
-
+        // System.out.printf("DrawCrss Point %f, %f\n", p.getX(), p.getY());
         y = (int) p.getY() - (textHeight + 2 * padding) / 2;
         x = this.emWidth * this.rightYAxisAreaWidth - (textWidth + 2 * padding);
         if (y < 0) {
             y = 0;
         }
-        if ( (y+textHeight + 2 * padding) >= ctx.height){
-            y=ctx.height-(textHeight + 2 * padding)-1;
+        if ((y + textHeight + 2 * padding) >= ctx.height) {
+            y = ctx.height - (textHeight + 2 * padding) - 1;
         }
 
         //ctx.gyr.setColor(Color.WHITE);
-        ctx.gyr.setColor(new Color(255,255,200));
+        ctx.gyr.setColor(new Color(255, 255, 200));
         ctx.gyr.fillRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
         ctx.gyr.setColor(c);
         ctx.gyr.drawRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
@@ -906,12 +905,54 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
+//    @Override
+    public void aUpdateQuote(Quote q) {
+        return;
+        /*SwingUtilities.invokeLater(() -> {
+    updateView();
+    this.revalidate();
+    this.repaint();
+});*/
+    }
+
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    boolean busy = false;
+    boolean update = false;
+
     @Override
     public void UpdateQuote(Quote q) {
-        updateView();
 
-        this.revalidate();
-        this.repaint();
+        if (busy) {
+            update = true;
+            return;
+        }
+        busy = true;
+        update = true;
+
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (update) {
+                        update = false;
+                        SwingUtilities.invokeLater(() -> {
+                            updateView();
+                            revalidate();
+                            repaint();
+                        });
+
+                        try {
+                            Thread.sleep(20);   // update rate is limited 50 Hz
+                        } catch (InterruptedException e) {
+                        }
+                    }
+
+                } finally {
+                    busy = false;
+                }
+            }
+        });
+
     }
 
     /**

@@ -107,7 +107,7 @@ public class Exchange {
     int minOHLCBarDuration = 1000;
     HashMap<Integer, OHLCData> ohlcByTimeFrameLength = new HashMap<>();
 
-    private OHLCData buildOHLCData(int timeFrame) {
+/*    private OHLCData buildOHLCData(int timeFrame) {
         OHLCData data = new OHLCData(this, timeFrame);
         if (this.quoteHistory == null) {
             return data;
@@ -119,11 +119,11 @@ public class Exchange {
         }
 
         return data;
-    }
+    }*/
 
     public OHLCData getOHLCdata(Integer timeFrameLength) {
         OHLCData data; 
-        data = ohlcByTimeFrameLength.get(1000); //timeFrameLength);
+        data = ohlcByTimeFrameLength.get(timeFrameLength);
         if (data == null) {
 
             synchronized (executor) {
@@ -326,7 +326,7 @@ public class Exchange {
     /**
      * Histrory of quotes
      */
-    public List<Quote> quoteHistory; // = new TreeSet<>();
+   // public List<Quote> quoteHistory; // = new TreeSet<>();
 
     SortedSet bidBook;
     SortedSet askBook;
@@ -353,7 +353,7 @@ public class Exchange {
         //      timer = new Scheduler();         //  timer = new Scheduler();
 
         //     random = new SplittableRandom();
-        quoteHistory = new ArrayList();
+ //       quoteHistory = new ArrayList();
         statistics = new Statistics();
 
         ohlcByTimeFrameLength = new HashMap<>();
@@ -534,7 +534,9 @@ public class Exchange {
         q.ask_volume = 0;
         q.bid_volume = 0;
         q.time = sim.scheduler.getCurrentTimeMillis();
-        quoteHistory.add(q);
+   //     quoteHistory.add(q);
+        lastQuote=q;
+        this.updateOHLCData(q);
         this.updateQuoteReceivers(q);
     }
 
@@ -920,14 +922,17 @@ public class Exchange {
         return map;
 
     }
+    
+    Quote lastQuote;
 
     public Quote getLastQuoete() {
-        if (this.quoteHistory.isEmpty()) {
+        return lastQuote;
+ /*       if (this.quoteHistory.isEmpty()) {
             return null;
         }
 
         return quoteHistory.get(quoteHistory.size() - 1);
-        //    return this.quoteHistory.last();
+        //    return this.quoteHistory.last();*/
     }
 
     private void transferMoneyAndShares(Account buyer, Account seller, long money, long shares) {
@@ -1099,7 +1104,7 @@ public class Exchange {
     }
 
     void addQuoteToHistory(Quote q) {
-/*        if (statistics.heigh == null) {
+        if (statistics.heigh == null) {
             statistics.heigh = (float) q.price / money_df;
         } else if (statistics.heigh < q.price) {
             statistics.heigh = q.price / money_df;
@@ -1112,9 +1117,10 @@ public class Exchange {
 
         //  statistics.trades++;
         //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
-        quoteHistory.add(q);
+//        quoteHistory.add(q);
+        lastQuote=q;
         updateOHLCData(q);
-        updateQuoteReceivers(q);*/
+        updateQuoteReceivers(q);
     }
 
     /**
@@ -1236,7 +1242,7 @@ public class Exchange {
 
         //this.quoteHistory.add(q);
         //this.updateOHLCData(q);
-        //this.updateQuoteReceivers(q);
+        this.updateQuoteReceivers(q);
     }
 
     void checkPriceEvents(long price) {
