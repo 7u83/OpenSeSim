@@ -49,6 +49,8 @@ public class AccelerationPanel extends javax.swing.JPanel {
     public void initAcceleartion(double a){
         this.accelSpinner.setValue(a);
         this.maxButton.setSelected(false);
+        this.accelSpinner.setEnabled(true);
+        Globals.sim.getScheduler().setMaxAcceleration(false);
         this.initAcceleration();
     }
 
