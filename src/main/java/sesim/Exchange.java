@@ -32,12 +32,12 @@ public class Exchange {
         money_decimals = n;
         money_formatter = getFormatter(n);
     }
-    
-    public int getMoneyDecimals(){
+
+    public int getMoneyDecimals() {
         return money_decimals;
     }
-    
-    public int getSharesDecimals(){
+
+    public int getSharesDecimals() {
         return shares_decimals;
     }
 
@@ -104,7 +104,8 @@ public class Exchange {
         public void orderUpdated(Order o);
     }
 
-    HashMap<Integer, OHLCData> ohlc_data = new HashMap<>();
+    int minOHLCBarDuration = 1000;
+    HashMap<Integer, OHLCData> ohlcByTimeFrameLength = new HashMap<>();
 
     private OHLCData buildOHLCData(int timeFrame) {
         OHLCData data = new OHLCData(this, timeFrame);
@@ -120,14 +121,17 @@ public class Exchange {
         return data;
     }
 
-    public OHLCData getOHLCdata(Integer timeFrame) {
-        OHLCData data; //=new OHLCData(timeFrame);
-        data = ohlc_data.get(timeFrame);
+    public OHLCData getOHLCdata(Integer timeFrameLength) {
+        OHLCData data; 
+        data = ohlcByTimeFrameLength.get(1000); //timeFrameLength);
         if (data == null) {
 
             synchronized (executor) {
-                data = this.buildOHLCData(timeFrame);
-                ohlc_data.put(timeFrame, data);
+                OHLCData o = new OHLCData(this, timeFrameLength, ohlcByTimeFrameLength.get(this.minOHLCBarDuration));
+            //    data = this.buildOHLCData(timeFrameLength);
+                ohlcByTimeFrameLength.put(timeFrameLength,o);
+                        
+                return o;
             }
         }
 
@@ -136,7 +140,7 @@ public class Exchange {
     }
 
     void updateOHLCData(Quote q) {
-        for (OHLCData data : ohlc_data.values()) {
+       for (OHLCData data : ohlcByTimeFrameLength.values()) {
             data.realTimeAdd(q.time, q.price, q.volume);
         }
     }
@@ -352,7 +356,8 @@ public class Exchange {
         quoteHistory = new ArrayList();
         statistics = new Statistics();
 
-        this.ohlc_data = new HashMap();
+        ohlcByTimeFrameLength = new HashMap<>();
+        ohlcByTimeFrameLength.put(minOHLCBarDuration, new OHLCData(this, minOHLCBarDuration));
 
         // Create order books
         //   order_books = new HashMap();
@@ -1094,7 +1099,7 @@ public class Exchange {
     }
 
     void addQuoteToHistory(Quote q) {
-        if (statistics.heigh == null) {
+/*        if (statistics.heigh == null) {
             statistics.heigh = (float) q.price / money_df;
         } else if (statistics.heigh < q.price) {
             statistics.heigh = q.price / money_df;
@@ -1109,7 +1114,7 @@ public class Exchange {
         //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
         quoteHistory.add(q);
         updateOHLCData(q);
-        updateQuoteReceivers(q);
+        updateQuoteReceivers(q);*/
     }
 
     /**

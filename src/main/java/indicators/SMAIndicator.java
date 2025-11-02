@@ -40,7 +40,7 @@ public class SMAIndicator extends BaseIndicator {
     OHLCData indicator;
 
     public SMAIndicator() {
-        indicator = new OHLCData();
+   //     indicator = new OHLCData(1000);
     }
 
     public void setParent(OHLCData parent) {

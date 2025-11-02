@@ -36,25 +36,35 @@ public class OHLCData {
     private long max = 0;
     private long min = 0;
 
-    private int frame_size = 60000;
+    private int barDuration = 60000;
  //   int max_size = 100;
     Exchange se;
 
-    public OHLCData() {
+    /*public OHLCData() {
 
-    }
+    }*/
 
     /**
      * Create an OHLCData object that stores OHLCDataItems
      *
      * @param se
-     * @param frame_size Time frame stored in one OHLCDataItem
+     * @param timeFrameLength Time frame stored in one OHLCDataItem
      */
-    public OHLCData(Exchange se, int frame_size) {
+    public OHLCData(Exchange se, int timeFrameLength) {
         this.se=se;
-        this.frame_size = frame_size;
-//        this.current_frame_start = 0;
-//        this.current_frame_end = frame_size;
+        this.barDuration = timeFrameLength;
+        //data = new OHLCData(se, timeFrameLength);
+    }
+    
+    public OHLCData(Exchange se, int barDuration, OHLCData base){
+        this(se,barDuration);
+        
+        for (OHLCDataItem i: base.data){
+            this.realTimeAdd(i.time, i.open,i.volume);
+            this.realTimeAdd(i.time, i.high,0);
+            this.realTimeAdd(i.time, i.low,0);
+            this.realTimeAdd(i.time, i.close,0);            
+        }
     }
 
     public float getMax() {
@@ -74,7 +84,7 @@ public class OHLCData {
      * @return Time frame of OHLCDataItem
      */
     public int getFrameSize() {
-        return this.frame_size;
+        return this.barDuration;
     }
 
     /**
@@ -167,7 +177,7 @@ public class OHLCData {
 
         if (data.isEmpty()) {
             //System.out.printf("Data ist empty\n");
-            if (time < frame_size) {
+            if (time < barDuration) {
                 //System.out.printf("Adding Qute to frame 0\n");
                 data.add(new OHLCDataItem(se,0, price, volume));
                 last_price = price;
@@ -175,7 +185,7 @@ public class OHLCData {
             }
         }
 
-        long nFrame = (long)data.size() * (long)frame_size;
+        long nFrame = (long)data.size() * (long)barDuration;
         //System.out.printf("nFrame is: %d, data.size(): %d\n", nFrame, data.size());
         if (time < nFrame) {
             last_price = price;
@@ -187,11 +197,11 @@ public class OHLCData {
 
         }
 
-        while (time > nFrame+frame_size ) {
+        while (time > nFrame+barDuration ) {
 
             data.add(new OHLCDataItem(se, nFrame, last_price, 0));
           //  System.out.printf("Add empty frame %d\n", nFrame);            
-            nFrame += frame_size;
+            nFrame += barDuration;
         }
 
         //System.out.printf("Add a new Frame %d\n", nFrame);
