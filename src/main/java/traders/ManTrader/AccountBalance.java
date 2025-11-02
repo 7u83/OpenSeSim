@@ -56,6 +56,10 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
         }
         a.getSe().addQuoteReceiver(this);
     }
+    
+    public AccountBalance(){
+        this(null);
+    }
 
     public void updateBalance(Account account) {
         DecimalFormat mf = account.getSe().getMoneyFormatter();

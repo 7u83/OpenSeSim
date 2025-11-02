@@ -32,9 +32,17 @@ public class Exchange {
         money_decimals = n;
         money_formatter = getFormatter(n);
     }
+    
+    public int getMoneyDecimals(){
+        return money_decimals;
+    }
+    
+    public int getSharesDecimals(){
+        return shares_decimals;
+    }
 
     public float shares_df = 1;
-    private float shares_decimals = 0;
+    private int shares_decimals = 0;
     private DecimalFormat shares_formatter;
 
     /**

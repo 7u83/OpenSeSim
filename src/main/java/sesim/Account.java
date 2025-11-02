@@ -264,8 +264,23 @@ public class Account {
         return total / (iniTotal / 100) - 100;
     }
 
-    public float getTotal(float lp) {
-        return lp * getShares() + getMoney();
+    /**
+     * Return the total value if all share would be sold to the last price
+     *
+     * @param lastPrice last price
+     * @return the total value
+     */
+    public float getTotal(float lastPrice) {
+        return lastPrice * getShares() + getMoney();
+    }
+
+    public float getPerformance(float lastPrice) {
+
+        float total = lastPrice * getShares() + getMoney();
+        float iniTotal = lastPrice * getInitialShares() + getInitialMoney();
+
+        return total / (iniTotal / 100) - 100;
+
     }
 
 }

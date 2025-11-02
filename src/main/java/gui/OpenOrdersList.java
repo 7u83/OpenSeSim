@@ -96,6 +96,11 @@ public class OpenOrdersList extends javax.swing.JPanel {
      */
     public OpenOrdersList() {
         initComponents();
+        
+        if(table==null)
+            return;
+        
+        
         model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         table.setFillsViewportHeight(true);

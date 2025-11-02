@@ -26,15 +26,20 @@
 package gui;
 
 import gui.tools.NummericCellRenderer;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import static javax.swing.SwingConstants.RIGHT;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import javax.swing.table.DefaultTableModel;
@@ -50,14 +55,12 @@ import sesim.Quote;
 public class TraderListPanel extends javax.swing.JPanel {
 
     DefaultTableModel model;
-    Frame parentFrame=null;
-    
+    Frame parentFrame = null;
 
-    public TraderListPanel(Frame parent){
+    public TraderListPanel(Frame parent) {
         this();
-        parentFrame=parent;
+        parentFrame = parent;
     }
-    
 
     final void updateModel() {
         if (Globals.sim == null) {
@@ -72,10 +75,10 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        Quote q = Globals.sim.se.getLastQuoete();
-        float price = q == null ? 0 : q.getPrice();
-
+        //   Quote q = Globals.sim.se.getLastQuoete();
+        //   float price = q == null ? 0 : q.getPrice();
         int size = Globals.sim.traders.size();
+        float price = Globals.sim.se.getLastPrice();
         model.setRowCount(size);
         for (int i = 0; i < size; i++) {
             AutoTraderInterface at = Globals.sim.traders.get(i);
@@ -88,6 +91,9 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             float wealth = a.getShares() * price + a.getMoney();
             model.setValueAt(wealth, i, 5);
+
+            model.setValueAt(new PerfValue(a.gerPerformance(price)), i, 6);
+
         }
         List l = list.getRowSorter().getSortKeys();
         if (!l.isEmpty()) {
@@ -106,6 +112,10 @@ public class TraderListPanel extends javax.swing.JPanel {
     public TraderListPanel() {
 
         initComponents();
+        if (Globals.sim == null) {
+            return;
+        }
+
         model = (DefaultTableModel) list.getModel();
 //       updateModel();
         AtomicBoolean running = new AtomicBoolean(false);
@@ -126,19 +136,42 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             }
         };
-        list.getColumnModel().getColumn(3).setCellRenderer(new NummericCellRenderer(3));
-        list.getColumnModel().getColumn(4).setCellRenderer(new NummericCellRenderer(0));
-        list.getColumnModel().getColumn(5).setCellRenderer(new NummericCellRenderer(3));
 
-        // ID-Spalte zentrieren
+        list.getColumnModel().getColumn(3).setCellRenderer(
+                new NummericCellRenderer(Globals.sim.se.getMoneyDecimals())
+        );    // Cash
+        list.getColumnModel().getColumn(4).setCellRenderer(
+                new NummericCellRenderer(Globals.sim.se.getSharesDecimals())
+        );    // Shares
+        list.getColumnModel().getColumn(5).setCellRenderer(
+                new NummericCellRenderer(Globals.sim.se.getMoneyDecimals())
+        );    // Total
+
+        list.getColumnModel().getColumn(6).setCellRenderer(
+                new PerfCellRenderer()
+        );
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         list.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
 
-        // ID-Spalte schmaler machen
-        list.getColumnModel().getColumn(0).setPreferredWidth(50); // z.B. 50 Pixel
+        // set width for id
+        list.getColumnModel().getColumn(0).setPreferredWidth(50);
         list.getColumnModel().getColumn(0).setMinWidth(30);
         list.getColumnModel().getColumn(0).setMaxWidth(70);
+
+        // --- Berechne Breite für "-100.0%" ---
+        String widestText = "-100.0%"; // Der breiteste mögliche Wert
+        FontMetrics fm = list.getFontMetrics(list.getFont()); // Font der Tabelle
+        int textWidth = fm.stringWidth(widestText);
+
+        int padding = 12; // ca. 6px links + 6px rechts (anpassen nach Look&Feel)
+        int preferredWidth = textWidth + padding;
+        int maxWidth = 100 * preferredWidth;
+        // set width for id
+        list.getColumnModel().getColumn(6).setPreferredWidth(preferredWidth);
+        list.getColumnModel().getColumn(6).setMinWidth(preferredWidth);
+        list.getColumnModel().getColumn(6).setMaxWidth(maxWidth);
         timer.schedule(updater, 0, 1000);
 
     }
@@ -170,6 +203,117 @@ public class TraderListPanel extends javax.swing.JPanel {
 
     }
 
+    public class PerfValue implements Comparable<PerfValue> {
+
+        private final float value;
+        private final String display;
+
+        public PerfValue(float value) {
+            this.value = value;
+            this.display = String.format("%.1f%%", value);
+        }
+
+        @Override
+        public String toString() {
+            return display; // Wird vom Renderer automatisch verwendet
+        }
+
+        @Override
+        public int compareTo(PerfValue other) {
+            return Float.compare(this.value, other.value);
+        }
+
+        public float getValue() {
+            return value;
+        }
+    }
+
+    public class PerfCellRenderer extends DefaultTableCellRenderer {
+
+        public PerfCellRenderer() {
+            setHorizontalAlignment(RIGHT);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+
+            // value ist jetzt PerfValue!
+            PerfValue perf = (PerfValue) value;
+            float performance = perf.getValue();
+
+            Component c = super.getTableCellRendererComponent(
+                    table, perf.toString(), isSelected, hasFocus, row, column);
+
+            if (!isSelected) {
+                if (performance > 0) {
+                    setForeground(new Color(0, 100, 0));
+                } else if (performance < 0) {
+                    setForeground(Color.RED);
+                } else {
+                    setForeground(table.getForeground());
+                }
+                /*                Font defaultFont = table.getFont();
+                if (Math.abs(performance) > 10) {
+
+                    setFont(defaultFont.deriveFont(Font.BOLD));
+                } else {
+                    setFont(defaultFont);
+                }*/
+
+            }
+
+            return c;
+        }
+    }
+
+    public class PerfCellRenderer_old extends DefaultTableCellRenderer {
+
+        /**
+         *
+         * @param formatter
+         */
+        public PerfCellRenderer_old() {
+            this.setHorizontalAlignment(RIGHT);
+
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table, Object value, boolean isSelected,
+                boolean hasFocus, int row, int column) {
+
+            /*            if (!(value instanceof Float)) {
+                return super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+            }*/
+            int modelRow = table.convertRowIndexToModel(row);
+
+            Account a = Globals.sim.traders.get(modelRow).getAccount();
+            float price = Globals.sim.se.getLastPrice();
+            float perf = a.getPerformance(price);
+            String performance = String.format("%.1f", perf);
+
+            // Format the cell value as required
+            value = performance + "%"; //Globals.sim.traders.get(modelRow).getName(); 
+            //"Hallo"; //formatter.format((Number) value);
+
+            // And pass it on to parent class
+            super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+            if (!isSelected) { // Nur wenn nicht selektiert, eigene Farben setzen
+                if (perf > 0) {
+                    setForeground(new Color(0, 100, 0)); // Dunkelgrün für bessere Lesbarkeit
+                } else if (perf < 0) {
+                    setForeground(Color.RED);
+                } else {
+                    setForeground(table.getForeground()); // Standardfarbe bei 0
+                }
+            }
+            return this;
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -187,14 +331,17 @@ public class TraderListPanel extends javax.swing.JPanel {
             new Object [][] {
             },
             new String [] {
-                "ID", "Name","Status", "Cash", "Shares", "Total"
+                "ID", "Name","Status", "Cash", "Shares", "Total","Perf."
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                java.lang.Long.class,
+                java.lang.String.class,
+                java.lang.String.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -202,7 +349,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return false;
             }
         });
         list.setDoubleBuffered(true);
@@ -233,7 +380,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             Integer tid = (Integer) model.getValueAt(index, 0);
             // System.out.printf("Trader ID %d\n", tid);
 
-          //  JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            //  JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             JDialog console = Globals.sim.traders.get(tid).getGuiConsole(parentFrame);
             if (console == null) {
                 return;
