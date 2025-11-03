@@ -84,7 +84,16 @@ public class TraderListPanel extends javax.swing.JPanel {
             AutoTraderInterface at = Globals.sim.traders.get(i);
             Account a = at.getAccount();
             model.setValueAt(i, i, 0);
-            model.setValueAt(at.getName(), i, 1);
+
+            //model.setValueAt(at.getName(), i, 1);
+            int[] atc = at.getColor();
+            Color c = null;
+            if (atc != null) {
+                c = new Color(atc[0], atc[1], atc[2]);
+            }
+
+            model.setValueAt(new NameValue(at.getName(), c), i, 1);
+
             model.setValueAt(at.getStatus(), i, 2);
             model.setValueAt(a.getMoney(), i, 3);
             model.setValueAt(a.getShares(), i, 4);
@@ -150,6 +159,11 @@ public class TraderListPanel extends javax.swing.JPanel {
         list.getColumnModel().getColumn(6).setCellRenderer(
                 new PerfCellRenderer()
         );
+        
+                list.getColumnModel().getColumn(1).setCellRenderer(
+                new NameCellRenderer()
+        );
+
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -267,6 +281,73 @@ public class TraderListPanel extends javax.swing.JPanel {
         }
     }
 
+    public class NameValue implements Comparable<NameValue> {
+
+        private final String value;
+        private final Color color;
+
+        public NameValue(String value, Color color) {
+            this.value = value;
+            this.color = color;
+
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        @Override
+        public int compareTo(NameValue other) {
+            return this.value.compareTo(other.value);
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+    }
+
+    public class NameCellRenderer extends DefaultTableCellRenderer {
+
+        public NameCellRenderer() {
+            //setHorizontalAlignment(RIGHT);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+
+            // value ist jetzt PerfValue!
+            NameValue n = (NameValue) value;
+
+            Component c = super.getTableCellRendererComponent(
+                    table, n.toString(), isSelected, hasFocus, row, column);
+
+            if (!isSelected) {
+                Color color = n.getColor();
+                if (color != null) {
+                    this.setBackground(n.getColor());
+                }
+                else{
+                    setBackground(table.getBackground());
+                }
+                /*                Font defaultFont = table.getFont();
+                if (Math.abs(performance) > 10) {
+
+                    setFont(defaultFont.deriveFont(Font.BOLD));
+                } else {
+                    setFont(defaultFont);
+                }*/
+            }
+
+            return c;
+        }
+    }
+
     public class PerfCellRenderer_old extends DefaultTableCellRenderer {
 
         /**
@@ -336,7 +417,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         ) {
             Class[] types = new Class [] {
                 java.lang.Long.class,
-                java.lang.String.class,
+                NameValue.class,
                 java.lang.String.class,
                 java.lang.Double.class,
                 java.lang.Double.class,

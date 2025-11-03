@@ -26,7 +26,7 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="editAutoTraderList1" pref="526" max="32767" attributes="0"/>
+                  <Component id="editAutoTraderList1" pref="745" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="deleteButton" min="-2" max="-2" attributes="0"/>

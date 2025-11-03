@@ -95,4 +95,5 @@ public interface AutoTraderInterface {
     
     public void stop();
 
+    public int[] getColor();
 }

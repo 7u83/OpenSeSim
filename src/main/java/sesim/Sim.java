@@ -236,8 +236,8 @@ public class Sim {
     public void startTraders(JSONObject cfg) {
 
         Order.resetIdGenerator();
-        
-        Logger.info("Sim started");      
+
+        Logger.info("Sim started");
         se.putConfig(getExchangeCfg(cfg));
 
         long randomSeed = getRandomSeed(cfg);
@@ -252,7 +252,6 @@ public class Sim {
             random = new SplittableRandom(randomSeed);
         }
 
- 
         Logger.info("Random seed is %d", randomSeed);
 
         //   Globals.sim.se.setMoneyDecimals(8);
@@ -303,8 +302,21 @@ public class Sim {
 
                 this.traders.add(trader);
 
-                moneyTotal += money;
-                sharesTotal += shares;
+                Boolean exclude = t.optBoolean("ExcludeInitial", false);
+                if (!exclude) {
+                    moneyTotal += money;
+                    sharesTotal += shares;
+                }
+
+                JSONArray color = t.getJSONArray("Color");
+                if (color.length() == 3) {
+                    int c[] = new int[3];
+                    c[0] = color.getInt(0);
+                    c[1] = color.getInt(1);
+                    c[2] = color.getInt(2);
+
+                    ((AutoTraderBase) trader).color = c;
+                }
 
             }
 
@@ -314,7 +326,6 @@ public class Sim {
         boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE, true);
 
 //        System.out.printf("Cache total %f, Shares total\n", moneyTotal, sharesTotal);
-
         if (autoInitialPrice) {
             initialPrice = moneyTotal / sharesTotal;
 
@@ -332,8 +343,8 @@ public class Sim {
         }
 
     }
-    
-    public Scheduler getScheduler(){
+
+    public Scheduler getScheduler() {
         return scheduler;
     }
 

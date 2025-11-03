@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -45,6 +46,8 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     protected String name;
     private String strategyName="default";
+    
+    int[] color=null;
 
     /*    public AutoTraderBase(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
@@ -70,6 +73,10 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     @Override
     public String getName() {
         return name;
+    }
+    
+    public int[]  getColor(){
+        return color;
     }
 
 //    @Override
