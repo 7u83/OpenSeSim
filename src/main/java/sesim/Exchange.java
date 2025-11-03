@@ -543,7 +543,7 @@ public class Exchange {
     public float getLastPrice() {
         Quote q = this.getLastQuoete();
         if (q == null) {
-            System.out.printf("get last quote failed\n");
+          //  System.out.printf("get last quote failed\n");
             return 0f;
         }
         return q.price / money_df;

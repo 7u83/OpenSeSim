@@ -301,12 +301,20 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //   float candleWidth;
         private Graphics2D gyr;
         private int width;
+        boolean log;
+        
+        float getDiff(){
+            if (log){
+                return (float)(Math.log(c_mm.getMax()) - Math.log(c_mm.getMin()));
+            }
+            return c_mm.getDiff();
+        }
 
         float getY(float y) {
 
-            float ys = rect.height / c_mm.getDiff();
-            if (c_mm.isLog()) {
-                return rect.height + rect.y - ((float) Math.log(y) - c_mm.getMin()) * ys;
+            float ys = rect.height / getDiff();
+            if (log) {
+                return rect.height + rect.y - ((float) Math.log(y) - (float) Math.log(c_mm.getMin()) ) * ys;
             }
             return (rect.height - ((y - c_mm.getMin()) * c_yscaling)) + rect.y;
         }
@@ -314,10 +322,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         float getValAtY(float y) {
             //  float val = 0;
 
-            if (c_mm.isLog()) {
-                float ys = rect.height / c_mm.getDiff();
+            if (log) {
+                float ys = rect.height / getDiff();
 
-                return (float) Math.exp((rect.height + rect.y) / ys + c_mm.getMin() - y / ys);
+                return (float) Math.exp((rect.height + rect.y) / ys + (float) Math.log(c_mm.getMin()) - y / ys);
 
             }
 
@@ -715,6 +723,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             default:
                 ctx.c_mm = d.data.getMinMax(first_bar, last_bar);
         }
+        
+        ctx.log=d.log;
+        
+        
         // Calculate the height for all sub-charts
         // this is the height of out panel minus the height of x-legend
         int chartwin_height = clip.height - this.xAxisAreaHight * emWidth;
