@@ -115,13 +115,13 @@ public class LogPanel extends javax.swing.JPanel {
     public LogPanel() {
         initComponents();
 
-        logArea = new javax.swing.JTextPane() {
+        /*logArea = new javax.swing.JTextPane() {
             @Override
             public boolean getScrollableTracksViewportWidth() {
                 return false; // Kein Wordwrap → horizontaler Scrollbalken
             }
 
-            @Override
+           @Override
             public boolean getScrollableTracksViewportHeight() {
                 return true;
             }
@@ -136,27 +136,24 @@ public class LogPanel extends javax.swing.JPanel {
                 return 64;
             }
 
-            @Override
-            public Dimension getPreferredScrollableViewportSize() {
-                return getPreferredSize();
-            }
-        };
+
+        };*/
 
         logArea.setEditable(true);
         logArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
 
         // ScrollPane neu konfigurieren
-        jScrollPane1.setViewportView(logArea);
+ /*       jScrollPane1.setViewportView(logArea);
         jScrollPane1.setHorizontalScrollBarPolicy(
                 javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane1.setVerticalScrollBarPolicy(
-                javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+                javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Nachdem du logArea neu erstellt hast:
-        logArea.setBackground(Color.WHITE);  // Weißer Text-Hintergrund
+        logArea.setBackground(Color.WHITE);  // Weißer Text-Hintergrund*/
 
 // WICHTIG: Viewport-Hintergrund auch weiß machen
-        jScrollPane1.getViewport().setBackground(Color.WHITE);
+        //jScrollPane1.getViewport().setBackground(Color.WHITE);
 
         // Optional: ScrollPane-Rahmen entfernen (falls gewünscht)
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
@@ -195,9 +192,9 @@ public class LogPanel extends javax.swing.JPanel {
             } catch (BadLocationException e) {
             }
 
-            /*            if (autoScroll) {
-                logPane.setCaretPosition(doc.getLength());
-            }*/
+                      if (true) {
+                logArea.setCaretPosition(doc.getLength());
+            }
         });
 
     }

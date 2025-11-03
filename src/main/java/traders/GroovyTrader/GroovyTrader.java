@@ -36,6 +36,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -64,7 +66,7 @@ public class GroovyTrader extends AutoTraderBase {
     static HashMap<String, Class<? extends Script>> scripts = new HashMap<>();
     //static HashMap<String, String> sourceCode = new HashMap<>();
 
-    String sourceCode = "";
+    String sourceCode = null;
     Script groovyScript;
 
     final String CFG_SRC = "src";
@@ -73,7 +75,7 @@ public class GroovyTrader extends AutoTraderBase {
 
     @Override
     public void reset() {
-    //    sourceCode = new HashMap<>();
+        //    sourceCode = new HashMap<>();
         scripts = new HashMap<>();
     }
 
@@ -85,7 +87,7 @@ public class GroovyTrader extends AutoTraderBase {
         try (InputStream is = getClass().getResourceAsStream("/files/GroovyTrader/default.groovy")) {
 
             if (is == null) {
-                // Dies tritt ein, wenn die Datei im JAR nicht gefunden wird.
+
                 throw new IOException("SQL-Resource nicht im JAR gefunden: ");
             }
 
@@ -103,53 +105,11 @@ public class GroovyTrader extends AutoTraderBase {
             this.setSeourceCode(content);
 
         } catch (IOException ex) {
+            sesim.Logger.error("Cannot load /files/GroovyTrader/default.groovy");
 
         }
     }
 
-    /*@Override
-    public void init(Sim sim, long id, String name, float money, float shares, JSONObject cfg) {
-        super.init(sim, id, name, money, shares, cfg);
-
-
-            sesim.Logger.error("Error load groovy soure code");
-
-        
-    }*/
-
- /*public void init(){
-              if (this.getSourceCode() != null) {
-            return;
-        }
-
-        try (InputStream is = getClass().getResourceAsStream("/files/GroovyTrader/default.groovy")) {
-
-            if (is == null) {
-                // Dies tritt ein, wenn die Datei im JAR nicht gefunden wird.
-                throw new IOException("SQL-Resource nicht im JAR gefunden: ");
-            }
-
-            String content;
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line).append("\n");
-                }
-                content = sb.toString();
-            }
-
-            //this.groovySourceCode = content;
-            this.setSeourceCode(content);
-
-        } catch (IOException ex) {
-
-            sesim.Logger.error("Error load groovy soure code");
-
-        }
-    }*/
-    
-    
     @Override
     public void start() {
         accountApi = new AccountApi();
@@ -159,33 +119,38 @@ public class GroovyTrader extends AutoTraderBase {
         binding.setVariable("account", accountApi);
         binding.setVariable("sesim", sesimApi);
 
-        //      GroovyShell shell = new GroovyShell(binding);
-
-        /*    try {
-            groovyScript = shell.parse(sourceCode.get(getStrategyName()), "trader.groovy");
-        } catch (CompilationFailedException e) {
-            sesim.Logger.error("Starting %s:\n%s ", getName(), e.getMessage());
-            return;
-        }
-
-        try {
-
-            Object result = groovyScript.invokeMethod("start", new Object[]{});
-
-            //     System.out.println("Ergebnis aus Groovy: " + result);
-        } catch (Exception e) {
-            sesim.Logger.error("Executing %s\n,%s", getName(), e.getMessage());
-            // throw (e);
-        }*/
         try {
             Class<? extends Script> groovyScriptClass = this.getGroovyClass();
+            if (groovyScriptClass == null) {
+                return;
+            }
             groovyScript = groovyScriptClass.getDeclaredConstructor().newInstance();
             groovyScript.setBinding(binding);
             groovyScript.invokeMethod("start", new Object[]{});
         } catch (Exception e) {
-            sesim.Logger.error("Executing %s\n,%s", getName(), e.getMessage());
+            logGroovyError("[Calling start()]",e);
         }
 
+    }
+
+    void logGroovyError(String extra, Exception e) {
+
+        Throwable cause = e.getCause();
+        if (cause != null) {
+
+            String line = "";
+            for (StackTraceElement ste : cause.getStackTrace()) {
+                if (ste.getFileName() != null && ste.getFileName().endsWith(".groovy")) {
+                    line = String.format("%s:%s, line %d", ste.getFileName(), ste.getMethodName(), ste.getLineNumber());
+                    /*sesim.Logger.error("  → %s:%s (Zeile %d)",
+                            ste.getFileName(), ste.getMethodName(), ste.getLineNumber());*/
+                }
+            }
+
+            sesim.Logger.error("GroovyTrader '%s'%s: %s: %s", getName(), extra, line, cause.toString());
+        } else {
+            sesim.Logger.error("GroovyTrader '%s'%s: %s", getName(), extra, e.getMessage());
+        }
     }
 
     @Override
@@ -229,7 +194,13 @@ public class GroovyTrader extends AutoTraderBase {
 
             @Override
             public long processEvent(long time, Event e) {
-                Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
+                try {
+                    Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
+
+                } catch (Exception ex) {
+                    String extra = String.format("[scheduleOnce(%s)]",groovyFun);
+                    logGroovyError(extra,ex);
+                }
                 return 0;
             }
 
@@ -286,8 +257,8 @@ public class GroovyTrader extends AutoTraderBase {
         public void setStatus(String s, Object... args) {
             GroovyTrader.this.setStatus(s, args);
         }
-        
-        public String getName(){
+
+        public String getName() {
             return GroovyTrader.this.getName();
         }
 
@@ -303,7 +274,11 @@ public class GroovyTrader extends AutoTraderBase {
 
             @Override
             public long processEvent(long time, Event e) {
-                Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
+                try {
+                    Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
+                } catch (Exception ex) {
+                    logGroovyError("[price Event]",ex);
+                }
                 return 0;
             }
 
@@ -334,7 +309,11 @@ public class GroovyTrader extends AutoTraderBase {
         @Override
         public void accountUpdated(Account a, Order o) {
             if (groovyAccountUpdateFun != null) {
-                Object result = groovyScript.invokeMethod(this.groovyAccountUpdateFun, new Object[]{o});
+                try {
+                    Object result = groovyScript.invokeMethod(this.groovyAccountUpdateFun, new Object[]{o});
+                } catch (Exception e) {
+                    logGroovyError("[accountupdate]",e);
+                }
             }
 
         }
@@ -374,7 +353,7 @@ public class GroovyTrader extends AutoTraderBase {
     @Override
     public void setConfig(JSONObject cfg) {
         //this.groovySourceCode = cfg.optString(CFG_SRC, "");
-        setSeourceCode(cfg.optString(CFG_SRC, ""));
+        setSeourceCode(cfg.optString(CFG_SRC, null));
     }
 
     @Override
@@ -384,15 +363,15 @@ public class GroovyTrader extends AutoTraderBase {
 
     final String getSourceCode() {
         return sourceCode;
-        
-    /*    String strtegyName = this.getStrategyName();
+
+        /*    String strtegyName = this.getStrategyName();
         String code = sourceCode.get(strtegyName);
         return code;*/
         //return sourceCode.get(this.getStrategyName());
     }
 
     final void setSeourceCode(String s) {
-        sourceCode=s;
+        sourceCode = s;
         //sourceCode.put(this.getStrategyName(), s);
     }
 
@@ -410,7 +389,13 @@ public class GroovyTrader extends AutoTraderBase {
         Class<? extends Script> groovyScriptClass;
         GroovyClassLoader loader = new GroovyClassLoader();
         String source = getSourceCode();
-        groovyScriptClass = loader.parseClass(source);
+        try {
+            groovyScriptClass = loader.parseClass(source, getStrategyName() + ".groovy");
+        } catch (Exception e) {
+            //  sesim.Logger.error("GroovyTrader '%s': %s", getName(), e.getMessage());
+            this.logGroovyError("[compile source]",e);
+            return null;
+        }
         scripts.put(this.getStrategyName(), groovyScriptClass);
         return groovyScriptClass;
     }
