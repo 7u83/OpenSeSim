@@ -355,7 +355,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed
 
     private void ordersListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ordersListMousePressed
-        System.out.printf("Something hppened\n");
+     //   System.out.printf("Something hppened\n");
         /*        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
             evt.consume();
             ModifyOrderDialog d = new ModifyOrderDialog(null, true);

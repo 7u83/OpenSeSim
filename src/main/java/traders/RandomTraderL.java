@@ -66,8 +66,8 @@ public class RandomTraderL extends AutoTraderBase
 
     public float[] wait_after_fail = {1f, 5f};
 
-    public float bankrupt_shares_cfg = 1f;
-    public float bankrupt_cash_cfg = 1f;
+  //  public float bankrupt_shares_cfg = 1f;
+//    public float bankrupt_cash_cfg = 1f;
 
     public long bankrupt_shares = 0;
     public long bankrupt_cash = 0;
@@ -102,8 +102,8 @@ public class RandomTraderL extends AutoTraderBase
 
     @Override
     public void start() {
-        bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
-        bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
+        //bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
+        //bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
         this.TRADEEVENT.name = this.getName();
         this.ORDERFILLEDEVENT.name = this.getName();
         Account a = account_id;
@@ -219,8 +219,8 @@ public class RandomTraderL extends AutoTraderBase
         fields[1] = Math.round((sleepAfterSell[1] / 1000.0) * 10) / 10.0;
         cfg.put(SLEEP_AFTER_SELL, fields);
 
-        cfg.put(BANKRUPT_SHARES, bankrupt_shares_cfg);
-        cfg.put(BANKRUPT_CASH, bankrupt_cash_cfg);
+        cfg.put(BANKRUPT_SHARES, bankrupt_shares);
+        cfg.put(BANKRUPT_CASH, bankrupt_cash);
 
         cfg.put(MIN_AMOUNT_TO_BUY_DEVIATION, this.minAmountToBuyDeviation);
         cfg.put(MIN_AMOUNT_TO_SELL_DEVIATION, this.minAmountToSellDeviation);
@@ -303,13 +303,13 @@ public class RandomTraderL extends AutoTraderBase
             sleepAfterSell[0] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_SELL).getDouble(0));
             sleepAfterSell[1] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_SELL).getDouble(1));
 
-            bankrupt_shares_cfg = (float) cfg.getDouble(BANKRUPT_SHARES);
-            bankrupt_cash_cfg = (float) cfg.getDouble(BANKRUPT_CASH);
+            bankrupt_shares =  cfg.getLong(BANKRUPT_SHARES);
+            bankrupt_cash =  cfg.getLong(BANKRUPT_CASH);
 
-            if (se != null) {
-                bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
-                bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
-            }
+//            if (se != null) {
+//                bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
+//                bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
+//            }
 
             minAmountToBuyDeviation = cfg.getLong(MIN_AMOUNT_TO_BUY_DEVIATION);
             minAmountToSellDeviation = cfg.getLong(MIN_AMOUNT_TO_SELL_DEVIATION);
@@ -544,11 +544,11 @@ public class RandomTraderL extends AutoTraderBase
         return delta;
 
         /*delta = 0 + minDelta;
-      System.out.printf("MinDelat: %d\n",delta);
+   //   System.out.printf("MinDelat: %d\n",delta);
       delta = (range-1)/2 + minDelta;
-      System.out.printf("MidDelta: %d\n",delta);      
+  //    System.out.printf("MidDelta: %d\n",delta);      
       delta = range-1 + minDelta;
-      System.out.printf("MaxDelta: %d\n",delta);
+  //    System.out.printf("MaxDelta: %d\n",delta);
          */
         // 4. Neuer Preis in Cent
         /*      long newPrice = lastPrice + delta;

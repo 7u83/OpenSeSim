@@ -3,11 +3,9 @@ package sesim;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
-import org.json.JSONException;
 import org.json.JSONObject;
 import sesim.Scheduler.Event;
 
@@ -20,7 +18,7 @@ public class Exchange {
     //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
     public float money_df = 100;
     private int money_decimals = 2;
-    DecimalFormat money_formatter;
+    DecimalFormat money_formatter = getFormatter(2); 
 
     /**
      * Set the number of decimals used with money
@@ -43,7 +41,7 @@ public class Exchange {
 
     public float shares_df = 1;
     private int shares_decimals = 0;
-    private DecimalFormat shares_formatter;
+    private DecimalFormat shares_formatter = getFormatter(0);
 
     /**
      * Set the number of decimals for shares
@@ -232,8 +230,8 @@ public class Exchange {
 
     }
 
-    //HashMap<Byte, SortedSet<Order>> order_books;
-    IDGenerator order_id = new IDGenerator();
+
+//    IDGenerator order_id = new IDGenerator();
 
     public static class CompOrderBookEntry implements OrderBookEntry {
 
@@ -274,24 +272,7 @@ public class Exchange {
             return "";
         }
 
-        /*     public OrderBookEntry(Order o) {
-            volume = o.volume;
-            limit = o.limit;
-            account = o.account;
-        }*/
-
- /*     @Override
-        public int compareTo(OrderBookEntry o) {
-
-            if (this.limit < o.limit) {
-                return -1;
-            }
-            if (this.limit < o.limit) {
-                return 1;
-            }
-            return 0;
-
-        }*/
+ 
         @Override
         public void addVolume(long v) {
             volume += v;
@@ -344,6 +325,8 @@ public class Exchange {
     final void initExchange() {
         //   quoteReceiverList = (new CopyOnWriteArrayList<>());
 
+        resetStatistics();
+        
         this.quoteReceiverList.clear();
         this.askBookListeners.clear();
         this.bidBookListeners.clear();
@@ -354,7 +337,7 @@ public class Exchange {
 
         //     random = new SplittableRandom();
  //       quoteHistory = new ArrayList();
-        statistics = new Statistics();
+ //      statistics = new Statistics();
 
         ohlcByTimeFrameLength = new HashMap<>();
         ohlcByTimeFrameLength.put(minOHLCBarDuration, new OHLCData(this, minOHLCBarDuration));
@@ -442,6 +425,8 @@ public class Exchange {
     public Exchange(Sim sim) {
         quoteReceiverList = (new CopyOnWriteArrayList<>());
         this.sim = sim;
+      //  this.money_formatter = getMoneyFormatter(2);
+        
         initExchange();
         //       executor.start();
 
@@ -449,28 +434,38 @@ public class Exchange {
 
     public class Statistics {
 
-        public long trades;
-        public long orders;
-        public Float heigh;
-        public Float low;
+        public long trades=0;
+        public long orders=0;
+        public float high=0;
+        public float low=0;
 
-        public final void reset() {
-            trades = 0;
-            heigh = null;
-            low = null;
-
-        }
+        public long lastTradeTime=0;
 
         Statistics() {
-            reset();
+            if (lastQuote==null)
+                return;
+            trades=numTrades;
+            orders=numOrders;
+            lastTradeTime=lastQuote.time;
+            OHLCData d = getOHLCdata(minOHLCBarDuration);
+            high=priceHigh/money_df;
+            low=priceLow/money_df;
+            
         }
 
     };
+    
+    void resetStatistics(){
+        numTrades=0;
+        numOrders=0;
+        priceLow=0;
+        priceHigh=0;
+    }
 
-    Statistics statistics;
+
 
     public Statistics getStatistics() {
-        return statistics;
+        return new Statistics();
     }
 
     class Executor extends Thread {
@@ -1087,11 +1082,17 @@ public class Exchange {
         }
 
     }
+    
+    long numTrades=0;
+    long numOrders=0;
+    long priceLow=0;
+    long priceHigh=0;
+    
 
     private void finishTrade(Order buyer, Order seller, long price, long volume) {
         // Transfer money and shares
         transferMoneyAndShares(buyer.account, seller.account, volume * price, volume);
-        statistics.trades++;
+        numTrades++;
         // Update volume
         buyer.volume -= volume;
         seller.volume -= volume;
@@ -1104,7 +1105,19 @@ public class Exchange {
     }
 
     void addQuoteToHistory(Quote q) {
-        if (statistics.heigh == null) {
+        if (priceLow==0)
+            priceLow=q.price;
+        else{
+            if (q.price<priceLow)
+                priceLow=q.price;
+        }
+        
+        if (q.price>priceHigh){
+            priceHigh=q.price;
+        }
+            
+        
+   /*     if (statistics.heigh == null) {
             statistics.heigh = (float) q.price / money_df;
         } else if (statistics.heigh < q.price) {
             statistics.heigh = q.price / money_df;
@@ -1113,7 +1126,7 @@ public class Exchange {
             statistics.low = q.price / money_df;
         } else if (statistics.low > q.price) {
             statistics.low = q.price / money_df;
-        }
+        }*/
 
         //  statistics.trades++;
         //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
@@ -1336,7 +1349,7 @@ public class Exchange {
         synchronized (executor) {
 
             //num_orders++;
-            statistics.orders++;
+            numOrders++;
 
             addOrderToBook(o);
 

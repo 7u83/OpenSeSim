@@ -235,6 +235,8 @@ public class Sim {
 
     public void startTraders(JSONObject cfg) {
 
+        Order.resetIdGenerator();
+        
         Logger.info("Sim started");      
         se.putConfig(getExchangeCfg(cfg));
 

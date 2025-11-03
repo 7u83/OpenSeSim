@@ -88,8 +88,8 @@ public class MinMax {
         this.max=max;
     }*/
 
-    public boolean isLog(){
+ /*   public boolean isLog(){
         return log;
-    }
+    }*/
     
 }

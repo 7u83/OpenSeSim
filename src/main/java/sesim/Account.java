@@ -164,7 +164,7 @@ public class Account {
     /*    public boolean couldBuy(float volume, float limit) {
         float avail = this.getMoney() - this.getCashInOpenOrders();
 
-        System.out.printf("CouldBuy %f<%f\n", volume * limit, avail);
+      //  System.out.printf("CouldBuy %f<%f\n", volume * limit, avail);
         return volume * limit <= avail;
     }
 

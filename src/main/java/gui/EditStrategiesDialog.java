@@ -73,7 +73,7 @@ public final class EditStrategiesDialog extends EscDialog {
         pack();
         setMinimumSize(getSize());
 
-        System.out.printf("Last used %s\n", lastUsed);
+    //    System.out.printf("Last used %s\n", lastUsed);
         strategySelectComboBox.setSelectedItem(lastUsed);
     }
 

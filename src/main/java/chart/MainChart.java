@@ -31,7 +31,7 @@ public class MainChart extends chart.Chart {
      * Creates new form MainChart
      */
     public MainChart() {
-        System.out.printf("This is the main chart constructor\n");
+      //  System.out.printf("This is the main chart constructor\n");
 
         initComponents();
 
@@ -63,6 +63,7 @@ public class MainChart extends chart.Chart {
         main.crossColor = Color.BLACK;
         main.pad_top=1;
         main.pad_bot=1;
+        main.yformatter=Globals.sim.se.getMoneyFormatter();
 
         addChart(main);
 
@@ -76,7 +77,7 @@ public class MainChart extends chart.Chart {
         vol.rightYColor = Color.WHITE;
         vol.crossColor = Color.BLACK;
         vol.pad_top=1;
-
+        vol.yformatter=Globals.sim.se.getSharesFormatter();
         addChart(vol);
     }
 
@@ -358,7 +359,7 @@ public class MainChart extends chart.Chart {
     private void lineTypeItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lineTypeItemItemStateChanged
         if (this.lineTypeItem.isSelected()) {
             this.chart_type = ChartType.LINE;
-            System.out.printf("Set LIne\n");
+          //  System.out.printf("Set LIne\n");
         }
         doRedraw();
     }//GEN-LAST:event_lineTypeItemItemStateChanged

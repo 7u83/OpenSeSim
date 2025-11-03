@@ -59,7 +59,7 @@ public class Clock extends javax.swing.JPanel {
                     System.exit(0);
                 }*/
 
-                Statistics s = Globals.sim.se.getStatistics();
+             //   Statistics s = Globals.sim.se.getStatistics();
                 jLabel1.setText(Scheduler.formatTimeMillis(t));
 
             }
@@ -71,7 +71,7 @@ public class Clock extends javax.swing.JPanel {
 
     @Override
     public void setVisible(boolean b) {
-        System.out.printf("Visible: %s\n", Boolean.toString(b));
+       // System.out.printf("Visible: %s\n", Boolean.toString(b));
     }
 
     /**

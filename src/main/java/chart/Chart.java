@@ -37,6 +37,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -124,12 +125,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     @Override
     public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return this.getVisibleRect().width/10;
+        return this.getVisibleRect().width / 10;
     }
 
     @Override
     public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return this.getVisibleRect().width/2;
+        return this.getVisibleRect().width / 2;
     }
 
     @Override
@@ -216,13 +217,12 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //     int y = clip.height - emWidth * xl_height;
         //    y = 0;
         // Draw background
-        if (this.xl_bgcolor != null) {
+        /*     if (this.xl_bgcolor != null) {
             g.setColor(xl_bgcolor);
             g.fillRect(clip.x, clip.y, clip.width, (emWidth * this.xAxisAreaHight));
             g.drawRect(clip.y, clip.y, clip.width, (emWidth * this.xAxisAreaHight));
             g.setColor(cur);
-        }
-
+        }*/
         if (xl_color != null) {
             g.setColor(xl_color);
         }
@@ -274,6 +274,19 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         Rectangle clip; // = g.getClipBounds();
         clip = this.getVisibleRect();
 
+        if (this.xl_bgcolor != null) {
+
+            Color cur = g.getColor();
+            g.setColor(xl_bgcolor);
+            g.fillRect(clip.x, clip.height - (emWidth * this.xAxisAreaHight)-1,
+                    clip.width, (emWidth * this.xAxisAreaHight)+1);
+            g.drawRect(clip.x, clip.height - (emWidth * this.xAxisAreaHight)-1,
+                    clip.width, (emWidth * this.xAxisAreaHight)+1);
+            // g.fillRect(clip.x, clip.y, clip.width, clip.height /*(emWidth * this.xAxisAreaHight)*/);
+//            g.drawRect(clip.y, clip.y, clip.width, (emWidth * this.xAxisAreaHight));
+            g.setColor(cur);
+        }
+
         //    System.out.printf("X: %d, Y:%d, W: %d, H:%d\b", clip.x, clip.y, clip.width, clip.height);
         Graphics2D g2 = (Graphics2D) g.create();
 
@@ -302,10 +315,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         private Graphics2D gyr;
         private int width;
         boolean log;
-        
-        float getDiff(){
-            if (log){
-                return (float)(Math.log(c_mm.getMax()) - Math.log(c_mm.getMin()));
+
+        float getDiff() {
+            if (log) {
+                return (float) (Math.log(c_mm.getMax()) - Math.log(c_mm.getMin()));
             }
             return c_mm.getDiff();
         }
@@ -314,7 +327,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             float ys = rect.height / getDiff();
             if (log) {
-                return rect.height + rect.y - ((float) Math.log(y) - (float) Math.log(c_mm.getMin()) ) * ys;
+                return rect.height + rect.y - ((float) Math.log(y) - (float) Math.log(c_mm.getMin())) * ys;
             }
             return (rect.height - ((y - c_mm.getMin()) * c_yscaling)) + rect.y;
         }
@@ -458,14 +471,70 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         float y1 = ctx.getY(ctx.c_mm.getMin(false));
         float y2 = ctx.getY(ctx.c_mm.getMax(false));
 
-        for (int yp = (int) y2; yp < y1; yp += emWidth * 5) {
+        // nice first val
+        double R = ctx.c_mm.getMax() - ctx.c_mm.getMin();
+        int anzahlTicks = (int) (clip.height / (fontHeight * 1.2)); // Beispiel: 5 Hauptunterteilungen
+        double S_strich = R / anzahlTicks;
+
+        // Basis P (Potenz von 10)
+        double P = Math.pow(10, Math.floor(Math.log10(S_strich)));
+
+        double S_normiert = S_strich / P;
+        double S; // Der finale "schöne" Schritt
+
+        if (S_normiert <= 1.0) {
+            S = 1.0 * P;
+        } else if (S_normiert <= 2.0) {
+            S = 2.0 * P;
+        } else if (S_normiert <= 5.0) {
+            S = 5.0 * P;
+        } else {
+            S = 10.0 * P;
+        }
+
+        double Y_min = Math.floor(ctx.c_mm.getMin() / S) * S;
+        double Y_max = Math.ceil(ctx.c_mm.getMax() / S) * S;
+
+        //  if (!ctx.log) {
+        {
+            int last_y = clip.height;
+            for (double label = Y_min; label <= ctx.c_mm.getMax() + S * 0.001; label += S) {
+                //System.out.printf("MIN %f\n", P);
+                //g.setColor(Color.RED);
+                int y = (int) ctx.getY((float) label);
+                if (y + fontHeight > clip.height) {
+                    continue;
+                }
+                if (y + fontHeight > last_y) {
+                    continue;
+                }
+                //g.drawLine(0, y, 100, y);
+                //g.drawString(String.format("%.2f", label), 0, y + fontHeight / 3);  
+
+                g.drawLine(clip.width + clip.x - yw, y, clip.width + clip.x
+                        - yw + emWidth, y);
+                //float v1 = ctx.getValAtY(yp);
+                g.drawString(d.yformatter.format(label), clip.width + clip.x
+                        - yw + emWidth * 1.5f, y + fontHeight / 3);
+
+                last_y = y;
+            }
+
+            /*      System.out.printf("MIN %f\n", P);
+            g.setColor(Color.RED);
+            int y = (int) ctx.getY((float) P);
+            g.drawLine(0, y, 100, y);
+            g.drawString(String.format("%.2f", P), 0, y + fontHeight / 3);*/
+            return;
+        }
+
+        /*      for (int yp = (int) y2; yp < y1; yp += emWidth * 5) {
             g.drawLine(clip.width + clip.x - yw, yp, clip.width + clip.x
                     - yw + emWidth, yp);
             float v1 = ctx.getValAtY(yp);
             g.drawString(String.format("%.2f", v1), clip.width + clip.x
                     - yw + emWidth * 1.5f, yp + fontHeight / 3);
-        }
-
+        }*/
     }
 
     void drawMainChart(DrawCtx ctx, SubChartDef d) {
@@ -542,6 +611,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         public float pad_top = 0;
         public float pad_bot = 0;
 
+        public DecimalFormat yformatter;
     }
 
     protected OHLCData data;
@@ -723,10 +793,9 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             default:
                 ctx.c_mm = d.data.getMinMax(first_bar, last_bar);
         }
-        
-        ctx.log=d.log;
-        
-        
+
+        ctx.log = d.log;
+
         // Calculate the height for all sub-charts
         // this is the height of out panel minus the height of x-legend
         int chartwin_height = clip.height - this.xAxisAreaHight * emWidth;
@@ -779,8 +848,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         for (SubChartDef d : charts) {
             DrawCtx ctx = new DrawCtx();
             if (d.data == null) {
-                System.out.printf("Data is null\n");
-                System.exit(0);
+                //   System.out.printf("Data is null\n");
+                //System.exit(0);
             }
 
             // calclulate the min/max values
@@ -822,7 +891,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 //            ctx.g = g2;
             //          ctx.g.translate(clip.x + this.leftYAxisAreaWidth * this.emWidth + chartWidth, h1);
             //   ctx.g.setClip(clip.x, clip.y, this.rightYAxisAreaWidth * this.emWidth, subchartwin_height);
-
+            // System.out.printf("Draw %d\n", h1);
             this.drawYLegend(ctx, d);
 
             //   g2.drawLine(0, 0, 60, 60);

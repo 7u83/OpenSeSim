@@ -725,7 +725,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             FileFilter selected_filter = fc.getFileFilter();
             if (selected_filter == sesim_filter) {
-                System.out.printf("Filter", selected_filter.toString());
+               // System.out.printf("Filter", selected_filter.toString());
                 if (!fn.toLowerCase().endsWith("." + Globals.SESIM_FILEEXTENSION)) {
                     f = new File(fn + "." + Globals.SESIM_FILEEXTENSION);
                 }
@@ -831,7 +831,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                         public void windowClosing(WindowEvent e) {
                             super.windowClosing(e);
 
-                            System.out.printf("Closingn");
+                          //  System.out.printf("Closingn");
                             rawOrderBookDialog.dispose();
                             rawOrderBookDialog.stop();
                             rawOrderBookDialog = null;
@@ -874,7 +874,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                 traderListDialog.setVisible(true);
             } else if (traderListDialog != null) {
-                System.out.printf("Set visible = false\n");
+              //  System.out.printf("Set visible = false\n");
                 traderListDialog.setVisible(false);
             }
         });
@@ -922,7 +922,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                         public void windowClosing(WindowEvent e) {
                             super.windowClosing(e);
 
-                            System.out.printf("Closingn");
+         //                   System.out.printf("Closingn");
                             unlimitedOrdersDialog.dispose();
                             unlimitedOrdersDialog.stop();
                             unlimitedOrdersDialog = null;
@@ -934,7 +934,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                 unlimitedOrdersDialog.setVisible(true);
             } else if (unlimitedOrdersDialog != null) {
-                System.out.printf("Set visible = false\n");
+            //    System.out.printf("Set visible = false\n");
                 unlimitedOrdersDialog.setVisible(false);
 
             }
@@ -963,7 +963,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                         public void windowClosing(WindowEvent e) {
                             super.windowClosing(e);
 
-                            System.out.printf("Closingn");
+                      //      System.out.printf("Closingn");
                             stopOrderBookDialog.dispose();
                             stopOrderBookDialog.stop();
                             stopOrderBookDialog = null;
@@ -975,7 +975,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                 stopOrderBookDialog.setVisible(true);
             } else if (unlimitedOrdersDialog != null) {
-                System.out.printf("Set visible = false\n");
+              //  System.out.printf("Set visible = false\n");
                 stopOrderBookDialog.setVisible(false);
 
             }

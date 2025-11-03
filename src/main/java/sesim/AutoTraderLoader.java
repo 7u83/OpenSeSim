@@ -115,7 +115,7 @@ public class AutoTraderLoader {
         //System.out.printf("Comming in width %s %s", filename, classname);
         //    sesim.Logger.info("Comming in width %s %s\n", filename, classname);
         if (classname == null) {
-            System.out.printf("Calssname is null\n");
+          //  System.out.printf("Calssname is null\n");
 
             return null;
 

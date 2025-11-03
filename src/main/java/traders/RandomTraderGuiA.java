@@ -105,7 +105,7 @@ public class RandomTraderGuiA extends AutoTraderGui {
         //         cfg.sell_volume[0] = Float.parseFloat(this.sellVolMin.getText());
         //  cfg.sell_volume[1] = Float.parseFloat(this.sellVolMax.getText());
         JSONObject j = cfg.getConfig();
-        System.out.printf("JSON: %s\n", j.toString(3));
+    //    System.out.printf("JSON: %s\n", j.toString(3));
     }
 
     /**

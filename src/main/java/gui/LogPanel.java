@@ -57,7 +57,7 @@ public class LogPanel extends javax.swing.JPanel {
 
         @Override
         public void publish(LogRecord record) {
-            System.out.printf("Publish Record %s\n", record.getMessage());
+           // System.out.printf("Publish Record %s\n", record.getMessage());
             if (!isLoggable(record)) {
                 return;
             }

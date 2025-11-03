@@ -272,6 +272,9 @@ public class Scheduler extends Thread {
 
     private long runEvents() {
 
+        if (pause)
+            return -1;
+        
         if (eventQueue.isEmpty()) {
             return -1;
         }

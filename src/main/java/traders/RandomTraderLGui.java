@@ -81,8 +81,8 @@ public class RandomTraderLGui extends AutoTraderGui {
         this.waitAfterSellMin.setValue((Float) (Math.round((cfg.sleepAfterSell[0] / 1000f) * 10f) / 10f));
         this.waitAfterSellMax.setValue((Float) (Math.round((cfg.sleepAfterSell[1] / 1000f) * 10f) / 10f));
 
-        this.bankruptShares.setValue(cfg.bankrupt_shares_cfg);
-        this.bankruptCash.setValue(cfg.bankrupt_cash_cfg);
+        this.bankruptShares.setValue(cfg.bankrupt_shares);
+        this.bankruptCash.setValue(cfg.bankrupt_cash);
         
         
         this.minAmountToBuyDeviation.setValue(cfg.minAmountToBuyDeviation);
@@ -135,8 +135,8 @@ public class RandomTraderLGui extends AutoTraderGui {
         cfg.sleepAfterSell[0] = (long) (1000f * (Float) this.waitAfterSellMin.getValue());
         cfg.sleepAfterSell[1] = (long) (1000f * (Float) this.waitAfterSellMax.getValue());
 
-        cfg.bankrupt_shares_cfg = (Float) this.bankruptShares.getValue();
-        cfg.bankrupt_cash_cfg = (Float) this.bankruptCash.getValue();
+        cfg.bankrupt_shares =  (Long)this.bankruptShares.getValue();
+        cfg.bankrupt_cash =  (Long)this.bankruptCash.getValue();
         
         
         cfg.minAmountToBuyDeviation=(Long) this.minAmountToBuyDeviation.getValue();
@@ -279,9 +279,9 @@ public class RandomTraderLGui extends AutoTraderGui {
 
         jLabel1.setText("Bankrupt if sahres are less than ");
 
-        bankruptShares.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 0.5f));
+        bankruptShares.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 0L));
 
-        bankruptCash.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 0.1f));
+        bankruptCash.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 0L));
 
         jLabel2.setText("and cash is below");
 

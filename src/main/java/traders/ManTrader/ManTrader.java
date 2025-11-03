@@ -196,7 +196,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
                 clip = AudioSystem.getClip();
 
                 if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-                    System.out.printf("Gain Control in Action\n");
+               //     System.out.printf("Gain Control in Action\n");
                     FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                     // Stellt die Lautstärke auf einen leiseren Wert (z.B. -15 dB)
                     gainControl.setValue(-85.0f);
@@ -218,7 +218,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
                 // bis der Clip beendet wird.
                 // Wir verwenden eine Schleife, die läuft, solange der Clip aktiv ist.
                 while (clip.isRunning()) {
-                    System.out.printf("Clip is running\n");
+//                    System.out.printf("Clip is running\n");
                     Thread.sleep(100);
                 }
 
@@ -237,7 +237,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     public void accountUpdated(Account a, Order o) {
 
         this.allOrders.put(o.getID(), o);
-        System.out.printf("Update received %d\n", this.allOrders.size());
+   //     System.out.printf("Update received %d\n", this.allOrders.size());
 
         if (o.getStatus() == Order.CLOSED) {
             if (soundFile != null && soundFile.length() > 0) {

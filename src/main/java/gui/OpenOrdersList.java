@@ -227,7 +227,7 @@ public class OpenOrdersList extends javax.swing.JPanel {
         int r = table.getSelectedRow();
         Long id = (Long) model.getValueAt(r, 0);
 
-        System.out.printf("Should cancel %d\n", id);
+      //  System.out.printf("Should cancel %d\n", id);
         //      Globals.sim.se.cancelOrder(account, id);
 
     }//GEN-LAST:event_ctxMenuCancelOrderActionPerformed

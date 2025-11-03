@@ -46,7 +46,7 @@
             100,
             100
         ],
-        "bankrupt_cash": 1,
+        "bankrupt_cash": 100,
         "bankrupt_shares": 1,
         "sell_order_timeout": [
             10,

@@ -186,7 +186,7 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         jo.put(Globals.sim.se.CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
         jo.put(Globals.sim.se.CFG_INITIAL_PRICE, (Double) this.initialPrice.getValue());
         jo.put(Globals.sim.se.CFG_AUTO_INITIAL_PRICE, (Boolean) this.autoInitialPrice.isSelected());
-        System.out.printf("EC: %s\n", jo.toString(3));
+      //  System.out.printf("EC: %s\n", jo.toString(3));
 
         JSONObject cfg = Globals.getConfig();
         sesim.Sim.putExchangeCfg(cfg, jo);

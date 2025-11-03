@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  *
  * @author tube
@@ -56,9 +58,8 @@ public class Order implements OrderBookEntry {
     long volume;
     long limit;
     long stop;
-    long profit;
+//    long profit;
 
-    //Exchange.OrderStatus status;
     byte status;
 
     // Order type;
@@ -70,11 +71,14 @@ public class Order implements OrderBookEntry {
     public final Account account;
     long cost;
     Exchange se;
+    
+    // ID generator
+    private static final AtomicLong ID_GEN = new AtomicLong(0);
 
     Order(Exchange se, Account account, byte type, long volume, long limit, long stop) {
         this.account = account;
         this.se = se;
-        id = se.order_id.getNext();
+        id = ID_GEN.getAndIncrement();
         this.type = type;
         this.limit = limit; //se.roundMoney(limit);
         this.volume = volume; //se.roundShares(volume);
@@ -99,7 +103,12 @@ public class Order implements OrderBookEntry {
         cost = o.cost;
         stop = o.stop;
     }
+    
+    static void resetIdGenerator(){
+        Order.ID_GEN.set(0);
+    }
 
+    @Override
     public String getOwnerName() {
         return account.owner.getName();
     }
@@ -229,6 +238,7 @@ public class Order implements OrderBookEntry {
         return limit / se.money_df;
     }
 
+    @Override
     public long getLimit_Long() {
         return limit;
     }
@@ -248,7 +258,6 @@ public class Order implements OrderBookEntry {
 
     @Override
     public float getStop() {
-//        System.out.printf("Get stop %f\n", stop);
         return stop / se.money_df;
     }
 
