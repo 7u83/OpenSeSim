@@ -1,19 +1,23 @@
 {
     "traders": [
         {
+            "Color": [],
+            "ExcludeInitial": false,
             "Strategy": "Simple Random",
-            "Enabled": "true",
-            "Count": "1",
-            "Cash": "1000000.0",
-            "Shares": "10000.0",
+            "Enabled": true,
+            "Count": 1,
+            "Cash": 1000000,
+            "Shares": 10000,
             "Name": "Alice"
         },
         {
+            "Color": [],
+            "ExcludeInitial": false,
             "Strategy": "Simple Random",
-            "Enabled": "true",
-            "Count": "1",
-            "Cash": "10000.0",
-            "Shares": "100.0",
+            "Enabled": true,
+            "Count": 1,
+            "Cash": 10000,
+            "Shares": 100,
             "Name": "Bob"
         }
     ],

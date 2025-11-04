@@ -308,8 +308,8 @@ public class Sim {
                     sharesTotal += shares;
                 }
 
-                JSONArray color = t.getJSONArray("Color");
-                if (color.length() == 3) {
+                JSONArray color = t.optJSONArray("Color");
+                if (color!=null && color.length() == 3) {
                     int c[] = new int[3];
                     c[0] = color.getInt(0);
                     c[1] = color.getInt(1);
