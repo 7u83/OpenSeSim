@@ -79,6 +79,7 @@ public class Globals {
     // static final String TRADERPREFS = "Traders";
     static final String DEVELSTATUS = "devel_status";
     public static final String GODMODE = "godmode";
+    public static final String DATADIR = "datadir";
 
     // static public sesim.Exchange se;
     static public sesim.Sim sim;
