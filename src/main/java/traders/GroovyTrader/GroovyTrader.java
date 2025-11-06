@@ -188,6 +188,7 @@ public class GroovyTrader extends AutoTraderBase {
             final String groovyFun;
 
             public GroovyTimerEvent(String fun, long t) {
+                super(GroovyTrader.this);
                 this.eventProcessor = this;
                 this.groovyFun = fun;
             }
@@ -267,7 +268,7 @@ public class GroovyTrader extends AutoTraderBase {
             final String groovyFun;
 
             public GroovyPriceEvent(String fun, Exchange se, double price) {
-                super(se, price);
+                super(se,price);
                 this.eventProcessor = this;
                 this.groovyFun = fun;
             }

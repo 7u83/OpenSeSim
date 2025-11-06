@@ -196,24 +196,24 @@ public class Scheduler extends Thread {
 
         protected EventProcessor eventProcessor;
 
-        public String name;
+     //   public String name;
 
-        public long time;
+     //   public long time;
         //   private final int id;
 
-        public Event(EventProcessor e, long t) {
+  /*      public Event(EventProcessor e, long t) {
             eventProcessor = e;
             //     id = nextTimerTask.getAndAdd(1);
-            time = t;
+        //    time = t;
 
-        }
+        }*/
 
         public Event(EventProcessor p) {
             this.eventProcessor = p;
             //id = nextTimerTask.getAndAdd(1);
         }
 
-        public Event() {
+       public Event() {
             eventProcessor = null;
         }
 

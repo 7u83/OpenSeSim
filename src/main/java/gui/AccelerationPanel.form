@@ -75,6 +75,7 @@
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
           <SpinnerModel initial="1.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Enteer here the acceleration.&lt;br&gt;&#xa;You can enter real number like 0.5 to &lt;br&gt;&#xa;run the simulation at half speed.&lt;br&gt;&#xa;Or you can enter values greater than&lt;br&gt;&#xa;to make the simulation faster than realtime, &lt;br&gt;&#xa;for example 1000 times.&#xa;&lt;/html&gt;"/>
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="accelSpinnerStateChanged"/>

@@ -104,8 +104,8 @@ public class RandomTraderL extends AutoTraderBase
     public void start() {
         //bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
         //bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
-        this.TRADEEVENT.name = this.getName();
-        this.ORDERFILLEDEVENT.name = this.getName();
+   //     this.TRADEEVENT.name = this.getName();
+   //     this.ORDERFILLEDEVENT.name = this.getName();
         Account a = account_id;
         a.setListener(this);
 

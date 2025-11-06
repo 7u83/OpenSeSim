@@ -79,8 +79,8 @@ public class RandomTraderA extends AutoTraderBase
 
     @Override
     public void start() {
-        this.TRADEEVENT.name = this.getName();
-        this.ORDERFILLEDEVENT.name = this.getName();
+//        this.TRADEEVENT.name = this.getName();
+//        this.ORDERFILLEDEVENT.name = this.getName();
         Account a = account_id;
         a.setListener(this);
 

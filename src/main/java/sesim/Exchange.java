@@ -1,13 +1,18 @@
 package sesim;
 
+import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONObject;
 import sesim.Scheduler.Event;
+import sesim.Scheduler.EventProcessor;
+import sesim.TradingLog.TradingLogEntry;
 
 /**
  * @desc Echchange class
@@ -18,7 +23,7 @@ public class Exchange {
     //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
     public float money_df = 100;
     private int money_decimals = 2;
-    DecimalFormat money_formatter = getFormatter(2); 
+    DecimalFormat money_formatter = getFormatter(2);
 
     /**
      * Set the number of decimals used with money
@@ -105,7 +110,7 @@ public class Exchange {
     int minOHLCBarDuration = 1000;
     HashMap<Integer, OHLCData> ohlcByTimeFrameLength = new HashMap<>();
 
-/*    private OHLCData buildOHLCData(int timeFrame) {
+    /*    private OHLCData buildOHLCData(int timeFrame) {
         OHLCData data = new OHLCData(this, timeFrame);
         if (this.quoteHistory == null) {
             return data;
@@ -118,17 +123,16 @@ public class Exchange {
 
         return data;
     }*/
-
     public OHLCData getOHLCdata(Integer timeFrameLength) {
-        OHLCData data; 
+        OHLCData data;
         data = ohlcByTimeFrameLength.get(timeFrameLength);
         if (data == null) {
 
             synchronized (executor) {
                 OHLCData o = new OHLCData(this, timeFrameLength, ohlcByTimeFrameLength.get(this.minOHLCBarDuration));
-            //    data = this.buildOHLCData(timeFrameLength);
-                ohlcByTimeFrameLength.put(timeFrameLength,o);
-                        
+                //    data = this.buildOHLCData(timeFrameLength);
+                ohlcByTimeFrameLength.put(timeFrameLength, o);
+
                 return o;
             }
         }
@@ -136,9 +140,17 @@ public class Exchange {
         return data;
 
     }
+    
+    public void setTradingLog(boolean v){
+        logging=v;
+    }
+    
+    public TradingLog getTradingLog(){
+        return this.tradingLog;
+    }
 
     void updateOHLCData(Quote q) {
-       for (OHLCData data : ohlcByTimeFrameLength.values()) {
+        for (OHLCData data : ohlcByTimeFrameLength.values()) {
             data.realTimeAdd(q.time, q.price, q.volume);
         }
     }
@@ -230,9 +242,7 @@ public class Exchange {
 
     }
 
-
 //    IDGenerator order_id = new IDGenerator();
-
     public static class CompOrderBookEntry implements OrderBookEntry {
 
         long limit;
@@ -272,7 +282,6 @@ public class Exchange {
             return "";
         }
 
- 
         @Override
         public void addVolume(long v) {
             volume += v;
@@ -307,8 +316,7 @@ public class Exchange {
     /**
      * Histrory of quotes
      */
-   // public List<Quote> quoteHistory; // = new TreeSet<>();
-
+    // public List<Quote> quoteHistory; // = new TreeSet<>();
     SortedSet bidBook;
     SortedSet askBook;
     SortedSet ulBidBook;
@@ -324,9 +332,13 @@ public class Exchange {
     //random = new SplittableRandom(19);
     final void initExchange() {
         //   quoteReceiverList = (new CopyOnWriteArrayList<>());
-
+        try {
+            tradingLog = new TradingLog("/var/home/tube/.sesim/run-01.log");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Exchange.class.getName()).log(Level.SEVERE, null, ex);
+        }
         resetStatistics();
-        
+
         this.quoteReceiverList.clear();
         this.askBookListeners.clear();
         this.bidBookListeners.clear();
@@ -336,9 +348,8 @@ public class Exchange {
         //      timer = new Scheduler();         //  timer = new Scheduler();
 
         //     random = new SplittableRandom();
- //       quoteHistory = new ArrayList();
- //      statistics = new Statistics();
-
+        //       quoteHistory = new ArrayList();
+        //      statistics = new Statistics();
         ohlcByTimeFrameLength = new HashMap<>();
         ohlcByTimeFrameLength.put(minOHLCBarDuration, new OHLCData(this, minOHLCBarDuration));
 
@@ -403,7 +414,8 @@ public class Exchange {
 
         }
 
-        PriceEvent() {
+        public PriceEvent() {
+
             id = ID_GEN.incrementAndGet();
         }
 
@@ -423,10 +435,12 @@ public class Exchange {
      * Constructor
      */
     public Exchange(Sim sim) {
+
+
         quoteReceiverList = (new CopyOnWriteArrayList<>());
         this.sim = sim;
-      //  this.money_formatter = getMoneyFormatter(2);
-        
+        //  this.money_formatter = getMoneyFormatter(2);
+
         initExchange();
         //       executor.start();
 
@@ -434,35 +448,34 @@ public class Exchange {
 
     public class Statistics {
 
-        public long trades=0;
-        public long orders=0;
-        public float high=0;
-        public float low=0;
+        public long trades = 0;
+        public long orders = 0;
+        public float high = 0;
+        public float low = 0;
 
-        public long lastTradeTime=0;
+        public long lastTradeTime = 0;
 
         Statistics() {
-            if (lastQuote==null)
+            if (lastQuote == null) {
                 return;
-            trades=numTrades;
-            orders=numOrders;
-            lastTradeTime=lastQuote.time;
+            }
+            trades = numTrades;
+            orders = numOrders;
+            lastTradeTime = lastQuote.time;
             OHLCData d = getOHLCdata(minOHLCBarDuration);
-            high=priceHigh/money_df;
-            low=priceLow/money_df;
-            
+            high = priceHigh / money_df;
+            low = priceLow / money_df;
+
         }
 
     };
-    
-    void resetStatistics(){
-        numTrades=0;
-        numOrders=0;
-        priceLow=0;
-        priceHigh=0;
+
+    void resetStatistics() {
+        numTrades = 0;
+        numOrders = 0;
+        priceLow = 0;
+        priceHigh = 0;
     }
-
-
 
     public Statistics getStatistics() {
         return new Statistics();
@@ -529,8 +542,8 @@ public class Exchange {
         q.ask_volume = 0;
         q.bid_volume = 0;
         q.time = sim.scheduler.getCurrentTimeMillis();
-   //     quoteHistory.add(q);
-        lastQuote=q;
+        //     quoteHistory.add(q);
+        lastQuote = q;
         this.updateOHLCData(q);
         this.updateQuoteReceivers(q);
     }
@@ -538,7 +551,7 @@ public class Exchange {
     public float getLastPrice() {
         Quote q = this.getLastQuoete();
         if (q == null) {
-          //  System.out.printf("get last quote failed\n");
+            //  System.out.printf("get last quote failed\n");
             return 0f;
         }
         return q.price / money_df;
@@ -917,12 +930,12 @@ public class Exchange {
         return map;
 
     }
-    
+
     Quote lastQuote;
 
     public Quote getLastQuoete() {
         return lastQuote;
- /*       if (this.quoteHistory.isEmpty()) {
+        /*       if (this.quoteHistory.isEmpty()) {
             return null;
         }
 
@@ -1026,9 +1039,8 @@ public class Exchange {
             return;
         }
 
-        int n = o.account.orders.size();
-
-        Order x = o.account.orders.remove(o.id);
+        //  int n = o.account.orders.size();
+        o.account.orders.remove(o.id);
 
         //SortedSet book = getBook(o.type); //order_books.get(o.type);
         //book.remove(book.first());
@@ -1044,6 +1056,14 @@ public class Exchange {
             } else {
                 ulBidBook.remove(o);
             }
+        }
+
+        if (logging) {
+            tradingLog.add(new TradingLogEntry(
+                    this.sim.scheduler.getCurrentTimeMillis(),
+                    TradingLogEntry.Action.CLOSE_ORDER,
+                    o
+            ));
         }
 
         o.status = Order.CLOSED;
@@ -1082,18 +1102,36 @@ public class Exchange {
         }
 
     }
-    
-    long numTrades=0;
-    long numOrders=0;
-    long priceLow=0;
-    long priceHigh=0;
-    
+
+    long numTrades = 0;
+    long numOrders = 0;
+    long priceLow = 0;
+    long priceHigh = 0;
 
     private void finishTrade(Order buyer, Order seller, long price, long volume) {
         // Transfer money and shares
         transferMoneyAndShares(buyer.account, seller.account, volume * price, volume);
         numTrades++;
-        // Update volume
+
+        if (logging) {
+            TradingLogEntry e;
+            e = new TradingLogEntry(
+                    this.sim.scheduler.getCurrentTimeMillis(),
+                    TradingLogEntry.Action.SELL,
+                    seller);
+            e.trasaction_volume = (float)volume/shares_df;
+            e.transaction_price = (float)price/money_df;
+            tradingLog.add(e);
+
+            e = new TradingLogEntry(
+                    this.sim.scheduler.getCurrentTimeMillis(),
+                    TradingLogEntry.Action.BUY,
+                    buyer);
+            e.trasaction_volume = (float)volume/shares_df;
+            e.transaction_price = (float)price/money_df;
+            tradingLog.add(e);
+        }
+
         buyer.volume -= volume;
         seller.volume -= volume;
 
@@ -1105,19 +1143,19 @@ public class Exchange {
     }
 
     void addQuoteToHistory(Quote q) {
-        if (priceLow==0)
-            priceLow=q.price;
-        else{
-            if (q.price<priceLow)
-                priceLow=q.price;
+        if (priceLow == 0) {
+            priceLow = q.price;
+        } else {
+            if (q.price < priceLow) {
+                priceLow = q.price;
+            }
         }
-        
-        if (q.price>priceHigh){
-            priceHigh=q.price;
+
+        if (q.price > priceHigh) {
+            priceHigh = q.price;
         }
-            
-        
-   /*     if (statistics.heigh == null) {
+
+        /*     if (statistics.heigh == null) {
             statistics.heigh = (float) q.price / money_df;
         } else if (statistics.heigh < q.price) {
             statistics.heigh = q.price / money_df;
@@ -1127,11 +1165,10 @@ public class Exchange {
         } else if (statistics.low > q.price) {
             statistics.low = q.price / money_df;
         }*/
-
         //  statistics.trades++;
         //     System.out.printf("QUOTEHIST ADD: time:%d, vol:%f ID:%d\n", q.time,q.volume,q.id);
 //        quoteHistory.add(q);
-        lastQuote=q;
+        lastQuote = q;
         updateOHLCData(q);
         updateQuoteReceivers(q);
     }
@@ -1258,6 +1295,9 @@ public class Exchange {
         this.updateQuoteReceivers(q);
     }
 
+    TradingLog tradingLog;
+    boolean logging = false;
+
     void checkPriceEvents(long price) {
         SortedSet<PriceEvent> up = priceEventsAbove;
         SortedSet<PriceEvent> down = priceEventsBelow;
@@ -1345,6 +1385,13 @@ public class Exchange {
         }
 
         Order o = new Order(this, a, type, volume, limit, stop);
+        if (logging) {
+            TradingLogEntry e = new TradingLogEntry(
+                    sim.scheduler.getCurrentTimeMillis(),
+                    TradingLogEntry.Action.CREATE_ORDER,
+                    o);
+            tradingLog.add(e);
+        }
 
         synchronized (executor) {
 

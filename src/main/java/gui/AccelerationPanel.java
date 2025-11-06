@@ -75,6 +75,7 @@ public class AccelerationPanel extends javax.swing.JPanel {
         jLabel1.setText("Acceleration:");
 
         accelSpinner.setModel(new javax.swing.SpinnerNumberModel(1.0d, null, null, 1.0d));
+        accelSpinner.setToolTipText("<html>\nEnteer here the acceleration.<br>\nYou can enter real number like 0.5 to <br>\nrun the simulation at half speed.<br>\nOr you can enter values greater than<br>\nto make the simulation faster than realtime, <br>\nfor example 1000 times.\n</html>");
         accelSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 accelSpinnerStateChanged(evt);
