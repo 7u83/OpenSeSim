@@ -36,6 +36,7 @@ import sesim.Exchange.AccountListener;
 import sesim.Order;
 import sesim.Quote;
 import sesim.Scheduler.Event;
+import sesim.Scheduler.EventProcessor;
 import sesim.Sim;
 
 /**
@@ -67,11 +68,15 @@ public class RandomTraderM extends AutoTraderBase
 
     public float[] wait_after_fail = {1f, 5f};
 
-  //  public float bankrupt_shares_cfg = 1f;
+    //  public float bankrupt_shares_cfg = 1f;
 //    public float bankrupt_cash_cfg = 1f;
-
     public long bankrupt_shares = 0;
     public long bankrupt_cash = 0;
+    
+    
+    public boolean moodEnable=false;
+    public float moodiness=0.5f;
+    public float moodFrequency=60.0f;
 
     final String INITIAL_DELAY = "initial_delay";
     final String AMOUNT_TO_SELL = "amount_to_sell";
@@ -90,6 +95,10 @@ public class RandomTraderM extends AutoTraderBase
     final String MIN_AMOUNT_TO_BUY_DEVIATION = "min_amount_to_buy_deviation";
     final String MIN_BUY_DEVIATION = "min_buy_deviation";
     final String MIN_SELL_DEVIATION = "min_sell_deviation";
+    
+    final String MOODINESS = "modiness";
+    final String MOOD_FREQUENCY = "mood_frequency";
+    final String MOOD_ENABLE = "mood_enable";
 
     final String WAIT_AFTER_FAIL = "wait_after_fail";
     long wait_after_timeout = 1000;
@@ -105,8 +114,8 @@ public class RandomTraderM extends AutoTraderBase
     public void start() {
         //bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
         //bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
-   //     this.TRADEEVENT.name = this.getName();
-   //     this.ORDERFILLEDEVENT.name = this.getName();
+        //     this.TRADEEVENT.name = this.getName();
+        //     this.ORDERFILLEDEVENT.name = this.getName();
         Account a = account_id;
         a.setListener(this);
 
@@ -121,7 +130,7 @@ public class RandomTraderM extends AutoTraderBase
     // boolean intask = false;
     @Override
     public long processEvent(long time, Event e) {
-   /*     if (getName().equals("Alice-0")) {
+        /*     if (getName().equals("Alice-0")) {
             System.out.printf("Alice is alive\n");
         }*/
         //System.out.printf("Process Event for %s %d\n",this.getName(),time);
@@ -227,6 +236,10 @@ public class RandomTraderM extends AutoTraderBase
         cfg.put(MIN_AMOUNT_TO_SELL_DEVIATION, this.minAmountToSellDeviation);
         cfg.put(MIN_BUY_DEVIATION, this.minBuyDeviation);
         cfg.put(MIN_SELL_DEVIATION, this.minSellDeviation);
+        
+        cfg.put(MOOD_ENABLE,moodEnable);
+        cfg.put(MOOD_FREQUENCY,moodFrequency);
+        cfg.put(MOODINESS,moodiness);
 
 
         /*     cfg.put(SELL_VOLUME, sell_volume);
@@ -304,19 +317,22 @@ public class RandomTraderM extends AutoTraderBase
             sleepAfterSell[0] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_SELL).getDouble(0));
             sleepAfterSell[1] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_SELL).getDouble(1));
 
-            bankrupt_shares =  cfg.getLong(BANKRUPT_SHARES);
-            bankrupt_cash =  cfg.getLong(BANKRUPT_CASH);
+            bankrupt_shares = cfg.optLong(BANKRUPT_SHARES,0);
+            bankrupt_cash = cfg.optLong(BANKRUPT_CASH,100);
 
 //            if (se != null) {
 //                bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
 //                bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
 //            }
-
             minAmountToBuyDeviation = cfg.getLong(MIN_AMOUNT_TO_BUY_DEVIATION);
             minAmountToSellDeviation = cfg.getLong(MIN_AMOUNT_TO_SELL_DEVIATION);
 
             minBuyDeviation = cfg.getLong(MIN_BUY_DEVIATION);
             minSellDeviation = cfg.getLong(MIN_SELL_DEVIATION);
+            
+            moodEnable = cfg.optBoolean(MOOD_ENABLE, false);
+            moodFrequency = (float)cfg.optDouble(MOOD_FREQUENCY,0.5f);
+            moodiness = (float)cfg.optDouble(MOODINESS, 1.0);
 
             /*
             sell_wait[0] = (long) (1000 * cfg.getJSONArray(SELL_WAIT).getDouble(0));
@@ -366,9 +382,13 @@ public class RandomTraderM extends AutoTraderBase
 
         //     System.out.printf("Cancel %s rc for %d = %b\n",getName(),tradeEventTime,rc);
         if (currentOrder.getType() == Order.BUYLIMIT) {
-            tradeEventTime = getRandom(sleepAfterBuy[0], sleepAfterBuy[1]);
+            tradeEventTime = getRandom(sleepAfterBuy[0],           
+                    (long)(sleepAfterBuy[1]*global.bmoodyness)
+            );
         } else {
-            tradeEventTime = getRandom(sleepAfterSell[0], sleepAfterSell[1]);
+            tradeEventTime = getRandom(sleepAfterSell[0], 
+            (long)(sleepAfterSell[1]*global.smoodyness)
+            );
         }
 
         tradeEventTime += sim.getCurrentTimeMillis();
@@ -417,11 +437,15 @@ public class RandomTraderM extends AutoTraderBase
 
         if (o.getType() == Order.BUYLIMIT) {
             setStatus("Sleep after buy");
-            long r = getRandom(sleepAfterBuy[0], sleepAfterBuy[1]);
+            long r = (long) getRandom(sleepAfterBuy[0], 
+                (long)(sleepAfterBuy[1]*global.bmoodyness)
+            );
             return r;
         }
         setStatus("Sleep after sell");
-        return getRandom(sleepAfterSell[0], sleepAfterSell[1]);
+        return getRandom(sleepAfterSell[0], 
+        (long)(sleepAfterSell[1]*global.smoodyness)
+        );
     }
 
     private long doBuyOrSell() {
@@ -443,7 +467,9 @@ public class RandomTraderM extends AutoTraderBase
                 }
                 if (o.getStatus() == Order.CLOSED) {
                     setStatus("Holding");
-                    return getRandom(sleepAfterBuy[0], sleepAfterBuy[1]);
+                    return  getRandom(sleepAfterBuy[0], 
+                            (long)(sleepAfterBuy[1]*global.bmoodyness)
+                            );
 
                 }
                 this.currentOrder = o;
@@ -461,7 +487,9 @@ public class RandomTraderM extends AutoTraderBase
                 }
                 if (o.getStatus() == Order.CLOSED) {
                     setStatus("Cool down");
-                    return getRandom(sleepAfterSell[0], sleepAfterSell[1]);
+                    return getRandom(sleepAfterSell[0],
+                    (long)(sleepAfterSell[1]*global.smoodyness)
+                    );
 
                 }
                 this.currentOrder = o;
@@ -519,7 +547,6 @@ public class RandomTraderM extends AutoTraderBase
     }
 
     static public long getRandomDelta_Long(long lastPrice, long minDeviation, long maxDeviation, long minAbsoluteDeviation) {
-
 
         // 1. Preisänderungsspanne berechnen (in Cent)
         long minDelta = (lastPrice * minDeviation) / 1000;
@@ -612,8 +639,8 @@ return delta;
         long money_avail = account_id.getMoney_Long();
         // how much money we ant to invest?
         long money = getRandomDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
-        if (money>money_avail){
-            money=money_avail;
+        if (money > money_avail) {
+            money = money_avail;
         }
 
         Quote q = se.getBestPrice_0();
@@ -631,8 +658,8 @@ return delta;
         long shares = account_id.getShares_Long();
         // how many shares we want to sell?
         long volume = getRandomDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
-        if (volume>shares){
-            volume=shares;
+        if (volume > shares) {
+            volume = shares;
         }
 
         //    float lp = 100.0; //se.getBestLimit(type);
@@ -644,6 +671,68 @@ return delta;
         //  limit = lp + se.random.nextLong(0, 4) - 2;
 
         return se.createOrder_Long(account_id, Order.SELLLIMIT, volume, limit, 0);
+
+    }
+
+    class Global implements EventProcessor {
+
+        float currentMoodiness = 0.0f;
+        float bmoodyness = 1.0f;
+        float smoodyness = 1.0f;
+        
+        
+   //     float moodiness = 0.5f;
+        
+        private final Event MYEVENT = new Event(this);
+
+        Global(boolean enable) {
+            if (!enable){
+                return;
+            }
+            
+            
+            sim.addEvent(sim.getCurrentTimeMillis() + (long)(moodFrequency*1000), MYEVENT);
+        }
+
+        @Override
+        public long processEvent(long time, Event e) {
+            sim.addEvent(sim.getCurrentTimeMillis() + (long)(moodFrequency*1000), MYEVENT);
+          //  long r = getRandom(0, 2);
+          boolean r = Sim.random.nextBoolean();
+       
+            if (r) {
+                currentMoodiness += moodiness;
+            } else {
+                currentMoodiness -= moodiness;
+            }
+            if (currentMoodiness>=0){
+                bmoodyness=currentMoodiness+1.0f;
+                smoodyness=1.0f;
+            }else{
+                smoodyness=Math.abs(currentMoodiness)+1.0f;
+                bmoodyness=1.0f;
+            }
+            
+    // System.out.printf("Hello %b, %f!\n", r, moodyness);
+            return 0;
+        }
+    }
+
+    private Global global;
+
+    @Override
+    public Object initGlobal(Sim sim, Object global, JSONObject cfg) {
+        this.sim = sim;
+        if (global != null) {
+            this.global = (Global) global;
+            return global;
+
+        }
+        
+        
+
+        this.global = new Global(cfg.optBoolean(MOOD_ENABLE));
+        return this.global;
 
     }
 

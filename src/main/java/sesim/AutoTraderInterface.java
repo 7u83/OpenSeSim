@@ -96,4 +96,8 @@ public interface AutoTraderInterface {
     public void stop();
 
     public int[] getColor();
+    
+    public Object initGlobal(Sim sim, Object global,JSONObject cfg);
+        
+    
 }

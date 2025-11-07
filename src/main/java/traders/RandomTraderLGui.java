@@ -45,7 +45,7 @@ public class RandomTraderLGui extends AutoTraderGui {
     public RandomTraderLGui(RandomTraderL cfg) {
         initComponents();
 
-        this.setPreferredSize(new java.awt.Dimension(600, 400));
+        //this.setPreferredSize(new java.awt.Dimension(600, 400));
         this.cfg = cfg;
 
         this.initialDelayMin.setValue((Float) (Math.round((cfg.initialDelay[0] / 1000f) * 10f) / 10f));

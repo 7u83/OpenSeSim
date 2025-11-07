@@ -25,9 +25,12 @@
  */
 package gui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.util.Iterator;
 import java.util.TreeMap;
+import javax.swing.BoxLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sesim.AutoTraderGui;
@@ -70,10 +73,11 @@ public final class EditStrategiesDialog extends EscDialog {
         String lastUsed = Globals.prefs_new.get("last_edited_strategy", null);
         initComboBox();
 
-        pack();
+       pack();
         setMinimumSize(getSize());
+     //   setMinimumSize(getPreferredSize());
 
-    //    System.out.printf("Last used %s\n", lastUsed);
+        //    System.out.printf("Last used %s\n", lastUsed);
         strategySelectComboBox.setSelectedItem(lastUsed);
     }
 
@@ -125,11 +129,11 @@ public final class EditStrategiesDialog extends EscDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        defaultGuiPanel = new javax.swing.JPanel();
+        defaultText = new javax.swing.JLabel();
         strategySelectComboBox = new javax.swing.JComboBox<>();
         scrollPane = new javax.swing.JScrollPane();
         guiPanel = new javax.swing.JPanel();
-        defaultGuiPanel = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         saveButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         saveAsButton = new javax.swing.JButton();
@@ -139,6 +143,29 @@ public final class EditStrategiesDialog extends EscDialog {
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("No config available");
+
+        defaultGuiPanel.setPreferredSize(new java.awt.Dimension(100, 100));
+
+        defaultText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        defaultText.setText("No config available");
+        defaultText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout defaultGuiPanelLayout = new javax.swing.GroupLayout(defaultGuiPanel);
+        defaultGuiPanel.setLayout(defaultGuiPanelLayout);
+        defaultGuiPanelLayout.setHorizontalGroup(
+            defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(defaultText, javax.swing.GroupLayout.DEFAULT_SIZE, 815, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        defaultGuiPanelLayout.setVerticalGroup(
+            defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(defaultText, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -152,30 +179,6 @@ public final class EditStrategiesDialog extends EscDialog {
         scrollPane.setViewportBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         guiPanel.setLayout(new java.awt.BorderLayout());
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("No config available");
-        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-
-        javax.swing.GroupLayout defaultGuiPanelLayout = new javax.swing.GroupLayout(defaultGuiPanel);
-        defaultGuiPanel.setLayout(defaultGuiPanelLayout);
-        defaultGuiPanelLayout.setHorizontalGroup(
-            defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(99, Short.MAX_VALUE))
-        );
-        defaultGuiPanelLayout.setVerticalGroup(
-            defaultGuiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(defaultGuiPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        guiPanel.add(defaultGuiPanel, java.awt.BorderLayout.CENTER);
-
         scrollPane.setViewportView(guiPanel);
 
         saveButton.setMnemonic('s');
@@ -228,9 +231,13 @@ public final class EditStrategiesDialog extends EscDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(scrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 225, Short.MAX_VALUE)
+                        .addComponent(baseLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(strategySelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(newButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removeButton)
@@ -239,12 +246,7 @@ public final class EditStrategiesDialog extends EscDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveAsButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeButton)
-                        .addGap(9, 9, 9))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(baseLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(strategySelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(closeButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -255,12 +257,12 @@ public final class EditStrategiesDialog extends EscDialog {
                     .addComponent(strategySelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(baseLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
-                .addGap(12, 12, 12)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(saveButton)
                     .addComponent(closeButton)
                     .addComponent(saveAsButton)
+                    .addComponent(saveButton)
                     .addComponent(removeButton)
                     .addComponent(newButton))
                 .addContainerGap())
@@ -281,8 +283,10 @@ public final class EditStrategiesDialog extends EscDialog {
         if (selectedStrategy == null) {
             // No strategy selected -> show default panel
             guiPanel.removeAll();
-            guiPanel.add(this.defaultGuiPanel, java.awt.BorderLayout.CENTER);
-            scrollPane.setViewportView(defaultGuiPanel);
+//            guiPanel.setLayout(mgr);
+  //          guiPanel.add(this.defaultGuiPanel, java.awt.BorderLayout.CENTER);
+
+            //      scrollPane.setViewportView(defaultGuiPanel);
             this.defaultGuiPanel.setVisible(true);
             return;
         }
@@ -313,19 +317,41 @@ public final class EditStrategiesDialog extends EscDialog {
         acgui = currentAutoTrader.getGui();
         guiPanel.removeAll();
         if (acgui != null) {
-            //this.initGuiPanel();
+            
+            
+            // In strategySelectComboBoxActionPerformed, direkt nach acgui = ...
+
+System.out.println("acgui class: " + acgui.getClass().getName());
+System.out.println("acgui preferredSize: " + acgui.getPreferredSize());
+System.out.println("acgui minimumSize: " + acgui.getMinimumSize());
+System.out.println("acgui maximumSize: " + acgui.getMaximumSize());
+
+// Nach guiPanel.add(...)
+//guiPanel.add(acgui, BorderLayout.CENTER);
+
+
             guiPanel.add(acgui, java.awt.BorderLayout.CENTER);
-            scrollPane.setViewportView(acgui);
+System.out.println("guiPanel preferredSize nach add: " + guiPanel.getPreferredSize());            
+            Dimension pref = acgui.getPreferredSize(); 
+            guiPanel.setPreferredSize(pref);
+            guiPanel.setMinimumSize(pref);
             acgui.setVisible(true);
 
         } else {
-
-            guiPanel.add(this.defaultGuiPanel, java.awt.BorderLayout.CENTER);
-            scrollPane.setViewportView(defaultGuiPanel);
+            //         guiPanel.add(this.defaultGuiPanel, BoxLayout.Y_AXIS);
             this.defaultGuiPanel.setVisible(true);
         }
         this.revalidate();
         this.repaint();
+        guiPanel.revalidate();
+        guiPanel.repaint();
+        scrollPane.revalidate();
+        scrollPane.repaint();
+
+  /*      setMinimumSize(new Dimension(0,0));
+                pack();
+        setMinimumSize(getPreferredSize());*/
+
 
         // Remember selected strategy
         Globals.prefs_new.put("last_edited_strategy", selectedStrategy);
@@ -419,9 +445,9 @@ public final class EditStrategiesDialog extends EscDialog {
     private javax.swing.JLabel baseLabel;
     private javax.swing.JButton closeButton;
     private javax.swing.JPanel defaultGuiPanel;
+    private javax.swing.JLabel defaultText;
     private javax.swing.JPanel guiPanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JButton newButton;
     private javax.swing.JButton removeButton;
     private javax.swing.JButton saveAsButton;

@@ -142,7 +142,7 @@ public class Sim {
      * @param cfg
      * @return
      */
-    public AutoTraderInterface createTraderNew(Exchange se, long id, String name, float money, float shares, String strat, JSONObject cfg) {
+    private AutoTraderInterface createTraderNew(Exchange se, long id, String name, float money, float shares, String strat, JSONObject cfg) {
 
         String base = cfg.getString("base");
         AutoTraderInterface ac = tloader.getStrategyBase(base);
@@ -267,7 +267,7 @@ public class Sim {
             if (strategy_name == null) {
                 continue;
             }
-            JSONObject strategy = getStrategy(cfg, strategy_name);
+            JSONObject strategyCfg = getStrategy(cfg, strategy_name);
 
             // String base = strategy.getString("base");
             //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
@@ -282,18 +282,30 @@ public class Sim {
                 continue;
             }
 
-            if (strategy == null) {
+            if (strategyCfg == null) {
                 sesim.Logger.error("Strategy '%s' does't exists, will not start '%s'", strategy_name, t.getString("Name"));
                 continue;
             }
 
-            //      System.out.printf("Count: %d Shares: %f Money %f\n", count, shares, money);
+      
+            Object global = null;
+            
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
+                
+                String base = strategyCfg.getString("base");
+                trader = tloader.getStrategyBase(base);
 
-                trader = this.createTraderNew(this.se, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategy);
                 if (trader == null) {
-                    String base = strategy.getString("base");
+                    continue;
+                }
+                
+                global = trader.initGlobal(this, global, strategyCfg);
+                trader.setConfig(strategyCfg);
+                trader.init(this, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategyCfg);
+
+                if (trader == null) {
+                    base = strategyCfg.getString("base");
                     sesim.Logger.error("Could not load base '%s', not starting %s", base, t.getString("Name"));
                     break;
                 }
@@ -309,7 +321,7 @@ public class Sim {
                 }
 
                 JSONArray color = t.optJSONArray("Color");
-                if (color!=null && color.length() == 3) {
+                if (color != null && color.length() == 3) {
                     int c[] = new int[3];
                     c[0] = color.getInt(0);
                     c[1] = color.getInt(1);

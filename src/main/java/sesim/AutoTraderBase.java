@@ -150,4 +150,9 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         
     }
     
+    @Override
+    public Object initGlobal(Sim sim , Object global, JSONObject cfg){
+        return null;
+    }
+    
 }
