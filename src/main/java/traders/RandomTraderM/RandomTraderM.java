@@ -23,8 +23,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders;
+package traders.RandomTraderM;
 
+import traders.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +42,7 @@ import sesim.Sim;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RandomTraderL extends AutoTraderBase
+public class RandomTraderM extends AutoTraderBase
         implements AccountListener {
 
     public long[] initialDelay = {0, 0};
@@ -160,12 +161,12 @@ public class RandomTraderL extends AutoTraderBase
 
     @Override
     public String getDisplayName() {
-        return "Simple Random Strategy";
+        return "Random Trader M";
     }
 
     @Override
     public AutoTraderGui getGui() {
-        return new RandomTraderLGui(this);
+        return new RandomTraderMGui(this);
     }
 
     @Override

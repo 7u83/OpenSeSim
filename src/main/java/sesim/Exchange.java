@@ -11,8 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
 import sesim.Scheduler.Event;
-import sesim.Scheduler.EventProcessor;
-import sesim.TradingLog.TradingLogEntry;
+import sesim.TradingLogWriter.TradingLogRecord;
 
 /**
  * @desc Echchange class
@@ -140,13 +139,32 @@ public class Exchange {
         return data;
 
     }
-    
-    public void setTradingLog(boolean v){
-        logging=v;
+
+    public void setTradingLog(boolean v) throws FileNotFoundException {
+
+        if (v == true) {
+            if (tradingLogFileName == null) {
+                throw new FileNotFoundException();
+                
+            }
+
+            if (tradingLog == null) {
+                tradingLog = new TradingLogWriter(tradingLogFileName);
+            }
+        }
+        logging = v;
     }
-    
-    public TradingLog getTradingLog(){
-        return this.tradingLog;
+
+    TradingLogReader tradingLogReader = null;
+
+    public TradingLogReader getTradingLog() throws FileNotFoundException {
+        if (tradingLogFileName == null) {
+            return null;
+        }
+        if (tradingLogReader == null) {
+            tradingLogReader = new TradingLogReader(tradingLogFileName);
+        }
+        return tradingLogReader;
     }
 
     void updateOHLCData(Quote q) {
@@ -327,16 +345,20 @@ public class Exchange {
     SortedSet priceEventsAbove;
     SortedSet priceEventsBelow;
 
-    //       random = new Random(12);
-    //public SplittableRandom random;
-    //random = new SplittableRandom(19);
+    private String tradingLogFileName = null;
+
+    public void setTradingLogFile(String fileName) {
+        tradingLogFileName = fileName;
+    }
+
     final void initExchange() {
-        //   quoteReceiverList = (new CopyOnWriteArrayList<>());
-        try {
-            tradingLog = new TradingLog("/var/home/tube/.sesim/run-01.log");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Exchange.class.getName()).log(Level.SEVERE, null, ex);
+
+        if (tradingLog != null) {
+            tradingLog.close();
+            tradingLog = null;
+            this.tradingLogReader=null;
         }
+
         resetStatistics();
 
         this.quoteReceiverList.clear();
@@ -435,7 +457,6 @@ public class Exchange {
      * Constructor
      */
     public Exchange(Sim sim) {
-
 
         quoteReceiverList = (new CopyOnWriteArrayList<>());
         this.sim = sim;
@@ -1059,9 +1080,9 @@ public class Exchange {
         }
 
         if (logging) {
-            tradingLog.add(new TradingLogEntry(
+            tradingLog.add(new TradingLogRecord(
                     this.sim.scheduler.getCurrentTimeMillis(),
-                    TradingLogEntry.Action.CLOSE_ORDER,
+                    TradingLogRecord.Action.CLOSE_ORDER,
                     o
             ));
         }
@@ -1114,21 +1135,21 @@ public class Exchange {
         numTrades++;
 
         if (logging) {
-            TradingLogEntry e;
-            e = new TradingLogEntry(
+            TradingLogRecord e;
+            e = new TradingLogRecord(
                     this.sim.scheduler.getCurrentTimeMillis(),
-                    TradingLogEntry.Action.SELL,
+                    TradingLogRecord.Action.SELL,
                     seller);
-            e.trasaction_volume = (float)volume/shares_df;
-            e.transaction_price = (float)price/money_df;
+            e.trasaction_volume = (float) volume / shares_df;
+            e.transaction_price = (float) price / money_df;
             tradingLog.add(e);
 
-            e = new TradingLogEntry(
+            e = new TradingLogRecord(
                     this.sim.scheduler.getCurrentTimeMillis(),
-                    TradingLogEntry.Action.BUY,
+                    TradingLogRecord.Action.BUY,
                     buyer);
-            e.trasaction_volume = (float)volume/shares_df;
-            e.transaction_price = (float)price/money_df;
+            e.trasaction_volume = (float) volume / shares_df;
+            e.transaction_price = (float) price / money_df;
             tradingLog.add(e);
         }
 
@@ -1295,7 +1316,7 @@ public class Exchange {
         this.updateQuoteReceivers(q);
     }
 
-    TradingLog tradingLog;
+    TradingLogWriter tradingLog;
     boolean logging = false;
 
     void checkPriceEvents(long price) {
@@ -1386,9 +1407,9 @@ public class Exchange {
 
         Order o = new Order(this, a, type, volume, limit, stop);
         if (logging) {
-            TradingLogEntry e = new TradingLogEntry(
+            TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
-                    TradingLogEntry.Action.CREATE_ORDER,
+                    TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
         }

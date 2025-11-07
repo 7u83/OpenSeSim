@@ -38,8 +38,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
@@ -168,9 +172,9 @@ public class SeSimApplication extends javax.swing.JFrame {
         traderListPanel1 = new TraderListPanel(this);
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        openMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
+        fileOpenMenuItem = new javax.swing.JMenuItem();
+        fileSaveMenuItem = new javax.swing.JMenuItem();
+        fileSaveAsMenuItem = new javax.swing.JMenuItem();
         closeMenuItem = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         resetToDefaultsMenuItem = new javax.swing.JMenuItem();
@@ -325,40 +329,35 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
 
-        fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
-        openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        openMenuItem.setMnemonic('o');
-        openMenuItem.setText("Open");
-        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        fileOpenMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        fileOpenMenuItem.setText("Open");
+        fileOpenMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openMenuItemActionPerformed(evt);
+                fileOpenMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(openMenuItem);
+        fileMenu.add(fileOpenMenuItem);
 
-        saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        saveMenuItem.setMnemonic('s');
-        saveMenuItem.setText("Save");
-        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        fileSaveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        fileSaveMenuItem.setText("Save");
+        fileSaveMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveMenuItemActionPerformed(evt);
+                fileSaveMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(saveMenuItem);
+        fileMenu.add(fileSaveMenuItem);
 
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Save As ...");
-        saveAsMenuItem.setDisplayedMnemonicIndex(5);
-        saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        fileSaveAsMenuItem.setText("Save As ...");
+        fileSaveAsMenuItem.setDisplayedMnemonicIndex(5);
+        fileSaveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveAsMenuItemActionPerformed(evt);
+                fileSaveAsMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(saveAsMenuItem);
+        fileMenu.add(fileSaveAsMenuItem);
 
-        closeMenuItem.setMnemonic('c');
         closeMenuItem.setText("Close");
         closeMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -368,7 +367,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(closeMenuItem);
         fileMenu.add(jSeparator5);
 
-        resetToDefaultsMenuItem.setMnemonic('r');
         resetToDefaultsMenuItem.setText("Reset to defaults");
         resetToDefaultsMenuItem.setToolTipText("");
         resetToDefaultsMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -378,7 +376,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         fileMenu.add(resetToDefaultsMenuItem);
 
-        clearMenuItem.setMnemonic('c');
         clearMenuItem.setText("Clear All");
         clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -389,7 +386,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         fileMenu.add(jSeparator4);
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -400,10 +396,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(fileMenu);
 
-        editMenu.setMnemonic('e');
         editMenu.setText("Edit");
 
-        editExchangeMenuItem.setMnemonic('y');
         editExchangeMenuItem.setText("Exchange ...");
         editExchangeMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -413,7 +407,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         editMenu.add(editExchangeMenuItem);
         editMenu.add(jSeparator1);
 
-        pasteMenuItem.setMnemonic('s');
         pasteMenuItem.setText("Strategies ...");
         pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -422,7 +415,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         editMenu.add(pasteMenuItem);
 
-        deleteMenuItem.setMnemonic('d');
         deleteMenuItem.setText("Traders ...");
         deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -432,7 +424,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         editMenu.add(deleteMenuItem);
         editMenu.add(jSeparator2);
 
-        editPreferences.setMnemonic('p');
         editPreferences.setText("Preferences ...");
         editPreferences.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -443,10 +434,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(editMenu);
 
-        simMenu.setMnemonic('s');
         simMenu.setText("Sim");
 
-        simMenuStart.setMnemonic('s');
         simMenuStart.setText("Start");
         simMenuStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -455,7 +444,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         simMenu.add(simMenuStart);
 
-        simMenuPause.setMnemonic('p');
         simMenuPause.setText("Pause");
         simMenuPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -464,7 +452,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         simMenu.add(simMenuPause);
 
-        simMenuStop.setMnemonic('t');
         simMenuStop.setText("Stop");
         simMenuStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -484,11 +471,9 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(simMenu);
 
-        viewMenu.setMnemonic('v');
         viewMenu.setText("View");
 
         viewTraderListCheckBox.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, 0));
-        viewTraderListCheckBox.setMnemonic('t');
         viewTraderListCheckBox.setText("Traders");
         viewTraderListCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -498,7 +483,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         viewMenu.add(viewTraderListCheckBox);
 
         viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, 0));
-        viewRawOrderBook.setMnemonic('R');
         viewRawOrderBook.setText("Level 3 Orde Book");
         viewRawOrderBook.setToolTipText("");
         viewRawOrderBook.addActionListener(new java.awt.event.ActionListener() {
@@ -545,10 +529,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         menuBar.add(viewMenu);
 
-        helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
 
-        aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText("About");
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -596,6 +578,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             pauseSim();
             return;
         }
+        
 
         this.runButton.setEnabled(false);
         this.stopButton.setEnabled(true);
@@ -603,6 +586,17 @@ public class SeSimApplication extends javax.swing.JFrame {
         //Globals.sim.se.terminate();
         Globals.sim.reset();
         Globals.sim.startTraders(Globals.getConfig());
+        
+        this.setTradingLogFile();
+                        try {
+            Globals.sim.se.setTradingLog(tradingLogCheckBox.isSelected());
+        } catch (FileNotFoundException ex) {
+            sesim.Logger.error("Cannot write log %s: %s",logFileName, ex.getMessage());
+            tradingLogCheckBox.setSelected(false);
+        }
+
+        
+        
         Globals.sim.setPause(false);
         Globals.sim.startScheduler();
 
@@ -686,7 +680,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     //   private final LoggerDialog log_d = new LoggerDialog(this, false);
 
-    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+    private void fileOpenMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileOpenMenuItemActionPerformed
         JFileChooser fc = getFileChooser();
 
         while (true) {
@@ -708,7 +702,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
 
         }
-    }//GEN-LAST:event_openMenuItemActionPerformed
+    }//GEN-LAST:event_fileOpenMenuItemActionPerformed
 
     // initialize a JFileChoser with  working directory and extension
     private JFileChooser getFileChooser() {
@@ -797,10 +791,10 @@ public class SeSimApplication extends javax.swing.JFrame {
     }
 
 
-    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+    private void fileSaveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSaveAsMenuItemActionPerformed
 
         this.saveFile(true);
-    }//GEN-LAST:event_saveAsMenuItemActionPerformed
+    }//GEN-LAST:event_fileSaveAsMenuItemActionPerformed
 
     private void editExchangeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExchangeMenuItemActionPerformed
         EditExchangeDialog ed = new EditExchangeDialog((Frame) this.getParent(), true);
@@ -930,10 +924,10 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_viewTraderListCheckBoxActionPerformed
 
-    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+    private void fileSaveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSaveMenuItemActionPerformed
         saveFile(false);
 
-    }//GEN-LAST:event_saveMenuItemActionPerformed
+    }//GEN-LAST:event_fileSaveMenuItemActionPerformed
 
     private void closeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeMenuItemActionPerformed
         Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, "");
@@ -1049,8 +1043,40 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_viewLogActionPerformed
 
+     String logFileName=null;
+    void setTradingLogFile(){
+        
+    
+           String logDir = Globals.prefs_new.get(Globals.DATADIR, "");
+        Path directoryPath = Paths.get(logDir);
+       
+
+        if (Files.notExists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+                
+                
+            } catch (IOException e) {
+                sesim.Logger.error("Creating data directory %s: %s",logDir, e.getMessage());
+                this.tradingLogCheckBox.setSelected(false);
+                return;
+            }
+        }
+        
+        logFileName=directoryPath.resolve("tradinglog.dat").toString();
+        Globals.sim.se.setTradingLogFile(logFileName);
+    }    
+    
+    
     private void tradingLogCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tradingLogCheckBoxActionPerformed
-            Globals.sim.se.setTradingLog(this.tradingLogCheckBox.isSelected());
+        
+        try {
+            Globals.sim.se.setTradingLog(tradingLogCheckBox.isSelected());
+        } catch (FileNotFoundException ex) {
+            sesim.Logger.error("Cannot write log %s: %s",logFileName, ex.getMessage());
+            tradingLogCheckBox.setSelected(false);
+        }
+        
     }//GEN-LAST:event_tradingLogCheckBoxActionPerformed
 
     TradingLogDialog tradingLogDialog = null;
@@ -1150,6 +1176,9 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem editPreferences;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem fileOpenMenuItem;
+    private javax.swing.JMenuItem fileSaveAsMenuItem;
+    private javax.swing.JMenuItem fileSaveMenuItem;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
@@ -1166,7 +1195,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToolBar meinToolBar;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
     private gui.orderbook.RawOrderBook orderBookNew1;
     private gui.orderbook.OrderBooksHorizontal orderBooksHorizontal;
     private javax.swing.JMenuItem pasteMenuItem;
@@ -1176,8 +1204,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem resetToDefaultsMenuItem;
     private javax.swing.JButton runButton;
     private javax.swing.JPanel runControls;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenu simMenu;
     private javax.swing.JMenuItem simMenuPause;
     private javax.swing.JMenuItem simMenuStart;

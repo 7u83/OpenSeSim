@@ -27,10 +27,12 @@ package gui;
 
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -46,8 +48,6 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
 
     LookAndFeel old_laf;
     LookAndFeel new_laf;
-    
-    
 
     /**
      * Creates new form EditPreferencesDialog
@@ -72,17 +72,15 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
 
         selstr = Globals.prefs_new.get(Globals.GODMODE, "false");
         this.godmodeCheckBox.setSelected(selstr.equals("true"));
-        
+
         String dataDir = Globals.prefs_new.get(Globals.DATADIR, null);
-        if (dataDir==null){
+        if (dataDir == null) {
             String userHome = System.getProperty("user.home", "");
-              Path path = Paths.get(userHome, ".sesim");
-              dataDir = path.toString();
+            Path path = Paths.get(userHome, ".sesim");
+            dataDir = path.toString();
         }
-        
-        //Path path = Paths.get("dir1", "dir2");
-      //  dataDir=dataDir+
-        System.out.printf("DataDir: %s\n", dataDir);
+
+        this.dataDirectory.setText(dataDir);
 
     }
 
@@ -107,7 +105,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         jTextField1 = new javax.swing.JTextField();
         dataDirectory = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        selectFileButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -163,7 +161,12 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
 
         jLabel2.setText("Data directory");
 
-        jToggleButton1.setText("Select ...");
+        selectFileButton.setText("Select ...");
+        selectFileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectFileButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -202,8 +205,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(dataDirectory)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jToggleButton1)
-                        .addContainerGap())))
+                        .addComponent(selectFileButton)
+                        .addGap(5, 5, 5))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,7 +225,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dataDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(jToggleButton1))
+                    .addComponent(selectFileButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jDevleopmentFeaturesCheckBox)
@@ -263,15 +266,13 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     }
 
     private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
-        
 
         String selected = (String) this.lafComboBox.getSelectedItem();
 
         Globals.setLookAndFeel(selected);
         new_laf = UIManager.getLookAndFeel();
         resetUI();
-        
-        
+
 
     }//GEN-LAST:event_applyButtonActionPerformed
 
@@ -284,7 +285,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         Globals.prefs_new.put(Globals.DEVELSTATUS, sel);
         sel = this.godmodeCheckBox.isSelected() == true ? "true" : "false";
         Globals.prefs_new.put(Globals.GODMODE, sel);
-                Globals.notifyCfgListeners();
+        Globals.notifyCfgListeners();
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -295,6 +296,15 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void selectFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectFileButtonActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setCurrentDirectory(new File(this.dataDirectory.getText()));
+        fileChooser.setFileHidingEnabled(false);
+        int option = fileChooser.showSaveDialog(null);
+
+    }//GEN-LAST:event_selectFileButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -349,8 +359,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JComboBox<String> lafComboBox;
     private javax.swing.JButton okButton;
+    private javax.swing.JButton selectFileButton;
     // End of variables declaration//GEN-END:variables
 }

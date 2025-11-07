@@ -25,13 +25,19 @@
  */
 package gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Timer;
 import javax.swing.table.AbstractTableModel;
 import sesim.Order;
-import sesim.TradingLog;
-import sesim.TradingLog.TradingLogEntry;
+import sesim.TradingLogReader;
+import sesim.TradingLogWriter;
+import sesim.TradingLogWriter.TradingLogRecord;
 
 /**
  *
@@ -39,13 +45,79 @@ import sesim.TradingLog.TradingLogEntry;
  */
 public class TradingLogPanel extends javax.swing.JPanel {
 
+    private Timer updateTimer; // Der Timer für die regelmäßige Aktualisierung
+    private long lastLogSize = 0; // Speichert die letzte bekannte Größe
+    private TradingLogModel logModel; // Referenz auf das Tabellenmodell
+    
     /**
      * Creates new form TradingLogPanel
      */
     public TradingLogPanel() {
         initComponents();
-        table.setModel(new TradingLogModel());
+        if (Globals.sim == null) {
+            return;
+        }
+        
+        // 1. Initialisiere das Modell und setze es für die Tabelle
+        logModel = new TradingLogModel();
+        table.setModel(logModel);
+
+        // 2. Initialisiere und starte den Timer (3 Mal pro Sekunde = 333 Millisekunden)
+        int delay = 1000 / 6; // Verzögerung in Millisekunden (ca. 333 ms)
+        updateTimer = new Timer(delay, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkAndUpdateLog();
+            }
+        });
+        updateTimer.start();
+        
     }
+    
+    /**
+     * Überprüft die aktuelle Größe des TradingLogs und aktualisiert das
+     * Tabellenmodell präzise (Einfügungen oder Löschungen), um die Selektion
+     * beizubehalten, wenn Zeilen nur am Ende hinzugefügt oder entfernt werden.
+     */
+    private void checkAndUpdateLog() {
+        if (Globals.sim == null || Globals.sim.se == null) {
+            return;
+        }
+        
+        try {
+            TradingLogReader logReader = Globals.sim.se.getTradingLog();
+            if (logReader != null) {
+                long currentSize = logReader.size();
+                
+                if (currentSize != lastLogSize) {
+                    
+                    if (currentSize > lastLogSize) {
+                        // FALL 1: ZEILEN HINZUGEFÜGT
+                        // Verwenden von fireTableRowsInserted, um die Selektion zu erhalten
+                        int firstRow = (int) lastLogSize;
+                        int lastRow = (int) (currentSize - 1);
+                        logModel.fireTableRowsInserted(firstRow, lastRow);
+                        
+                    } else if (currentSize < lastLogSize) {
+                        // FALL 2: ZEILEN GELÖSCHT (z.B. Log zurückgesetzt auf 0)
+                        // Verwenden von fireTableRowsDeleted, um die Selektion der verbleibenden Zeilen zu erhalten
+                        int firstRow = (int) currentSize; // Die erste Zeile, die nicht mehr existiert
+                        int lastRow = (int) (lastLogSize - 1); // Die letzte Zeile, die vorher existierte
+                        
+                        logModel.fireTableRowsDeleted(firstRow, lastRow);
+                    }
+                    
+                    // Aktualisiere die zuletzt gelesene Größe
+                    lastLogSize = currentSize;
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(TradingLogPanel.class.getName()).log(Level.WARNING, "TradingLogReader file not found.", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TradingLogPanel.class.getName()).log(Level.SEVERE, "IO Error when calling TradingLogReader.size()", ex);
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,14 +165,14 @@ public class TradingLogPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -115,20 +187,33 @@ public class TradingLogPanel extends javax.swing.JPanel {
 
         @Override
         public int getRowCount() {
-            TradingLog l = Globals.sim.se.getTradingLog();
+            TradingLogReader l = null;
+            try {
+                l = Globals.sim.se.getTradingLog();
+            } catch (FileNotFoundException ex) {
+                return 0;
+            }
+            if (l==null)
+                return 0;
+            
             int rows = 0;
             try {
                 rows = (int) l.size();
             } catch (IOException ex) {
-                Logger.getLogger(TradingLogPanel.class.getName()).log(Level.SEVERE, null, ex);
+               return 0;
             }
             return rows;
         }
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            TradingLog l = Globals.sim.se.getTradingLog();
-            TradingLogEntry e = l.get(rowIndex + 1);
+            TradingLogReader l = null;
+            try {
+                l = Globals.sim.se.getTradingLog();
+            } catch (FileNotFoundException ex) {
+                return null;
+            }
+            TradingLogRecord e = l.get(rowIndex + 1);
             switch (columnIndex) {
                 case 0:
                     return e.time;
@@ -182,7 +267,7 @@ public class TradingLogPanel extends javax.swing.JPanel {
             "Stop",
             "Trans Vol",
             "Trans Price"
-        
+
         };
         final Class[] colTypes = new Class[]{
             java.lang.Long.class,
