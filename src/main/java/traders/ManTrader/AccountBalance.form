@@ -26,9 +26,9 @@
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="cashAvail" alignment="0" max="32767" attributes="0"/>
-                  <Component id="sharesLabel" alignment="0" max="32767" attributes="0"/>
-                  <Component id="sharesAvail" alignment="0" max="32767" attributes="0"/>
+                  <Component id="freeMargin" alignment="0" max="32767" attributes="0"/>
+                  <Component id="marginUsed" alignment="0" max="32767" attributes="0"/>
+                  <Component id="equity" alignment="0" max="32767" attributes="0"/>
                   <Component id="totalLabel" pref="162" max="32767" attributes="0"/>
                   <Component id="cashLabel" alignment="0" max="32767" attributes="0"/>
               </Group>
@@ -46,17 +46,17 @@
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="volAvailLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="cashAvail" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="freeMargin" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="sharesLabelText" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="sharesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="marginUsed" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" pref="17" max="-2" attributes="0"/>
-                  <Component id="sharesAvail" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="equity" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -71,40 +71,31 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="moneyLabelText">
       <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Noto Sans" size="24" style="0"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="Cash:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="sharesLabelText">
       <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Noto Sans" size="24" style="0"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Shares:"/>
+        <Property name="text" type="java.lang.String" value="Margin used"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="cashAvail">
+    <Component class="javax.swing.JLabel" name="freeMargin">
       <Properties>
         <Property name="text" type="java.lang.String" value="0.0"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="volAvailLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Avail:"/>
+        <Property name="text" type="java.lang.String" value="Free Margin"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Avail:"/>
+        <Property name="text" type="java.lang.String" value="Equity"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="sharesLabel">
+    <Component class="javax.swing.JLabel" name="marginUsed">
       <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Noto Sans" size="24" style="0"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="0"/>
       </Properties>
     </Component>
@@ -118,13 +109,10 @@
     </Component>
     <Component class="javax.swing.JLabel" name="cashLabel">
       <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Noto Sans" size="24" style="0"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="0.0000"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="sharesAvail">
+    <Component class="javax.swing.JLabel" name="equity">
       <Properties>
         <Property name="text" type="java.lang.String" value="0"/>
       </Properties>

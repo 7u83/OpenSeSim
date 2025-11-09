@@ -40,6 +40,7 @@ public class Order implements OrderBookEntry {
     public final static byte STOP = 0x04;
     public final static byte TAKEPROFIT = 0x08;
     public final static byte FOK = 0x10;
+    public final static byte LEVERAGED = 0x20;
 
     public final static byte SELLLIMIT = SELL | LIMIT;
     public final static byte BUYLIMIT = BUY | LIMIT;
@@ -69,14 +70,31 @@ public class Order implements OrderBookEntry {
     public final long id;
     private final long created;
     public final Account account;
+    public final Account.Position position;
     long cost;
     Exchange se;
-    
+
     // ID generator
     private static final AtomicLong ID_GEN = new AtomicLong(0);
 
     Order(Exchange se, Account account, byte type, long volume, long limit, long stop) {
         this.account = account;
+        this.position = account.getPosition(se, 1);
+        this.se = se;
+        id = ID_GEN.getAndIncrement();
+        this.type = type;
+        this.limit = limit; 
+        this.volume = volume; 
+        this.initial_volume = this.volume;
+        this.created = se.sim.scheduler.getCurrentTimeMillis();
+        this.status = OPEN; 
+        this.cost = 0;
+        this.stop = stop;
+    }
+    
+    Order(Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage) {
+        this.account = account;
+        this.position = account.getPosition(se, leverage);
         this.se = se;
         id = ID_GEN.getAndIncrement();
         this.type = type;
@@ -87,8 +105,9 @@ public class Order implements OrderBookEntry {
         this.status = OPEN; //Exchange.OrderStatus.OPEN;
         this.cost = 0;
         this.stop = stop;
-
     }
+
+    
 
     Order(Order o) {
         this.se = o.se;
@@ -102,9 +121,10 @@ public class Order implements OrderBookEntry {
         status = o.status;
         cost = o.cost;
         stop = o.stop;
+        position = o.position;
     }
-    
-    static void resetIdGenerator(){
+
+    static void resetIdGenerator() {
         Order.ID_GEN.set(0);
     }
 
@@ -174,6 +194,14 @@ public class Order implements OrderBookEntry {
 
     public float getCost() {
         return cost / se.money_df;
+    }
+
+    public static boolean isSell(byte type) {
+        return (type & SELL) != 0;
+    }
+
+    public static boolean isBuy(byte type) {
+        return !isSell(type);
     }
 
     public boolean isSell() {

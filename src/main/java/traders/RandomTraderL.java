@@ -622,7 +622,7 @@ return delta;
 
         long volume = money / limit;
 
-        return se.createOrder_Long(account_id, Order.BUYLIMIT, volume, limit, 0);
+        return se.createOrder_Long(account_id, Order.BUYLIMIT, volume, limit, 0, 1);
 
     }
 
@@ -643,7 +643,7 @@ return delta;
         //  limit = lp + se.random.nextLong(0, 4) - 2;
 
         
-        return se.createOrder_Long(account_id, Order.SELLLIMIT, volume, limit, 0);
+        return se.createOrder_Long(account_id, Order.SELLLIMIT, volume, limit, 0, 1);
 
     }
 

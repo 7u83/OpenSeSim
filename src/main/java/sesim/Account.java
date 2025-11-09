@@ -26,8 +26,11 @@
 package sesim;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -43,8 +46,7 @@ public class Account {
 
     private Exchange.AccountListener listener = null;
 
-    long shares;
-    long money;
+    long cash;  // cash available
 
     long initial_shares;
     long initial_money;
@@ -52,21 +54,48 @@ public class Account {
     protected AutoTraderInterface owner;
 
     final ConcurrentHashMap<Long, Order> orders;
+    final HashMap<Position, Position> positions;
 
+    int leverage = 10;
+
+    //   Position defaultPosition;
     Account(Exchange se, float money, float shares) {
         this.se = se;
 
         orders = new ConcurrentHashMap();
+        positions = new HashMap<>();
 
         // FLOAT_CONVERT
-        this.money = (long) (money * se.money_df);
-        initial_money = this.money;
-        this.shares = (long) (shares * se.shares_df);
-        initial_shares = this.shares;
+        this.cash = (long) (money * se.money_df);
+        initial_money = this.cash;
+        //     this.shares = (long) (shares * se.shares_df);
+        initial_shares = (long) (shares * se.shares_df);
+
+        //     defaultPosition = new Position(se,1);
+        //   defaultPosition.shares = (long) (shares * se.shares_df);
+        getPosition(se, 1).shares = (long) (shares * se.shares_df);
+
+    }
+
+    public Map<PositionKey, Position> getPositions() {
+        return Collections.unmodifiableMap(positions);
+    }
+    
+       // Summe der gebundenen Margin
+    public long getMarginUsed_Long() {
+        long totalMargin = 0;
+        for (Position pos : positions.values()) {
+            totalMargin += pos.getMargin();
+        }
+        return totalMargin;
+    }
+    
+    public float getMarginUsed(){
+        return getMarginUsed_Long()/se.money_df;
     }
 
     public float getShares() {
-        return shares / se.shares_df;
+        return getPosition(se, 1).shares / se.shares_df;
     }
 
     public float getInitialShares() {
@@ -74,11 +103,11 @@ public class Account {
     }
 
     public long getShares_Long() {
-        return shares;
+        return getPosition(se, 1).shares;
     }
 
     public float getMoney() {
-        return money / se.money_df;
+        return cash / se.money_df;
     }
 
     public float getInitialMoney() {
@@ -86,7 +115,7 @@ public class Account {
     }
 
     public long getMoney_Long() {
-        return money;
+        return cash;
     }
 
     public AutoTraderInterface getOwner() {
@@ -161,23 +190,12 @@ public class Account {
         return getSharesInOpenOrders_Long() / se.shares_df;
     }
 
-    /*    public boolean couldBuy(float volume, float limit) {
-        float avail = this.getMoney() - this.getCashInOpenOrders();
-
-      //  System.out.printf("CouldBuy %f<%f\n", volume * limit, avail);
-        return volume * limit <= avail;
-    }
-
-    public boolean couldSell(float volume) {
-        float avail = this.getShares() - this.getSharesInOpenOrders();
-        return volume <= avail;
-    }*/
     public float getSharesAvailable() {
         return getShares() - getSharesInOpenOrders();
     }
 
     public long getCashAvailabale_Long() {
-        return this.money - this.getCashInOpenOrders_Long();
+        return this.cash - this.getCashInOpenOrders_Long();
     }
 
     public float getCashAvailable() {
@@ -259,6 +277,7 @@ public class Account {
     }
 
     public float gerPerformance(float lp) {
+
         float total = lp * getShares() + getMoney();
         float iniTotal = lp * getInitialShares() + getInitialMoney();
         return total / (iniTotal / 100) - 100;
@@ -280,6 +299,139 @@ public class Account {
         float iniTotal = lastPrice * getInitialShares() + getInitialMoney();
 
         return total / (iniTotal / 100) - 100;
+
+    }
+    
+        // Equity = Cash + unrealized PnL aller Positionen
+    public long getEquity_Long() {
+        long equity = cash;
+        for (Position pos : positions.values()) {
+            long price = pos.se.getLastPrice_Long();
+            equity += pos.getUnrealizedPnL(price);
+        }
+        return equity;
+    }
+    
+    public float getEquity(){
+        return getEquity_Long()/se.money_df;
+    }
+    
+     // Free Margin = Equity − MarginUsed
+    public long getFreeMargin_Long() {
+        return getEquity_Long() - getMarginUsed_Long();
+    }
+    
+    public float getFreeMargin(){
+        return getFreeMargin_Long()/se.money_df;
+    }
+    
+    
+
+    Position createPosition() {
+        //    Position p = new Position();
+//        positions.put(p,p);
+        return null;
+    }
+
+    final Position getPosition(Exchange se, int leverage) {
+        Position k = new Position(se, leverage);
+        Position p = positions.get(k);
+        if (p != null) {
+            return p;
+        }
+        positions.put(k, k);
+        return k;
+    }
+
+ 
+
+    HashSet<Position> x = new HashSet<>();
+
+    public class PositionKey {
+
+        final Exchange se;
+        final int leverage;
+
+        PositionKey(Exchange se, int leverage) {
+            this.se = se;
+            this.leverage = leverage;
+        }
+
+        @Override
+        public final boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof PositionKey)) {
+                return false;
+            }
+            PositionKey key = (PositionKey) o;
+            return leverage == key.leverage && se.equals(key.se);
+
+        }
+
+        @Override
+        public final int hashCode() {
+            return Objects.hash(se, leverage);
+        }
+    }
+
+    public class Position extends PositionKey {
+
+        long shares;
+        long entryPrice;
+        long margin;
+        private boolean isShort;
+
+        public Position(Exchange se, int leverage) {
+            super(se, leverage);
+            shares = 0;
+            entryPrice = 0;
+            margin = 0;
+        }
+
+        public String getName() {
+            return se.getName();
+        }
+
+        public float getShares() {
+            return shares / se.shares_df;
+        }
+
+        public int getLeverage() {
+            return leverage;
+        }
+
+        public float getMargin() {
+            return margin / se.money_df;
+        }
+
+        public float getEntryPrice() {
+            return entryPrice / se.money_df;
+        }
+
+        // Exposure = total Position value
+        public long getExposure() {
+            return Math.abs(shares * entryPrice);
+        }
+
+        // unrealized PnL für aktuelle Preis
+        public long getUnrealizedPnL(long currentPrice) {
+            long diff = currentPrice - entryPrice;
+            return isShort ? -shares * diff : shares * diff;
+        }
+
+        void addShares(long volume, long price) {
+            /*long np = (entryPrice * shares) + (volume * price);
+            shares += volume;
+            entryPrice = np / shares;*/
+
+            long totalCost = entryPrice * shares + price * volume;
+            shares += volume;
+            entryPrice = totalCost / shares;
+            margin = Math.abs(shares * entryPrice) / leverage;
+            isShort = shares < 0;
+        }
 
     }
 

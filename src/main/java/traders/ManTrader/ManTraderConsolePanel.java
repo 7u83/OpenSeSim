@@ -53,6 +53,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         return this.ordersList;
 
     }
+    
+  
 
     /**
      * Creates new form ManTraderConsole
@@ -139,7 +141,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         byte type = this.buyEditOrderPanel.getOrderType();
         boolean b = account.isOrderCovered(type, vol, limit);
 
-        this.buyButton.setEnabled(b);
+     //   this.buyButton.setEnabled(b);
         return b;
     }
 
@@ -148,11 +150,12 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         float limit = this.sellEditOrderPanel.getLimit();
         byte type = this.sellEditOrderPanel.getOrderType();
         boolean b = account.isOrderCovered(type, vol, limit);
-        this.sellButton.setEnabled(b);
+    //    this.sellButton.setEnabled(b);
         return b;
     }
 
     void init(Account a, ManTrader mt) {
+        this.positionList.setPositionList(account.getPositions());
         this.ordersList.setOrderList(account.getOrders());
         this.closedOrderList.setOrderList(Collections.unmodifiableMap(mt.allOrders));
 
@@ -160,6 +163,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
 
     void doUpdate(Account a, ManTrader mt) {
         this.ordersList.updateModel();
+        this.positionList.updateModel();
         this.closedOrderList.updateModel();
         this.accountBalance2.updateBalance(a);
         updateBuyButton();
@@ -183,6 +187,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         ctxMenuModifyOder = new javax.swing.JMenuItem();
         orderPanel = new javax.swing.JPanel();
         orderTabs = new javax.swing.JTabbedPane();
+        positionList = new gui.PositionsListPanel();
         ordersList = new gui.OpenOrdersList();
         closedOrderList = new gui.OpenOrdersList();
         tradingPanel = new javax.swing.JPanel();
@@ -219,6 +224,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         ctxMenuModifyOder.setText("Modify Oder");
         ctxMenu.add(ctxMenuModifyOder);
 
+        orderTabs.addTab("Positions", positionList);
         orderTabs.addTab("Open Orders", ordersList);
         orderTabs.addTab("All Orders", closedOrderList);
 
@@ -226,21 +232,17 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         orderPanel.setLayout(orderPanelLayout);
         orderPanelLayout.setHorizontalGroup(
             orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 855, Short.MAX_VALUE)
-            .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(orderPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(orderTabs, javax.swing.GroupLayout.DEFAULT_SIZE, 795, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(orderPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(orderTabs, javax.swing.GroupLayout.DEFAULT_SIZE, 795, Short.MAX_VALUE)
+                .addContainerGap())
         );
         orderPanelLayout.setVerticalGroup(
             orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 283, Short.MAX_VALUE)
-            .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(orderTabs, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(orderTabs, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         sellButton.setBackground(new java.awt.Color(255, 153, 153));
@@ -299,7 +301,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(accountBalance2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                         .addComponent(tradingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         layout.setVerticalGroup(
@@ -321,7 +323,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
         byte type = this.buyEditOrderPanel.getOrderType();
 
         //    synchronized (se.timer) {
-        Order o = se.createOrder(account, type, vol, limit, stop);
+        Order o = se.createOrder(account, type, vol, limit, stop, 1);        
+        o = se.createOrder(account, type, vol, limit, stop, 10);
 
         //    }
         this.updateBuyButton();
@@ -337,6 +340,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
 
         //      synchronized (se.timer) {
         Order o = se.createOrder(account, type, vol, limit, stop);
+ //Order o = se.createLeveragedOrder(account, type, (long)(limit*100));
 
         //    }
         this.updateSellButton();
@@ -376,6 +380,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel {
     private javax.swing.JPanel orderPanel;
     private javax.swing.JTabbedPane orderTabs;
     private gui.OpenOrdersList ordersList;
+    private gui.PositionsListPanel positionList;
     private javax.swing.JButton sellButton;
     private traders.ManTrader.EditOrderPanel sellEditOrderPanel;
     private javax.swing.JPanel tradingPanel;

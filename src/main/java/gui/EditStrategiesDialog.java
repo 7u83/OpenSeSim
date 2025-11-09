@@ -68,14 +68,15 @@ public final class EditStrategiesDialog extends EscDialog {
     public EditStrategiesDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getPreferredSize());
 
         this.setLocationRelativeTo(this.getParent());
         String lastUsed = Globals.prefs_new.get("last_edited_strategy", null);
         initComboBox();
 
        pack();
-        setMinimumSize(getSize());
-     //   setMinimumSize(getPreferredSize());
+        setSize(getPreferredSize());     //   setMinimumSize(getPreferredSize());
+        
 
         //    System.out.printf("Last used %s\n", lastUsed);
         strategySelectComboBox.setSelectedItem(lastUsed);
@@ -348,9 +349,10 @@ System.out.println("guiPanel preferredSize nach add: " + guiPanel.getPreferredSi
         scrollPane.revalidate();
         scrollPane.repaint();
 
-  /*      setMinimumSize(new Dimension(0,0));
-                pack();
-        setMinimumSize(getPreferredSize());*/
+    //    setMinimumSize(new Dimension(0,0));
+        pack();
+        //setMinimumSize(getPreferredSize());
+        this.setSize(getPreferredSize());
 
 
         // Remember selected strategy

@@ -78,27 +78,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         this.stopSpinner.setEnabled(o.hasStop());
     }
 
-    /*  private void loadFields() {
-        System.out.printf("Load pressed\n");
-        if (se == null) {
-            return;
-        }
 
-        System.out.printf("Load now\n");
-
-        Quote q = se.getBestPrice_0();
-        Float price = q == null ? 0.0f : q.getPrice();
-
-        if (type == Order.BUYLIMIT) {
-            this.limitSpinner.setValue(se.roundMoney(price));
-            this.volumeSpinner.setValue(se.roundShares(account.getMoney() / price));
-        }
-        if (type == Order.SELLLIMIT) {
-            this.limitSpinner.setValue(se.roundMoney(price));
-            this.volumeSpinner.setValue(se.roundShares(account.getShares()));
-        }
-        setPrice();
-    }*/
     private void setPrice() {
         float price = this.getPrice();
         String s = se.getMoneyFormatter().format(price);
@@ -142,19 +122,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         limitCheckBox.addChangeListener(c);
     }
 
-    /*    float limit = (float) limitSpinner.getValue();
 
-        if (account == null) {
-            System.out.printf("Account is null\n");
-        }
-        Order type = this.getOrderType();
-
-        new Thread() {
-            @Override
-            public void run() {
-               se.createOrder(account, type, volume, limit);
-            }
-        }.start();*/
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

@@ -145,7 +145,7 @@ public class Exchange {
         if (v == true) {
             if (tradingLogFileName == null) {
                 throw new FileNotFoundException();
-                
+
             }
 
             if (tradingLog == null) {
@@ -356,7 +356,7 @@ public class Exchange {
         if (tradingLog != null) {
             tradingLog.close();
             tradingLog = null;
-            this.tradingLogReader=null;
+            this.tradingLogReader = null;
         }
 
         resetStatistics();
@@ -576,6 +576,10 @@ public class Exchange {
             return 0f;
         }
         return q.price / money_df;
+    }
+    
+    public long getLastPrice_Long(){
+        return this.getLastQuoete().price;
     }
 
     /*
@@ -964,15 +968,14 @@ public class Exchange {
         //    return this.quoteHistory.last();*/
     }
 
-    private void transferMoneyAndShares(Account buyer, Account seller, long money, long shares) {
+    /* private void transferMoneyAndShares(Account buyer, Account seller, long money, long shares) {
 
         buyer.money -= money;
         seller.money += money;
-        buyer.shares += shares;
-        seller.shares -= shares;
+        buyer.getPosition(this,1).shares += shares;
+        seller.getPosition(this,1).shares -= shares;
 
-    }
-
+    }*/
     public boolean cancelOrder(Account a, long order_id) {
         //Account a = accounts.get(account_id);
         if (a == null) {
@@ -1092,6 +1095,10 @@ public class Exchange {
 
     }
 
+    public String getName() {
+        return "AAPL";
+    }
+
     void checkSLOrders(long price) {
         SortedSet<Order> ss = stopSellBook; //order_books.get(Order.STOPLOSS);
         SortedSet<Order> sb = stopBuyBook; //order_books.get(Order.SELLLIMIT);
@@ -1131,7 +1138,17 @@ public class Exchange {
 
     private void finishTrade(Order buyer, Order seller, long price, long volume) {
         // Transfer money and shares
-        transferMoneyAndShares(buyer.account, seller.account, volume * price, volume);
+        //transferMoneyAndShares(buyer.account, seller.account, volume * price, volume);
+
+        long money = volume * price;
+        buyer.account.cash -= money;
+        seller.account.cash += money;
+
+        //  buyer.position.shares += volume;
+        buyer.position.addShares(volume, price);
+
+        seller.position.shares -= volume;
+
         numTrades++;
 
         if (logging) {
@@ -1388,14 +1405,10 @@ public class Exchange {
      * @param stop
      * @return
      */
-    public Order createOrder_Long(Account a, byte type, long volume, long limit, long stop) {
+    public Order createOrder_Long(Account a, byte type, long volume, 
+            long limit, long stop, int leverage) {
 
         if (volume <= 0) {
-            if ((type & Order.SELL) != 0) {
-                sell_failed++;
-            } else {
-                buy_failed--;
-            }
             return null;
         }
 
@@ -1405,7 +1418,7 @@ public class Exchange {
             }
         }
 
-        Order o = new Order(this, a, type, volume, limit, stop);
+        Order o = new Order(this, a, type, volume, limit, stop, leverage);
         if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
@@ -1441,28 +1454,43 @@ public class Exchange {
         return createOrder_Long(a, type,
                 (long) (volume * shares_df),
                 (long) (limit * money_df),
-                (long) (stop * money_df)
+                (long) (stop * money_df),
+                1
+        );
+    }
+
+    public Order createOrder(Account a, byte type, float volume, float limit, float stop, int leverage) {
+        return createOrder_Long(a, type,
+                (long) (volume * shares_df),
+                (long) (limit * money_df),
+                (long) (stop * money_df),
+                leverage
+        );
+    }
+
+    public Order createLeveragedOrder(Account a, byte type, long money) {
+        if (!Order.isSell(type)) {
+            return null;
+        }
+
+        long leverage = 10;
+        long lastPrice = this.getBestPrice_Long();
+
+        long numberOfShares = money * leverage / lastPrice;
+        long sellMoney = numberOfShares * lastPrice;
+        long buyBackMoney = a.getCashAvailabale_Long() - money + sellMoney;
+        long sellPrice = lastPrice;
+        long buyBackPrice = buyBackMoney / numberOfShares;  // the stop price
+
+        System.out.printf("numShares: %d, buyMoney: %d, buyBackMoney: %d, buyPrice: %d, buyBackPrice: %d\n",
+                numberOfShares,
+                sellMoney,
+                buyBackMoney,
+                sellPrice,
+                buyBackPrice
         );
 
+        return null;
     }
 
-    /*   private float getBestLimit(Order type) {
-        //Order o = order_books.get(type).first();
-        Order o = getBook(type.type).first();
-
-        if (o == null) {
-            return -1;
-        }
-        return o.limit;
-    }
-     */
- /*    private  int getNumberOfOpenOrders(Account a) {
-        //    Account a = accounts.get(account_id);
-        if (a == null) {
-            return 0;
-        }
-        return a.orders.size();
-    }
-
-     */
 }
