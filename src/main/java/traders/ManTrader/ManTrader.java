@@ -60,12 +60,15 @@ import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
+import sesim.Exchange.QuoteReceiver;
+import sesim.Quote;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class ManTrader extends AutoTraderBase implements AccountListener, AutoTraderInterface {
+public class ManTrader extends AutoTraderBase
+        implements AccountListener, AutoTraderInterface, QuoteReceiver {
 
     String soundFile = null;
     int soundVolume = 50;
@@ -86,12 +89,13 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
         super.init(sim, id, name, money, shares, strat, cfg);
         getAccount().setListener(this);
     }
-    ManTraderConsoleDialog consoleDialog=null;
+    ManTraderConsoleDialog consoleDialog = null;
 
     @Override
     public void start() {
 
         account_id.setListener(this);
+        se.addQuoteReceiver(this);
         //se.timer.createEvent(this, 0);
         //   consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, account_id);
 
@@ -141,25 +145,26 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
 
     @Override
     public JDialog getGuiConsole(Frame parent) {
-        if (consoleDialog!=null){
+        if (consoleDialog != null) {
             return consoleDialog;
         }
-        
+
         consoleDialog = new ManTraderConsoleDialog(parent, false, se, account_id, this);
 
         consoleDialog.init(se, account_id);
         consoleDialog.doUpdate(account_id, this);
         consoleDialog.setLocationRelativeTo(parent);
         consoleDialog.pack(); //
-        consoleDialog.setMinimumSize(consoleDialog.getSize());        
+        consoleDialog.setMinimumSize(consoleDialog.getSize());
         consoleDialog.setTitle(account_id.getOwner().getName() + " - Trading Console");
         return this.consoleDialog;
     }
-    
+
     @Override
-    public void stop(){
-        if (consoleDialog!=null)
+    public void stop() {
+        if (consoleDialog != null) {
             consoleDialog.dispose();
+        }
     }
 
     volatile Clip clip;
@@ -196,7 +201,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
                 clip = AudioSystem.getClip();
 
                 if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-               //     System.out.printf("Gain Control in Action\n");
+                    //     System.out.printf("Gain Control in Action\n");
                     FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                     // Stellt die Lautstärke auf einen leiseren Wert (z.B. -15 dB)
                     gainControl.setValue(-85.0f);
@@ -237,7 +242,7 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
     public void accountUpdated(Account a, Order o) {
 
         this.allOrders.put(o.getID(), o);
-   //     System.out.printf("Update received %d\n", this.allOrders.size());
+        //     System.out.printf("Update received %d\n", this.allOrders.size());
 
         if (o.getStatus() == Order.CLOSED) {
             if (soundFile != null && soundFile.length() > 0) {
@@ -310,6 +315,15 @@ public class ManTrader extends AutoTraderBase implements AccountListener, AutoTr
             System.out.println("Fehler beim Abspielen des JavaFX Sounds: " + e.getMessage());
             //e.printStackTrace();
         }
+    }
+
+    @Override
+    public void UpdateQuote(Quote q) {
+        if (consoleDialog == null) {
+            return;
+        }
+        consoleDialog.doUpdate(account_id, this);
+
     }
 
 }

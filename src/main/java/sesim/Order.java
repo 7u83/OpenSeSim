@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -60,17 +62,18 @@ public class Order implements OrderBookEntry {
     long limit;
     long stop;
 //    long profit;
+    int leverage;
 
     byte status;
 
     // Order type;
     byte type;
 
-    final long initial_volume;
-    public final long id;
-    private final long created;
-    public final Account account;
-    public final Account.Position position;
+    long initial_volume;
+    public long id;
+    private long created;
+    public Account account;
+    public Account.Position position;
     long cost;
     Exchange se;
 
@@ -83,15 +86,16 @@ public class Order implements OrderBookEntry {
         this.se = se;
         id = ID_GEN.getAndIncrement();
         this.type = type;
-        this.limit = limit; 
-        this.volume = volume; 
+        this.limit = limit;
+        this.volume = volume;
         this.initial_volume = this.volume;
         this.created = se.sim.scheduler.getCurrentTimeMillis();
-        this.status = OPEN; 
+        this.status = OPEN;
         this.cost = 0;
         this.stop = stop;
+        this.leverage=1;
     }
-    
+
     Order(Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage) {
         this.account = account;
         this.position = account.getPosition(se, leverage);
@@ -105,9 +109,25 @@ public class Order implements OrderBookEntry {
         this.status = OPEN; //Exchange.OrderStatus.OPEN;
         this.cost = 0;
         this.stop = stop;
+        this.leverage=leverage;
     }
 
-    
+    Order init(Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage) {
+        this.account = account;
+        this.position = account.getPosition(se, leverage);
+        this.se = se;
+        id = ID_GEN.getAndIncrement();
+        this.type = type;
+        this.limit = limit; //se.roundMoney(limit);
+        this.volume = volume; //se.roundShares(volume);
+        this.initial_volume = this.volume;
+        this.created = se.sim.scheduler.getCurrentTimeMillis();
+        this.status = OPEN; //Exchange.OrderStatus.OPEN;
+        this.cost = 0;
+        this.stop = stop;
+        this.leverage=leverage;
+        return this;
+    }
 
     Order(Order o) {
         this.se = o.se;
@@ -303,4 +323,30 @@ public class Order implements OrderBookEntry {
     public Exchange getSe() {
         return se;
     }
+
+    static final Deque<Order> orderPool = new ArrayDeque<>(1_000_000);
+
+    public static Order aquire(
+            Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage
+    ) {
+        
+    /*   System.out.printf("ORDER POOL SIZE: %d\n", orderPool.size());
+       if (orderPool.isEmpty()){
+           System.out.printf("CASH MISS\n");
+       }*/
+       
+        return  orderPool.isEmpty() ?
+            new Order(se, account, type, volume, limit, stop, leverage) :
+           orderPool.pollFirst().init(se, account, type, volume, limit, stop, leverage);
+    }
+    
+    public static void release(Order o){
+        orderPool.offerFirst(o);
+    }
+
+    /*  private final TradingAccount account;void submit(long volume, long price) {
+    Order order = orderPool.isEmpty() ? new Order() : orderPool.pollFirst();
+    order.volume = volume;
+    order.price = price;
+    order.timestamp = System.nanoTime();*/
 }

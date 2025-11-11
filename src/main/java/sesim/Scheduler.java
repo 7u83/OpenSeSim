@@ -28,10 +28,15 @@ package sesim;
 //import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -190,6 +195,16 @@ public class Scheduler extends Thread {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
     }
+    ExecutorService executor = Executors.newFixedThreadPool(
+    Runtime.getRuntime().availableProcessors()  // Optimale Thread-Anzahl
+);
+    
+    
+    public Scheduler(){
+        this.executor = ForkJoinPool.commonPool();  // Oder newFixedThreadPool(cores)
+
+
+    }
 
     //private static AtomicInteger nextTimerTask = new AtomicInteger(0);
     public static class Event {
@@ -306,9 +321,22 @@ public class Scheduler extends Thread {
         for (Event e : s) {
             e.eventProcessor.processEvent(t, e);
         }
+        
+
+        
         return 0;
 
     }
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
 
     class EmptyCtr implements EventProcessor {
 

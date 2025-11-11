@@ -62,8 +62,9 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                       <Component id="accountBalance2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="23" max="32767" attributes="0"/>
-                      <Component id="tradingPanel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="tradingPanel" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -73,11 +74,18 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-              <Component id="orderPanel" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="orderPanel" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="tradingPanel" min="-2" max="-2" attributes="0"/>
-                  <Component id="accountBalance2" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace pref="93" max="32767" attributes="0"/>
+                      <Component id="accountBalance2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="tradingPanel" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
               </Group>
           </Group>
       </Group>
@@ -91,7 +99,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="orderTabs" pref="795" max="32767" attributes="0"/>
+                  <Component id="orderTabs" pref="912" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -100,7 +108,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="orderTabs" pref="186" max="32767" attributes="0"/>
+                  <Component id="orderTabs" pref="237" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -148,10 +156,10 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace pref="31" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="buyEditOrderPanel" pref="387" max="32767" attributes="0"/>
-                      <Component id="sellEditOrderPanel" pref="0" max="32767" attributes="0"/>
+                      <Component id="sellEditOrderPanel" max="32767" attributes="0"/>
+                      <Component id="buyEditOrderPanel" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -170,10 +178,10 @@
                       <Component id="buyEditOrderPanel" max="32767" attributes="0"/>
                       <Component id="buyButton" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="sellButton" min="-2" pref="87" max="-2" attributes="0"/>
-                      <Component id="sellEditOrderPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="sellEditOrderPanel" max="32767" attributes="0"/>
+                      <Component id="sellButton" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>

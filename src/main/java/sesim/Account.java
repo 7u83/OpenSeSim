@@ -54,7 +54,7 @@ public class Account {
     protected AutoTraderInterface owner;
 
     final ConcurrentHashMap<Long, Order> orders;
-    final HashMap<Position, Position> positions;
+    private final HashMap<Position, Position> positions;
 
     int leverage = 10;
 
@@ -80,18 +80,18 @@ public class Account {
     public Map<PositionKey, Position> getPositions() {
         return Collections.unmodifiableMap(positions);
     }
-    
-       // Summe der gebundenen Margin
+
+    // Summe der gebundenen Margin
     public long getMarginUsed_Long() {
         long totalMargin = 0;
         for (Position pos : positions.values()) {
-            totalMargin += pos.getMargin();
+            totalMargin += pos.getMargin_Long();
         }
         return totalMargin;
     }
-    
-    public float getMarginUsed(){
-        return getMarginUsed_Long()/se.money_df;
+
+    public float getMarginUsed() {
+        return getMarginUsed_Long() / se.money_df;
     }
 
     public float getShares() {
@@ -301,31 +301,29 @@ public class Account {
         return total / (iniTotal / 100) - 100;
 
     }
-    
-        // Equity = Cash + unrealized PnL aller Positionen
+
+    // Equity = Cash + unrealized PnL aller Positionen
     public long getEquity_Long() {
         long equity = cash;
         for (Position pos : positions.values()) {
             long price = pos.se.getLastPrice_Long();
-            equity += pos.getUnrealizedPnL(price);
+            equity += pos.getUnrealizedPnL_Long(price);
         }
         return equity;
     }
-    
-    public float getEquity(){
-        return getEquity_Long()/se.money_df;
+
+    public float getEquity() {
+        return getEquity_Long() / se.money_df;
     }
-    
-     // Free Margin = Equity − MarginUsed
+
+    // Free Margin = Equity − MarginUsed
     public long getFreeMargin_Long() {
         return getEquity_Long() - getMarginUsed_Long();
     }
-    
-    public float getFreeMargin(){
-        return getFreeMargin_Long()/se.money_df;
+
+    public float getFreeMargin() {
+        return getFreeMargin_Long() / se.money_df;
     }
-    
-    
 
     Position createPosition() {
         //    Position p = new Position();
@@ -334,7 +332,7 @@ public class Account {
     }
 
     final Position getPosition(Exchange se, int leverage) {
-        Position k = new Position(se, leverage);
+        Position k = new Position(se, 1);
         Position p = positions.get(k);
         if (p != null) {
             return p;
@@ -342,8 +340,6 @@ public class Account {
         positions.put(k, k);
         return k;
     }
-
- 
 
     HashSet<Position> x = new HashSet<>();
 
@@ -382,6 +378,7 @@ public class Account {
         long entryPrice;
         long margin;
         private boolean isShort;
+        long borrowed = 0;
 
         public Position(Exchange se, int leverage) {
             super(se, leverage);
@@ -398,12 +395,23 @@ public class Account {
             return shares / se.shares_df;
         }
 
-        public int getLeverage() {
+        public float getLeverage() {
+
+            float leverage;
+            if (getMargin() == 0) {
+                leverage = 1;
+            } else {
+                leverage = getTotalEntryCost() / getMargin();
+            }
             return leverage;
         }
 
         public float getMargin() {
-            return margin / se.money_df;
+            return getMargin_Long() / se.money_df;
+        }
+
+        public long getMargin_Long() {
+            return Math.abs(margin);
         }
 
         public float getEntryPrice() {
@@ -416,23 +424,207 @@ public class Account {
         }
 
         // unrealized PnL für aktuelle Preis
-        public long getUnrealizedPnL(long currentPrice) {
-            long diff = currentPrice - entryPrice;
-            return isShort ? -shares * diff : shares * diff;
+        public long getUnrealizedPnL_Long(long currentPrice) {
+
+            return currentPrice * shares - shadow_cash;
+
+            //long diff = currentPrice - entryPrice;
+            //return isShort ? -shares * diff : shares * diff;
         }
 
-        void addShares(long volume, long price) {
-            /*long np = (entryPrice * shares) + (volume * price);
-            shares += volume;
-            entryPrice = np / shares;*/
+        public float getUnrealizedPnL() {
+            return (se.getLastPrice_Long() * shares + shadow_cash) / se.money_df;
 
-            long totalCost = entryPrice * shares + price * volume;
+        }
+
+        public float getTotalEntryCost() {
+            return totalEntryCost / se.money_df;
+        }
+
+        long shadow_cash = 0;
+        long totalEntryCost = 0;
+
+        public float getNetBrokerLoan() {
+            return shadow_cash / se.money_df;
+        }
+        public boolean mops = true;
+
+        void addShares(long volume, long price, int leverage) {
+            long val = volume * price;
+            shadow_cash -= val;
+            totalEntryCost += val;
+
+            /*    if (leverage == 1 && volume > 0) {
             shares += volume;
-            entryPrice = totalCost / shares;
-            margin = Math.abs(shares * entryPrice) / leverage;
+            cash -= val;
+            return;
+        }*/
+            long sharesBefore = shares;
+
+            // 1. Positionserweiterung (Zukauf: shares und volume haben gleiches Vorzeichen)
+            if (Long.signum(sharesBefore) == Long.signum(volume) || sharesBefore == 0) {
+
+                // Führt zu Zukauf (Long->Long oder Short->Short).
+                // Hier muss die Initial Margin des neuen Trades hinzugefügt werden.
+                long marginNewTrade = Math.abs(val / leverage);
+
+                shares += volume;
+                margin += marginNewTrade;
+                cash -= marginNewTrade; // Ziehe die benötigte Initial Margin vom Cash ab
+
+            } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
+            else {
+                shares += volume;
+
+                // A. Positionsumkehr (Nulldurchlauf): sharesAfter hat ein anderes Vorzeichen als sharesBefore.
+                if (Long.signum(shares) != Long.signum(sharesBefore)) {
+                    // Alte Position komplett schließen (Margin freigeben), neue eröffnen (Margin binden).
+
+                    // 1. Alte Margin komplett freigeben
+                    cash += margin;
+
+                    // 2. Neue Margin für den "Überhang" berechnen
+                    long marginNewPosition = Math.abs(shares * price) / leverage;
+
+                    cash -= marginNewPosition;
+                    margin = marginNewPosition;
+
+                } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
+                else {
+                    // Hier ist Ihr Prinzip der anteiligen Reduzierung korrekt.
+                    // Die Margin muss proportional zum geschlossenen Teil reduziert werden.
+
+                    // Anteil des geschlossenen Teils: |volume| / |sharesBefore| (mit 1000er Faktor)
+                    long reductionFactor = Math.abs(volume) * 1000 / Math.abs(sharesBefore);
+                    long marginReduction = (margin * reductionFactor) / 1000;
+
+                    margin -= marginReduction; // Reduziere die aggregierte Margin
+                    cash += marginReduction;   // Freigegebene Margin zurück zu Cash
+                }
+            }
+
+            if (shares == 0 || (shares > 0 && shadow_cash + margin >= 0)) {
+
+                //cash += margin;
+                cash += shadow_cash + margin;
+                //     cash+=Math.abs(margin);
+                margin = 0;
+                shadow_cash = 0;
+                return;
+            }
+
+        }
+
+        void xaddShares(long volume, long price, int leverage) {
+
+            long val = volume * price;
+            shadow_cash -= val;
+
+            if (leverage == 1 && volume > 0) {
+                shares += volume;
+                cash -= val;
+                return;
+            }
+
+            long sharesBefore = shares;
+
+            // 1. Positionserweiterung (Zukauf: shares und volume haben gleiches Vorzeichen)
+            if (Long.signum(sharesBefore) == Long.signum(volume) || sharesBefore == 0) {
+
+                // Führt zu Zukauf (Long->Long oder Short->Short).
+                // Hier muss die Initial Margin des neuen Trades hinzugefügt werden.
+                long marginNewTrade = Math.abs(val / leverage);
+
+                shares += volume;
+                margin += marginNewTrade;
+                cash -= marginNewTrade; // Ziehe die benötigte Initial Margin vom Cash ab
+
+            } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
+            else {
+                shares += volume;
+
+                // A. Positionsumkehr (Nulldurchlauf): sharesAfter hat ein anderes Vorzeichen als sharesBefore.
+                if (Long.signum(shares) != Long.signum(sharesBefore)) {
+                    // Alte Position komplett schließen (Margin freigeben), neue eröffnen (Margin binden).
+
+                    // 1. Alte Margin komplett freigeben
+                    cash += margin;
+
+                    // 2. Neue Margin für den "Überhang" berechnen
+                    long marginNewPosition = Math.abs(shares * price) / leverage;
+
+                    cash -= marginNewPosition;
+                    margin = marginNewPosition;
+
+                } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
+                else {
+                    // Hier ist Ihr Prinzip der anteiligen Reduzierung korrekt.
+                    // Die Margin muss proportional zum geschlossenen Teil reduziert werden.
+
+                    // Anteil des geschlossenen Teils: |volume| / |sharesBefore| (mit 1000er Faktor)
+                    long reductionFactor = Math.abs(volume) * 1000 / Math.abs(sharesBefore);
+                    long marginReduction = (margin * reductionFactor) / 1000;
+
+                    margin -= marginReduction; // Reduziere die aggregierte Margin
+                    cash += marginReduction;   // Freigegebene Margin zurück zu Cash
+                }
+            }
+
+            if (shares == 0 || (shares > 0 && shadow_cash + margin >= 0)) {
+
+                //cash += margin;
+                cash += shadow_cash + margin;
+                //     cash+=Math.abs(margin);
+                margin = 0;
+                shadow_cash = 0;
+                return;
+            }
+
+            /*         long val = volume * price;
+
+            netBrokerLoan -= val;
+            totalEntryCost += val;
+
+            shares += volume;
+            long marginRequired = Math.abs(netBrokerLoan / leverage);
+
+            if (shares == 0 || (shares > 0 && netBrokerLoan + marginRequired >= 0)) {
+                cash += netBrokerLoan + margin;
+                margin = 0;
+                netBrokerLoan = 0;
+                totalEntryCost = 0;
+                return;
+            }
+
+            cash += margin - marginRequired;
+            margin = marginRequired;*/
+        }
+
+        //      margin += marginRequired;
+/*            if (shares == 0) {
+                entryPrice = 0;
+            } else {
+                entryPrice = ((oldshares * entryPrice) + (volume * price)) / (oldshares + volume);
+            }*/
+//borrowed = (leverage > 1) ? Math.abs(shares * entryPrice - margin) : 0;
+
+        /*if (shares == 0) {
+                entryPrice = price;
+                shares = volume;
+            } else {
+                // gewichteter Einstiegspreis
+                entryPrice = (entryPrice * shares + price * volume) / (shares + volume);
+                shares += volume;
+            }
+         
+            // Margin = gebundenes Geld
+            margin = Math.abs(shares * entryPrice / leverage);
+
+            // Short-Flag setzen
             isShort = shares < 0;
-        }
 
+            // borrowed nur bei Short oder gehebeltem Long
+            borrowed = (leverage > 1) ? Math.abs(shares * entryPrice - margin) : 0;*/
     }
 
 }

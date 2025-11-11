@@ -66,10 +66,10 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
         //String s = mf.format(account.getMoney());
         cashLabel.setText(mf.format(account.getMoney()));
         DecimalFormat sf = account.getSe().getSharesFormatter();
-        this.marginUsed.setText(sf.format(account.getMarginUsed()));
+        this.marginUsed.setText(mf.format(account.getMarginUsed()));
 
         this.freeMargin.setText(mf.format(account.getFreeMargin()));
-        this.equity.setText(sf.format(account.getEquity()));
+        this.equity.setText(mf.format(account.getEquity()));
 
         float lp = account.getSe().getLastPrice();
         float total = lp * account.getShares() + account.getMoney();

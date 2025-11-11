@@ -26,7 +26,9 @@
 package traders.ManTrader;
 
 import gui.EscDialog;
+import gui.tools.UpdateExecutor;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import sesim.Account;
 import sesim.Exchange;
 
@@ -38,6 +40,7 @@ public class ManTraderConsoleDialog extends EscDialog {
 
     Exchange se = null;
     Account account = null;
+    ManTrader mt;
 
     /**
      * Creates new form ManTraderConsole
@@ -52,6 +55,7 @@ public class ManTraderConsoleDialog extends EscDialog {
         super(parent, modal);
         se = e;
         account = a;
+        this.mt=mt;
     
         initComponents();
         
@@ -74,8 +78,24 @@ public class ManTraderConsoleDialog extends EscDialog {
 
     }
 
+    UpdateExecutor executor = new UpdateExecutor();
+    Runnable updater = new Runnable(){
+        @Override
+        public void run() {
+            SwingUtilities.invokeLater(new Runnable(){
+                @Override
+                public void run() {
+                    manTraderConsole.doUpdate(account, mt);
+                }
+            });
+
+        }
+        
+    };
+    
     void doUpdate(Account a, ManTrader mt) {
-        this.manTraderConsole.doUpdate(a, mt);
+        //this.manTraderConsole.doUpdate(a, mt);
+        executor.update(updater);
     }
 
     // public ManTraderConsole getConsole(){

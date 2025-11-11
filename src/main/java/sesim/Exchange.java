@@ -1140,18 +1140,30 @@ public class Exchange {
         // Transfer money and shares
         //transferMoneyAndShares(buyer.account, seller.account, volume * price, volume);
 
-        long money = volume * price;
-        buyer.account.cash -= money;
-        seller.account.cash += money;
+      //  long money = volume * price;
+       // buyer.account.cash -= money;
+       // seller.account.cash += money;
 
         //  buyer.position.shares += volume;
-        buyer.position.addShares(volume, price);
+        buyer.position.addShares(volume, price, buyer.leverage);
+        seller.position.addShares(-volume, price,seller.leverage);
 
-        seller.position.shares -= volume;
+        //seller.position.shares -= volume;
 
         numTrades++;
 
-        if (logging) {
+        buyer.volume -= volume;
+        seller.volume -= volume;
+
+        buyer.cost += price * volume;
+        seller.cost += price * volume;
+
+        removeOrderIfExecuted(seller);
+        removeOrderIfExecuted(buyer);
+        
+        
+        
+                if (logging) {
             TradingLogRecord e;
             e = new TradingLogRecord(
                     this.sim.scheduler.getCurrentTimeMillis(),
@@ -1169,15 +1181,8 @@ public class Exchange {
             e.transaction_price = (float) price / money_df;
             tradingLog.add(e);
         }
-
-        buyer.volume -= volume;
-        seller.volume -= volume;
-
-        buyer.cost += price * volume;
-        seller.cost += price * volume;
-
-        removeOrderIfExecuted(seller);
-        removeOrderIfExecuted(buyer);
+        
+        
     }
 
     void addQuoteToHistory(Quote q) {
@@ -1418,7 +1423,8 @@ public class Exchange {
             }
         }
 
-        Order o = new Order(this, a, type, volume, limit, stop, leverage);
+   //     Order o = new Order(this, a, type, volume, limit, stop, leverage);
+        Order o = Order.aquire(this, a, type, volume, limit, stop, leverage);   
         if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
