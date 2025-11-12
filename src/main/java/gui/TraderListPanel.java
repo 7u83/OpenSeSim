@@ -26,6 +26,8 @@
 package gui;
 
 import gui.tools.NummericCellRenderer;
+import gui.tools.PercentageCellRenderer;
+import gui.tools.PercentageValue;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -101,7 +103,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             float wealth = a.getShares() * price + a.getMoney();
             model.setValueAt(wealth, i, 5);
 
-            model.setValueAt(new PerfValue(a.gerPerformance(price)), i, 6);
+            model.setValueAt(new PercentageValue(a.getPerformance(price)), i, 6);
 
         }
         List l = list.getRowSorter().getSortKeys();
@@ -157,7 +159,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         );    // Total
 
         list.getColumnModel().getColumn(6).setCellRenderer(
-                new PerfCellRenderer()
+                new PercentageCellRenderer()
         );
         
                 list.getColumnModel().getColumn(1).setCellRenderer(
@@ -217,69 +219,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 
     }
 
-    public class PerfValue implements Comparable<PerfValue> {
 
-        private final float value;
-        private final String display;
-
-        public PerfValue(float value) {
-            this.value = value;
-            this.display = String.format("%.1f%%", value);
-        }
-
-        @Override
-        public String toString() {
-            return display; // Wird vom Renderer automatisch verwendet
-        }
-
-        @Override
-        public int compareTo(PerfValue other) {
-            return Float.compare(this.value, other.value);
-        }
-
-        public float getValue() {
-            return value;
-        }
-    }
-
-    public class PerfCellRenderer extends DefaultTableCellRenderer {
-
-        public PerfCellRenderer() {
-            setHorizontalAlignment(RIGHT);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-
-            // value ist jetzt PerfValue!
-            PerfValue perf = (PerfValue) value;
-            float performance = perf.getValue();
-
-            Component c = super.getTableCellRendererComponent(
-                    table, perf.toString(), isSelected, hasFocus, row, column);
-
-            if (!isSelected) {
-                if (performance > 0) {
-                    setForeground(new Color(0, 100, 0));
-                } else if (performance < 0) {
-                    setForeground(Color.RED);
-                } else {
-                    setForeground(table.getForeground());
-                }
-                /*                Font defaultFont = table.getFont();
-                if (Math.abs(performance) > 10) {
-
-                    setFont(defaultFont.deriveFont(Font.BOLD));
-                } else {
-                    setFont(defaultFont);
-                }*/
-
-            }
-
-            return c;
-        }
-    }
 
     public class NameValue implements Comparable<NameValue> {
 

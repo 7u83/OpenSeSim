@@ -1095,8 +1095,14 @@ public class Exchange {
 
     }
 
-    public String getName() {
-        return "AAPL";
+    String symbol="AAPL";
+    
+    public String getSymbol() {
+        return symbol;
+    }
+    
+    void setSymbol(String symbol){
+        this.symbol=symbol;
     }
 
     void checkSLOrders(long price) {
@@ -1423,8 +1429,8 @@ public class Exchange {
             }
         }
 
-   //     Order o = new Order(this, a, type, volume, limit, stop, leverage);
-        Order o = Order.aquire(this, a, type, volume, limit, stop, leverage);   
+        Order o = new Order(this, a, type, volume, limit, stop, leverage);
+
         if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),

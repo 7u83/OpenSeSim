@@ -4,9 +4,12 @@
  */
 package traders.ManTrader;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultFormatter;
 import sesim.Account;
@@ -80,7 +83,16 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
 
     private void setPrice() {
-        float price = this.getPrice();
+        float vol = this.getVolume();
+        if (Order.isSell(type)){
+            vol=-vol;
+        }
+        float price = this.account.getRequiredCashForOrder(
+                se, 
+                vol,
+                this.getLimit(),
+                this.getLeverage()
+                );
         String s = se.getMoneyFormatter().format(price);
         this.priceLabel.setText(s);
     }
@@ -124,6 +136,13 @@ public class EditOrderPanel extends javax.swing.JPanel {
         volumeSpinner.addChangeListener(c);
         limitSpinner.addChangeListener(c);
         limitCheckBox.addChangeListener(c);
+        leverageComboBox.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // ChangeListener manuell benachrichtigen
+            c.stateChanged(new ChangeEvent(leverageComboBox));
+        }
+    });
     }
 
 
@@ -353,7 +372,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void leverageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leverageComboBoxActionPerformed
-        // TODO add your handling code here:
+        setPrice();        // TODO add your handling code here:
     }//GEN-LAST:event_leverageComboBoxActionPerformed
 
 

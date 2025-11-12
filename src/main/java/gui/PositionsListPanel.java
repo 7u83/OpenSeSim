@@ -25,14 +25,15 @@
  */
 package gui;
 
+import gui.tools.PercentageCellRenderer;
 import gui.tools.UpdateExecutor;
 import java.util.Map;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import sesim.Account;
-import sesim.Account.PositionKey;
-import sesim.Account.Position;
+
+import sesim.Position;
 import sesim.Order;
 
 /**
@@ -41,10 +42,10 @@ import sesim.Order;
  */
 public class PositionsListPanel extends javax.swing.JPanel {
 
-    private Map<PositionKey, Position> list;
+    private Map<Position, Position> list;
     DefaultTableModel model;
 
-    UpdateExecutor executor = new UpdateExecutor();
+    UpdateExecutor executor = new UpdateExecutor(100);
 
     /**
      * Creates new form PositionsListPanel
@@ -54,6 +55,10 @@ public class PositionsListPanel extends javax.swing.JPanel {
         if (table == null) {
             return;
         }
+
+        table.getColumnModel().getColumn(7).setCellRenderer(
+                new PercentageCellRenderer()
+        );
 
         table.setAutoCreateRowSorter(true);
         model = (DefaultTableModel) table.getModel();
@@ -76,17 +81,17 @@ public class PositionsListPanel extends javax.swing.JPanel {
                             //      if (p.getShares()==0)
                             //             continue;
 
-                                
-                            
                             Object[] rowData = new Object[]{
                                 p.getName(),
                                 p.getShares(),
                                 p.getLeverage(),
                                 p.getMargin(),
+                                p.getShadowCash(),
                                 p.getTotalEntryCost(),
-                                p.getUnrealizedPnL()
-                        };
-                            model.addRow(rowData); 
+                                p.getEntryPrice(),
+                                new gui.tools.PercentageValue(p.getPnLPercent())
+                            };
+                            model.addRow(rowData);
                         }
                         table.getRowSorter().allRowsChanged();
                     }
@@ -116,20 +121,20 @@ public class PositionsListPanel extends javax.swing.JPanel {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Volume", "Leverage", "Margin", "Entry", "PnL"
+                "Name", "Volume", "Leverage", "Margin", "Shadow", "Entry", "Entry Price", "PnL"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class
+                java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {

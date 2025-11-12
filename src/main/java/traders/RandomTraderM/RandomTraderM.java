@@ -430,7 +430,7 @@ public class RandomTraderM extends AutoTraderBase
         byte s = o.getStatus();
         if (s == Order.OPEN || s == Order.PARTIALLY_EXECUTED) {
             se.cancelOrder(account_id, o.getID());
-            Order.release(o);
+
             currentOrder = null;
             setStatus("Sleep after timeout");
             return (long) (getRandom(wait_after_fail) * 1000f);
@@ -468,7 +468,7 @@ public class RandomTraderM extends AutoTraderBase
                 }
                 if (o.getStatus() == Order.CLOSED) {
                     setStatus("Holding");
-                    Order.release(o);
+
                     return  getRandom(sleepAfterBuy[0], 
                             (long)(sleepAfterBuy[1]*global.bmoodyness)
                             );
@@ -488,7 +488,7 @@ public class RandomTraderM extends AutoTraderBase
                     //  return 5000;
                 }
                 if (o.getStatus() == Order.CLOSED) {
-                    Order.release(o);
+
                     setStatus("Cool down");
                     return getRandom(sleepAfterSell[0],
                     (long)(sleepAfterSell[1]*global.smoodyness)

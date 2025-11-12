@@ -62,9 +62,9 @@ public class ModifyOrderDialog extends EscDialog {
                 float vol = editOrderPanel1.getVolume();
                 float limit = editOrderPanel1.getLimit();
                 byte type = editOrderPanel1.getOrderType();
-                boolean b = account.isOrderCovered(type, vol, limit,order.id);
+           //     boolean b = account.isOrderCovered(type, vol, limit,order.id);
                 
-                modifyButton.setEnabled(b);
+            //    modifyButton.setEnabled(b);
             }
             
         }
@@ -151,8 +151,9 @@ public class ModifyOrderDialog extends EscDialog {
     private void modifyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyButtonActionPerformed
         
         byte type = this.editOrderPanel1.getOrderType();
-        
-        boolean rc = account.isOrderCovered(type, this.editOrderPanel1.getVolume(), this.editOrderPanel1.getLimit(),order.getID());
+  
+        boolean rc=true;
+//        boolean rc = account.isOrderCovered(type, this.editOrderPanel1.getVolume(), this.editOrderPanel1.getLimit(),order.getID());
         if (!rc) {
             sesim.Logger.error("Order is not covered: %s, vol: %f, lim: %f", Order.getTypeAsString(type),
                     this.editOrderPanel1.getVolume(),

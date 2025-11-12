@@ -141,9 +141,10 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         float vol = this.buyEditOrderPanel.getVolume();
         float limit = this.buyEditOrderPanel.getLimit();
         byte type = this.buyEditOrderPanel.getOrderType();
-        boolean b = account.isOrderCovered(type, vol, limit);
+        int leverage = this.buyEditOrderPanel.getLeverage();
+        boolean b = account.isOrderCovered(se, vol, limit, leverage);
 
-        //   this.buyButton.setEnabled(b);
+        this.buyButton.setEnabled(b);
         return b;
     }
 
@@ -151,7 +152,10 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         float vol = this.sellEditOrderPanel.getVolume();
         float limit = this.sellEditOrderPanel.getLimit();
         byte type = this.sellEditOrderPanel.getOrderType();
-        boolean b = account.isOrderCovered(type, vol, limit);
+        int leverage = this.buyEditOrderPanel.getLeverage();
+        boolean b = account.isOrderCovered(se, -vol, limit, leverage);
+
+        //     boolean b = account.isOrderCovered(type, vol, limit);
         //    this.sellButton.setEnabled(b);
         return b;
     }
@@ -397,8 +401,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
     @Override
     public void UpdateQuote(Quote q) {
         return;
-        
-/*        executor.update(new Runnable() {
+
+        /*        executor.update(new Runnable() {
 
             @Override
             public void run() {
@@ -412,6 +416,6 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
 
             }
         });
-*/
+         */
     }
 }

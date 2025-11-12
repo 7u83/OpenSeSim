@@ -70,10 +70,10 @@ public class Order implements OrderBookEntry {
     byte type;
 
     long initial_volume;
-    public long id;
+    public final long id;
     private long created;
     public Account account;
-    public Account.Position position;
+    public Position position;
     long cost;
     Exchange se;
 
@@ -82,7 +82,7 @@ public class Order implements OrderBookEntry {
 
     Order(Exchange se, Account account, byte type, long volume, long limit, long stop) {
         this.account = account;
-        this.position = account.getPosition(se, 1);
+        this.position = account.getPosition(se);
         this.se = se;
         id = ID_GEN.getAndIncrement();
         this.type = type;
@@ -98,7 +98,7 @@ public class Order implements OrderBookEntry {
 
     Order(Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage) {
         this.account = account;
-        this.position = account.getPosition(se, leverage);
+        this.position = account.getPosition(se);
         this.se = se;
         id = ID_GEN.getAndIncrement();
         this.type = type;
@@ -112,7 +112,7 @@ public class Order implements OrderBookEntry {
         this.leverage=leverage;
     }
 
-    Order init(Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage) {
+/*    Order init(Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage) {
         this.account = account;
         this.position = account.getPosition(se, leverage);
         this.se = se;
@@ -127,7 +127,7 @@ public class Order implements OrderBookEntry {
         this.stop = stop;
         this.leverage=leverage;
         return this;
-    }
+    }*/
 
     Order(Order o) {
         this.se = o.se;
@@ -324,26 +324,7 @@ public class Order implements OrderBookEntry {
         return se;
     }
 
-    static final Deque<Order> orderPool = new ArrayDeque<>(1_000_000);
-
-    public static Order aquire(
-            Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage
-    ) {
-        
-    /*   System.out.printf("ORDER POOL SIZE: %d\n", orderPool.size());
-       if (orderPool.isEmpty()){
-           System.out.printf("CASH MISS\n");
-       }*/
-       
-        return  orderPool.isEmpty() ?
-            new Order(se, account, type, volume, limit, stop, leverage) :
-           orderPool.pollFirst().init(se, account, type, volume, limit, stop, leverage);
-    }
-    
-    public static void release(Order o){
-        orderPool.offerFirst(o);
-    }
-
+ 
     /*  private final TradingAccount account;void submit(long volume, long price) {
     Order order = orderPool.isEmpty() ? new Order() : orderPool.pollFirst();
     order.volume = volume;

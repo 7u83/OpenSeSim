@@ -25,53 +25,31 @@
  */
 package gui.tools;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  *
  * @author tube
  */
-public class UpdateExecutor {
+    public class PercentageValue implements Comparable<PercentageValue> {
 
-    volatile boolean busy;
-    volatile boolean update = true;
-    private int sleepTime=50;
+        private final float value;
+        private final String display;
 
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-    
-    public UpdateExecutor(){}
-    public UpdateExecutor(int sleepTime){
-        this.sleepTime=sleepTime;
-    }
-    
-
-    public void update(Runnable r) {
-
-        if (busy) {
-            update = true;
-            return;
+        public PercentageValue(float value) {
+            this.value = value;
+            this.display = String.format("%.1f%%", value);
         }
-        busy = true;
-        update = true;
 
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (update) {
-                        update = false;
-                        r.run();
-                        try {
-                            Thread.sleep(sleepTime);   // update rate is limited 50 Hz
-                        } catch (InterruptedException e) {
-                        }
-                    }
+        @Override
+        public String toString() {
+            return display; // Wird vom Renderer automatisch verwendet
+        }
 
-                } finally {
-                    busy = false;
-                }
-            }
-        });
+        @Override
+        public int compareTo(PercentageValue other) {
+            return Float.compare(this.value, other.value);
+        }
+
+        public float getValue() {
+            return value;
+        }
     }
-}
