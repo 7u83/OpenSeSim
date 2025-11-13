@@ -197,7 +197,7 @@ public class Account {
     }
 
     public long getCashAvailabale_Long() {
-        return this.cash - this.getCashInOpenOrders_Long();
+        return this.cash; // - this.getCashInOpenOrders_Long();
     }
 
     public float getCashAvailable() {
@@ -251,7 +251,7 @@ public class Account {
     }
 */
     public boolean isOrderCovered_Long(Position p, long volume, long price, int leverage) {
-        long cashNeeded = p.getRequiredCashForOrder(volume, price, leverage);
+        long cashNeeded = p.getRequiredCashForOrder_Long(volume, price, leverage);
         return cashNeeded <= cash;
     }
 
@@ -267,7 +267,7 @@ public class Account {
     }
         
         public float getRequiredCashForOrder(Exchange se, float volume, float price, int leverage){
-            return getPosition(se).getRequiredCashForOrder(
+            return getPosition(se).getRequiredCashForOrder_Long(
                     (long)(volume*se.shares_df),
                     (long)(price*se.money_df),
                     leverage

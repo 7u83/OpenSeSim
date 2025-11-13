@@ -330,23 +330,23 @@ public class PositionTest {
         Position instance = new sesim.Position(se, account);
 
         long result;
-        result = instance.getRequiredCashForOrder(-10, 30, 1);
+        result = instance.getRequiredCashForOrder_Long(-10, 30, 1);
         assertEquals(300, result);
-        result = instance.getRequiredCashForOrder(10, 30, 1);
+        result = instance.getRequiredCashForOrder_Long(10, 30, 1);
         assertEquals(300, result);
         instance.addShares(10, 30, 1);
-        result = instance.getRequiredCashForOrder(-10, 30, 1);
+        result = instance.getRequiredCashForOrder_Long(-10, 30, 1);
         assertEquals(0, result);
-        result = instance.getRequiredCashForOrder(10, 30, 1);
+        result = instance.getRequiredCashForOrder_Long(10, 30, 1);
         assertEquals(300, result);
-       result = instance.getRequiredCashForOrder(-11, 30, 1);
+       result = instance.getRequiredCashForOrder_Long(-11, 30, 1);
         assertEquals(30, result);
-        result = instance.getRequiredCashForOrder(-11, 30, 10);
+        result = instance.getRequiredCashForOrder_Long(-11, 30, 10);
         assertEquals(3, result);
          instance.addShares(-20, 30, 1);
-        result = instance.getRequiredCashForOrder(10, 30, 1);
+        result = instance.getRequiredCashForOrder_Long(10, 30, 1);
         assertEquals(0, result);
-        result = instance.getRequiredCashForOrder(11, 30, 10);
+        result = instance.getRequiredCashForOrder_Long(11, 30, 10);
         assertEquals(3, result);
          
         

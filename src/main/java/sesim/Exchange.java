@@ -577,8 +577,8 @@ public class Exchange {
         }
         return q.price / money_df;
     }
-    
-    public long getLastPrice_Long(){
+
+    public long getLastPrice_Long() {
         return this.getLastQuoete().price;
     }
 
@@ -1095,14 +1095,14 @@ public class Exchange {
 
     }
 
-    String symbol="AAPL";
-    
+    String symbol = "AAPL";
+
     public String getSymbol() {
         return symbol;
     }
-    
-    void setSymbol(String symbol){
-        this.symbol=symbol;
+
+    void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     void checkSLOrders(long price) {
@@ -1146,16 +1146,14 @@ public class Exchange {
         // Transfer money and shares
         //transferMoneyAndShares(buyer.account, seller.account, volume * price, volume);
 
-      //  long money = volume * price;
-       // buyer.account.cash -= money;
-       // seller.account.cash += money;
-
+        //  long money = volume * price;
+        // buyer.account.cash -= money;
+        // seller.account.cash += money;
         //  buyer.position.shares += volume;
         buyer.position.addShares(volume, price, buyer.leverage);
-        seller.position.addShares(-volume, price,seller.leverage);
+        seller.position.addShares(-volume, price, seller.leverage);
 
         //seller.position.shares -= volume;
-
         numTrades++;
 
         buyer.volume -= volume;
@@ -1166,10 +1164,8 @@ public class Exchange {
 
         removeOrderIfExecuted(seller);
         removeOrderIfExecuted(buyer);
-        
-        
-        
-                if (logging) {
+
+        if (logging) {
             TradingLogRecord e;
             e = new TradingLogRecord(
                     this.sim.scheduler.getCurrentTimeMillis(),
@@ -1187,8 +1183,7 @@ public class Exchange {
             e.transaction_price = (float) price / money_df;
             tradingLog.add(e);
         }
-        
-        
+
     }
 
     void addQuoteToHistory(Quote q) {
@@ -1245,19 +1240,28 @@ public class Exchange {
                 Order buyer = ul_buy.first();
 
                 long price = this.getBestPrice_Long();
-                /*if (price == null) {
-                    break;
-                }*/
 
                 long volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
+                long bvol, svol;
+                bvol = svol = volume;
 
-                long bp = volume * price;
-                long cashAvail = buyer.account.getCashAvailabale_Long();
+                long bp;
+                bp = buyer.position.getRequiredCashForOrder_Long(volume, price, buyer.leverage);
+                long cashAvail;
+                cashAvail = buyer.account.getCashAvailabale_Long();
                 if (cashAvail < bp) {
-                    volume = cashAvail / price;
-                    //volume = roundShares(volume);
+                    bvol = cashAvail / price;
                     buyer.status = Order.CLOSED;
                 }
+
+                bp = seller.position.getRequiredCashForOrder_Long(-volume, price, buyer.leverage);
+                cashAvail = buyer.account.getCashAvailabale_Long();
+                if (cashAvail < bp) {
+                    svol = cashAvail / price;
+                    buyer.status = Order.CLOSED;
+                }
+
+                volume = bvol >= svol ? svol : bvol;
 
                 finishTrade(buyer, seller, price, volume);
                 volume_total += volume;
@@ -1272,15 +1276,16 @@ public class Exchange {
                 Order seller = ask.first();
                 Order buyer = ul_buy.first();
                 long price = seller.limit;
-                long volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
-
-                long bp = volume * price;
-                long cashAvail = buyer.account.getCashAvailabale_Long();
-                if (cashAvail < bp) {
-                    volume = cashAvail / price;
-                    //volume = roundShares(volume);
+           
+                
+                long bvol = buyer.position.getTradableShares_Long(buyer.volume, price, buyer.leverage);
+                if (bvol==0){
                     buyer.status = Order.CLOSED;
+                    removeOrderIfExecuted(buyer);
+                    continue;
                 }
+                long volume = bvol >= seller.volume ? seller.volume : bvol;
+
 
                 finishTrade(buyer, seller, price, volume);
                 volume_total += volume;
@@ -1294,7 +1299,26 @@ public class Exchange {
                 Order buyer = bid.first();
                 Order seller = ul_sell.first();
                 long price = buyer.limit;
-                long volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
+
+                long svol = seller.position.getTradableShares_Long(-seller.volume, price, seller.leverage);
+                if (svol==0){
+                    seller.status = Order.CLOSED;
+                    removeOrderIfExecuted(seller);
+                    continue;
+                }
+                long volume = svol >= buyer.volume ? buyer.volume : svol;
+
+
+                
+                
+             /*   long volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
+                long bp = seller.position.getRequiredCashForOrder_Long(-volume, price, seller.leverage);
+                long cashAvail = seller.account.getCashAvailabale_Long();
+                if (cashAvail < bp) {
+                    volume = cashAvail / price;
+                    seller.status = Order.CLOSED;
+                }*/
+
                 finishTrade(buyer, seller, price, volume);
                 volume_total += volume;
                 money_total += price * volume;
@@ -1416,7 +1440,7 @@ public class Exchange {
      * @param stop
      * @return
      */
-    public Order createOrder_Long(Account a, byte type, long volume, 
+    public Order createOrder_Long(Account a, byte type, long volume,
             long limit, long stop, int leverage) {
 
         if (volume <= 0) {

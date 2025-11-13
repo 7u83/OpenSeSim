@@ -142,6 +142,7 @@ public class Position {
             // Hier muss die Initial Margin des neuen Trades hinzugefügt werden.
             long marginRequired = Math.abs(val / leverage);
 
+            
             shares += volume;
             margin += marginRequired;
             account.cash -= marginRequired; // Ziehe die benötigte Initial Margin vom Cash ab
@@ -157,7 +158,7 @@ public class Position {
                 // close old position
 
                 shadow_cash -= (-shares * price);
-             //   totalEntryCost += (-shares * price);
+                //   totalEntryCost += (-shares * price);
 
                 account.cash += shadow_cash + margin;
                 shares = nextShares;
@@ -196,14 +197,15 @@ public class Position {
             //     cash+=Math.abs(margin);
             margin = 0;
             shadow_cash = 0;
-            if (shares==0)
-                totalEntryCost=0;
+            if (shares == 0) {
+                totalEntryCost = 0;
+            }
             return;
         }
 
     }
-    
-    public long getRequiredCashForOrder(long volume, long price, long leverage){
+
+    public long getRequiredCashForOrder_Long(long volume, long price, long leverage) {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
             long val = volume * price;
@@ -217,16 +219,15 @@ public class Position {
 
             // A. Positionsumkehr (Nulldurchlauf): sharesAfter hat ein anderes 
             // Vorzeichen als sharesBefore.
-            if (Long.signum(shares) != Long.signum(nextShares) && nextShares!=0) {
+            if (Long.signum(shares) != Long.signum(nextShares) && nextShares != 0) {
                 long val = nextShares * price;
                 long marginRequired = Math.abs(val) / leverage;
-                return  marginRequired;
-
+                return marginRequired;
 
             } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
             else {
                 return 0;
-             /*   long val = volume * price;
+                /*   long val = volume * price;
 
                 long reductionFactor = Math.abs(volume) * 10000 / Math.abs(shares);
                 long marginReduction = (margin * reductionFactor) / 10000;
@@ -234,5 +235,40 @@ public class Position {
             }
         }
     }
-    
+
+    public long getTradableShares_Long(long volume, long price, long leverage) {
+        if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
+
+            long val = volume * price;
+            long marginRequired = Math.abs(val / leverage);
+            
+            if (account.cash < marginRequired){
+                return account.cash*leverage / price;
+            }
+ 
+        } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
+        else {
+
+            long nextShares = shares + volume;
+
+            // A. Positionsumkehr (Nulldurchlauf): sharesAfter hat ein anderes 
+            // Vorzeichen als sharesBefore.
+            if (Long.signum(shares) != Long.signum(nextShares) && nextShares != 0) {
+                
+                 long c =   shadow_cash - (-shares * price)+margin+account.cash;
+                
+                long val = nextShares * price;
+                long marginRequired = Math.abs(val) / leverage;
+                if (c<marginRequired){
+                    return Math.abs(shares)+(c)*leverage/price;
+                }
+                
+                //return marginRequired;
+
+            } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
+ 
+        }
+        return Math.abs(volume);
+    }
+
 }
