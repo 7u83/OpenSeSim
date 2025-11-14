@@ -1151,7 +1151,9 @@ public class Exchange {
         // seller.account.cash += money;
         //  buyer.position.shares += volume;
         buyer.position.addShares(volume, price, buyer.leverage);
+        buyer.position.updateLiquidationOrder(buyer.leverage);
         seller.position.addShares(-volume, price, seller.leverage);
+        seller.position.updateLiquidationOrder(seller.leverage);
 
         //seller.position.shares -= volume;
         numTrades++;
@@ -1276,16 +1278,14 @@ public class Exchange {
                 Order seller = ask.first();
                 Order buyer = ul_buy.first();
                 long price = seller.limit;
-           
-                
+
                 long bvol = buyer.position.getTradableShares_Long(buyer.volume, price, buyer.leverage);
-                if (bvol==0){
+                if (bvol == 0) {
                     buyer.status = Order.CLOSED;
                     removeOrderIfExecuted(buyer);
                     continue;
                 }
                 long volume = bvol >= seller.volume ? seller.volume : bvol;
-
 
                 finishTrade(buyer, seller, price, volume);
                 volume_total += volume;
@@ -1301,24 +1301,20 @@ public class Exchange {
                 long price = buyer.limit;
 
                 long svol = seller.position.getTradableShares_Long(-seller.volume, price, seller.leverage);
-                if (svol==0){
+                if (svol == 0) {
                     seller.status = Order.CLOSED;
                     removeOrderIfExecuted(seller);
                     continue;
                 }
                 long volume = svol >= buyer.volume ? buyer.volume : svol;
 
-
-                
-                
-             /*   long volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
+                /*   long volume = buyer.volume >= seller.volume ? seller.volume : buyer.volume;
                 long bp = seller.position.getRequiredCashForOrder_Long(-volume, price, seller.leverage);
                 long cashAvail = seller.account.getCashAvailabale_Long();
                 if (cashAvail < bp) {
                     volume = cashAvail / price;
                     seller.status = Order.CLOSED;
                 }*/
-
                 finishTrade(buyer, seller, price, volume);
                 volume_total += volume;
                 money_total += price * volume;
@@ -1480,6 +1476,44 @@ public class Exchange {
             updateBookReceivers(Order.BUY);
             updateBookReceivers(Order.SELLSTOP);
             updateBookReceivers(Order.BUYSTOP);
+
+        }
+
+        return o;
+    }
+
+    public Order createOrderNoExec_Long(Account a, byte type, long volume,
+            long limit, long stop, int leverage) {
+
+        if (volume <= 0) {
+            return null;
+        }
+
+        if ((type & Order.LIMIT) != 0) {
+            if (limit <= 0) {
+                return null;
+            }
+        }
+
+        Order o = new Order(this, a, type, volume, limit, stop, leverage);
+
+        if (logging) {
+            TradingLogRecord e = new TradingLogRecord(
+                    sim.scheduler.getCurrentTimeMillis(),
+                    TradingLogRecord.Action.CREATE_ORDER,
+                    o);
+            tradingLog.add(e);
+        }
+
+        synchronized (executor) {
+
+            //num_orders++;
+            numOrders++;
+
+            addOrderToBook(o);
+
+            a.orders.put(o.id, o);
+            a.update(o);
 
         }
 

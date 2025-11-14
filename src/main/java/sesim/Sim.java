@@ -231,6 +231,27 @@ public class Sim {
         return rand.optLong("seed", 0);
     }
 
+    public static double calculateInitialPrice(JSONArray tlist) {
+
+        double cash = 0;
+        double shares = 0;
+        for (int i = 0; i < tlist.length(); i++) {
+
+            JSONObject trader = tlist.getJSONObject(i);
+            if (!trader.optBoolean("Enabled", false)) {
+                continue;
+            }
+            if (trader.optBoolean("ExcludeInitial", false)) {
+                continue;
+            }
+            long count = trader.optLong("Count", 0);
+            cash += trader.optDouble("Cash", 0.0) * count;
+            shares += trader.optDouble("Shares", 0.0) * count;
+
+        }
+        return shares == 0 ? 100.0 : cash / shares;
+    }
+
     public static SplittableRandom random = new SplittableRandom(12);
 
     public void startTraders(JSONObject cfg) {
@@ -254,9 +275,16 @@ public class Sim {
 
         Logger.info("Random seed is %d", randomSeed);
 
-        //   Globals.sim.se.setMoneyDecimals(8);
-        //    Globals.sim.se.setSharesDecimals(0);        
+        
         JSONArray tlist = Sim.getTraders(cfg);
+
+        boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE, true);
+        double initialPrice;
+        if (autoInitialPrice) {
+            initialPrice = Sim.calculateInitialPrice(tlist);
+        } else {
+            initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE, 100.0f));
+        }
 
         Float moneyTotal = 0.0f;
         Float sharesTotal = 0.0f;
@@ -287,22 +315,27 @@ public class Sim {
                 continue;
             }
 
-      
             Object global = null;
-            
+
             for (int i1 = 0; i1 < count; i1++) {
                 AutoTraderInterface trader;
-                
+
                 String base = strategyCfg.getString("base");
                 trader = tloader.getStrategyBase(base);
 
                 if (trader == null) {
                     continue;
                 }
-                
+
                 global = trader.initGlobal(this, global, strategyCfg);
                 trader.setConfig(strategyCfg);
-                trader.init(this, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategyCfg);
+                
+                //trader.init(this, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategyCfg);
+                trader.init(this, id, t.getString("Name") + "-" + i1, money+(float)(initialPrice*shares), 0, strategy_name, strategyCfg);
+                trader.getAccount().getPosition(se).addShares(
+                        (long)(shares*se.shares_df), 
+                        (long)(initialPrice*se.money_df),
+                        1);
 
                 if (trader == null) {
                     base = strategyCfg.getString("base");
@@ -334,17 +367,8 @@ public class Sim {
 
         }
 
-        float initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE, 100.0f));
-        boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE, true);
-
-//        System.out.printf("Cache total %f, Shares total\n", moneyTotal, sharesTotal);
-        if (autoInitialPrice) {
-            initialPrice = moneyTotal / sharesTotal;
-
-        }
-
         Logger.info("Initial prices is: %f", initialPrice);
-        this.se.setFairValue(initialPrice);
+        this.se.setFairValue((float)initialPrice);
 
         se.initLastQuote();
 

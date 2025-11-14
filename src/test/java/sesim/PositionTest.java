@@ -315,6 +315,12 @@ public class PositionTest {
         assertEquals(-1f, instance.getShares(), 0);
         assertEquals(50f, instance.getMargin(), 0);
         assertEquals(iniCash - 300 + 150 - 50, account.getCash(), 0);
+        
+          
+        
+        instance = new sesim.Position(se, account);
+          
+          
 
         // TODO review the generated test code and remove the default call to fail.
         //     fail("The test case is a prototype.");

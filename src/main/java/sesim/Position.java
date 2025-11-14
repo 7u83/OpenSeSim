@@ -142,7 +142,6 @@ public class Position {
             // Hier muss die Initial Margin des neuen Trades hinzugefügt werden.
             long marginRequired = Math.abs(val / leverage);
 
-            
             shares += volume;
             margin += marginRequired;
             account.cash -= marginRequired; // Ziehe die benötigte Initial Margin vom Cash ab
@@ -241,11 +240,11 @@ public class Position {
 
             long val = volume * price;
             long marginRequired = Math.abs(val / leverage);
-            
-            if (account.cash < marginRequired){
-                return account.cash*leverage / price;
+
+            if (account.cash < marginRequired) {
+                return account.cash * leverage / price;
             }
- 
+
         } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
         else {
 
@@ -254,21 +253,57 @@ public class Position {
             // A. Positionsumkehr (Nulldurchlauf): sharesAfter hat ein anderes 
             // Vorzeichen als sharesBefore.
             if (Long.signum(shares) != Long.signum(nextShares) && nextShares != 0) {
-                
-                 long c =   shadow_cash - (-shares * price)+margin+account.cash;
-                
+
+                long c = shadow_cash - (-shares * price) + margin + account.cash;
+
                 long val = nextShares * price;
                 long marginRequired = Math.abs(val) / leverage;
-                if (c<marginRequired){
-                    return Math.abs(shares)+(c)*leverage/price;
+                if (c < marginRequired) {
+                    return Math.abs(shares) + (c) * leverage / price;
                 }
-                
-                //return marginRequired;
 
+                //return marginRequired;
             } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
- 
+
         }
         return Math.abs(volume);
+    }
+
+    Order liquidationOrder = null;
+
+    void updateLiquidationOrder(int l) {
+        if (margin == 0) {
+            if (liquidationOrder == null) {
+                return;
+            }
+            se.cancelOrder(account, this.liquidationOrder.id);
+            this.liquidationOrder = null;
+            return;
+        }
+
+        long liquidationPrice;
+        
+        int leverage =  (int)(totalEntryCost/ margin);
+        
+        if (liquidationOrder!=null){
+            se.cancelOrder(account, liquidationOrder.id);
+        }
+
+        if (shares > 0) {
+            liquidationPrice = (margin * leverage-margin) / Math.abs(shares);
+            this.liquidationOrder = 
+            se.createOrderNoExec_Long(account, (byte)(Order.SELL | Order.STOP), 
+                    Math.abs(shares), 0 , liquidationPrice, leverage);            
+        }
+        else{
+            liquidationPrice = (margin * leverage+margin) / Math.abs(shares);
+            this.liquidationOrder = 
+            se.createOrderNoExec_Long(account, (byte)(Order.BUY | Order.STOP), 
+                    Math.abs(shares), 0 , liquidationPrice, leverage);
+        }
+        
+
+
     }
 
 }
