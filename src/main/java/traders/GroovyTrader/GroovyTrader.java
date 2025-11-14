@@ -286,23 +286,23 @@ public class GroovyTrader extends AutoTraderBase {
         }
 
         public GroovyPriceEvent scheduleOnPriceAbove(String groovyFun, double price) {
-            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.se, price);
-            sim.se.sheduleOnPriceAbove(e);
+            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getExchange(), price);
+            sim.getExchange().sheduleOnPriceAbove(e);
             return e;
         }
 
         public void cancelScheduleOnPriceAbove(GroovyPriceEvent e) {
-            sim.se.cancelScheduleOnPriceAbove(e);
+            sim.getExchange().cancelScheduleOnPriceAbove(e);
         }
 
         public GroovyPriceEvent scheduleOnPriceBelow(String groovyFun, double price) {
-            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.se, price);
-            sim.se.sheduleOnPriceBelow(e);
+            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getExchange(), price);
+            sim.getExchange().sheduleOnPriceBelow(e);
             return e;
         }
 
         public void cancelSchedulePriceBelow(GroovyPriceEvent e) {
-            sim.se.cancelScheduleOnPriceBelow(e);
+            sim.getExchange().cancelScheduleOnPriceBelow(e);
         }
 
         String groovyAccountUpdateFun = null;

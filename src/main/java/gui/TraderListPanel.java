@@ -69,7 +69,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        if (Globals.sim.se == null) {
+        if (Globals.sim.getExchange() == null) {
             return;
         }
 
@@ -77,10 +77,10 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        //   Quote q = Globals.sim.se.getLastQuoete();
+        //   Quote q = Globals.sim.getExchange().getLastQuoete();
         //   float price = q == null ? 0 : q.getPrice();
         int size = Globals.sim.traders.size();
-        float price = Globals.sim.se.getLastPrice();
+        float price = Globals.sim.getExchange().getLastPrice();
         model.setRowCount(size);
         for (int i = 0; i < size; i++) {
             AutoTraderInterface at = Globals.sim.traders.get(i);
@@ -149,13 +149,13 @@ public class TraderListPanel extends javax.swing.JPanel {
         };
 
         list.getColumnModel().getColumn(3).setCellRenderer(
-                new NummericCellRenderer(Globals.sim.se.getMoneyDecimals())
+                new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals())
         );    // Cash
         list.getColumnModel().getColumn(4).setCellRenderer(
-                new NummericCellRenderer(Globals.sim.se.getSharesDecimals())
+                new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals())
         );    // Shares
         list.getColumnModel().getColumn(5).setCellRenderer(
-                new NummericCellRenderer(Globals.sim.se.getMoneyDecimals())
+                new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals())
         );    // Total
 
         list.getColumnModel().getColumn(6).setCellRenderer(
@@ -311,7 +311,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             int modelRow = table.convertRowIndexToModel(row);
 
             Account a = Globals.sim.traders.get(modelRow).getAccount();
-            float price = Globals.sim.se.getLastPrice();
+            float price = Globals.sim.getExchange().getLastPrice();
             float perf = a.getPerformance(price);
             String performance = String.format("%.1f", perf);
 

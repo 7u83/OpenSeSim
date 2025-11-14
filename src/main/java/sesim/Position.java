@@ -89,9 +89,14 @@ public class Position {
     public long getPnL_Long(long currentPrice) {
 
         return currentPrice * shares - shadow_cash;
+        
 
         //long diff = currentPrice - entryPrice;
         //return isShort ? -shares * diff : shares * diff;
+    }
+    
+    public long getPnL_Long(){
+        return se.getLastPrice_Long() * shares - totalEntryCost;
     }
 
     public float getPnL() {
@@ -114,7 +119,23 @@ public class Position {
 
         return (getPnL() / base) * 100.0f;
     }
-
+    
+    public long getMarketValue_Long(){
+        return totalEntryCost - se.getLastPrice_Long() * shares - shadow_cash;
+    }
+    
+    public float getMarketValue(){
+        return getMarketValue_Long()/se.money_df;
+    }
+    
+    public long getEquityValue_Long(){
+        return margin + getPnL_Long();
+    }
+    
+    public float getEquityValue(){
+        return getEquityValue_Long()/se.money_df;
+    }
+    
     public float getTotalEntryCost() {
         return totalEntryCost / se.money_df;
     }

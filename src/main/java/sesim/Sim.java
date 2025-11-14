@@ -74,7 +74,13 @@ public class Sim {
 
     }
 
-    public Exchange se;
+    private Exchange se;
+    
+    public Exchange getExchange(){
+        return se;
+    }
+    
+    
     public AutoTraderLoader tloader;
 
     Scheduler scheduler;

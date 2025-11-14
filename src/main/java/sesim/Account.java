@@ -336,8 +336,7 @@ public class Account {
     public long getEquity_Long() {
         long equity = cash;
         for (Position pos : positions.values()) {
-            long price = pos.se.getLastPrice_Long();
-            equity += pos.getPnL_Long(price);
+            equity += pos.getEquityValue_Long();
         }
         return equity;
     }
@@ -366,12 +365,13 @@ public class Account {
     }
 
     final Position getPosition(Exchange se) {
-
+       // String s = "AAPL";
         Position p = this.positions.get(se);
         if (p != null) {
             return p;
         }
         p = new Position(se, this);
+        
         positions.put(se, p);
         return p;
 

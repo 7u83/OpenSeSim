@@ -68,13 +68,13 @@ public class Statistics extends javax.swing.JPanel {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                Exchange.Statistics s = Globals.sim.se.getStatistics();
+                Exchange.Statistics s = Globals.sim.getExchange().getStatistics();
 
                 tradesLabel.setText(String.format("%d", s.trades));
 
-                high.setText(Globals.sim.se.getMoneyFormatter().format(s.high));
+                high.setText(Globals.sim.getExchange().getMoneyFormatter().format(s.high));
 
-                low.setText(Globals.sim.se.getMoneyFormatter().format(s.low));
+                low.setText(Globals.sim.getExchange().getMoneyFormatter().format(s.low));
 
                 float tps;
 

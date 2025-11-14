@@ -58,9 +58,9 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
     }
 
     public final void reset() {
-        Quote q = Globals.sim.se.getLastQuoete();
+        Quote q = Globals.sim.getExchange().getLastQuoete();
         this.UpdateQuote(q);
-        Globals.sim.se.addQuoteReceiver(this);
+        Globals.sim.getExchange().addQuoteReceiver(this);
 
     }
 

@@ -168,9 +168,11 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
 
         cashLabel.setText("0.0000");
 
+        equity.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         equity.setText("0");
 
         totalLabel.setFont(new java.awt.Font("Noto Sans", 0, 24)); // NOI18N
+        totalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalLabel.setText("0.0000");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

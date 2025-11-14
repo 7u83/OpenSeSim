@@ -92,11 +92,11 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     @Override
     public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
-        this.account_id = new Account(sim.se, money, shares); // se.createAccount(money, shares);
+        this.account_id = new Account(sim.getExchange(), money, shares); // se.createAccount(money, shares);
         //       se.getAccount(account_id).owner = this;
 
         this.sim = sim;
-        this.se = sim.se;
+        this.se = sim.getExchange();
         this.account_id.owner = this;
         this.se = se;
         this.name = name;

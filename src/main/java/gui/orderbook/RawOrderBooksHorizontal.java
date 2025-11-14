@@ -51,8 +51,8 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
       //  System.out.printf("Start Horz Rawbook\n");
         //bidBook.start(Globals.sim.se,Order.BUYLIMIT);
         //askBook.start(Globals.sim.se,Order.SELLLIMIT);
-        bidBook.start(Globals.sim.se,leftType);
-        askBook.start(Globals.sim.se,rightType);        
+        bidBook.start(Globals.sim.getExchange(),leftType);
+        askBook.start(Globals.sim.getExchange(),rightType);        
         this.quoteVertical2.reset();
        // bidBook.UpdateOrderBook();
        // askBook.UpdateOrderBook();

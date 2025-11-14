@@ -63,7 +63,7 @@ public class MainChart extends chart.Chart {
         main.crossColor = Color.BLACK;
         main.pad_top=1;
         main.pad_bot=1;
-        main.yformatter=Globals.sim.se.getMoneyFormatter();
+        main.yformatter=Globals.sim.getExchange().getMoneyFormatter();
 
         addChart(main);
 
@@ -77,7 +77,7 @@ public class MainChart extends chart.Chart {
         vol.rightYColor = Color.WHITE;
         vol.crossColor = Color.BLACK;
         vol.pad_top=1;
-        vol.yformatter=Globals.sim.se.getSharesFormatter();
+        vol.yformatter=Globals.sim.getExchange().getSharesFormatter();
         addChart(vol);
     }
 
@@ -159,7 +159,7 @@ public class MainChart extends chart.Chart {
 
     protected final void setCompression0(int timeFrame) {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            data = Globals.sim.se.getOHLCdata(timeFrame);
+            data = Globals.sim.getExchange().getOHLCdata(timeFrame);
             invalidate();
             repaint();
         });

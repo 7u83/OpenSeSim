@@ -25,6 +25,7 @@
  */
 package gui;
 
+import gui.tools.NummericCellRenderer;
 import gui.tools.PercentageCellRenderer;
 import gui.tools.UpdateExecutor;
 import java.util.Map;
@@ -56,8 +57,11 @@ public class PositionsListPanel extends javax.swing.JPanel {
             return;
         }
 
-        table.getColumnModel().getColumn(7).setCellRenderer(
+        table.getColumnModel().getColumn(8).setCellRenderer(
                 new PercentageCellRenderer()
+        );
+        table.getColumnModel().getColumn(7).setCellRenderer(
+                new NummericCellRenderer(2)
         );
 
         table.setAutoCreateRowSorter(true);
@@ -89,6 +93,7 @@ public class PositionsListPanel extends javax.swing.JPanel {
                                 p.getShadowCash(),
                                 p.getTotalEntryCost(),
                                 p.getEntryPrice(),
+                                p.getEquityValue(),
                                 new gui.tools.PercentageValue(p.getPnLPercent())
                             };
                             model.addRow(rowData);
@@ -121,20 +126,20 @@ public class PositionsListPanel extends javax.swing.JPanel {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Volume", "Leverage", "Margin", "Shadow", "Entry", "Entry Price", "PnL"
+                "Name", "Volume", "Leverage", "Margin", "Shadow", "Entry", "Entry Price", "Equity Val", "PnL"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Object.class
+                java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
