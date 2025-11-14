@@ -28,6 +28,7 @@ package sesim;
 import gui.Globals;
 import gui.NewStrategyDialog;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.SplittableRandom;
 import org.json.JSONObject;
@@ -75,12 +76,50 @@ public class Sim {
     }
 
     private Exchange se;
-    
-    public Exchange getExchange(){
+
+    public Exchange getExchange() {
         return se;
     }
-    
-    
+
+    static class TempAsset implements Asset {
+
+        private final String symbol;
+        private final Exchange se;
+
+        TempAsset(String sym,Exchange se) {
+            symbol = sym;
+            this.se=se;
+            
+        }
+
+        @Override
+        public String getSymbol() {
+            return symbol;
+        }
+
+        @Override
+        public Exchange getExchange() {
+            return se;
+        }
+
+        @Override
+        public float getDf() {
+            return se.getDf();
+        }
+
+    }
+
+    HashMap<String, Asset> assets = new HashMap<>();
+
+    public Asset getAsset(String symbol) {
+        Asset a = assets.get(symbol);
+        if (a == null) {
+            a = new TempAsset(symbol,se);
+            assets.put(symbol, a);
+        }
+        return a;
+    }
+
     public AutoTraderLoader tloader;
 
     Scheduler scheduler;
@@ -281,7 +320,6 @@ public class Sim {
 
         Logger.info("Random seed is %d", randomSeed);
 
-        
         JSONArray tlist = Sim.getTraders(cfg);
 
         boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE, true);
@@ -335,12 +373,12 @@ public class Sim {
 
                 global = trader.initGlobal(this, global, strategyCfg);
                 trader.setConfig(strategyCfg);
-                
+
                 //trader.init(this, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategyCfg);
-                trader.init(this, id, t.getString("Name") + "-" + i1, money+(float)(initialPrice*shares), 0, strategy_name, strategyCfg);
+                trader.init(this, id, t.getString("Name") + "-" + i1, money + (float) (initialPrice * shares), 0, strategy_name, strategyCfg);
                 trader.getAccount().getPosition(se).addShares(
-                        (long)(shares*se.shares_df), 
-                        (long)(initialPrice*se.money_df),
+                        (long) (shares * se.shares_df),
+                        (long) (initialPrice * se.money_df),
                         1);
 
                 if (trader == null) {
@@ -374,7 +412,7 @@ public class Sim {
         }
 
         Logger.info("Initial prices is: %f", initialPrice);
-        this.se.setFairValue((float)initialPrice);
+        this.se.setFairValue((float) initialPrice);
 
         se.initLastQuote();
 

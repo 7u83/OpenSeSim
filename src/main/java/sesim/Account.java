@@ -54,7 +54,7 @@ public class Account {
     protected AutoTraderInterface owner;
 
     final ConcurrentHashMap<Long, Order> orders;
-    private final HashMap<Exchange, Position> positions;
+    private final HashMap<Asset, Position> positions;
 
     int leverage = 10;
 
@@ -79,7 +79,7 @@ public class Account {
 
     }
 
-    public Map<Exchange, Position> getPositions() {
+    public Map<Asset, Position> getPositions() {
         return Collections.unmodifiableMap(positions);
     }
 
@@ -364,7 +364,7 @@ public class Account {
         return null;
     }
 
-    final Position getPosition(Exchange se) {
+    final Position getPosition(Asset se) {
        // String s = "AAPL";
         Position p = this.positions.get(se);
         if (p != null) {

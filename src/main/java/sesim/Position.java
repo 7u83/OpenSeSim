@@ -31,7 +31,7 @@ package sesim;
  */
 public class Position {
 
-    final Exchange se;
+    final Asset se;
     final Account account;
 
     long shares;
@@ -40,7 +40,7 @@ public class Position {
     private boolean isShort;
     long borrowed = 0;
 
-    public Position(Exchange se, Account account) {
+    public Position(Asset se, Account account) {
         this.se = se;
 
         shares = 0;
@@ -54,7 +54,7 @@ public class Position {
     }
 
     public float getShares() {
-        return shares / se.shares_df;
+        return shares / se.getDf();
     }
 
     public float getLeverage() {
@@ -69,7 +69,7 @@ public class Position {
     }
 
     public float getMargin() {
-        return getMargin_Long() / se.money_df;
+        return getMargin_Long() / se.getExchange().money_df;
     }
 
     public long getMargin_Long() {
@@ -96,11 +96,11 @@ public class Position {
     }
     
     public long getPnL_Long(){
-        return se.getLastPrice_Long() * shares - totalEntryCost;
+        return se.getExchange().getLastPrice_Long() * shares - totalEntryCost;
     }
 
     public float getPnL() {
-        return (se.getLastPrice_Long() * shares - totalEntryCost) / se.money_df;
+        return (se.getExchange().getLastPrice_Long() * shares - totalEntryCost) / se.getExchange().money_df;
     }
 
     public float getPnLPercent() {
@@ -121,11 +121,11 @@ public class Position {
     }
     
     public long getMarketValue_Long(){
-        return totalEntryCost - se.getLastPrice_Long() * shares - shadow_cash;
+        return totalEntryCost - se.getExchange().getLastPrice_Long() * shares - shadow_cash;
     }
     
     public float getMarketValue(){
-        return getMarketValue_Long()/se.money_df;
+        return getMarketValue_Long()/se.getExchange().money_df;
     }
     
     public long getEquityValue_Long(){
@@ -133,22 +133,22 @@ public class Position {
     }
     
     public float getEquityValue(){
-        return getEquityValue_Long()/se.money_df;
+        return getEquityValue_Long()/se.getExchange().money_df;
     }
     
     public float getTotalEntryCost() {
-        return totalEntryCost / se.money_df;
+        return totalEntryCost / se.getExchange().money_df;
     }
 
     long shadow_cash = 0;
     long totalEntryCost = 0;
 
     public float getShadowCash() {
-        return shadow_cash / se.money_df;
+        return shadow_cash / se.getExchange().money_df;
     }
 
     public float getNetBrokerLoan() {
-        return shadow_cash / se.money_df;
+        return shadow_cash / se.getExchange().money_df;
     }
     public boolean mops = true;
 
@@ -297,7 +297,7 @@ public class Position {
             if (liquidationOrder == null) {
                 return;
             }
-            se.cancelOrder(account, this.liquidationOrder.id);
+            se.getExchange().cancelOrder(account, this.liquidationOrder.id);
             this.liquidationOrder = null;
             return;
         }
@@ -307,19 +307,19 @@ public class Position {
         int leverage =  (int)(totalEntryCost/ margin);
         
         if (liquidationOrder!=null){
-            se.cancelOrder(account, liquidationOrder.id);
+            se.getExchange().cancelOrder(account, liquidationOrder.id);
         }
 
         if (shares > 0) {
             liquidationPrice = (margin * leverage-margin) / Math.abs(shares);
             this.liquidationOrder = 
-            se.createOrderNoExec_Long(account, (byte)(Order.SELL | Order.STOP), 
+            se.getExchange().createOrderNoExec_Long(account, (byte)(Order.SELL | Order.STOP), 
                     Math.abs(shares), 0 , liquidationPrice, leverage);            
         }
         else{
             liquidationPrice = (margin * leverage+margin) / Math.abs(shares);
             this.liquidationOrder = 
-            se.createOrderNoExec_Long(account, (byte)(Order.BUY | Order.STOP), 
+            se.getExchange().createOrderNoExec_Long(account, (byte)(Order.BUY | Order.STOP), 
                     Math.abs(shares), 0 , liquidationPrice, leverage);
         }
         

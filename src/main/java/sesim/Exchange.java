@@ -17,7 +17,7 @@ import sesim.TradingLogWriter.TradingLogRecord;
  * @desc Echchange class
  * @author 7u83
  */
-public class Exchange {
+public class Exchange implements Asset{
 
     //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
     public float money_df = 100;
@@ -33,6 +33,11 @@ public class Exchange {
         money_df = (float) Math.pow(10, n);
         money_decimals = n;
         money_formatter = getFormatter(n);
+    }
+    
+    @Override
+    public float getDf(){
+        return shares_df;
     }
 
     public int getMoneyDecimals() {
@@ -89,6 +94,11 @@ public class Exchange {
 
     public DecimalFormat getSharesFormatter() {
         return shares_formatter;
+    }
+
+    @Override
+    public Exchange getExchange() {
+        return this;
     }
 
     //public Scheduler timer; 
