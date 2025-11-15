@@ -329,6 +329,11 @@ public class Sim {
         } else {
             initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE, 100.0f));
         }
+        
+                Logger.info("Initial prices is: %f", initialPrice);
+        this.se.setFairValue((float) initialPrice);
+
+        se.initLastQuote();
 
         Float moneyTotal = 0.0f;
         Float sharesTotal = 0.0f;
@@ -411,10 +416,7 @@ public class Sim {
 
         }
 
-        Logger.info("Initial prices is: %f", initialPrice);
-        this.se.setFairValue((float) initialPrice);
 
-        se.initLastQuote();
 
         //  Globals.sim.se.fairValue = 1.0;
         //System.out.printf("Failr Value is %f\n", se.fairValue);

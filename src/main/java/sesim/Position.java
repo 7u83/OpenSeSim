@@ -53,6 +53,10 @@ public class Position {
         return se.getSymbol();
     }
 
+    public long getShares_Long() {
+        return Math.abs(shares);
+    }
+
     public float getShares() {
         return shares / se.getDf();
     }
@@ -88,14 +92,13 @@ public class Position {
     // unrealized PnL für aktuelle Preis
     public long getPnL_Long(long currentPrice) {
 
-        return currentPrice * shares - shadow_cash;
-        
+        return currentPrice * shares - pnl;
 
         //long diff = currentPrice - entryPrice;
         //return isShort ? -shares * diff : shares * diff;
     }
-    
-    public long getPnL_Long(){
+
+    public long getPnL_Long() {
         return se.getExchange().getLastPrice_Long() * shares - totalEntryCost;
     }
 
@@ -119,44 +122,53 @@ public class Position {
 
         return (getPnL() / base) * 100.0f;
     }
-    
-    public long getMarketValue_Long(){
-        return totalEntryCost - se.getExchange().getLastPrice_Long() * shares - shadow_cash;
+
+    public long getMarketValue_Long() {
+        return totalEntryCost - se.getExchange().getLastPrice_Long() * shares - pnl;
     }
-    
-    public float getMarketValue(){
-        return getMarketValue_Long()/se.getExchange().money_df;
+
+    public float getMarketValue() {
+        return getMarketValue_Long() / se.getExchange().money_df;
     }
-    
-    public long getEquityValue_Long(){
-        return margin + getPnL_Long();
+
+    public long getEquityValue_Long() {
+        if (margin == 0) {
+            return se.getExchange().getLastPrice_Long() * shares - pnl;
+            //return getMarketValue_Long();
+        }
+        return  getPnL_Long();
     }
-    
-    public float getEquityValue(){
-        return getEquityValue_Long()/se.getExchange().money_df;
+
+    public float getEquityValue() {
+
+        return getEquityValue_Long() / se.getExchange().money_df;
     }
-    
+
     public float getTotalEntryCost() {
         return totalEntryCost / se.getExchange().money_df;
     }
 
-    long shadow_cash = 0;
+    long pnl = 0;
     long totalEntryCost = 0;
 
     public float getShadowCash() {
-        return shadow_cash / se.getExchange().money_df;
+        return pnl / se.getExchange().money_df;
     }
 
     public float getNetBrokerLoan() {
-        return shadow_cash / se.getExchange().money_df;
+        return pnl / se.getExchange().money_df;
     }
     public boolean mops = true;
+
+    boolean isShort() {
+        return shares < 0;
+    }
 
     void addShares(long volume, long price, int leverage) {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
             long val = volume * price;
-            shadow_cash -= val;
+            pnl -= val;
             totalEntryCost += val;
 
             // Führt zu Zukauf (Long->Long oder Short->Short).
@@ -165,7 +177,7 @@ public class Position {
 
             shares += volume;
             margin += marginRequired;
-            account.cash -= marginRequired; // Ziehe die benötigte Initial Margin vom Cash ab
+            //    account.cash -= marginRequired; // Ziehe die benötigte Initial Margin vom Cash ab
 
         } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
         else {
@@ -177,26 +189,26 @@ public class Position {
             if (Long.signum(shares) != Long.signum(nextShares)) {
                 // close old position
 
-                shadow_cash -= (-shares * price);
+                pnl -= (-shares * price);
                 //   totalEntryCost += (-shares * price);
 
-                account.cash += shadow_cash + margin;
+                account.cash += pnl; // + margin;
                 shares = nextShares;
 
                 long val = shares * price;
-                shadow_cash = -val;
+                pnl = -val;
                 totalEntryCost = val;
 
                 // 2. Neue Margin für den "Überhang" berechnen
                 long marginRequired = Math.abs(val) / leverage;
 
-                account.cash -= marginRequired;
+                //      account.cash -= marginRequired;
                 margin = marginRequired;
 
             } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
             else {
                 long val = volume * price;
-                shadow_cash -= val;
+                pnl -= val;
                 totalEntryCost += val;
 
                 // Hier ist Ihr Prinzip der anteiligen Reduzierung korrekt.
@@ -206,21 +218,25 @@ public class Position {
                 long marginReduction = (margin * reductionFactor) / 10000;
                 shares = nextShares;
                 margin -= marginReduction; // Reduziere die aggregierte Margin
-                account.cash += marginReduction;   // Freigegebene Margin zurück zu Cash
+                //    account.cash += marginReduction;   // Freigegebene Margin zurück zu Cash
             }
         }
 
-        if (shares == 0 || (shares > 0 && shadow_cash + margin >= 0)) {
+        if (shares == 0 || (shares > 0 && pnl + margin >= 0)) {
 
             //cash += margin;
-            account.cash += shadow_cash + margin;
+            account.cash += pnl; // + margin;
             //     cash+=Math.abs(margin);
             margin = 0;
-            shadow_cash = 0;
+            pnl = 0;
             if (shares == 0) {
                 totalEntryCost = 0;
             }
-            return;
+
+        }
+
+        if (this.margin != 0) {
+            this.account.calculateLiquidationStops();
         }
 
     }
@@ -262,8 +278,8 @@ public class Position {
             long val = volume * price;
             long marginRequired = Math.abs(val / leverage);
 
-            if (account.cash < marginRequired) {
-                return account.cash * leverage / price;
+            if (account.getFreeMargin_Long() < marginRequired) {
+                return account.getFreeMargin_Long() * leverage / price;
             }
 
         } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
@@ -275,7 +291,7 @@ public class Position {
             // Vorzeichen als sharesBefore.
             if (Long.signum(shares) != Long.signum(nextShares) && nextShares != 0) {
 
-                long c = shadow_cash - (-shares * price) + margin + account.cash;
+                long c = pnl - (-shares * price) + margin + account.cash;
 
                 long val = nextShares * price;
                 long marginRequired = Math.abs(val) / leverage;
@@ -303,28 +319,24 @@ public class Position {
         }
 
         long liquidationPrice;
-        
-        int leverage =  (int)(totalEntryCost/ margin);
-        
-        if (liquidationOrder!=null){
+
+        int leverage = (int) (totalEntryCost / margin);
+
+        if (liquidationOrder != null) {
             se.getExchange().cancelOrder(account, liquidationOrder.id);
         }
 
-        if (shares > 0) {
-            liquidationPrice = (margin * leverage-margin) / Math.abs(shares);
-            this.liquidationOrder = 
-            se.getExchange().createOrderNoExec_Long(account, (byte)(Order.SELL | Order.STOP), 
-                    Math.abs(shares), 0 , liquidationPrice, leverage);            
-        }
-        else{
-            liquidationPrice = (margin * leverage+margin) / Math.abs(shares);
-            this.liquidationOrder = 
-            se.getExchange().createOrderNoExec_Long(account, (byte)(Order.BUY | Order.STOP), 
-                    Math.abs(shares), 0 , liquidationPrice, leverage);
-        }
-        
-
-
+        /*    if (shares > 0) {
+            liquidationPrice = (margin * leverage - margin) / Math.abs(shares);
+            this.liquidationOrder
+                    = se.getExchange().createOrderNoExec_Long(account, (byte) (Order.SELL | Order.STOP),
+                            Math.abs(shares), 0, liquidationPrice, leverage);
+        } else {
+            liquidationPrice = (margin * leverage + margin) / Math.abs(shares);
+            this.liquidationOrder
+                    = se.getExchange().createOrderNoExec_Long(account, (byte) (Order.BUY | Order.STOP),
+                            Math.abs(shares), 0, liquidationPrice, leverage);
+        }*/
     }
 
 }

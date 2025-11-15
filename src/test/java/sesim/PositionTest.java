@@ -310,11 +310,15 @@ public class PositionTest {
         assertEquals(3f, instance.getShares(), 0);
         assertEquals(0.0f, instance.getMargin(), 0);
         assertEquals(iniCash - 300, account.getCash(), 0);
+        
+        se.lastQuote = new sesim.Quote(se);
+
+        se.lastQuote.price = (long) (50 * se.money_df);
 
         instance.addShares(-4, (long) (50 * se.money_df), 1);
         assertEquals(-1f, instance.getShares(), 0);
         assertEquals(50f, instance.getMargin(), 0);
-        assertEquals(iniCash - 300 + 150 - 50, account.getCash(), 0);
+        assertEquals(iniCash - 300 + 150, account.getCash(), 0);
         
           
         

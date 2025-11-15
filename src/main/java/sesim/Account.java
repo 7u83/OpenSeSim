@@ -231,7 +231,7 @@ public class Account {
      * @return true if the order is covered; false if there are insufficient
      * shares or cash.
      */
-/*    public boolean isOrderCovered_Long(byte type, long volume, long limit, int leverage,
+    /*    public boolean isOrderCovered_Long(byte type, long volume, long limit, int leverage,
             long exclude) {
 
         //long cahsNeded = 
@@ -249,32 +249,30 @@ public class Account {
         // all other types will be cecked by the matching engine
         return true;
     }
-*/
+     */
     public boolean isOrderCovered_Long(Position p, long volume, long price, int leverage) {
         long cashNeeded = p.getRequiredCashForOrder_Long(volume, price, leverage);
-        return cashNeeded <= cash;
+        return cashNeeded <= this.getFreeMargin();
     }
 
     public boolean isOrderCovered_Long(Exchange se, long volume, long price, int leverage) {
         return isOrderCovered_Long(getPosition(se), volume, price, leverage);
     }
-    
-        public boolean isOrderCovered(Exchange se, float volume, float price, int leverage) {
-        return isOrderCovered_Long(getPosition(se), 
-                (long)(volume*se.shares_df), 
-                (long)(price*se.money_df), 
+
+    public boolean isOrderCovered(Exchange se, float volume, float price, int leverage) {
+        return isOrderCovered_Long(getPosition(se),
+                (long) (volume * se.shares_df),
+                (long) (price * se.money_df),
                 leverage);
     }
-        
-        public float getRequiredCashForOrder(Exchange se, float volume, float price, int leverage){
-            return getPosition(se).getRequiredCashForOrder_Long(
-                    (long)(volume*se.shares_df),
-                    (long)(price*se.money_df),
-                    leverage
-            )/se.money_df;
-        }
 
-    
+    public float getRequiredCashForOrder(Exchange se, float volume, float price, int leverage) {
+        return getPosition(se).getRequiredCashForOrder_Long(
+                (long) (volume * se.shares_df),
+                (long) (price * se.money_df),
+                leverage
+        ) / se.money_df;
+    }
 
     /**
      * Checks whether an order is covered using floating-point inputs.
@@ -290,19 +288,17 @@ public class Account {
      * shares or cash.
      */
     //public boolean isOrderCovered(byte type, float volume, float limit) {
-      /*  return isOrderCovered_Long(type,
+    /*  return isOrderCovered_Long(type,
                 (long) (volume * se.shares_df),
                 (long) (limit * se.money_df), 1, -1
         );*/
     //}
-
     //public boolean isOrderCovered(byte type, float volume, float limit, long exclude) {
-       /* return isOrderCovered_Long(type,
+    /* return isOrderCovered_Long(type,
                 (long) (volume * se.shares_df),
                 (long) (limit * se.money_df), 1, exclude
         );*/
     //}
-
     public Exchange getSe() {
         return se;
     }
@@ -365,13 +361,13 @@ public class Account {
     }
 
     final Position getPosition(Asset se) {
-       // String s = "AAPL";
+        // String s = "AAPL";
         Position p = this.positions.get(se);
         if (p != null) {
             return p;
         }
         p = new Position(se, this);
-        
+
         positions.put(se, p);
         return p;
 
@@ -383,6 +379,66 @@ public class Account {
         }
         positions.put(k, k);
         return k;*/
+    }
+
+    void calculateLiquidationStops() {
+        long currentEquity = getEquity_Long();
+        long totalUsedMargin = getMarginUsed_Long();
+
+        // Critical Equity = Total Used Margin (Margin Level 100%)
+        long criticalEquity = totalUsedMargin;
+
+        // L_max ist die Free Margin (der Puffer in Cents)
+        long lMax_additional = currentEquity - criticalEquity;
+
+        if (lMax_additional <= 0) {
+         //   System.out.println("WARNUNG: Margin Call ist bereits ausgelöst oder der Puffer ist aufgebraucht. Puffer: " + (lMax_additional / CENTS_PER_EURO) + " €");
+            return;
+        }
+        double totalAbsoluteVolumeSum = 0.0;
+        for (Position p : positions.values()) {
+            // Absolute Volumen (P_aktuell * Shares) zur korrekten Gewichtung des Risikos
+            totalAbsoluteVolumeSum += p.se.getExchange().getLastPrice() * p.getShares_Long();
+        }
+        
+        
+        Map<String, Double> stopPrices = new HashMap<>();
+        
+        for (Position p : positions.values()) {
+            
+            // I. Gewichtung (W_i)
+            double positionVolume = p.se.getExchange().getLastPrice() * p.getShares_Long(); 
+            double weight = positionVolume / totalAbsoluteVolumeSum;
+            
+            // II. Tolerierter Verlust für diese Position (L_i) in Cents
+            long toleratedLoss_i_long = (long) (lMax_additional * weight);
+            
+            // III. Verlust pro Aktie (V_Aktie) in Euro
+            long shares = p.getShares_Long();
+            if (shares == 0) continue; 
+
+            double lossPerShare_double = ((double) toleratedLoss_i_long) / shares / 100;
+            
+            // IV. Endgültiger Stop-Kurs (S_check, i)
+            double currentPrice = p.se.getExchange().getLastPrice();
+            double stopPrice;
+            
+            if (p.isShort()) {
+                // Short: Verlust bei steigendem Kurs -> Stop liegt ÜBER dem aktuellen Preis
+                stopPrice = currentPrice + lossPerShare_double;
+            } else {
+                // Long: Verlust bei fallendem Kurs -> Stop liegt UNTER dem aktuellen Preis
+                stopPrice = currentPrice - lossPerShare_double;
+            }
+            
+            // Speichern des Ergebnisses
+            stopPrices.put(p.getName(), stopPrice); 
+        }
+        
+        for (Double s: stopPrices.values()){
+            System.out.printf("StopPrice: %f\n", s);
+        }
+
     }
 
     // HashSet<Position> x = new HashSet<>();
