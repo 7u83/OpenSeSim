@@ -36,7 +36,7 @@
         <Component class="javax.swing.JTable" name="table">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="9" rowCount="4">
+              <Table columnCount="10" rowCount="4">
                 <Column editable="false" title="Name" type="java.lang.String"/>
                 <Column editable="false" title="Volume" type="java.lang.Float"/>
                 <Column editable="false" title="Leverage" type="java.lang.Float"/>
@@ -45,11 +45,17 @@
                 <Column editable="false" title="Entry" type="java.lang.Float"/>
                 <Column editable="false" title="Entry Price" type="java.lang.Float"/>
                 <Column editable="false" title="Equity Val" type="java.lang.Float"/>
+                <Column editable="false" title="Stop Price" type="java.lang.Float"/>
                 <Column editable="false" title="PnL" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="1">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
                   <Editor/>

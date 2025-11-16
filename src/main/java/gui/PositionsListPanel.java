@@ -57,7 +57,7 @@ public class PositionsListPanel extends javax.swing.JPanel {
             return;
         }
 
-        table.getColumnModel().getColumn(8).setCellRenderer(
+        table.getColumnModel().getColumn(9).setCellRenderer(
                 new PercentageCellRenderer()
         );
         table.getColumnModel().getColumn(7).setCellRenderer(
@@ -94,6 +94,7 @@ public class PositionsListPanel extends javax.swing.JPanel {
                                 p.getTotalEntryCost(),
                                 p.getEntryPrice(),
                                 p.getEquityValue(),
+                                p.getStopPrice(),
                                 new gui.tools.PercentageValue(p.getPnLPercent())
                             };
                             model.addRow(rowData);
@@ -126,20 +127,20 @@ public class PositionsListPanel extends javax.swing.JPanel {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Volume", "Leverage", "Margin", "Shadow", "Entry", "Entry Price", "Equity Val", "PnL"
+                "Name", "Volume", "Leverage", "Margin", "Shadow", "Entry", "Entry Price", "Equity Val", "Stop Price", "PnL"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Object.class
+                java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {

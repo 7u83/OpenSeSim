@@ -17,7 +17,7 @@ import sesim.TradingLogWriter.TradingLogRecord;
  * @desc Echchange class
  * @author 7u83
  */
-public class Exchange implements Asset{
+public class Exchange implements Asset {
 
     //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
     public float money_df = 100;
@@ -34,9 +34,9 @@ public class Exchange implements Asset{
         money_decimals = n;
         money_formatter = getFormatter(n);
     }
-    
+
     @Override
-    public float getDf(){
+    public float getDf() {
         return shares_df;
     }
 
@@ -231,6 +231,42 @@ public class Exchange implements Asset{
 
     }
 
+    class LiquidationComparator implements Comparator<Position> {
+
+        boolean isLong;
+
+        LiquidationComparator(boolean type) {
+            isLong = type;
+        }
+
+        @Override
+        public int compare(Position left, Position right) {
+
+            long d;
+
+            if (isLong) {
+                d = left.stopPrice - right.stopPrice;
+            } else {
+                d = right.stopPrice - left.stopPrice;
+            }
+
+            if (d != 0) {
+                return d > 0 ? 1 : -1;
+            }
+
+            if (left.id < right.id) {
+                return -1;
+            }
+            if (left.id > right.id) {
+                return 1;
+            }
+
+            return 0;
+
+        }
+
+    }
+
     class StopComparator implements Comparator<Order> {
 
         boolean reverse;
@@ -347,10 +383,13 @@ public class Exchange implements Asset{
     // public List<Quote> quoteHistory; // = new TreeSet<>();
     SortedSet bidBook;
     SortedSet askBook;
-    SortedSet ulBidBook;
-    SortedSet ulAskBook;
+    SortedSet marketBidBook;
+    SortedSet marketAskBook;
     SortedSet stopBuyBook;
     SortedSet stopSellBook;
+
+    SortedSet liquidationsShort;
+    SortedSet liquidationsLong;
 
     SortedSet priceEventsAbove;
     SortedSet priceEventsBelow;
@@ -375,10 +414,9 @@ public class Exchange implements Asset{
         this.askBookListeners.clear();
         this.bidBookListeners.clear();
 
-        buy_orders = 0;
-        sell_orders = 0;
+//        buy_orders = 0;
+//        sell_orders = 0;
         //      timer = new Scheduler();         //  timer = new Scheduler();
-
         //     random = new SplittableRandom();
         //       quoteHistory = new ArrayList();
         //      statistics = new Statistics();
@@ -389,10 +427,13 @@ public class Exchange implements Asset{
         //   order_books = new HashMap();
         bidBook = new ConcurrentSkipListSet(new OrderComparator(Order.BUYLIMIT));
         askBook = new ConcurrentSkipListSet(new OrderComparator(Order.SELLLIMIT));
-        ulBidBook = new ConcurrentSkipListSet(new OrderComparator(Order.BUY));
-        ulAskBook = new ConcurrentSkipListSet(new OrderComparator(Order.SELL));
+        marketBidBook = new ConcurrentSkipListSet(new OrderComparator(Order.BUY));
+        marketAskBook = new ConcurrentSkipListSet(new OrderComparator(Order.SELL));
         stopSellBook = new ConcurrentSkipListSet(new StopComparator(true));
         stopBuyBook = new ConcurrentSkipListSet(new StopComparator(false));
+
+        liquidationsLong = new TreeSet(new LiquidationComparator(true));
+        liquidationsShort = new TreeSet(new LiquidationComparator(false));
 
         priceEventsAbove = new TreeSet();
         priceEventsBelow = new TreeSet();
@@ -913,9 +954,9 @@ public class Exchange implements Asset{
             case Order.SELLLIMIT:
                 return askBook;
             case Order.BUY:
-                return ulBidBook;
+                return marketBidBook;
             case Order.SELL:
-                return ulAskBook;
+                return marketAskBook;
             case Order.SELLSTOP:
                 return stopSellBook;
             case Order.BUYSTOP:
@@ -1007,7 +1048,7 @@ public class Exchange implements Asset{
                     if (o.hasLimit()) {
                         bidBook.remove(o);
                     } else {
-                        ulBidBook.remove(o);
+                        marketBidBook.remove(o);
                     }
                     if (o.hasStop()) {
                         this.stopBuyBook.remove(o);
@@ -1017,7 +1058,7 @@ public class Exchange implements Asset{
                     if (o.hasLimit()) {
                         askBook.remove(o);
                     } else {
-                        ulAskBook.remove(o);
+                        marketAskBook.remove(o);
 
                     }
                     if (o.hasStop()) {
@@ -1082,13 +1123,13 @@ public class Exchange implements Asset{
             if (o.hasLimit()) {
                 askBook.remove(o);
             } else {
-                ulAskBook.remove(o);
+                marketAskBook.remove(o);
             }
         } else {
             if (o.hasLimit()) {
                 bidBook.remove(o);
             } else {
-                ulBidBook.remove(o);
+                marketBidBook.remove(o);
             }
         }
 
@@ -1128,7 +1169,7 @@ public class Exchange implements Asset{
             if (s.hasLimit()) {
                 askBook.add(s);
             } else {
-                ulAskBook.add(s);
+                marketAskBook.add(s);
             }
         }
 
@@ -1141,10 +1182,27 @@ public class Exchange implements Asset{
             if (s.hasLimit()) {
                 bidBook.add(s);
             } else {
-                ulBidBook.add(s);
+                marketBidBook.add(s);
             }
         }
 
+    }
+
+    void setLiquidationStop(Position p) {
+
+        if (p.isShort()) {
+            this.liquidationsShort.add(p);
+        } else {
+            this.liquidationsLong.add(p);
+        }
+    }
+
+    void removeLiquidationStop(Position p) {
+        if (p.isShort()) {
+            this.liquidationsShort.remove(p);
+        } else {
+            this.liquidationsLong.remove(p);
+        }
     }
 
     long numTrades = 0;
@@ -1161,10 +1219,11 @@ public class Exchange implements Asset{
         // seller.account.cash += money;
         //  buyer.position.shares += volume;
         buyer.position.addShares(volume, price, buyer.leverage);
-        buyer.position.updateLiquidationOrder(buyer.leverage);
-        seller.position.addShares(-volume, price, seller.leverage);
-        seller.position.updateLiquidationOrder(seller.leverage);
+        // buyer.position.updateLiquidationOrder(buyer.leverage);
 
+        seller.position.addShares(-volume, price, seller.leverage);
+
+        //seller.position.updateLiquidationOrder(seller.leverage);
         //seller.position.shares -= volume;
         numTrades++;
 
@@ -1238,8 +1297,8 @@ public class Exchange implements Asset{
         SortedSet<Order> bid = bidBook; //order_books.get(Order.BUYLIMIT);
         SortedSet<Order> ask = askBook; //order_books.get(Order.SELLLIMIT);
 
-        SortedSet<Order> ul_buy = ulBidBook; //order_books.get(Order.BUY);
-        SortedSet<Order> ul_sell = ulAskBook; //order_books.get(Order.SELL);
+        SortedSet<Order> ul_buy = marketBidBook; //order_books.get(Order.BUY);
+        SortedSet<Order> ul_sell = marketAskBook; //order_books.get(Order.SELL);
 
         long volume_total = 0;
         long money_total = 0;
@@ -1367,6 +1426,7 @@ public class Exchange implements Asset{
 
         addQuoteToHistory(q);
 
+        checkLiquidationStops(q.price);
         checkPriceEvents(q.price);
 
         //this.quoteHistory.add(q);
@@ -1402,9 +1462,36 @@ public class Exchange implements Asset{
 
     }
 
-    long buy_orders = 0;
-    long sell_orders = 0;
+    void checkLiquidationStops(long price) {
+        SortedSet<Position> longStops = this.liquidationsLong;
+        SortedSet<Position> shortStops = priceEventsBelow;
 
+        while (!longStops.isEmpty()) {
+            Position p = longStops.first();
+
+            if (price >= p.stopPrice) {
+                break;
+            }
+            longStops.remove(p);
+            System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.stopPrice);
+            
+            //this.createOrder_Long(p.account, Order.SELL, Math.abs(p.shares), money_df, money_df);
+            this.createOrder_Long(p.account, Order.SELL, Math.abs(p.shares), 0, 0, 1);
+            
+        }
+
+        while (!shortStops.isEmpty()) {
+            Position p = shortStops.last();
+            if (price <= p.stopPrice) {
+                break;
+            }
+            shortStops.remove(p);
+            System.out.printf("SHORT STOP REACHED %d\n",price);
+        }
+    }
+
+    //long buy_orders = 0;
+    //long sell_orders = 0;
     private void addOrderToBook(Order o) {
 
         if (o.isSell()) {
@@ -1414,10 +1501,10 @@ public class Exchange implements Asset{
                 if (o.hasLimit()) {
                     askBook.add(o);
                 } else {
-                    ulAskBook.add(o);
+                    marketAskBook.add(o);
                 }
             }
-            sell_orders++;
+//            sell_orders++;
             return;
         }
 
@@ -1427,16 +1514,15 @@ public class Exchange implements Asset{
             if (o.hasLimit()) {
                 bidBook.add(o);
             } else {
-                ulBidBook.add(o);
+                marketBidBook.add(o);
             }
         }
-        buy_orders++;
+//        buy_orders++;
 
     }
 
-    long buy_failed = 0;
-    long sell_failed = 0;
-
+    //   long buy_failed = 0;
+//    long sell_failed = 0;
     /**
      *
      * @param a

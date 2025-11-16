@@ -25,12 +25,14 @@
  */
 package sesim;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  *
  * @author tube
  */
 public class Position {
-
+    private static final AtomicLong ID_GEN = new AtomicLong(0);
     final Asset se;
     final Account account;
 
@@ -39,9 +41,12 @@ public class Position {
     long margin;
     private boolean isShort;
     long borrowed = 0;
+    long stopPrice;
+    long id;
 
     public Position(Asset se, Account account) {
         this.se = se;
+        id = ID_GEN.incrementAndGet();
 
         shares = 0;
         entryPrice = 0;
@@ -239,6 +244,18 @@ public class Position {
             this.account.calculateLiquidationStops();
         }
 
+    }
+    
+    public float getStopPrice(){
+        return this.stopPrice/se.getExchange().money_df;
+    }
+    
+    void setStopPrice(long newStopPrice){
+        if (stopPrice!=0){
+            se.getExchange().removeLiquidationStop(this);
+        }
+        stopPrice=newStopPrice;
+        se.getExchange().setLiquidationStop(this);
     }
 
     public long getRequiredCashForOrder_Long(long volume, long price, long leverage) {
