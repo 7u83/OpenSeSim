@@ -77,6 +77,8 @@ public class RandomTraderM extends AutoTraderBase
     public boolean moodEnable=false;
     public float moodiness=0.5f;
     public float moodFrequency=60.0f;
+    
+    int leverage=1;
 
     final String INITIAL_DELAY = "initial_delay";
     final String AMOUNT_TO_SELL = "amount_to_sell";
@@ -653,7 +655,7 @@ return delta;
 
         long volume = money / limit;
 
-        return se.createOrder_Long(account_id, Order.BUYLIMIT, volume, limit, 0, 1);
+        return se.createOrder_Long(account_id, Order.BUYLIMIT, volume, limit, 0, leverage);
 
     }
 
@@ -673,7 +675,7 @@ return delta;
         //   limit = lp + getRandomAmmount(lp, sell_limit);
         //  limit = lp + se.random.nextLong(0, 4) - 2;
 
-        return se.createOrder_Long(account_id, Order.SELLLIMIT, volume, limit, 0, 1);
+        return se.createOrder_Long(account_id, Order.SELLLIMIT, volume, limit, 0, leverage);
 
     }
 

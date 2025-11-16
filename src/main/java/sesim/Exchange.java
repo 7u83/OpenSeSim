@@ -1189,10 +1189,12 @@ public class Exchange implements Asset {
     }
 
     void setLiquidationStop(Position p) {
-
+//System.out.printf("SETLSTOP", p.stopPrice);
         if (p.isShort()) {
             this.liquidationsShort.add(p);
+         //   System.out.printf("AD SHORT\n");
         } else {
+           // System.out.printf("AD LONG\n");
             this.liquidationsLong.add(p);
         }
     }
@@ -1464,29 +1466,31 @@ public class Exchange implements Asset {
 
     void checkLiquidationStops(long price) {
         SortedSet<Position> longStops = this.liquidationsLong;
-        SortedSet<Position> shortStops = priceEventsBelow;
+        SortedSet<Position> shortStops = this.liquidationsShort;
 
         while (!longStops.isEmpty()) {
+    
             Position p = longStops.first();
-
+                         // System.out.printf("LONG FIRST %d\n",p.stopPrice);
             if (price >= p.stopPrice) {
                 break;
             }
             longStops.remove(p);
-            System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.stopPrice);
-            
-            //this.createOrder_Long(p.account, Order.SELL, Math.abs(p.shares), money_df, money_df);
+        //    System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.stopPrice);
             this.createOrder_Long(p.account, Order.SELL, Math.abs(p.shares), 0, 0, 1);
             
         }
 
         while (!shortStops.isEmpty()) {
-            Position p = shortStops.last();
+            
+            Position p = shortStops.first();
+        //    System.out.printf("SHORT FIRST %d\n",p.stopPrice);
             if (price <= p.stopPrice) {
                 break;
             }
             shortStops.remove(p);
-            System.out.printf("SHORT STOP REACHED %d\n",price);
+           // System.out.printf("SHORT STOP REACHED %d\n",price);
+            this.createOrder_Long(p.account, Order.BUY, Math.abs(p.shares), 0, 0, 1);
         }
     }
 

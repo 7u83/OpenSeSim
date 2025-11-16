@@ -434,7 +434,7 @@ public class Account {
 
             // p.stopPrice=(long)(stopPrice*se.money_df);
             p.setStopPrice((long) (stopPrice * se.money_df));
-            System.out.printf("StopPrice: %f\n", stopPrice);
+          //  System.out.printf("StopPrice: %f\n", stopPrice);
 
             // Speichern des Ergebnisses
             //  stopPrices.put(p.getName(), stopPrice); 
