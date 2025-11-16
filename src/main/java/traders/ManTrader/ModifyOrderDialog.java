@@ -29,7 +29,7 @@ import gui.EscDialog;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import sesim.Account;
-import sesim.Exchange;
+import sesim.Market;
 import sesim.Order;
 
 /**
@@ -41,13 +41,13 @@ public class ModifyOrderDialog extends EscDialog {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ModifyOrderDialog.class.getName());
     
     Account account;
-    Exchange se;
+    Market se;
     Order order;
 
     /**
      * Creates new form ModifyOrderDialog
      */
-    public ModifyOrderDialog(java.awt.Frame parent, boolean modal, Exchange e, Order o) {
+    public ModifyOrderDialog(java.awt.Frame parent, boolean modal, Market e, Order o) {
         super(parent, modal);
         account = o.getAccount();
         se = e;

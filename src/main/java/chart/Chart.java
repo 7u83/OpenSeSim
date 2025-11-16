@@ -28,7 +28,7 @@ package chart;
 import sesim.OHLCDataItem;
 import sesim.OHLCData;
 import java.awt.*;
-import sesim.Exchange.*;
+import sesim.Market.*;
 
 import gui.Globals;
 import java.awt.event.MouseAdapter;

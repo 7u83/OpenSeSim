@@ -50,8 +50,8 @@ import sesim.AutoTraderBase;
 //import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
 import sesim.AutoTraderInterface;
-import sesim.Exchange;
-import sesim.Exchange.AccountListener;
+import sesim.Market;
+import sesim.Market.AccountListener;
 import sesim.Order;
 import sesim.Sim;
 
@@ -60,7 +60,7 @@ import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
-import sesim.Exchange.QuoteReceiver;
+import sesim.Market.QuoteReceiver;
 import sesim.Quote;
 
 /**

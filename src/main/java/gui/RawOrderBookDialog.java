@@ -25,7 +25,7 @@
  */
 package gui;
 
-import sesim.Exchange;
+import sesim.Market;
 
 /**
  *
@@ -47,7 +47,7 @@ public class RawOrderBookDialog extends javax.swing.JDialog {
    //     books.start();
     }
     
-    public void start(Exchange se, byte leftType, byte rightType){
+    public void start(Market se, byte leftType, byte rightType){
        books.start(se, leftType, rightType);
     }
     

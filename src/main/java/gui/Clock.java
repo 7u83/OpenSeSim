@@ -27,7 +27,7 @@ package gui;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import sesim.Exchange.Statistics;
+import sesim.Market.Statistics;
 import sesim.Scheduler;
 
 /**

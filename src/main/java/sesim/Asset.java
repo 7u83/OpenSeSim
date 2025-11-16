@@ -31,6 +31,6 @@ package sesim;
  */
 public interface Asset {
     String getSymbol();
-    Exchange getExchange();
+    Market getExchange();
     float getDf();
 }

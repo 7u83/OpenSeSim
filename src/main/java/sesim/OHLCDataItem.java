@@ -31,7 +31,7 @@ package sesim;
  */
 public class OHLCDataItem {
 
-    Exchange se;
+    Market se;
     long open;
     long high;
     long low;
@@ -40,7 +40,7 @@ public class OHLCDataItem {
     long time;
     
     
-    public OHLCDataItem(Exchange se, long time,long price, long volume){
+    public OHLCDataItem(Market se, long time,long price, long volume){
         this.se=se;
         this.time=time;
         open=low=high=close=price;

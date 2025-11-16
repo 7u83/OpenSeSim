@@ -34,7 +34,7 @@ import java.util.*;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class QuotePanel extends javax.swing.JPanel implements sesim.Exchange.QuoteReceiver{
+public class QuotePanel extends javax.swing.JPanel implements sesim.Market.QuoteReceiver{
 
     /**
      * Creates new form QuotePanel

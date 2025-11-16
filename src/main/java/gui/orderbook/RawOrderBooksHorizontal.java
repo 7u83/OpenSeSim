@@ -26,7 +26,7 @@
 package gui.orderbook;
 
 import gui.Globals;
-import sesim.Exchange;
+import sesim.Market;
 
 /**
  *
@@ -46,7 +46,7 @@ public class RawOrderBooksHorizontal extends javax.swing.JPanel {
 
     }
 
-    public final void start(Exchange se, byte leftType, byte rightType) {
+    public final void start(Market se, byte leftType, byte rightType) {
         
       //  System.out.printf("Start Horz Rawbook\n");
         //bidBook.start(Globals.sim.se,Order.BUYLIMIT);

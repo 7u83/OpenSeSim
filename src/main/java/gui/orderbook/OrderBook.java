@@ -34,8 +34,8 @@ import java.util.TreeMap;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-import sesim.Exchange;
-import sesim.Exchange.CompOrderBookEntry;
+import sesim.Market;
+import sesim.Market.CompOrderBookEntry;
 import sesim.OrderBookEntry;
 import sesim.Order;
 

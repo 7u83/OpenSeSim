@@ -75,18 +75,18 @@ public class Sim {
 
     }
 
-    private Exchange se;
+    private Market se;
 
-    public Exchange getExchange() {
+    public Market getExchange() {
         return se;
     }
 
     static class TempAsset implements Asset {
 
         private final String symbol;
-        private final Exchange se;
+        private final Market se;
 
-        TempAsset(String sym,Exchange se) {
+        TempAsset(String sym,Market se) {
             symbol = sym;
             this.se=se;
             
@@ -98,7 +98,7 @@ public class Sim {
         }
 
         @Override
-        public Exchange getExchange() {
+        public Market getExchange() {
             return se;
         }
 
@@ -159,7 +159,7 @@ public class Sim {
 
     public Sim() {
         scheduler = new Scheduler();
-        se = new Exchange(this);
+        se = new Market(this);
         initAutoTraderLoader();
         reset();
     }
@@ -187,7 +187,7 @@ public class Sim {
      * @param cfg
      * @return
      */
-    private AutoTraderInterface createTraderNew(Exchange se, long id, String name, float money, float shares, String strat, JSONObject cfg) {
+    private AutoTraderInterface createTraderNew(Market se, long id, String name, float money, float shares, String strat, JSONObject cfg) {
 
         String base = cfg.getString("base");
         AutoTraderInterface ac = tloader.getStrategyBase(base);

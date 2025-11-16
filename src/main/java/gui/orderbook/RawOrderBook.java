@@ -34,7 +34,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import sesim.Exchange;
+import sesim.Market;
 import sesim.OrderBookEntry;
 import sesim.Order;
 
@@ -42,7 +42,7 @@ import sesim.Order;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookListener {
+public class RawOrderBook extends javax.swing.JPanel implements Market.BookListener {
 
     RawOrderBookModel model;
     TableColumn trader_column = null;
@@ -55,7 +55,7 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookLis
     protected byte type = Order.BUYLIMIT;
     protected int depth = 40;
     
-    Exchange se;
+    Market se;
 
     /**
      * Creates new form OrderBookNew
@@ -74,7 +74,7 @@ public class RawOrderBook extends javax.swing.JPanel implements Exchange.BookLis
         vol_column = list.getColumnModel().getColumn(2);
     }
 
-    public void start(Exchange se, byte type) {
+    public void start(Market se, byte type) {
         this.se=se;
         this.type = type;
         stop();

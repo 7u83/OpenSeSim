@@ -26,7 +26,7 @@
 package gui.orderbook;
 
 import gui.Globals;
-import sesim.Exchange;
+import sesim.Market;
 import sesim.Order;
 
 /**

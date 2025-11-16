@@ -16,7 +16,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import sesim.Exchange;
+import sesim.Market;
 import sesim.OHLCData;
 
 /**

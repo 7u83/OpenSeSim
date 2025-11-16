@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PositionTest {
 
     Account account;
-    Exchange se;
+    Market se;
 
     Sim sim;
 
@@ -60,7 +60,7 @@ public class PositionTest {
     @BeforeEach
     public void setUp() {
         sim = new sesim.Sim();
-        se = new Exchange(sim);
+        se = new Market(sim);
         se.setSymbol("SYM");
         account = new sesim.Account(se, iniCash, iniShares);
 

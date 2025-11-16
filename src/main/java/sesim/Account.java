@@ -42,9 +42,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Account {
     
-    private Exchange se;
+    private final Market defaultMarket;
     
-    private Exchange.AccountListener listener = null;
+    private Market.AccountListener listener = null;
     
     long cash;  // cash available
 
@@ -60,9 +60,9 @@ public class Account {
 
     //   Position thePosition = new Position(se, 1);
     //   Position defaultPosition;
-    Account(Exchange se, float money, float shares) {
+    Account(Market se, float money, float shares) {
         
-        this.se = se;
+        this.defaultMarket = se;
         
         orders = new ConcurrentHashMap();
         positions = new HashMap<>();
@@ -93,27 +93,27 @@ public class Account {
     }
     
     public float getMarginUsed() {
-        return getMarginUsed_Long() / se.money_df;
+        return getMarginUsed_Long() / defaultMarket.money_df;
     }
     
     public float getShares() {
-        return getPosition(se).shares / se.shares_df;
+        return getPosition(defaultMarket).shares / defaultMarket.shares_df;
     }
     
     public float getInitialShares() {
-        return initial_shares / se.shares_df;
+        return initial_shares / defaultMarket.shares_df;
     }
     
     public long getShares_Long() {
-        return getPosition(se).shares;
+        return getPosition(defaultMarket).shares;
     }
     
     public float getMoney() {
-        return cash / se.money_df;
+        return cash / defaultMarket.money_df;
     }
     
     public float getInitialMoney() {
-        return initial_money / se.money_df;
+        return initial_money / defaultMarket.money_df;
     }
     
     public long getMoney_Long() {
@@ -131,7 +131,7 @@ public class Account {
         return Collections.unmodifiableMap(orders);
     }
     
-    public void setListener(Exchange.AccountListener al) {
+    public void setListener(Market.AccountListener al) {
         this.listener = al;
     }
     
@@ -167,7 +167,7 @@ public class Account {
     }
     
     public float getCashInOpenOrders() {
-        return getCashInOpenOrders_Long() / se.money_df;
+        return getCashInOpenOrders_Long() / defaultMarket.money_df;
     }
     
     public long getSharesInOpenOrders_Long(long exclude) {
@@ -189,7 +189,7 @@ public class Account {
     }
     
     public float getSharesInOpenOrders() {
-        return getSharesInOpenOrders_Long() / se.shares_df;
+        return getSharesInOpenOrders_Long() / defaultMarket.shares_df;
     }
     
     public float getSharesAvailable() {
@@ -255,18 +255,18 @@ public class Account {
         return cashNeeded <= this.getFreeMargin();
     }
     
-    public boolean isOrderCovered_Long(Exchange se, long volume, long price, int leverage) {
+    public boolean isOrderCovered_Long(Market se, long volume, long price, int leverage) {
         return isOrderCovered_Long(getPosition(se), volume, price, leverage);
     }
     
-    public boolean isOrderCovered(Exchange se, float volume, float price, int leverage) {
+    public boolean isOrderCovered(Market se, float volume, float price, int leverage) {
         return isOrderCovered_Long(getPosition(se),
                 (long) (volume * se.shares_df),
                 (long) (price * se.money_df),
                 leverage);
     }
     
-    public float getRequiredCashForOrder(Exchange se, float volume, float price, int leverage) {
+    public float getRequiredCashForOrder(Market se, float volume, float price, int leverage) {
         return getPosition(se).getRequiredCashForOrder_Long(
                 (long) (volume * se.shares_df),
                 (long) (price * se.money_df),
@@ -299,8 +299,8 @@ public class Account {
                 (long) (limit * se.money_df), 1, exclude
         );*/
     //}
-    public Exchange getSe() {
-        return se;
+    public Market getSe() {
+        return defaultMarket;
     }
 
     /*public float gerPerformance(float lp) {
@@ -338,11 +338,11 @@ public class Account {
     }
     
     float getCash() {
-        return cash / se.money_df;
+        return cash / defaultMarket.money_df;
     }
     
     public float getEquity() {
-        return getEquity_Long() / se.money_df;
+        return getEquity_Long() / defaultMarket.money_df;
     }
 
     // Free Margin = Equity − MarginUsed
@@ -351,7 +351,7 @@ public class Account {
     }
     
     public float getFreeMargin() {
-        return getFreeMargin_Long() / se.money_df;
+        return getFreeMargin_Long() / defaultMarket.money_df;
     }
     
     Position createPosition() {
@@ -433,7 +433,7 @@ public class Account {
             }
 
             // p.stopPrice=(long)(stopPrice*se.money_df);
-            p.setStopPrice((long) (stopPrice * se.money_df));
+            p.setStopPrice((long) (stopPrice * defaultMarket.money_df));
           //  System.out.printf("StopPrice: %f\n", stopPrice);
 
             // Speichern des Ergebnisses

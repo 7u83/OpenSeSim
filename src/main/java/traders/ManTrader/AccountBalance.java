@@ -32,9 +32,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Formatter;
 import sesim.Account;
-import sesim.Exchange;
-import sesim.Exchange.AccountListener;
-import sesim.Exchange.QuoteReceiver;
+import sesim.Market;
+import sesim.Market.AccountListener;
+import sesim.Market.QuoteReceiver;
 import sesim.Quote;
 
 /**

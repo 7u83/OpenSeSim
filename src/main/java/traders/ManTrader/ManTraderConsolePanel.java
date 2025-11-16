@@ -36,8 +36,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import sesim.Account;
 
-import sesim.Exchange;
-import sesim.Exchange.QuoteReceiver;
+import sesim.Market;
+import sesim.Market.QuoteReceiver;
 import sesim.Order;
 import sesim.Quote;
 
@@ -49,7 +49,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
 
     public ManTrader trader;
     Account account;
-    Exchange se;
+    Market se;
 
     public OpenOrdersList getOrderListPanel() {
 
@@ -68,7 +68,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         //  this.ordersList1.account=trader.getAccount();
     }
 
-    public ManTraderConsolePanel(Exchange e, Account a) {
+    public ManTraderConsolePanel(Market e, Account a) {
         account = a;
         se = e;
         initComponents();

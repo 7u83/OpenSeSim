@@ -40,7 +40,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     //  protected float account_id;
     protected Account account_id;
-    protected Exchange se;
+    protected Market se;
     protected Sim sim;
     // protected AutoTraderConfig config;
 
@@ -105,7 +105,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     }
 
-    public Exchange getSE() {
+    public Market getSE() {
         return se;
     }
 

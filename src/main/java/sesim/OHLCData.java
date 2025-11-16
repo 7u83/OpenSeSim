@@ -38,7 +38,7 @@ public class OHLCData {
 
     private int barDuration = 60000;
  //   int max_size = 100;
-    Exchange se;
+    Market se;
 
     /*public OHLCData() {
 
@@ -50,13 +50,13 @@ public class OHLCData {
      * @param se
      * @param timeFrameLength Time frame stored in one OHLCDataItem
      */
-    public OHLCData(Exchange se, int timeFrameLength) {
+    public OHLCData(Market se, int timeFrameLength) {
         this.se=se;
         this.barDuration = timeFrameLength;
         //data = new OHLCData(se, timeFrameLength);
     }
     
-    public OHLCData(Exchange se, int barDuration, OHLCData base){
+    public OHLCData(Market se, int barDuration, OHLCData base){
         this(se,barDuration);
         
         for (OHLCDataItem i: base.data){

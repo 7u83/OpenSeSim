@@ -75,12 +75,12 @@ public class Order implements OrderBookEntry {
     public Account account;
     public Position position;
     long cost;
-    Exchange se;
+    Market se;
 
     // ID generator
     private static final AtomicLong ID_GEN = new AtomicLong(0);
 
-    Order(Exchange se, Account account, byte type, long volume, long limit, long stop) {
+    Order(Market se, Account account, byte type, long volume, long limit, long stop) {
         this.account = account;
         this.position = account.getPosition(se);
         this.se = se;
@@ -96,7 +96,7 @@ public class Order implements OrderBookEntry {
         this.leverage=1;
     }
 
-    Order(Exchange se, Account account, byte type, long volume, long limit, long stop, int leverage) {
+    Order(Market se, Account account, byte type, long volume, long limit, long stop, int leverage) {
         this.account = account;
         this.position = account.getPosition(se);
         this.se = se;
@@ -320,7 +320,7 @@ public class Order implements OrderBookEntry {
     }
 
     @Override
-    public Exchange getSe() {
+    public Market getSe() {
         return se;
     }
 

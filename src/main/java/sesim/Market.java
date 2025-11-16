@@ -17,7 +17,7 @@ import sesim.TradingLogWriter.TradingLogRecord;
  * @desc Echchange class
  * @author 7u83
  */
-public class Exchange implements Asset {
+public class Market implements Asset {
 
     //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
     public float money_df = 100;
@@ -97,7 +97,7 @@ public class Exchange implements Asset {
     }
 
     @Override
-    public Exchange getExchange() {
+    public Market getExchange() {
         return this;
     }
 
@@ -311,11 +311,11 @@ public class Exchange implements Asset {
 
         long limit;
         long volume;
-        Exchange se;
+        Market se;
 
         long stop;
 
-        public CompOrderBookEntry(Exchange se) {
+        public CompOrderBookEntry(Market se) {
             this.se = se;
         }
 
@@ -372,7 +372,7 @@ public class Exchange implements Asset {
         }
 
         @Override
-        public Exchange getSe() {
+        public Market getSe() {
             return se;
         }
     }
@@ -492,7 +492,7 @@ public class Exchange implements Asset {
             id = ID_GEN.incrementAndGet();
         }
 
-        public PriceEvent(Exchange se, double price) {
+        public PriceEvent(Market se, double price) {
             this();
             this.price = (long) (price * se.money_df);
         }
@@ -507,7 +507,7 @@ public class Exchange implements Asset {
     /**
      * Constructor
      */
-    public Exchange(Sim sim) {
+    public Market(Sim sim) {
 
         quoteReceiverList = (new CopyOnWriteArrayList<>());
         this.sim = sim;

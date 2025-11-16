@@ -31,7 +31,7 @@ package sesim;
  */
 public class Quote implements Comparable {
 
-    Exchange se;
+    Market se;
     long bid;
     long bid_volume;
     long ask;
@@ -54,7 +54,7 @@ public class Quote implements Comparable {
 
     }
 
-    public Quote(Exchange se) {
+    public Quote(Market se) {
         this.se = se;
     }
 

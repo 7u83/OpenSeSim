@@ -47,9 +47,9 @@ import org.json.JSONObject;
 import sesim.Account;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
-import sesim.Exchange;
-import sesim.Exchange.AccountListener;
-import sesim.Exchange.PriceEvent;
+import sesim.Market;
+import sesim.Market.AccountListener;
+import sesim.Market.PriceEvent;
 import sesim.Order;
 import sesim.Quote;
 import sesim.Scheduler;
@@ -267,7 +267,7 @@ public class GroovyTrader extends AutoTraderBase {
 
             final String groovyFun;
 
-            public GroovyPriceEvent(String fun, Exchange se, double price) {
+            public GroovyPriceEvent(String fun, Market se, double price) {
                 super(se,price);
                 this.eventProcessor = this;
                 this.groovyFun = fun;

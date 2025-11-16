@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.SwingUtilities;
-import sesim.Exchange.QuoteReceiver;
+import sesim.Market.QuoteReceiver;
 import sesim.OrderBookEntry;
 import sesim.Quote;
 

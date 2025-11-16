@@ -13,7 +13,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultFormatter;
 import sesim.Account;
-import sesim.Exchange;
+import sesim.Market;
 import sesim.Order;
 import sesim.Quote;
 
@@ -23,7 +23,7 @@ import sesim.Quote;
  */
 public class EditOrderPanel extends javax.swing.JPanel {
 
-    Exchange se;
+    Market se;
     Account account;
     byte type;
 
@@ -56,7 +56,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
     }
 
-    public EditOrderPanel(Exchange e, Account a, byte type) {
+    public EditOrderPanel(Market e, Account a, byte type) {
         this();
         se = e;
         account = a;
@@ -64,7 +64,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         //this.loadFields();
     }
 
-    public EditOrderPanel(Exchange e, Account a, Order o) {
+    public EditOrderPanel(Market e, Account a, Order o) {
         this();
         account = a;
         se = e;

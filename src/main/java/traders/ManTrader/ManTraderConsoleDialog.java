@@ -30,7 +30,7 @@ import gui.tools.UpdateExecutor;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import sesim.Account;
-import sesim.Exchange;
+import sesim.Market;
 
 /**
  *
@@ -38,7 +38,7 @@ import sesim.Exchange;
  */
 public class ManTraderConsoleDialog extends EscDialog {
 
-    Exchange se = null;
+    Market se = null;
     Account account = null;
     ManTrader mt;
 
@@ -51,7 +51,7 @@ public class ManTraderConsoleDialog extends EscDialog {
      * @param a
      */
     public ManTraderConsoleDialog(java.awt.Frame parent, boolean modal,
-            Exchange e, Account a, ManTrader mt) {
+            Market e, Account a, ManTrader mt) {
         super(parent, modal);
         se = e;
         account = a;
@@ -74,7 +74,7 @@ public class ManTraderConsoleDialog extends EscDialog {
         return null;
     }
 
-    void init(Exchange se, Account a) {
+    void init(Market se, Account a) {
 
     }
 
