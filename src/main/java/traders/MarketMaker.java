@@ -110,7 +110,7 @@ public class MarketMaker extends AutoTraderBase {
         float dist = (centerPrice - lowestPrice) / (numPositions + 1);
 
         // Allocate cash per order
-        float cashPerBuyOrder = account_id.getMoney() / (numPositions + 1);
+        float cashPerBuyOrder = account.getMoney() / (numPositions + 1);
 
         float price = lowestPrice + dist;
 
@@ -122,7 +122,7 @@ public class MarketMaker extends AutoTraderBase {
             orders[i].volume = se.roundShares(cashPerBuyOrder / price);
 
             // Create initial buy order
-            orders[i].o = se.createOrder(account_id, Order.BUYLIMIT,
+            orders[i].o = se.createOrder(account, Order.BUYLIMIT,
                     orders[i].volume, orders[i].buyLimit, 0f);
 
         }
@@ -144,14 +144,14 @@ public class MarketMaker extends AutoTraderBase {
             if (o.getStatus() == Order.CLOSED) {
                 if (o.getType() == Order.SELLLIMIT) {
                     // Create new buy order if previous was sell
-                    Order n = se.createOrder(account_id, Order.BUYLIMIT,
+                    Order n = se.createOrder(account, Order.BUYLIMIT,
                             orders[i].volume, orders[i].buyLimit, 0f);
                     if (n != null) {
                         orders[i].o = n;
                     }
                 } else {
                     // Create new sell order if previous was buy
-                    Order n = se.createOrder(account_id, Order.SELLLIMIT,
+                    Order n = se.createOrder(account, Order.SELLLIMIT,
                             orders[i].volume, orders[i].sellLimit, 0f);
                     if (n != null) {
                         orders[i].o = n;
@@ -189,7 +189,7 @@ public class MarketMaker extends AutoTraderBase {
         for (int i = 0; i < numPositions; i++) {
             if (orders[i].o==null)
                 continue;
-            se.cancelOrder(account_id, orders[i].o.getID());
+            se.cancelOrder(account, orders[i].o.getID());
         }
 
         this.initOrders(); // Reinitialize orders with new prices
@@ -205,14 +205,14 @@ public class MarketMaker extends AutoTraderBase {
      * @return 0 (not used)
      */
     @Override
-    public long processEvent(long time, Scheduler.Event e) {
+    public void processEvent(long time, Scheduler.Event e) {
         if (!readjustOrders()) {
             this.flipOrders();  // Flip orders if no readjustment
         }
 
         // Schedule the next timer event
         sim.addEvent(sim.getCurrentTimeMillis() + (long) (1000f * this.timerInterval), TIMEREVENT);
-        return 0;
+        
     }
 
     @Override

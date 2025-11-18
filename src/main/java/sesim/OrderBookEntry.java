@@ -43,7 +43,7 @@ package sesim;
         
         public long getStop_Long();
         
-        public Market getSe();
+        public Market getMarket();
         
 
         public String getOwnerName();

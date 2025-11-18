@@ -30,10 +30,8 @@ import gui.tools.PercentageCellRenderer;
 import gui.tools.PercentageValue;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Frame;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,10 +43,11 @@ import static javax.swing.SwingConstants.RIGHT;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import sesim.Account;
 
 import sesim.AutoTraderInterface;
-import sesim.Quote;
+
 
 /**
  *
@@ -58,10 +57,95 @@ public class TraderListPanel extends javax.swing.JPanel {
 
     DefaultTableModel model;
     Frame parentFrame = null;
+    TimerTask updater;
+  
+    // Definition of columns
+    public enum Column {
+        ID("ID", null, Long.class),
+        NAME("Name", new NameCellRenderer() , Object.class),
+        STATUS("Status", null, String.class),
+        SHARES("Shares", new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals()), Float.class),
+        MARGIN("Margin", new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals()), Float.class),
+        EQUITY("Equtiy", new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals()), Float.class),
+        FREEMARGIN("Free o Margin", new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals()), Float.class),
+        CASH("Cash", new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals()), Float.class),
+        PNL("PnL", new PercentageCellRenderer(), PercentageValue.class); // Letzte Spalte
+
+        public final String header;
+        public final TableCellRenderer renderer;
+        public final Class cls;
+
+        Column(String header, TableCellRenderer r, Class cls) {
+            this.header = header;
+            renderer = r;
+            this.cls = cls;
+        }
+
+    }
 
     public TraderListPanel(Frame parent) {
         this();
         parentFrame = parent;
+
+    }
+
+    /**
+     * Creates new form TraderListPanel2
+     */
+    public TraderListPanel() {
+
+        initComponents();
+        if (Globals.sim == null) {
+            return;
+        }
+
+        model = new MyModel(Column.values());
+        list.setModel(model);
+
+        for (Column a : Column.values()) {
+            list.getColumnModel().getColumn(a.ordinal()).setHeaderValue(a.header);
+            if (a.renderer != null) {
+                list.getColumnModel().getColumn(a.ordinal()).setCellRenderer(a.renderer);
+            }
+
+        }
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        list.getColumnModel().getColumn(Column.ID.ordinal()).setCellRenderer(centerRenderer);
+
+        String widestText = "-100.0%"; // Der breiteste mögliche Wert
+        FontMetrics fm = list.getFontMetrics(list.getFont()); // Font der Tabelle
+        int textWidth = fm.stringWidth(widestText);
+
+        int padding = 12; // ca. 6px links + 6px rechts (anpassen nach Look&Feel)
+        int preferredWidth = textWidth + padding;
+        int maxWidth = 100 * preferredWidth;
+        // set width for id
+        list.getColumnModel().getColumn(Column.PNL.ordinal()).setPreferredWidth(preferredWidth);
+        list.getColumnModel().getColumn(Column.PNL.ordinal()).setMinWidth(preferredWidth);
+        list.getColumnModel().getColumn(Column.PNL.ordinal()).setMaxWidth(maxWidth);
+
+        AtomicBoolean running = new AtomicBoolean(false);
+        Timer timer = new Timer();
+        updater = new TimerTask() {
+
+            @Override
+            public void run() {
+                if (running.get()) {
+                    return;
+                }
+                running.set(true);
+                try {
+                    updateModel();
+                } catch (Exception e) {
+                }
+                running.set(false);
+
+            }
+        };
+        timer.schedule(updater, 0, 1000);
+
     }
 
     final void updateModel() {
@@ -85,27 +169,28 @@ public class TraderListPanel extends javax.swing.JPanel {
         for (int i = 0; i < size; i++) {
             AutoTraderInterface at = Globals.sim.traders.get(i);
             Account a = at.getAccount();
-            model.setValueAt(i, i, 0);
 
-            //model.setValueAt(at.getName(), i, 1);
+            model.setValueAt(i, i, Column.ID.ordinal());
+
             int[] atc = at.getColor();
             Color c = null;
             if (atc != null) {
                 c = new Color(atc[0], atc[1], atc[2]);
             }
+            model.setValueAt(new NameValue(at.getName(), c), i, Column.NAME.ordinal());
 
-            model.setValueAt(new NameValue(at.getName(), c), i, 1);
+            model.setValueAt(at.getStatus(), i, Column.STATUS.ordinal());
+            model.setValueAt(a.getMoney(), i, Column.CASH.ordinal());
+            model.setValueAt(a.getShares(), i, Column.SHARES.ordinal());
 
-            model.setValueAt(at.getStatus(), i, 2);
-            model.setValueAt(a.getMoney(), i, 3);
-            model.setValueAt(a.getShares(), i, 4);
-
-            float wealth = a.getShares() * price + a.getMoney();
-            model.setValueAt(wealth, i, 5);
-
-            model.setValueAt(new PercentageValue(a.getPerformance(price)), i, 6);
+            //  float wealth = a.getShares() * price + a.getMoney();
+            model.setValueAt(a.getEquity(), i, Column.EQUITY.ordinal());
+                      model.setValueAt(a.getMarginUsed(), i, Column.MARGIN.ordinal());
+            model.setValueAt(a.getFreeMargin(), i, Column.FREEMARGIN.ordinal());
+            model.setValueAt(new PercentageValue(a.getPerformance(price)), i, Column.PNL.ordinal());
 
         }
+
         List l = list.getRowSorter().getSortKeys();
         if (!l.isEmpty()) {
             list.getRowSorter().allRowsChanged();
@@ -115,87 +200,36 @@ public class TraderListPanel extends javax.swing.JPanel {
 
     }
 
-    TimerTask updater;
+  
 
-    /**
-     * Creates new form TraderListPanel2
-     */
-    public TraderListPanel() {
+    public static class MyModel extends DefaultTableModel {
 
-        initComponents();
-        if (Globals.sim == null) {
-            return;
+        public MyModel(Object arg0[][], Object arg1[]) {
+            super(arg0, arg1);
         }
 
-        model = (DefaultTableModel) list.getModel();
-//       updateModel();
-        AtomicBoolean running = new AtomicBoolean(false);
-        Timer timer = new Timer();
-        updater = new TimerTask() {
+        Column[] def;
 
-            @Override
-            public void run() {
-                if (running.get()) {
-                    return;
-                }
-                running.set(true);
-                try {
-                    updateModel();
-                } catch (Exception e) {
-                }
-                running.set(false);
+        public MyModel(Column[] d) {
+            def = d;
 
-            }
-        };
+        }
 
-        list.getColumnModel().getColumn(3).setCellRenderer(
-                new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals())
-        );    // Cash
-        list.getColumnModel().getColumn(4).setCellRenderer(
-                new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals())
-        );    // Shares
-        list.getColumnModel().getColumn(5).setCellRenderer(
-                new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals())
-        );    // Total
+        @Override
+        public int getColumnCount() {
+            return def.length;
+        }
 
-        list.getColumnModel().getColumn(6).setCellRenderer(
-                new PercentageCellRenderer()
-        );
+        @Override
+        public Class getColumnClass(int columnIndex) {
+            return def[columnIndex].cls;
+        }
         
-                list.getColumnModel().getColumn(1).setCellRenderer(
-                new NameCellRenderer()
-        );
+        
 
-
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        list.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-
-        // set width for id
-        list.getColumnModel().getColumn(0).setPreferredWidth(50);
-        list.getColumnModel().getColumn(0).setMinWidth(30);
-        list.getColumnModel().getColumn(0).setMaxWidth(70);
-
-        // --- Berechne Breite für "-100.0%" ---
-        String widestText = "-100.0%"; // Der breiteste mögliche Wert
-        FontMetrics fm = list.getFontMetrics(list.getFont()); // Font der Tabelle
-        int textWidth = fm.stringWidth(widestText);
-
-        int padding = 12; // ca. 6px links + 6px rechts (anpassen nach Look&Feel)
-        int preferredWidth = textWidth + padding;
-        int maxWidth = 100 * preferredWidth;
-        // set width for id
-        list.getColumnModel().getColumn(6).setPreferredWidth(preferredWidth);
-        list.getColumnModel().getColumn(6).setMinWidth(preferredWidth);
-        list.getColumnModel().getColumn(6).setMaxWidth(maxWidth);
-        timer.schedule(updater, 0, 1000);
-
-    }
-
-    class MyModel extends DefaultTableModel {
-
-        MyModel(Object arg0[][], Object arg1[]) {
-            super(arg0, arg1);
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
         }
 
         @Override
@@ -218,8 +252,6 @@ public class TraderListPanel extends javax.swing.JPanel {
         }
 
     }
-
-
 
     public class NameValue implements Comparable<NameValue> {
 
@@ -251,7 +283,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         }
     }
 
-    public class NameCellRenderer extends DefaultTableCellRenderer {
+    public static class NameCellRenderer extends DefaultTableCellRenderer {
 
         public NameCellRenderer() {
             //setHorizontalAlignment(RIGHT);
@@ -271,8 +303,7 @@ public class TraderListPanel extends javax.swing.JPanel {
                 Color color = n.getColor();
                 if (color != null) {
                     this.setBackground(n.getColor());
-                }
-                else{
+                } else {
                     setBackground(table.getBackground());
                 }
                 /*                Font defaultFont = table.getFont();
@@ -288,53 +319,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         }
     }
 
-    public class PerfCellRenderer_old extends DefaultTableCellRenderer {
-
-        /**
-         *
-         * @param formatter
-         */
-        public PerfCellRenderer_old() {
-            this.setHorizontalAlignment(RIGHT);
-
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(
-                JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column) {
-
-            /*            if (!(value instanceof Float)) {
-                return super.getTableCellRendererComponent(
-                        table, value, isSelected, hasFocus, row, column);
-            }*/
-            int modelRow = table.convertRowIndexToModel(row);
-
-            Account a = Globals.sim.traders.get(modelRow).getAccount();
-            float price = Globals.sim.getExchange().getLastPrice();
-            float perf = a.getPerformance(price);
-            String performance = String.format("%.1f", perf);
-
-            // Format the cell value as required
-            value = performance + "%"; //Globals.sim.traders.get(modelRow).getName(); 
-            //"Hallo"; //formatter.format((Number) value);
-
-            // And pass it on to parent class
-            super.getTableCellRendererComponent(
-                    table, value, isSelected, hasFocus, row, column);
-            if (!isSelected) { // Nur wenn nicht selektiert, eigene Farben setzen
-                if (perf > 0) {
-                    setForeground(new Color(0, 100, 0)); // Dunkelgrün für bessere Lesbarkeit
-                } else if (perf < 0) {
-                    setForeground(Color.RED);
-                } else {
-                    setForeground(table.getForeground()); // Standardfarbe bei 0
-                }
-            }
-            return this;
-        }
-    }
-
+   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -348,21 +333,19 @@ public class TraderListPanel extends javax.swing.JPanel {
         list = new javax.swing.JTable();
 
         list.setAutoCreateRowSorter(true);
-        list.setModel(new MyModel(
+        list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+
             },
             new String [] {
-                "ID", "Name","Status", "Cash", "Shares", "Total","Perf."
+                "ID", "Name", "Status", "Shares", "Cash", "Free Margin", "Total", "PnL%"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class,
-                NameValue.class,
-                java.lang.String.class,
-                java.lang.Double.class,
-                java.lang.Double.class,
-                java.lang.Double.class,
-                java.lang.Double.class
+                java.lang.Long.class, java.lang.Object.class, java.lang.String.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -370,7 +353,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return false;
+                return canEdit [columnIndex];
             }
         });
         list.setDoubleBuffered(true);
@@ -380,16 +363,22 @@ public class TraderListPanel extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(list);
+        if (list.getColumnModel().getColumnCount() > 0) {
+            list.getColumnModel().getColumn(0).setPreferredWidth(20);
+            list.getColumnModel().getColumn(0).setMaxWidth(70);
+            list.getColumnModel().getColumn(7).setPreferredWidth(50);
+            list.getColumnModel().getColumn(7).setMaxWidth(80);
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

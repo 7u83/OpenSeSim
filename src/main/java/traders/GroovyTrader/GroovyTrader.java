@@ -162,11 +162,11 @@ public class GroovyTrader extends AutoTraderBase {
     public class AccountApi {
 
         public float getCashBalance() {
-            return account_id.getMoney();
+            return account.getMoney();
         }
 
         public float getShares() {
-            return account_id.getShares();
+            return account.getShares();
         }
 
     }
@@ -180,7 +180,7 @@ public class GroovyTrader extends AutoTraderBase {
         public final byte STOPLOSS = Order.STOPLOSS;
 
         SeSimApi() {
-            account_id.setListener(this);
+            account.setListener(this);
         }
 
         private class GroovyTimerEvent extends Event implements EventProcessor {
@@ -194,7 +194,7 @@ public class GroovyTrader extends AutoTraderBase {
             }
 
             @Override
-            public long processEvent(long time, Event e) {
+            public void processEvent(long time, Event e) {
                 try {
                     Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
 
@@ -202,7 +202,7 @@ public class GroovyTrader extends AutoTraderBase {
                     String extra = String.format("[scheduleOnce(%s)]",groovyFun);
                     logGroovyError(extra,ex);
                 }
-                return 0;
+              
             }
 
         }
@@ -210,7 +210,7 @@ public class GroovyTrader extends AutoTraderBase {
         public Order createOrder(byte type, double vol, double limit, double stop) {
             limit = se.roundMoney(limit);
             vol = se.roundShares(vol);
-            return se.createOrder(account_id, type, (float) vol, (float) limit, (float) stop);
+            return se.createOrder(account, type, (float) vol, (float) limit, (float) stop);
         }
 
         public void logError(String msg, Object... args) {
@@ -228,7 +228,7 @@ public class GroovyTrader extends AutoTraderBase {
             if (o == null) {
                 return false;
             }
-            return se.cancelOrder(account_id, o.getID());
+            return se.cancelOrder(account, o.getID());
         }
 
         public Quote getLastQuote() {
@@ -274,13 +274,13 @@ public class GroovyTrader extends AutoTraderBase {
             }
 
             @Override
-            public long processEvent(long time, Event e) {
+            public void processEvent(long time, Event e) {
                 try {
                     Object result = groovyScript.invokeMethod(this.groovyFun, new Object[]{});
                 } catch (Exception ex) {
                     logGroovyError("[price Event]",ex);
                 }
-                return 0;
+              
             }
 
         }
@@ -358,8 +358,8 @@ public class GroovyTrader extends AutoTraderBase {
     }
 
     @Override
-    public long processEvent(long time, Scheduler.Event e) {
-        return 0;
+    public void processEvent(long time, Scheduler.Event e) {
+        
     }
 
     final String getSourceCode() {

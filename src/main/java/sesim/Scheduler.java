@@ -118,8 +118,8 @@ public class Scheduler extends Thread {
      */
     public interface EventProcessor {
 
-        long processEvent(long time, Event e);
-        //       long getID();
+        void processEvent(long time, Event e);
+        
     }
 
     /**
@@ -341,10 +341,9 @@ public class Scheduler extends Thread {
     class EmptyCtr implements EventProcessor {
 
         @Override
-        public long processEvent(long t, Event e) {
+        public void processEvent(long t, Event e) {
             //    System.out.printf("EventProcessor 1000\n");
             addEvent(1000 + getCurrentTimeMillis(), e);
-            return 0;
         }
 
 //        @Override

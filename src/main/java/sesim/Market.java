@@ -1,3 +1,29 @@
+/*
+ * Copyright (c) 2025, 7u83 <7u83@mail.ru>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package sesim;
 
 import java.io.FileNotFoundException;
@@ -14,7 +40,7 @@ import sesim.Scheduler.Event;
 import sesim.TradingLogWriter.TradingLogRecord;
 
 /**
- * @desc Echchange class
+ * @desc Market class
  * @author 7u83
  */
 public class Market implements Asset {
@@ -97,7 +123,7 @@ public class Market implements Asset {
     }
 
     @Override
-    public Market getExchange() {
+    public Market getMarket() {
         return this;
     }
 
@@ -238,16 +264,32 @@ public class Market implements Asset {
         LiquidationComparator(boolean type) {
             isLong = type;
         }
+        
+        
+         @Override
+    public int compare(Position a, Position b) {
+        // Korrekte, overflow-sichere Reihenfolge
+        int priceCmp = isLong
+            ? Long.compare(a.getStopPrice_Long(), b.getStopPrice_Long())
+            : Long.compare(b.getStopPrice_Long(), a.getStopPrice_Long());
 
+        if (priceCmp != 0) {
+            return priceCmp;
+        }
+
+        // Stabile Sortierung: ID als Tie-Breaker
+        return Long.compare(a.id, b.id);
+    }
+/*
         @Override
         public int compare(Position left, Position right) {
 
             long d;
 
             if (isLong) {
-                d = left.stopPrice - right.stopPrice;
+                d = left.getStopPrice_Long() - right.getStopPrice_Long();
             } else {
-                d = right.stopPrice - left.stopPrice;
+                d = right.getStopPrice_Long() - left.getStopPrice_Long();
             }
 
             if (d != 0) {
@@ -264,7 +306,8 @@ public class Market implements Asset {
             return 0;
 
         }
-
+*/
+    
     }
 
     class StopComparator implements Comparator<Order> {
@@ -320,13 +363,13 @@ public class Market implements Asset {
         }
 
         public CompOrderBookEntry(Order oe) {
-            this.se = oe.se;
+            this.se = oe.market;
             this.volume = oe.volume;
             this.limit = oe.limit;
         }
 
         public CompOrderBookEntry(OrderBookEntry oe) {
-            this.se = oe.getSe();
+            this.se = oe.getMarket();
             this.volume = oe.getVolume_Long();
             this.limit = oe.getLimit_Long();
         }
@@ -372,7 +415,7 @@ public class Market implements Asset {
         }
 
         @Override
-        public Market getSe() {
+        public Market getMarket() {
             return se;
         }
     }
@@ -433,7 +476,7 @@ public class Market implements Asset {
         stopBuyBook = new ConcurrentSkipListSet(new StopComparator(false));
 
         liquidationsLong = new TreeSet(new LiquidationComparator(true));
-        liquidationsShort = new TreeSet(new LiquidationComparator(false));
+        liquidationsShort = new TreeSet(new LiquidationComparator(true));
 
         priceEventsAbove = new TreeSet();
         priceEventsBelow = new TreeSet();
@@ -1189,22 +1232,19 @@ public class Market implements Asset {
     }
 
     void setLiquidationStop(Position p) {
-//System.out.printf("SETLSTOP", p.stopPrice);
         if (p.isShort()) {
             this.liquidationsShort.add(p);
-         //   System.out.printf("AD SHORT\n");
         } else {
-           // System.out.printf("AD LONG\n");
             this.liquidationsLong.add(p);
         }
     }
 
     void removeLiquidationStop(Position p) {
-        if (p.isShort()) {
+        //if (p.isShort()) {
             this.liquidationsShort.remove(p);
-        } else {
+        //} else {
             this.liquidationsLong.remove(p);
-        }
+        //}
     }
 
     long numTrades = 0;
@@ -1350,8 +1390,16 @@ public class Market implements Asset {
                 Order buyer = ul_buy.first();
                 long price = seller.limit;
 
+                if(buyer.account.getOwner().getName().equals("Margin Bob-58")){
+                    System.out.printf("Marginbob58\n");
+                }
+                
                 long bvol = buyer.position.getTradableShares_Long(buyer.volume, price, buyer.leverage);
-                if (bvol == 0) {
+               if (bvol < 0){
+                   System.out.printf("BVKN\n");
+               }
+                
+                if (bvol <= 0) {
                     buyer.status = Order.CLOSED;
                     removeOrderIfExecuted(buyer);
                     continue;
@@ -1470,14 +1518,24 @@ public class Market implements Asset {
 
         while (!longStops.isEmpty()) {
     
-            Position p = longStops.first();
+            Position p = longStops.last();
                          // System.out.printf("LONG FIRST %d\n",p.stopPrice);
-            if (price >= p.stopPrice) {
+            if (price >= p.getStopPrice_Long()) {
                 break;
             }
-            longStops.remove(p);
+            
+            if (p.account.getOwner().getName().equals("Margin Bob-0")){
+                System.out.printf("BOB-0 long");
+            }
+            
+            boolean result = longStops.remove(p);
+            System.out.printf("Remove res: %b, p.od: %d, .stop: %d, size: %d\n",result,p.id,p.getStopPrice_Long(),longStops.size());
+                    
+            
+            
+            p.account.isLiquided=true;
         //    System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.stopPrice);
-            this.createOrder_Long(p.account, Order.SELL, Math.abs(p.shares), 0, 0, 1);
+            this.createOrderNoExec_Long(p.account, Order.SELL, Math.abs(p.shares), 0, 0, 1);
             
         }
 
@@ -1485,12 +1543,17 @@ public class Market implements Asset {
             
             Position p = shortStops.first();
         //    System.out.printf("SHORT FIRST %d\n",p.stopPrice);
-            if (price <= p.stopPrice) {
+            if (price <= p.getStopPrice_Long()) {
                 break;
             }
+            if (p.account.getOwner().getName().equals("Margin Bob-0")){
+                System.out.printf("BOB-0 shortstop");
+            }
+            
             shortStops.remove(p);
            // System.out.printf("SHORT STOP REACHED %d\n",price);
-            this.createOrder_Long(p.account, Order.BUY, Math.abs(p.shares), 0, 0, 1);
+           p.account.isLiquided=true;
+            this.createOrderNoExec_Long(p.account, Order.BUY, Math.abs(p.shares), 0, 0, 1);
         }
     }
 

@@ -94,7 +94,7 @@ public class ManTrader extends AutoTraderBase
     @Override
     public void start() {
 
-        account_id.setListener(this);
+        account.setListener(this);
         se.addQuoteReceiver(this);
         //se.timer.createEvent(this, 0);
         //   consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, account_id);
@@ -106,11 +106,11 @@ public class ManTrader extends AutoTraderBase
     }
 
     @Override
-    public long processEvent(long t, Event e) {
+    public void processEvent(long t, Event e) {
 
 //        OpenOrdersList ol = this.consoleDialog.getConsole().getOrderListPanel();
 //        ol.updateModel();
-        return 1000;
+       
     }
 
     @Override
@@ -149,14 +149,14 @@ public class ManTrader extends AutoTraderBase
             return consoleDialog;
         }
 
-        consoleDialog = new ManTraderConsoleDialog(parent, false, se, account_id, this);
+        consoleDialog = new ManTraderConsoleDialog(parent, false, se, account, this);
 
-        consoleDialog.init(se, account_id);
-        consoleDialog.doUpdate(account_id, this);
+        consoleDialog.init(se, account);
+        consoleDialog.doUpdate(account, this);
         consoleDialog.setLocationRelativeTo(parent);
         consoleDialog.pack(); //
         consoleDialog.setMinimumSize(consoleDialog.getSize());
-        consoleDialog.setTitle(account_id.getOwner().getName() + " - Trading Console");
+        consoleDialog.setTitle(account.getOwner().getName() + " - Trading Console");
         return this.consoleDialog;
     }
 
@@ -322,7 +322,7 @@ public class ManTrader extends AutoTraderBase
         if (consoleDialog == null) {
             return;
         }
-        consoleDialog.doUpdate(account_id, this);
+        consoleDialog.doUpdate(account, this);
 
     }
 

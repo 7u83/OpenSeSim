@@ -75,7 +75,7 @@ public class Order implements OrderBookEntry {
     public Account account;
     public Position position;
     long cost;
-    Market se;
+    Market market;
 
     // ID generator
     private static final AtomicLong ID_GEN = new AtomicLong(0);
@@ -83,7 +83,7 @@ public class Order implements OrderBookEntry {
     Order(Market se, Account account, byte type, long volume, long limit, long stop) {
         this.account = account;
         this.position = account.getPosition(se);
-        this.se = se;
+        this.market = se;
         id = ID_GEN.getAndIncrement();
         this.type = type;
         this.limit = limit;
@@ -99,7 +99,7 @@ public class Order implements OrderBookEntry {
     Order(Market se, Account account, byte type, long volume, long limit, long stop, int leverage) {
         this.account = account;
         this.position = account.getPosition(se);
-        this.se = se;
+        this.market = se;
         id = ID_GEN.getAndIncrement();
         this.type = type;
         this.limit = limit; //se.roundMoney(limit);
@@ -130,7 +130,7 @@ public class Order implements OrderBookEntry {
     }*/
 
     Order(Order o) {
-        this.se = o.se;
+        this.market = o.market;
         this.account = o.account;
         id = o.id;
         type = o.type;
@@ -205,15 +205,15 @@ public class Order implements OrderBookEntry {
     }
 
     public float getExecuted() {
-        return getExecuted_Long() / se.shares_df;
+        return getExecuted_Long() / market.shares_df;
     }
 
     public float getInitialVolume() {
-        return initial_volume / se.shares_df;
+        return initial_volume / market.shares_df;
     }
 
     public float getCost() {
-        return cost / se.money_df;
+        return cost / market.money_df;
     }
 
     public static boolean isSell(byte type) {
@@ -241,7 +241,7 @@ public class Order implements OrderBookEntry {
     }
 
     public float getAveragePrice() {
-        return getAveragePrice_Long() / se.money_df;
+        return getAveragePrice_Long() / market.money_df;
     }
 
     public byte getStatus() {
@@ -278,12 +278,12 @@ public class Order implements OrderBookEntry {
 
     @Override
     public float getVolume() {
-        return volume / se.shares_df;
+        return volume / market.shares_df;
     }
 
     @Override
     public float getLimit() {
-        return limit / se.money_df;
+        return limit / market.money_df;
     }
 
     @Override
@@ -306,7 +306,7 @@ public class Order implements OrderBookEntry {
 
     @Override
     public float getStop() {
-        return stop / se.money_df;
+        return stop / market.money_df;
     }
 
     @Override
@@ -320,8 +320,8 @@ public class Order implements OrderBookEntry {
     }
 
     @Override
-    public Market getSe() {
-        return se;
+    public Market getMarket() {
+        return market;
     }
 
  

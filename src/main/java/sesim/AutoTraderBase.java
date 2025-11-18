@@ -38,16 +38,15 @@ import sesim.Scheduler.EventProcessor;
  */
 public abstract class AutoTraderBase implements AutoTraderInterface, EventProcessor {
 
-    //  protected float account_id;
-    protected Account account_id;
+    protected Account account;
     protected Market se;
     protected Sim sim;
     // protected AutoTraderConfig config;
 
     protected String name;
-    private String strategyName="default";
-    
-    int[] color=null;
+    private String strategyName = "default";
+
+    int[] color = null;
 
     /*    public AutoTraderBase(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
         account_id = se.createAccount(money, shares);
@@ -61,6 +60,11 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     }
      */
+    @Override
+    public AutoTraderGui getGui() {
+        return null;
+    }
+
     public AutoTraderBase() {
         se = null;
         id = 0;
@@ -74,8 +78,8 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     public String getName() {
         return name;
     }
-    
-    public int[]  getColor(){
+
+    public int[] getColor() {
         return color;
     }
 
@@ -87,21 +91,21 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     @Override
     public Account getAccount() {
-        return account_id;
+        return account;
     }
 
     @Override
     public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
-        this.account_id = new Account(sim.getExchange(), money, shares); // se.createAccount(money, shares);
+        this.account = new Account(sim.getExchange(), money, shares); // se.createAccount(money, shares);
         //       se.getAccount(account_id).owner = this;
 
         this.sim = sim;
         this.se = sim.getExchange();
-        this.account_id.owner = this;
+        this.account.owner = this;
         this.se = se;
         this.name = name;
         this.id = id;
-        this.strategyName=strat;
+        this.strategyName = strat;
 
     }
 
@@ -129,30 +133,123 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     public JDialog getGuiConsole(Frame parent) {
         return null;
     }
-    
-    
 
-    public String getStrategyName(){
+    public String getStrategyName() {
         return strategyName;
     }
-    
-    public void setStrategyName(String s){
-        strategyName=s;
+
+    public void setStrategyName(String s) {
+        strategyName = s;
     }
-    
+
     @Override
-    public void reset(){
-        
+    public void reset() {
+
     }
-    
+
     @Override
-    public void stop(){
-        
+    public void stop() {
+
     }
-    
+
     @Override
-    public Object initGlobal(Sim sim , Object global, JSONObject cfg){
+    public Object initGlobal(Sim sim, Object global, JSONObject cfg) {
         return null;
     }
-    
+
+    @Override
+    public boolean getDevelStatus() {
+        return true;
+    }
+
+    /**
+     * Generates a random price delta (change) based on the given last price and
+     * deviation parameters.
+     * <p>
+     * The returned value can be added to the current price to obtain a new
+     * price within the specified minimum and maximum deviation range. The
+     * deviations are relative to the last price, expressed in ‰ (per mille). An
+     * absolute minimum deviation ensures that rounding or small percentages do
+     * not produce a zero delta.
+     * </p>
+     *
+     * @param lastPrice the current price (in smallest currency unit, e.g.,
+     * cents)
+     * @param minDeviation the minimum relative deviation (per mille, can be
+     * negative)
+     * @param maxDeviation the maximum relative deviation (per mille)
+     * @param minAbsoluteDeviation the minimum absolute deviation to enforce (in
+     * the same units as lastPrice)
+     * @return a randomly generated delta that can be added to lastPrice to get
+     * a new price
+     */
+    static public long getRandomPriceDelta_Long(long lastPrice,
+            long minDeviation, long maxDeviation, long minAbsoluteDeviation) {
+
+        // Calculate minimum and maximum delta based on relative deviations 
+        // (per mille)
+        long minDelta = (lastPrice * minDeviation) / 1000;
+        long maxDelta = (lastPrice * maxDeviation) / 1000;
+
+        // Ensure minimum delta is at least the absolute minimum
+        if (Math.abs(minDelta) < minAbsoluteDeviation && minDeviation != 0) {
+            minDelta = (minDeviation < 0) ? -minAbsoluteDeviation : minAbsoluteDeviation;
+        }
+        if (Math.abs(maxDelta) < minAbsoluteDeviation && maxDeviation != 0) {
+            maxDelta = (maxDeviation < 0) ? -minAbsoluteDeviation : minAbsoluteDeviation;
+        }
+
+        // Prevent negative price
+        if (minDelta + lastPrice < 0) {
+            minDelta = -lastPrice;
+        }
+
+        // Calculate range of possible deltas
+        long range = maxDelta - minDelta + 1;
+
+        // Generate random delta within the range
+        long delta = Sim.random.nextLong(range) + minDelta;
+
+        return delta;
+
+    }
+
+    /**
+     * Generates a new random price based on the given last price and deviation
+     * parameters.
+     * <p>
+     * This function internally computes a random price delta using
+     * {@link #getRandomPriceDelta_Long(long, long, long, long)} and adds it to
+     * the last price. The resulting price is guaranteed to be at least 1
+     * (cannot go below 1 unit).
+     * </p>
+     *
+     * @param lastPrice the current price (in smallest currency unit, e.g.,
+     * cents)
+     * @param minDeviation the minimum relative deviation (per mille, can be
+     * negative)
+     * @param maxDeviation the maximum relative deviation (per mille)
+     * @param minAbsDeviation the minimum absolute deviation to enforce (in the
+     * same units as lastPrice)
+     * @return a new price obtained by adding a random delta to lastPrice, never
+     * less than 1
+     */
+    public static long getRandomPrice_Long(long lastPrice,
+            long minDeviation, long maxDeviation, long minAbsDeviation) {
+        
+        // Compute random delta for the last price
+        long delta = getRandomPriceDelta_Long(lastPrice,
+                minDeviation, maxDeviation, minAbsDeviation);
+ 
+        // Apply delta to last price
+        long newPrice = lastPrice + delta;
+
+        // Ensure new price is at least 1
+        if (newPrice < 1) {
+            newPrice = 1;
+        }
+
+        return newPrice;
+    }
+
 }

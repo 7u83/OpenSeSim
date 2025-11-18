@@ -23,53 +23,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders;
+package sesim;
 
-import org.json.JSONObject;
-import sesim.AutoTraderBase;
-import sesim.AutoTraderGui;
-import sesim.Scheduler;
+import java.util.HashMap;
 
 /**
  *
  * @author tube
  */
-public class MoodyRandomTraderL extends AutoTraderBase {
-
-    @Override
-    public void start() {
-        
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean getDevelStatus() {
-        return true;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "MoodyRandomL";
-    }
-
-    @Override
-    public AutoTraderGui getGui() {
-        return null;
-    }
-
-    @Override
-    public JSONObject getConfig() {
-        return new JSONObject();
-    }
-
-    @Override
-    public void setConfig(JSONObject cfg) {
-        
-    }
-
-    @Override
-    public void processEvent(long time, Scheduler.Event e) {
-        
+public class Exchange {
+    
+    private HashMap<String,Market> markets = new HashMap<>();
+    
+    
+    
+    public Market getMarket(String symbol){
+        return markets.get(symbol);
     }
     
+    Asset getCurrencyAsset(){
+        return null;
+    }
 }

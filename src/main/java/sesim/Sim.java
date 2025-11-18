@@ -86,10 +86,10 @@ public class Sim {
         private final String symbol;
         private final Market se;
 
-        TempAsset(String sym,Market se) {
+        TempAsset(String sym, Market se) {
             symbol = sym;
-            this.se=se;
-            
+            this.se = se;
+
         }
 
         @Override
@@ -98,7 +98,7 @@ public class Sim {
         }
 
         @Override
-        public Market getExchange() {
+        public Market getMarket() {
             return se;
         }
 
@@ -114,7 +114,7 @@ public class Sim {
     public Asset getAsset(String symbol) {
         Asset a = assets.get(symbol);
         if (a == null) {
-            a = new TempAsset(symbol,se);
+            a = new TempAsset(symbol, se);
             assets.put(symbol, a);
         }
         return a;
@@ -329,8 +329,8 @@ public class Sim {
         } else {
             initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE, 100.0f));
         }
-        
-                Logger.info("Initial prices is: %f", initialPrice);
+
+        Logger.info("Initial prices is: %f", initialPrice);
         this.se.setFairValue((float) initialPrice);
 
         se.initLastQuote();
@@ -415,8 +415,6 @@ public class Sim {
             }
 
         }
-
-
 
         //  Globals.sim.se.fairValue = 1.0;
         //System.out.printf("Failr Value is %f\n", se.fairValue);

@@ -75,10 +75,10 @@ public class RandomTraderB extends AutoTraderBase {
     }
 
     @Override
-    public long processEvent(long time, Event e) {
+    public void processEvent(long time, Event e) {
   //      sesim.Account account = account_id;
         long rc = this.doTrade();
-        return rc;
+      //  return rc;
 
     }
 
@@ -157,9 +157,9 @@ public class RandomTraderB extends AutoTraderBase {
     }
 
     public long cancelOrders() {
-        int n = account_id.getNumberOfOpenOrders(); //.getNumberOfOpenOrders(account_id);
+        int n = account.getNumberOfOpenOrders(); //.getNumberOfOpenOrders(account_id);
         if (n > 0) {
-            sesim.Account ad = account_id;
+            sesim.Account ad = account;
             
 
             Set <Long>keys = ad.getOrders().keySet();
@@ -167,7 +167,7 @@ public class RandomTraderB extends AutoTraderBase {
            Iterator<Long> it = keys.iterator();
            while (it.hasNext()) {
       //          Order od = it.next();
-                boolean rc = se.cancelOrder(account_id, it.next());
+                boolean rc = se.cancelOrder(account, it.next());
            }
         }
         return n;
@@ -264,7 +264,7 @@ public class RandomTraderB extends AutoTraderBase {
 
 //        AccountData ad = this.se.getAccountData(account_id);
 
-        sesim.Account account = account_id;
+        sesim.Account account = this.account;
 
         byte type = Order.BUYLIMIT;
 
@@ -304,7 +304,7 @@ public class RandomTraderB extends AutoTraderBase {
         //   RandomTraderConfig myoldconfig = (RandomTraderConfig) this.oldconfig;
         //AccountData ad = this.se.getAccountData(account_id);
         
-        Account account = account_id;
+        Account account = this.account;
 
        byte type = Order.SELLLIMIT;
 

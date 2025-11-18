@@ -54,7 +54,7 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
         if (a == null) {
             return;
         }
-        a.getSe().addQuoteReceiver(this);
+        a.getDefaultMarket().addQuoteReceiver(this);
     }
     
     public AccountBalance(){
@@ -62,16 +62,16 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
     }
 
     public void updateBalance(Account account) {
-        DecimalFormat mf = account.getSe().getMoneyFormatter();
+        DecimalFormat mf = account.getDefaultMarket().getMoneyFormatter();
         //String s = mf.format(account.getMoney());
         cashLabel.setText(mf.format(account.getMoney()));
-        DecimalFormat sf = account.getSe().getSharesFormatter();
+        DecimalFormat sf = account.getDefaultMarket().getSharesFormatter();
         this.marginUsed.setText(mf.format(account.getMarginUsed()));
 
         this.freeMargin.setText(mf.format(account.getFreeMargin()));
         this.equity.setText(mf.format(account.getEquity()));
 
-        float lp = account.getSe().getLastPrice();
+        float lp = account.getDefaultMarket().getLastPrice();
         float total = lp * account.getShares() + account.getMoney();
         float iniTotal = lp * account.getInitialShares() + account.getInitialMoney();
 

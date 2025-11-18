@@ -43,6 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Account {
     
     private final Market defaultMarket;
+    private final Asset currency=null;
     
     private Market.AccountListener listener = null;
     
@@ -50,6 +51,7 @@ public class Account {
 
     long initial_shares;
     long initial_money;
+    long initial_equity;
     
     protected AutoTraderInterface owner;
     
@@ -76,7 +78,7 @@ public class Account {
         //     defaultPosition = new Position(se,1);
         //   defaultPosition.shares = (long) (shares * se.shares_df);
         getPosition(se).shares = (long) (shares * se.shares_df);
-        
+        initial_equity=this.getEquity_Long();
     }
     
     public Map<Asset, Position> getPositions() {
@@ -149,16 +151,16 @@ public class Account {
     
     public long getCashInOpenOrders_Long(long exclude) {
         Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
-        long cash = 0;
+        long orderCash = 0;
         
         while (it.hasNext()) {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
             if (o.isBuy() && o.hasLimit() && o.id != exclude) {
-                cash += (o.getInitialVolume() - o.getExecuted_Long()) * o.getLimit_Long();
+                orderCash += (o.getInitialVolume() - o.getExecuted_Long()) * o.getLimit_Long();
             }
         }
-        return cash;
+        return orderCash;
         
     }
     
@@ -299,7 +301,7 @@ public class Account {
                 (long) (limit * se.money_df), 1, exclude
         );*/
     //}
-    public Market getSe() {
+    public Market getDefaultMarket() {
         return defaultMarket;
     }
 
@@ -315,13 +317,13 @@ public class Account {
      * @param lastPrice last price
      * @return the total value
      */
-    public float getTotal(float lastPrice) {
+ /*   public float getTotal(float lastPrice) {
         return lastPrice * getShares() + getMoney();
-    }
+    }*/
     
     public float getPerformance(float lastPrice) {
         
-        float total = lastPrice * getShares() + getMoney();
+        float total = getEquity();
         float iniTotal = lastPrice * getInitialShares() + getInitialMoney();
         
         return total / (iniTotal / 100) - 100;
@@ -329,7 +331,7 @@ public class Account {
     }
 
     // Equity = Cash + unrealized PnL aller Positionen
-    public long getEquity_Long() {
+    public final long getEquity_Long() {
         long equity = cash;
         for (Position pos : positions.values()) {
             equity += pos.getEquityValue_Long();
@@ -360,15 +362,15 @@ public class Account {
         return null;
     }
     
-    final Position getPosition(Asset se) {
+    public final Position getPosition(Asset asset) {
         // String s = "AAPL";
-        Position p = this.positions.get(se);
+        Position p = this.positions.get(asset);
         if (p != null) {
             return p;
         }
-        p = new Position(se, this);
+        p = new Position(asset, this);
         
-        positions.put(se, p);
+        positions.put(asset, p);
         return p;
 
         /*
@@ -381,12 +383,19 @@ public class Account {
         return k;*/
     }
     
-    void calculateLiquidationStops() {
+    boolean isLiquided=false;
+    public boolean isLiquidated(){
+        return this.isLiquided;
+    }
+    
+    void calculateLiquidationStops(long lastPrice) {
+        if (isLiquided)
+            return;
         long currentEquity = getEquity_Long();
         long totalUsedMargin = getMarginUsed_Long();
 
         // Critical Equity = Total Used Margin (Margin Level 100%)
-        long criticalEquity = 0; //totalUsedMargin;
+        long criticalEquity = 0000; //totalUsedMargin;
 
         // L_max ist die Free Margin (der Puffer in Cents)long criticalEquity = 0;
         
@@ -396,24 +405,28 @@ public class Account {
             //   System.out.println("WARNUNG: Margin Call ist bereits ausgelöst oder der Puffer ist aufgebraucht. Puffer: " + (lMax_additional / CENTS_PER_EURO) + " €");
             return;
         }
+        
+      /*  double lp = this.defaultMarket.getLastPrice();
+        System.out.printf("Last Price for LS Calculation %f\n",lp);*/
+        
         double totalAbsoluteVolumeSum = 0.0;
         for (Position p : positions.values()) {
             // Absolute Volumen (P_aktuell * Shares) zur korrekten Gewichtung des Risikos
-            totalAbsoluteVolumeSum += p.se.getExchange().getLastPrice() * p.getShares_Long();
+            totalAbsoluteVolumeSum += lastPrice/p.se.getMarket().money_df * Math.abs(p.getShares_Long());
         }
 
         //Map<String, Double> stopPrices = new HashMap<>();
         for (Position p : positions.values()) {
 
             // I. Gewichtung (W_i)
-            double positionVolume = p.se.getExchange().getLastPrice() * p.getShares_Long();            
+            double positionVolume = p.se.getMarket().getLastPrice() * Math.abs(p.getShares_Long());            
             double weight = positionVolume / totalAbsoluteVolumeSum;
 
             // II. Tolerierter Verlust für diese Position (L_i) in Cents
             long toleratedLoss_i_long = (long) (lMax_additional * weight);
 
             // III. Verlust pro Aktie (V_Aktie) in Euro
-            long shares = p.getShares_Long();
+            long shares = Math.abs(p.getShares_Long());
             if (shares == 0) {
                 continue;
             }            
@@ -421,7 +434,7 @@ public class Account {
             double lossPerShare_double = ((double) toleratedLoss_i_long) / shares / 100;
 
             // IV. Endgültiger Stop-Kurs (S_check, i)
-            double currentPrice = p.se.getExchange().getLastPrice();
+            double currentPrice = lastPrice/p.se.getMarket().money_df;
             double stopPrice;
             
             if (p.isShort()) {

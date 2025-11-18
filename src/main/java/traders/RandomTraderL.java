@@ -106,7 +106,7 @@ public class RandomTraderL extends AutoTraderBase
         //bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
    //     this.TRADEEVENT.name = this.getName();
    //     this.ORDERFILLEDEVENT.name = this.getName();
-        Account a = account_id;
+        Account a = account;
         a.setListener(this);
 
         long delay = getRandom(initialDelay[0], initialDelay[1]);
@@ -119,22 +119,22 @@ public class RandomTraderL extends AutoTraderBase
 
     // boolean intask = false;
     @Override
-    public long processEvent(long time, Event e) {
+    public void processEvent(long time, Event e) {
    /*     if (getName().equals("Alice-0")) {
             System.out.printf("Alice is alive\n");
         }*/
         //System.out.printf("Process Event for %s %d\n",this.getName(),time);
         if (time != tradeEventTime) {
             //    System.out.printf("Wrong Event for %s: %d != %d\n", this.getName(), time, tradeEventTime);
-            return 0;
+      
         }
         if (e == this.TRADEEVENT) {
 
             long t = 0;
 
-            if (account_id.getShares_Long() < this.bankrupt_shares && account_id.getMoney_Long() < this.bankrupt_cash) {
+            if (account.getShares_Long() < this.bankrupt_shares && account.getMoney_Long() < this.bankrupt_cash) {
                 setStatus("Ruined");
-                return 0;
+                
             }
 
             if (currentOrder == null) {
@@ -154,7 +154,6 @@ public class RandomTraderL extends AutoTraderBase
 
         }*/
 
-        return 0;
 
     }
 
@@ -408,7 +407,7 @@ public class RandomTraderL extends AutoTraderBase
 
         byte s = o.getStatus();
         if (s == Order.OPEN || s == Order.PARTIALLY_EXECUTED) {
-            se.cancelOrder(account_id, o.getID());
+            se.cancelOrder(account, o.getID());
             currentOrder = null;
             setStatus("Sleep after timeout");
             return (long) (getRandom(wait_after_fail) * 1000f);
@@ -517,68 +516,6 @@ public class RandomTraderL extends AutoTraderBase
         return getRandom(min, max);
     }
 
-    static public long getRandomDelta_Long(long lastPrice, long minDeviation, long maxDeviation, long minAbsoluteDeviation) {
-
-
-        // 1. Preisänderungsspanne berechnen (in Cent)
-        long minDelta = (lastPrice * minDeviation) / 1000;
-        long maxDelta = (lastPrice * maxDeviation) / 1000;
-
-        // 2. Sicherheitskorrektur, falls Rundung zu 0 führt
-        if (Math.abs(minDelta) < minAbsoluteDeviation && minDeviation != 0) {
-            minDelta = (minDeviation < 0) ? -minAbsoluteDeviation : minAbsoluteDeviation;
-        }
-        if (Math.abs(maxDelta) < minAbsoluteDeviation && maxDeviation != 0) {
-            maxDelta = (maxDeviation < 0) ? -minAbsoluteDeviation : minAbsoluteDeviation;
-        }
-
-        if (minDelta + lastPrice < 0) {
-            minDelta = -lastPrice;
-        }
-
-        long range = maxDelta - minDelta + 1;
-
-        //     long delta;
-        long delta = Sim.random.nextLong(range) + minDelta;
-
-        return delta;
-
-        /*delta = 0 + minDelta;
-   //   System.out.printf("MinDelat: %d\n",delta);
-      delta = (range-1)/2 + minDelta;
-  //    System.out.printf("MidDelta: %d\n",delta);      
-      delta = range-1 + minDelta;
-  //    System.out.printf("MaxDelta: %d\n",delta);
-         */
-        // 4. Neuer Preis in Cent
-        /*      long newPrice = lastPrice + delta;
-
-        if (newPrice < 1) {
-            newPrice = 1;
-        }
-return delta;
-    /*    if (newPrice < minn) {
-            minn = newPrice;
-
-        }
-        if (newPrice > maxn) {
-            maxn = newPrice;
-        }*/
-        //    System.out.printf("MINMAX %d , %d\n",minn,maxn);
-        //  return newPrice;
-    }
-
-    public long getRandomPrice_Long(long lastPrice, long minDeviation, long maxDeviation, long minAbsDeviation) {
-        long delta = getRandomDelta_Long(lastPrice, minDeviation, maxDeviation, minAbsDeviation);
-
-        long newPrice = lastPrice + delta;
-
-        if (newPrice < 1) {
-            newPrice = 1;
-        }
-
-        return newPrice;
-    }
 
     // static long minn = 10000000;
     //  static long maxn = -10;
@@ -608,9 +545,9 @@ return delta;
         return newPrice;
     }*/
     private Order doBuy() {
-        long money_avail = account_id.getMoney_Long();
+        long money_avail = account.getMoney_Long();
         // how much money we ant to invest?
-        long money = getRandomDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
+        long money = getRandomPriceDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
         if (money>money_avail){
             money=money_avail;
         }
@@ -618,18 +555,18 @@ return delta;
         Quote q = se.getBestPrice_0();
         long lp = q.getPrice_Long();
 
-        long limit = this.getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
+        long limit = getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
 
         long volume = money / limit;
 
-        return se.createOrder_Long(account_id, Order.BUYLIMIT, volume, limit, 0, 1);
+        return se.createOrder_Long(account, Order.BUYLIMIT, volume, limit, 0, 1);
 
     }
 
     private Order doSell() {
-        long shares = account_id.getShares_Long();
+        long shares = account.getShares_Long();
         // how many shares we want to sell?
-        long volume = getRandomDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
+        long volume = getRandomPriceDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
         if (volume>shares){
             volume=shares;
         }
@@ -638,12 +575,12 @@ return delta;
         Quote q = se.getBestPrice_0();
         long lp = q.getPrice_Long();
 
-        long limit = this.getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1], minSellDeviation);
+        long limit = getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1], minSellDeviation);
         //   limit = lp + getRandomAmmount(lp, sell_limit);
         //  limit = lp + se.random.nextLong(0, 4) - 2;
 
         
-        return se.createOrder_Long(account_id, Order.SELLLIMIT, volume, limit, 0, 1);
+        return se.createOrder_Long(account, Order.SELLLIMIT, volume, limit, 0, 1);
 
     }
 
