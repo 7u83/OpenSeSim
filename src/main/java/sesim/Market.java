@@ -23,7 +23,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package sesim;
 
 import java.io.FileNotFoundException;
@@ -264,23 +263,22 @@ public class Market implements Asset {
         LiquidationComparator(boolean type) {
             isLong = type;
         }
-        
-        
-         @Override
-    public int compare(Position a, Position b) {
-        // Korrekte, overflow-sichere Reihenfolge
-        int priceCmp = isLong
-            ? Long.compare(a.getStopPrice_Long(), b.getStopPrice_Long())
-            : Long.compare(b.getStopPrice_Long(), a.getStopPrice_Long());
 
-        if (priceCmp != 0) {
-            return priceCmp;
+        @Override
+        public int compare(Position a, Position b) {
+            // Korrekte, overflow-sichere Reihenfolge
+            int priceCmp = isLong
+                    ? Long.compare(a.getStopPrice_Long(), b.getStopPrice_Long())
+                    : Long.compare(b.getStopPrice_Long(), a.getStopPrice_Long());
+
+            if (priceCmp != 0) {
+                return priceCmp;
+            }
+
+            // Stabile Sortierung: ID als Tie-Breaker
+            return Long.compare(a.id, b.id);
         }
-
-        // Stabile Sortierung: ID als Tie-Breaker
-        return Long.compare(a.id, b.id);
-    }
-/*
+        /*
         @Override
         public int compare(Position left, Position right) {
 
@@ -306,8 +304,8 @@ public class Market implements Asset {
             return 0;
 
         }
-*/
-    
+         */
+
     }
 
     class StopComparator implements Comparator<Order> {
@@ -1241,9 +1239,9 @@ public class Market implements Asset {
 
     void removeLiquidationStop(Position p) {
         //if (p.isShort()) {
-            this.liquidationsShort.remove(p);
+        this.liquidationsShort.remove(p);
         //} else {
-            this.liquidationsLong.remove(p);
+        this.liquidationsLong.remove(p);
         //}
     }
 
@@ -1390,15 +1388,15 @@ public class Market implements Asset {
                 Order buyer = ul_buy.first();
                 long price = seller.limit;
 
-                if(buyer.account.getOwner().getName().equals("Margin Bob-58")){
+                if (buyer.account.getOwner().getName().equals("Margin Bob-58")) {
                     System.out.printf("Marginbob58\n");
                 }
-                
+
                 long bvol = buyer.position.getTradableShares_Long(buyer.volume, price, buyer.leverage);
-               if (bvol < 0){
-                   System.out.printf("BVKN\n");
-               }
-                
+                if (bvol < 0) {
+                    System.out.printf("BVKN\n");
+                }
+
                 if (bvol <= 0) {
                     buyer.status = Order.CLOSED;
                     removeOrderIfExecuted(buyer);
@@ -1517,43 +1515,49 @@ public class Market implements Asset {
         SortedSet<Position> shortStops = this.liquidationsShort;
 
         while (!longStops.isEmpty()) {
-    
+
             Position p = longStops.last();
-                         // System.out.printf("LONG FIRST %d\n",p.stopPrice);
-            if (price >= p.getStopPrice_Long()) {
+            // System.out.printf("LONG FIRST %d\n",p.stopPrice);
+            long stopPrice = p.getStopPrice_Long();
+            
+            if (price >= stopPrice) {
                 break;
             }
-            
-            if (p.account.getOwner().getName().equals("Margin Bob-0")){
+
+            if (p.account.getOwner().getName().equals("Margin Bob-0")) {
                 System.out.printf("BOB-0 long");
             }
-            
+
             boolean result = longStops.remove(p);
-            System.out.printf("Remove res: %b, p.od: %d, .stop: %d, size: %d\n",result,p.id,p.getStopPrice_Long(),longStops.size());
-                    
-            
-            
-            p.account.isLiquided=true;
-        //    System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.stopPrice);
-            this.createOrderNoExec_Long(p.account, Order.SELL, Math.abs(p.shares), 0, 0, 1);
-            
+            System.out.printf("Remove res: %b, p.od: %d, .stop: %d, size: %d\n", result, p.id, p.getStopPrice_Long(), longStops.size());
+
+            p.account.isLiquided = true;
+            p.account.cancelAllOrders();
+            //    System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.stopPrice);
+            this.createOrderNoExec_Long(p.account, (byte)(Order.SELL ), Math.abs(p.shares), 0, 0, 1);
+
         }
 
         while (!shortStops.isEmpty()) {
-            
+
             Position p = shortStops.first();
-        //    System.out.printf("SHORT FIRST %d\n",p.stopPrice);
-            if (price <= p.getStopPrice_Long()) {
+            
+            long stopPrice = p.getStopPrice_Long();
+            
+            if (price <= stopPrice) {
                 break;
             }
-            if (p.account.getOwner().getName().equals("Margin Bob-0")){
+            if (p.account.getOwner().getName().equals("Margin Bob-0")) {
                 System.out.printf("BOB-0 shortstop");
             }
             
+            System.out.printf("Stop slip %d\n",stopPrice-price);
+
             shortStops.remove(p);
-           // System.out.printf("SHORT STOP REACHED %d\n",price);
-           p.account.isLiquided=true;
-            this.createOrderNoExec_Long(p.account, Order.BUY, Math.abs(p.shares), 0, 0, 1);
+            // System.out.printf("SHORT STOP REACHED %d\n",price);
+            p.account.isLiquided = true;
+            p.account.cancelAllOrders();
+            this.createOrderNoExec_Long(p.account, (byte)(Order.BUY ), Math.abs(p.shares), 0, 0, 1);
         }
     }
 

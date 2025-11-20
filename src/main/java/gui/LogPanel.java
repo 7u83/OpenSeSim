@@ -189,6 +189,7 @@ public class LogPanel extends javax.swing.JPanel {
 
             try {
                 doc.insertString(doc.getLength(), text, style);
+                
             } catch (BadLocationException e) {
             }
 

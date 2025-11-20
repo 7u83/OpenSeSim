@@ -58,35 +58,35 @@ public class MarginTraderL extends AutoTraderBase
         long initialDelayRange = 60000*120;
 
         // Leverage used for trades
-        int leverage = 100;
+        int leverage = 50;
 
         // Minimum percentage of free margin to use for the next 
         // trade (percent * 10)
-        long minFreeMarginUsage = 600;
+        long minFreeMarginUsage = 100;
 
         // Maximum percentage of free margin to use for the next 
         // trade (percent * 10)
-        long maxFreeMarginUsage = 700;
+        long maxFreeMarginUsage = 100;
 
         long minShortLimit = -20;
-        long maxShortLimit = +20;
+        long maxShortLimit = +21;
         long minLongDeviation = 1;
 
         long minLongLimit = -20;
-        long maxLongLimit = +20;
+        long maxLongLimit = +21;
         long minShortDeviation = 1;
 
         long waitForFill = 30000;
-        long waitforFillRange = 30000;
+        long waitforFillRange = 60000;
 
         long holdLongPositionTime = 30000;
-        long holdLongPositionTimeRange = 30000;
+        long holdLongPositionTimeRange = 60000*120;
 
         long holdShortPositionTime = 30000;
-        long holdShortPositionTimeRange = 30000;
+        long holdShortPositionTimeRange = 60000*120;
 
         long coolDownTime = 3000;
-        long coolDownTimeRange = 3000;
+        long coolDownTimeRange = 60000*10;
 
     }
     Config cfg = new Config();
@@ -143,7 +143,7 @@ public class MarginTraderL extends AutoTraderBase
         long volume = margin * cfg.leverage / limit;
         submitTrade(type, volume, limit);
 
-        setStatus("Open %s", (type == Order.SELL ? "Short" : "Long"));
+        setStatus("Open %s- vol:%d", (type == Order.SELL ? "Short" : "Long"),volume);
         isOpening = true;
 
      //   sesim.Logger.info("My first trade uses %d margin and %d shares with %d limit\n", margin, volume, limit);
@@ -164,9 +164,11 @@ public class MarginTraderL extends AutoTraderBase
             limit = getRandomPrice_Long(price,
                     cfg.minShortLimit, cfg.maxShortLimit, cfg.minShortDeviation);
         }
-        setStatus("Close %s", (type == Order.SELL ? "Long" : "Short"));
+        
         isOpening = false;
         submitTrade(type, Math.abs(volume), limit);
+        
+        setStatus("Close %s, vol:%d", (type == Order.SELL ? "Long" : "Short"),volume);
 
     }
 

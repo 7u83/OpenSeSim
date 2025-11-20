@@ -84,8 +84,14 @@ public class Account {
     public Map<Asset, Position> getPositions() {
         return Collections.unmodifiableMap(positions);
     }
+    
+    void cancelAllOrders(){
+        for (Order o: orders.values()){
+            o.getMarket().cancelOrder(this, o.id);
+        }
+    }
 
-    // Summe der gebundenen Margin
+    // Sum of bound margin
     public long getMarginUsed_Long() {
         long totalMargin = 0;
         for (Position pos : positions.values()) {
@@ -395,7 +401,7 @@ public class Account {
         long totalUsedMargin = getMarginUsed_Long();
 
         // Critical Equity = Total Used Margin (Margin Level 100%)
-        long criticalEquity = 0000; //totalUsedMargin;
+        long criticalEquity = 1000; //totalUsedMargin;
 
         // L_max ist die Free Margin (der Puffer in Cents)long criticalEquity = 0;
         
@@ -412,14 +418,14 @@ public class Account {
         double totalAbsoluteVolumeSum = 0.0;
         for (Position p : positions.values()) {
             // Absolute Volumen (P_aktuell * Shares) zur korrekten Gewichtung des Risikos
-            totalAbsoluteVolumeSum += lastPrice/p.se.getMarket().money_df * Math.abs(p.getShares_Long());
+            totalAbsoluteVolumeSum += lastPrice/p.asset.getMarket().money_df * Math.abs(p.getShares_Long());
         }
 
         //Map<String, Double> stopPrices = new HashMap<>();
         for (Position p : positions.values()) {
 
             // I. Gewichtung (W_i)
-            double positionVolume = p.se.getMarket().getLastPrice() * Math.abs(p.getShares_Long());            
+            double positionVolume = p.asset.getMarket().getLastPrice() * Math.abs(p.getShares_Long());            
             double weight = positionVolume / totalAbsoluteVolumeSum;
 
             // II. Tolerierter Verlust für diese Position (L_i) in Cents
@@ -434,7 +440,7 @@ public class Account {
             double lossPerShare_double = ((double) toleratedLoss_i_long) / shares / 100;
 
             // IV. Endgültiger Stop-Kurs (S_check, i)
-            double currentPrice = lastPrice/p.se.getMarket().money_df;
+            double currentPrice = lastPrice/p.asset.getMarket().money_df;
             double stopPrice;
             
             if (p.isShort()) {

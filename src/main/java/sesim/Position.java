@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Position {
     private static final AtomicLong ID_GEN = new AtomicLong(0);
-    final Asset se;
+    final Asset asset;
     final Account account;
 
     long shares;
@@ -44,8 +44,8 @@ public class Position {
     private long stopPrice;
     long id;
 
-    public Position(Asset se, Account account) {
-        this.se = se;
+    public Position(Asset asset, Account account) {
+        this.asset = asset;
         id = ID_GEN.incrementAndGet();
 
         shares = 0;
@@ -55,7 +55,7 @@ public class Position {
     }
 
     public String getName() {
-        return se.getSymbol();
+        return asset.getSymbol();
     }
 
     public long getShares_Long() {
@@ -63,7 +63,7 @@ public class Position {
     }
 
     public float getShares() {
-        return shares / se.getDf();
+        return shares / asset.getDf();
     }
 
     public float getLeverage() {
@@ -78,7 +78,7 @@ public class Position {
     }
 
     public float getMargin() {
-        return getMargin_Long() / se.getMarket().money_df;
+        return getMargin_Long() / asset.getMarket().money_df;
     }
 
     public long getMargin_Long() {
@@ -97,18 +97,18 @@ public class Position {
     // unrealized PnL für aktuelle Preis
     public long getPnL_Long(long currentPrice) {
 
-        return currentPrice * shares - pnl;
+        return currentPrice * shares - netCashFlow;
 
         //long diff = currentPrice - entryPrice;
         //return isShort ? -shares * diff : shares * diff;
     }
 
     public long getPnL_Long() {
-        return se.getMarket().getLastPrice_Long() * shares - totalEntryCost;
+        return asset.getMarket().getLastPrice_Long() * shares + netCashFlow;
     }
 
     public float getPnL() {
-        return (se.getMarket().getLastPrice_Long() * shares - totalEntryCost) / se.getMarket().money_df;
+        return (asset.getMarket().getLastPrice_Long() * shares + netCashFlow) / asset.getMarket().money_df;
     }
 
     public float getPnLPercent() {
@@ -119,7 +119,7 @@ public class Position {
             base = getMargin();
         } else {
             // ungehebelter Trade → Prozent relativ zu den gesamten Entry-Kosten
-            base = getTotalEntryCost();
+            base = -netCashFlow;
             if (base == 0) {
                 return 0;
             }
@@ -129,17 +129,17 @@ public class Position {
     }
 
     public long getMarketValue_Long() {
-        return totalEntryCost - se.getMarket().getLastPrice_Long() * shares - pnl;
+        return totalEntryCost - asset.getMarket().getLastPrice_Long() * shares - netCashFlow;
     }
 
     public float getMarketValue() {
-        return getMarketValue_Long() / se.getMarket().money_df;
+        return getMarketValue_Long() / asset.getMarket().money_df;
     }
 
     public long getEquityValue_Long() {
         //long mypnl = pnl;
         
-        return pnl- (-shares) * se.getMarket().getLastPrice_Long();
+        return netCashFlow + shares * asset.getMarket().getLastPrice_Long();
 //        mypnl-=val;
         
     //    if (margin == 0) {
@@ -153,22 +153,22 @@ public class Position {
 
     public float getEquityValue() {
 
-        return getEquityValue_Long() / se.getMarket().money_df;
+        return getEquityValue_Long() / asset.getMarket().money_df;
     }
 
     public float getTotalEntryCost() {
-        return totalEntryCost / se.getMarket().money_df;
+        return totalEntryCost / asset.getMarket().money_df;
     }
 
-    long pnl = 0;
+    long netCashFlow = 0;
     long totalEntryCost = 0;
 
     public float getShadowCash() {
-        return pnl / se.getMarket().money_df;
+        return netCashFlow / asset.getMarket().money_df;
     }
 
     public float getNetBrokerLoan() {
-        return pnl / se.getMarket().money_df;
+        return netCashFlow / asset.getMarket().money_df;
     }
     public boolean mops = true;
 
@@ -180,7 +180,7 @@ public class Position {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
             long val = volume * price;
-            pnl -= val;
+            netCashFlow -= val;
             totalEntryCost += val;
 
             // Führt zu Zukauf (Long->Long oder Short->Short).
@@ -201,14 +201,14 @@ public class Position {
             if (Long.signum(shares) != Long.signum(nextShares)) {
                 // close old position
 
-                pnl -= (-shares * price);
+                netCashFlow += shares * price;
                 //   totalEntryCost += (-shares * price);
 
-                account.cash += pnl; // + margin;
+                account.cash += netCashFlow; // + margin;
                 shares = nextShares;
 
                 long val = shares * price;
-                pnl = -val;
+                netCashFlow = -val;
                 totalEntryCost = val;
 
                 // 2. Neue Margin für den "Überhang" berechnen
@@ -220,7 +220,7 @@ public class Position {
             } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
             else {
                 long val = volume * price;
-                pnl -= val;
+                netCashFlow -= val;
                 totalEntryCost += val;
 
                 // Hier ist Ihr Prinzip der anteiligen Reduzierung korrekt.
@@ -234,13 +234,13 @@ public class Position {
             }
         }
 
-        if (shares == 0 || (shares > 0 && pnl + margin >= 0)) {
+        if (shares == 0 || (shares > 0 && netCashFlow + margin >= 0)) {
 
             //cash += margin;
-            account.cash += pnl; // + margin;
+            account.cash += netCashFlow; // + margin;
             //     cash+=Math.abs(margin);
             margin = 0;
-            pnl = 0;
+            netCashFlow = 0;
             if (shares == 0) {
                 totalEntryCost = 0;
             }
@@ -250,13 +250,13 @@ public class Position {
         if (this.margin != 0) {
             this.account.calculateLiquidationStops(price);
         }else{
-                       se.getMarket().removeLiquidationStop(this);
+                       asset.getMarket().removeLiquidationStop(this);
         }
 
     }
     
     public float getStopPrice(){
-        return this.stopPrice/se.getMarket().money_df;
+        return this.stopPrice/asset.getMarket().money_df;
     }
     
     public long getStopPrice_Long(){
@@ -265,10 +265,10 @@ public class Position {
     
     void setStopPrice(long newStopPrice){
 
-            se.getMarket().removeLiquidationStop(this);
+            asset.getMarket().removeLiquidationStop(this);
 
         stopPrice=newStopPrice;
-        se.getMarket().setLiquidationStop(this);
+        asset.getMarket().setLiquidationStop(this);
     }
     
  
@@ -323,7 +323,7 @@ public class Position {
             // Vorzeichen als sharesBefore.
             if (Long.signum(shares) != Long.signum(nextShares) && nextShares != 0) {
 
-                long c = pnl - (-shares * price) + margin + account.cash;
+                long c = netCashFlow - (-shares * price) + margin + account.cash;
 
                 long val = nextShares * price;
                 long marginRequired = Math.abs(val) / leverage;
@@ -345,7 +345,7 @@ public class Position {
             if (liquidationOrder == null) {
                 return;
             }
-            se.getMarket().cancelOrder(account, this.liquidationOrder.id);
+            asset.getMarket().cancelOrder(account, this.liquidationOrder.id);
             this.liquidationOrder = null;
             return;
         }
@@ -355,7 +355,7 @@ public class Position {
         int leverage = (int) (totalEntryCost / margin);
 
         if (liquidationOrder != null) {
-            se.getMarket().cancelOrder(account, liquidationOrder.id);
+            asset.getMarket().cancelOrder(account, liquidationOrder.id);
         }
 
         /*    if (shares > 0) {
