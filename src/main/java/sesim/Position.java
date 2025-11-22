@@ -310,8 +310,12 @@ public class Position {
             long val = volume * price;
             long marginRequired = Math.abs(val / leverage);
 
-            if (account.getFreeMargin_Long() < marginRequired) {
-                return account.getFreeMargin_Long() * leverage / price;
+            long freeMargin = account.getFreeMargin_Long();
+            if (freeMargin<0)
+                freeMargin=0;
+            
+            if (freeMargin < marginRequired) {
+                return freeMargin * leverage / price;
             }
 
         } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)

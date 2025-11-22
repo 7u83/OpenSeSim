@@ -169,382 +169,412 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
         clock1 = new gui.Clock();
-        traderListPanel1 = new TraderListPanel(this);
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        fileOpenMenuItem = new javax.swing.JMenuItem();
-        fileSaveMenuItem = new javax.swing.JMenuItem();
-        fileSaveAsMenuItem = new javax.swing.JMenuItem();
-        closeMenuItem = new javax.swing.JMenuItem();
-        jSeparator5 = new javax.swing.JPopupMenu.Separator();
-        resetToDefaultsMenuItem = new javax.swing.JMenuItem();
-        clearMenuItem = new javax.swing.JMenuItem();
-        jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        editExchangeMenuItem = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        editPreferences = new javax.swing.JMenuItem();
-        simMenu = new javax.swing.JMenu();
-        simMenuStart = new javax.swing.JMenuItem();
-        simMenuPause = new javax.swing.JMenuItem();
-        simMenuStop = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        randomSeed = new javax.swing.JMenuItem();
-        viewMenu = new javax.swing.JMenu();
-        viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
-        viewRawOrderBook = new javax.swing.JCheckBoxMenuItem();
-        viewUnlimitedOrdes = new javax.swing.JCheckBoxMenuItem();
-        viewStopOrders = new javax.swing.JCheckBoxMenuItem();
-        viewLog = new javax.swing.JCheckBoxMenuItem();
-        viewTradingLog = new javax.swing.JCheckBoxMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        aboutMenuItem = new javax.swing.JMenuItem();
+        traderListPanel1 = new TraderListPanel(this,
+            new TraderListPanel.Column[]  {
+                TraderListPanel.Column.ID,
+                TraderListPanel.Column.NAME,
+                TraderListPanel.Column.STATUS,
+                TraderListPanel.Column.EQUITY,
+                TraderListPanel.Column.PNL
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Hakke");
-        jScrollPane2.setViewportView(jTextArea1);
+            });
+            menuBar = new javax.swing.JMenuBar();
+            fileMenu = new javax.swing.JMenu();
+            fileOpenMenuItem = new javax.swing.JMenuItem();
+            fileSaveMenuItem = new javax.swing.JMenuItem();
+            fileSaveAsMenuItem = new javax.swing.JMenuItem();
+            closeMenuItem = new javax.swing.JMenuItem();
+            jSeparator5 = new javax.swing.JPopupMenu.Separator();
+            resetToDefaultsMenuItem = new javax.swing.JMenuItem();
+            clearMenuItem = new javax.swing.JMenuItem();
+            jSeparator4 = new javax.swing.JPopupMenu.Separator();
+            exitMenuItem = new javax.swing.JMenuItem();
+            editMenu = new javax.swing.JMenu();
+            editExchangeMenuItem = new javax.swing.JMenuItem();
+            jSeparator1 = new javax.swing.JPopupMenu.Separator();
+            pasteMenuItem = new javax.swing.JMenuItem();
+            deleteMenuItem = new javax.swing.JMenuItem();
+            jSeparator2 = new javax.swing.JPopupMenu.Separator();
+            editPreferences = new javax.swing.JMenuItem();
+            simMenu = new javax.swing.JMenu();
+            simMenuStart = new javax.swing.JMenuItem();
+            simMenuPause = new javax.swing.JMenuItem();
+            simMenuStop = new javax.swing.JMenuItem();
+            jSeparator3 = new javax.swing.JPopupMenu.Separator();
+            randomSeed = new javax.swing.JMenuItem();
+            viewMenu = new javax.swing.JMenu();
+            viewTraderListCheckBox = new javax.swing.JCheckBoxMenuItem();
+            viewRawOrderBook = new javax.swing.JCheckBoxMenuItem();
+            viewUnlimitedOrdes = new javax.swing.JCheckBoxMenuItem();
+            viewStopOrders = new javax.swing.JCheckBoxMenuItem();
+            viewLog = new javax.swing.JCheckBoxMenuItem();
+            viewTradingLog = new javax.swing.JCheckBoxMenuItem();
+            helpMenu = new javax.swing.JMenu();
+            aboutMenuItem = new javax.swing.JMenuItem();
 
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+            jTextArea1.setColumns(20);
+            jTextArea1.setRows(5);
+            jTextArea1.setText("Hakke");
+            jScrollPane2.setViewportView(jTextArea1);
 
-        jSplitPane2.setLeftComponent(orderBookNew1);
+            jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        jSplitPane1.setTopComponent(jSplitPane2);
+            jSplitPane2.setLeftComponent(orderBookNew1);
 
-        meinToolBar.setRollover(true);
+            jSplitPane1.setTopComponent(jSplitPane2);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("SeSim - Stock Exchange Simmulator");
-        setMinimumSize(new java.awt.Dimension(640, 480));
-        setPreferredSize(new java.awt.Dimension(1024, 768));
+            meinToolBar.setRollover(true);
 
-        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stop.gif"))); // NOI18N
-        stopButton.setText("Stop");
-        stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        stopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        stopButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stopButtonActionPerformed(evt);
-            }
-        });
+            setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+            setTitle("SeSim - Stock Exchange Simmulator");
+            setMinimumSize(new java.awt.Dimension(640, 480));
+            setPreferredSize(new java.awt.Dimension(1024, 768));
 
-        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
-        pauseButton.setText("Pause");
-        pauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        pauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        pauseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pauseButtonActionPerformed(evt);
-            }
-        });
+            stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stop.gif"))); // NOI18N
+            stopButton.setText("Stop");
+            stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            stopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            stopButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    stopButtonActionPerformed(evt);
+                }
+            });
 
-        runButton.setFont(runButton.getFont());
-        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run.gif"))); // NOI18N
-        runButton.setText("Run sim!");
-        runButton.setToolTipText("Run the simmulation");
-        runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        runButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                runButtonActionPerformed(evt);
-            }
-        });
+            pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
+            pauseButton.setText("Pause");
+            pauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            pauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            pauseButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    pauseButtonActionPerformed(evt);
+                }
+            });
 
-        javax.swing.GroupLayout runControlsLayout = new javax.swing.GroupLayout(runControls);
-        runControls.setLayout(runControlsLayout);
-        runControlsLayout.setHorizontalGroup(
-            runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(runControlsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(runButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pauseButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(stopButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        runControlsLayout.setVerticalGroup(
-            runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(stopButton, javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pauseButton, javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(runButton, javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(accelerationPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+            runButton.setFont(runButton.getFont());
+            runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/run.gif"))); // NOI18N
+            runButton.setText("Run sim!");
+            runButton.setToolTipText("Run the simmulation");
+            runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            runButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    runButtonActionPerformed(evt);
+                }
+            });
 
-        tradingLogCheckBox.setText("Trading Log");
-        tradingLogCheckBox.setToolTipText("<html>\nIf checked, a log of all created order, <br>\ntransactions between traders and more details<br>\n will be written to disk. You can later anlyze the details.<br> \n<font color='red'>ATTENTION: <br>\nturning this option on, A LOT of date will be written<br>\n to your disk. You may run out of disk space. </font>\n</html>\n ");
-        tradingLogCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        tradingLogCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tradingLogCheckBoxActionPerformed(evt);
-            }
-        });
+            javax.swing.GroupLayout runControlsLayout = new javax.swing.GroupLayout(runControls);
+            runControls.setLayout(runControlsLayout);
+            runControlsLayout.setHorizontalGroup(
+                runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(runControlsLayout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(runButton)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(pauseButton)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(stopButton)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap())
+            );
+            runControlsLayout.setVerticalGroup(
+                runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(stopButton, javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(pauseButton, javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(runButton, javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(accelerationPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            );
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tradingLogCheckBox, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(clock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(tradingLogCheckBox)
-                        .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 10, Short.MAX_VALUE))
-        );
+            tradingLogCheckBox.setText("Trading Log");
+            tradingLogCheckBox.setToolTipText("<html>\nIf checked, a log of all created order, <br>\ntransactions between traders and more details<br>\n will be written to disk. You can later anlyze the details.<br> \n<font color='red'>ATTENTION: <br>\nturning this option on, A LOT of date will be written<br>\n to your disk. You may run out of disk space. </font>\n</html>\n ");
+            tradingLogCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+            tradingLogCheckBox.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    tradingLogCheckBoxActionPerformed(evt);
+                }
+            });
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
+            javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+            jPanel2.setLayout(jPanel2Layout);
+            jPanel2Layout.setHorizontalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(tradingLogCheckBox, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(clock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap())
+            );
+            jPanel2Layout.setVerticalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tradingLogCheckBox)
+                            .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(clock, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(0, 10, Short.MAX_VALUE))
+            );
 
-        jSplitPane4.setDividerLocation(300);
-        jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane4.setRightComponent(orderBooksHorizontal);
-        jSplitPane4.setLeftComponent(chartPanel);
+            getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
-        jSplitPane3.setRightComponent(jSplitPane4);
-        jSplitPane3.setLeftComponent(quoteVertical1);
+            jSplitPane4.setDividerLocation(300);
+            jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+            jSplitPane4.setRightComponent(orderBooksHorizontal);
+            jSplitPane4.setLeftComponent(chartPanel);
 
-        jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane5.setTopComponent(statistics1);
-        jSplitPane5.setRightComponent(clock1);
-        jSplitPane5.setRightComponent(traderListPanel1);
+            jSplitPane3.setRightComponent(jSplitPane4);
+            jSplitPane3.setLeftComponent(quoteVertical1);
 
-        jSplitPane3.setLeftComponent(jSplitPane5);
+            jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+            jSplitPane5.setTopComponent(statistics1);
+            jSplitPane5.setRightComponent(clock1);
+            jSplitPane5.setRightComponent(traderListPanel1);
 
-        getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
+            jSplitPane3.setLeftComponent(jSplitPane5);
 
-        fileMenu.setText("File");
+            getContentPane().add(jSplitPane3, java.awt.BorderLayout.CENTER);
 
-        fileOpenMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        fileOpenMenuItem.setText("Open");
-        fileOpenMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileOpenMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(fileOpenMenuItem);
+            fileMenu.setMnemonic('f');
+            fileMenu.setText("File");
 
-        fileSaveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        fileSaveMenuItem.setText("Save");
-        fileSaveMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileSaveMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(fileSaveMenuItem);
+            fileOpenMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+            fileOpenMenuItem.setMnemonic('o');
+            fileOpenMenuItem.setText("Open");
+            fileOpenMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    fileOpenMenuItemActionPerformed(evt);
+                }
+            });
+            fileMenu.add(fileOpenMenuItem);
 
-        fileSaveAsMenuItem.setText("Save As ...");
-        fileSaveAsMenuItem.setDisplayedMnemonicIndex(5);
-        fileSaveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileSaveAsMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(fileSaveAsMenuItem);
+            fileSaveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+            fileSaveMenuItem.setMnemonic('s');
+            fileSaveMenuItem.setText("Save");
+            fileSaveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    fileSaveMenuItemActionPerformed(evt);
+                }
+            });
+            fileMenu.add(fileSaveMenuItem);
 
-        closeMenuItem.setText("Close");
-        closeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(closeMenuItem);
-        fileMenu.add(jSeparator5);
+            fileSaveAsMenuItem.setMnemonic('a');
+            fileSaveAsMenuItem.setText("Save As ...");
+            fileSaveAsMenuItem.setDisplayedMnemonicIndex(5);
+            fileSaveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    fileSaveAsMenuItemActionPerformed(evt);
+                }
+            });
+            fileMenu.add(fileSaveAsMenuItem);
 
-        resetToDefaultsMenuItem.setText("Reset to defaults");
-        resetToDefaultsMenuItem.setToolTipText("");
-        resetToDefaultsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetToDefaultsMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(resetToDefaultsMenuItem);
+            closeMenuItem.setMnemonic('c');
+            closeMenuItem.setText("Close");
+            closeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    closeMenuItemActionPerformed(evt);
+                }
+            });
+            fileMenu.add(closeMenuItem);
+            fileMenu.add(jSeparator5);
 
-        clearMenuItem.setText("Clear All");
-        clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(clearMenuItem);
-        fileMenu.add(jSeparator4);
+            resetToDefaultsMenuItem.setMnemonic('r');
+            resetToDefaultsMenuItem.setText("Reset to defaults");
+            resetToDefaultsMenuItem.setToolTipText("");
+            resetToDefaultsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    resetToDefaultsMenuItemActionPerformed(evt);
+                }
+            });
+            fileMenu.add(resetToDefaultsMenuItem);
 
-        exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        exitMenuItem.setText("Exit");
-        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(exitMenuItem);
+            clearMenuItem.setMnemonic('c');
+            clearMenuItem.setText("Clear All");
+            clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    clearMenuItemActionPerformed(evt);
+                }
+            });
+            fileMenu.add(clearMenuItem);
+            fileMenu.add(jSeparator4);
 
-        menuBar.add(fileMenu);
+            exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+            exitMenuItem.setMnemonic('x');
+            exitMenuItem.setText("Exit");
+            exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    exitMenuItemActionPerformed(evt);
+                }
+            });
+            fileMenu.add(exitMenuItem);
 
-        editMenu.setText("Edit");
+            menuBar.add(fileMenu);
 
-        editExchangeMenuItem.setText("Exchange ...");
-        editExchangeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editExchangeMenuItemActionPerformed(evt);
-            }
-        });
-        editMenu.add(editExchangeMenuItem);
-        editMenu.add(jSeparator1);
+            editMenu.setMnemonic('e');
+            editMenu.setText("Edit");
 
-        pasteMenuItem.setText("Strategies ...");
-        pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pasteMenuItemActionPerformed(evt);
-            }
-        });
-        editMenu.add(pasteMenuItem);
+            editExchangeMenuItem.setMnemonic('y');
+            editExchangeMenuItem.setText("Exchange ...");
+            editExchangeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    editExchangeMenuItemActionPerformed(evt);
+                }
+            });
+            editMenu.add(editExchangeMenuItem);
+            editMenu.add(jSeparator1);
 
-        deleteMenuItem.setText("Traders ...");
-        deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteMenuItemActionPerformed(evt);
-            }
-        });
-        editMenu.add(deleteMenuItem);
-        editMenu.add(jSeparator2);
+            pasteMenuItem.setMnemonic('s');
+            pasteMenuItem.setText("Strategies ...");
+            pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    pasteMenuItemActionPerformed(evt);
+                }
+            });
+            editMenu.add(pasteMenuItem);
 
-        editPreferences.setText("Preferences ...");
-        editPreferences.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editPreferencesActionPerformed(evt);
-            }
-        });
-        editMenu.add(editPreferences);
+            deleteMenuItem.setMnemonic('d');
+            deleteMenuItem.setText("Traders ...");
+            deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    deleteMenuItemActionPerformed(evt);
+                }
+            });
+            editMenu.add(deleteMenuItem);
+            editMenu.add(jSeparator2);
 
-        menuBar.add(editMenu);
+            editPreferences.setMnemonic('p');
+            editPreferences.setText("Preferences ...");
+            editPreferences.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    editPreferencesActionPerformed(evt);
+                }
+            });
+            editMenu.add(editPreferences);
 
-        simMenu.setText("Sim");
+            menuBar.add(editMenu);
 
-        simMenuStart.setText("Start");
-        simMenuStart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simMenuStartActionPerformed(evt);
-            }
-        });
-        simMenu.add(simMenuStart);
+            simMenu.setMnemonic('s');
+            simMenu.setText("Sim");
 
-        simMenuPause.setText("Pause");
-        simMenuPause.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simMenuPauseActionPerformed(evt);
-            }
-        });
-        simMenu.add(simMenuPause);
+            simMenuStart.setMnemonic('s');
+            simMenuStart.setText("Start");
+            simMenuStart.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    simMenuStartActionPerformed(evt);
+                }
+            });
+            simMenu.add(simMenuStart);
 
-        simMenuStop.setText("Stop");
-        simMenuStop.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simMenuStopActionPerformed(evt);
-            }
-        });
-        simMenu.add(simMenuStop);
-        simMenu.add(jSeparator3);
+            simMenuPause.setMnemonic('p');
+            simMenuPause.setText("Pause");
+            simMenuPause.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    simMenuPauseActionPerformed(evt);
+                }
+            });
+            simMenu.add(simMenuPause);
 
-        randomSeed.setText("Random seed");
-        randomSeed.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                randomSeedActionPerformed(evt);
-            }
-        });
-        simMenu.add(randomSeed);
+            simMenuStop.setMnemonic('t');
+            simMenuStop.setText("Stop");
+            simMenuStop.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    simMenuStopActionPerformed(evt);
+                }
+            });
+            simMenu.add(simMenuStop);
+            simMenu.add(jSeparator3);
 
-        menuBar.add(simMenu);
+            randomSeed.setText("Random seed");
+            randomSeed.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    randomSeedActionPerformed(evt);
+                }
+            });
+            simMenu.add(randomSeed);
 
-        viewMenu.setText("View");
+            menuBar.add(simMenu);
 
-        viewTraderListCheckBox.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, 0));
-        viewTraderListCheckBox.setText("Traders");
-        viewTraderListCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewTraderListCheckBoxActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewTraderListCheckBox);
+            viewMenu.setMnemonic('v');
+            viewMenu.setText("View");
 
-        viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, 0));
-        viewRawOrderBook.setText("Level 3 Orde Book");
-        viewRawOrderBook.setToolTipText("");
-        viewRawOrderBook.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewRawOrderBookActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewRawOrderBook);
+            viewTraderListCheckBox.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, 0));
+            viewTraderListCheckBox.setMnemonic('t');
+            viewTraderListCheckBox.setText("Traders");
+            viewTraderListCheckBox.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    viewTraderListCheckBoxActionPerformed(evt);
+                }
+            });
+            viewMenu.add(viewTraderListCheckBox);
 
-        viewUnlimitedOrdes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, 0));
-        viewUnlimitedOrdes.setText("Market Orders View");
-        viewUnlimitedOrdes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewUnlimitedOrdesActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewUnlimitedOrdes);
+            viewRawOrderBook.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, 0));
+            viewRawOrderBook.setMnemonic('R');
+            viewRawOrderBook.setText("Level 3 Orde Book");
+            viewRawOrderBook.setToolTipText("");
+            viewRawOrderBook.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    viewRawOrderBookActionPerformed(evt);
+                }
+            });
+            viewMenu.add(viewRawOrderBook);
 
-        viewStopOrders.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 0));
-        viewStopOrders.setText("Stop Orders View");
-        viewStopOrders.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewStopOrdersActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewStopOrders);
+            viewUnlimitedOrdes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, 0));
+            viewUnlimitedOrdes.setText("Market Orders View");
+            viewUnlimitedOrdes.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    viewUnlimitedOrdesActionPerformed(evt);
+                }
+            });
+            viewMenu.add(viewUnlimitedOrdes);
 
-        viewLog.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, 0));
-        viewLog.setText("Log Window");
-        viewLog.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewLogActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewLog);
+            viewStopOrders.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 0));
+            viewStopOrders.setText("Stop Orders View");
+            viewStopOrders.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    viewStopOrdersActionPerformed(evt);
+                }
+            });
+            viewMenu.add(viewStopOrders);
 
-        viewTradingLog.setText("Trading Log");
-        viewTradingLog.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewTradingLogActionPerformed(evt);
-            }
-        });
-        viewMenu.add(viewTradingLog);
+            viewLog.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, 0));
+            viewLog.setText("Log Window");
+            viewLog.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    viewLogActionPerformed(evt);
+                }
+            });
+            viewMenu.add(viewLog);
 
-        menuBar.add(viewMenu);
+            viewTradingLog.setText("Trading Log");
+            viewTradingLog.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    viewTradingLogActionPerformed(evt);
+                }
+            });
+            viewMenu.add(viewTradingLog);
 
-        helpMenu.setText("Help");
+            menuBar.add(viewMenu);
 
-        aboutMenuItem.setText("About");
-        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aboutMenuItemActionPerformed(evt);
-            }
-        });
-        helpMenu.add(aboutMenuItem);
+            helpMenu.setMnemonic('h');
+            helpMenu.setText("Help");
 
-        menuBar.add(helpMenu);
+            aboutMenuItem.setMnemonic('a');
+            aboutMenuItem.setText("About");
+            aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    aboutMenuItemActionPerformed(evt);
+                }
+            });
+            helpMenu.add(aboutMenuItem);
 
-        setJMenuBar(menuBar);
+            menuBar.add(helpMenu);
 
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
+            setJMenuBar(menuBar);
+
+            pack();
+        }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);

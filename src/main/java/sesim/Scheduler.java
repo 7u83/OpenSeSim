@@ -30,7 +30,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -38,6 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.LockSupport;
+//import sesim.util.LinkedSet;
 
 /**
  * Scheduler class that manages and executes time-based simulation events.
@@ -65,7 +68,7 @@ public class Scheduler extends Thread {
     /**
      * Ordered map of events, keyed by their scheduled time (milliseconds).
      */
-    private final SortedMap<Long, LinkedHashSet<Event>> eventQueue
+    private final TreeMap<Long, LinkedHashSet<Event>> eventQueue
             = new TreeMap<>();
 
     /**
@@ -119,7 +122,7 @@ public class Scheduler extends Thread {
     public interface EventProcessor {
 
         void processEvent(long time, Event e);
-        
+
     }
 
     /**
@@ -196,13 +199,11 @@ public class Scheduler extends Thread {
 
     }
     ExecutorService executor = Executors.newFixedThreadPool(
-    Runtime.getRuntime().availableProcessors()  // Optimale Thread-Anzahl
-);
-    
-    
-    public Scheduler(){
-        this.executor = ForkJoinPool.commonPool();  // Oder newFixedThreadPool(cores)
+            Runtime.getRuntime().availableProcessors() // Optimale Thread-Anzahl
+    );
 
+    public Scheduler() {
+        this.executor = ForkJoinPool.commonPool();  // Oder newFixedThreadPool(cores)
 
     }
 
@@ -211,24 +212,22 @@ public class Scheduler extends Thread {
 
         protected EventProcessor eventProcessor;
 
-     //   public String name;
-
-     //   public long time;
+        //   public String name;
+        //   public long time;
         //   private final int id;
 
-  /*      public Event(EventProcessor e, long t) {
+        /*      public Event(EventProcessor e, long t) {
             eventProcessor = e;
             //     id = nextTimerTask.getAndAdd(1);
         //    time = t;
 
         }*/
-
         public Event(EventProcessor p) {
             this.eventProcessor = p;
             //id = nextTimerTask.getAndAdd(1);
         }
 
-       public Event() {
+        public Event() {
             eventProcessor = null;
         }
 
@@ -283,17 +282,30 @@ public class Scheduler extends Thread {
 
     public boolean getPause() {
         return pause;
+
+    }
+
+    Event pollFirst(LinkedHashSet<Event> s) {
+        Iterator<Event> it = s.iterator();
+        if (!it.hasNext()) {
+            return null;
+        }
+        Event e = it.next();
+        it.remove();
+        return e;
     }
 
     private long runEvents() {
 
-        if (pause)
+        if (pause) {
             return -1;
-        
+        }
+
         if (eventQueue.isEmpty()) {
             return -1;
         }
 
+        LinkedHashSet<Event> s = eventQueue.firstEntry().getValue();
         long t = eventQueue.firstKey();
 
         long ct;
@@ -315,28 +327,21 @@ public class Scheduler extends Thread {
             this.current_nanos = this.currentTimeMillis * 1000000.0;
         }
 
-        LinkedHashSet<Event> s = eventQueue.remove(t);
-
+        //LinkedHashSet<Event> s = 
         //  System.out.printf("TIME: %d %d \n",t, s.size());
-        for (Event e : s) {
+        Event e;
+        while ((e = pollFirst(s)) != null) {
             e.eventProcessor.processEvent(t, e);
         }
-        
 
-        
+        //        for (Event e : s) {
+        //            e.eventProcessor.processEvent(t, e);
+        //        }
+        eventQueue.remove(t);
+
         return 0;
 
     }
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
 
     class EmptyCtr implements EventProcessor {
 

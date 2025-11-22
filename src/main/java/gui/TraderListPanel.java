@@ -25,6 +25,7 @@
  */
 package gui;
 
+import static gui.TraderListPanel.Column.ID;
 import gui.tools.NummericCellRenderer;
 import gui.tools.PercentageCellRenderer;
 import gui.tools.PercentageValue;
@@ -32,6 +33,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.FontMetrics;
 import java.awt.Frame;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -40,14 +42,16 @@ import javax.swing.JDialog;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import static javax.swing.SwingConstants.RIGHT;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import sesim.Account;
 
 import sesim.AutoTraderInterface;
-
 
 /**
  *
@@ -58,21 +62,21 @@ public class TraderListPanel extends javax.swing.JPanel {
     DefaultTableModel model;
     Frame parentFrame = null;
     TimerTask updater;
-  
+
     // Definition of columns
-    public enum Column {
+    public static enum Column {
         ID("ID", null, Long.class),
-        NAME("Name", new NameCellRenderer() , Object.class),
+        NAME("Name", new NameCellRenderer(), Object.class),
         STATUS("Status", null, String.class),
-        SHARES("Shares", new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals()), Float.class),
-        MARGIN("Margin", new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals()), Float.class),
-        EQUITY("Equtiy", new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals()), Float.class),
-        FREEMARGIN("Free o Margin", new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals()), Float.class),
-        CASH("Cash", new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals()), Float.class),
+        SHARES("Shares", null, Float.class),
+        MARGIN("Margin", null, Float.class),
+        EQUITY("Equtiy", null, Float.class),
+        FREEMARGIN("Free Margin",null, Float.class),
+        CASH("Cash", null, Float.class),
         PNL("PnL", new PercentageCellRenderer(), PercentageValue.class); // Letzte Spalte
 
         public final String header;
-        public final TableCellRenderer renderer;
+        private TableCellRenderer renderer;
         public final Class cls;
 
         Column(String header, TableCellRenderer r, Class cls) {
@@ -80,13 +84,49 @@ public class TraderListPanel extends javax.swing.JPanel {
             renderer = r;
             this.cls = cls;
         }
+        
+        public TableCellRenderer getRenderer() {
+        if (renderer == null) {
+            switch (this) {
+                case SHARES:
+                    renderer = new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals());
+                    break;
+                case MARGIN:
+                case EQUITY:
+                case FREEMARGIN:
+                case CASH:
+                    renderer = new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals());
+                    break;
+                default:
+                    // renderer bleibt null oder schon gesetzt
+            }
+        }
+        return renderer;
+    }
 
     }
 
     public TraderListPanel(Frame parent) {
+
         this();
         parentFrame = parent;
 
+    }
+
+    Column[] columnList = Column.values();
+    
+    /*{
+        Column.ID, Column.NAME,Column.PNL
+    };*/
+
+    public TraderListPanel(Frame parent, Column[] columnList) {
+        initComponents();
+        if (Globals.sim == null) {
+            return;
+        }
+
+        this.columnList = columnList;
+        setupTable();
     }
 
     /**
@@ -98,16 +138,32 @@ public class TraderListPanel extends javax.swing.JPanel {
         if (Globals.sim == null) {
             return;
         }
+        setupTable();
 
+    }
+
+    private void setupTable() {
         model = new MyModel(Column.values());
         list.setModel(model);
 
         for (Column a : Column.values()) {
             list.getColumnModel().getColumn(a.ordinal()).setHeaderValue(a.header);
-            if (a.renderer != null) {
-                list.getColumnModel().getColumn(a.ordinal()).setCellRenderer(a.renderer);
-            }
+            list.getColumnModel().getColumn(a.ordinal()).setIdentifier(a);
+            
+     //       if (a.getRenderer() != null) {
+                list.getColumnModel().getColumn(a.ordinal()).setCellRenderer(a.getRenderer());
+     //      }
 
+        }
+
+        TableColumnModel colModel = list.getColumnModel();
+
+        for (int i = colModel.getColumnCount() - 1; i >= 0; i--) {
+            TableColumn col = colModel.getColumn(i);
+            Column columnEnum = (Column) col.getIdentifier(); // besser Identifier setzen
+            if (!Arrays.asList(columnList).contains(columnEnum)) {
+                colModel.removeColumn(col);
+            }
         }
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -122,10 +178,10 @@ public class TraderListPanel extends javax.swing.JPanel {
         int preferredWidth = textWidth + padding;
         int maxWidth = 100 * preferredWidth;
         // set width for id
-        list.getColumnModel().getColumn(Column.PNL.ordinal()).setPreferredWidth(preferredWidth);
+/*        list.getColumnModel().getColumn(Column.PNL.ordinal()).setPreferredWidth(preferredWidth);
         list.getColumnModel().getColumn(Column.PNL.ordinal()).setMinWidth(preferredWidth);
         list.getColumnModel().getColumn(Column.PNL.ordinal()).setMaxWidth(maxWidth);
-
+*/
         AtomicBoolean running = new AtomicBoolean(false);
         Timer timer = new Timer();
         updater = new TimerTask() {
@@ -145,7 +201,6 @@ public class TraderListPanel extends javax.swing.JPanel {
             }
         };
         timer.schedule(updater, 0, 1000);
-
     }
 
     final void updateModel() {
@@ -185,22 +240,73 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             //  float wealth = a.getShares() * price + a.getMoney();
             model.setValueAt(a.getEquity(), i, Column.EQUITY.ordinal());
-                      model.setValueAt(a.getMarginUsed(), i, Column.MARGIN.ordinal());
+            model.setValueAt(a.getMarginUsed(), i, Column.MARGIN.ordinal());
             model.setValueAt(a.getFreeMargin(), i, Column.FREEMARGIN.ordinal());
             model.setValueAt(new PercentageValue(a.getPerformance(price)), i, Column.PNL.ordinal());
 
         }
 
-        List l = list.getRowSorter().getSortKeys();
-        if (!l.isEmpty()) {
-            list.getRowSorter().allRowsChanged();
-        } else {
-            model.fireTableDataChanged();
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Long selectedTraderId = null;
+                int selectedViewRow = list.getSelectedRow();
+
+                // Überprüfe, ob überhaupt eine Zeile markiert ist
+                if (selectedViewRow != -1) {
+                    // Konvertiere die Ansichts-Zeilennummer in die Model-Zeilennummer
+                    int selectedModelRow = list.convertRowIndexToModel(selectedViewRow);
+
+                    // Hole die ID aus dem Model (Spalte Column.ID hat Index 0)
+                    Object value = model.getValueAt(selectedModelRow, Column.ID.ordinal());
+                    if (value instanceof Long) {
+                        selectedTraderId = (Long) value;
+                    } else if (value instanceof Integer) {
+                        // Da Sie Long.class im Enum verwenden, aber Integer bekommen könnten:
+                        selectedTraderId = ((Integer) value).longValue();
+                    }
+                }
+
+                List l = list.getRowSorter().getSortKeys();
+
+                if (!l.isEmpty()) {
+                    list.getRowSorter().allRowsChanged();
+                } else {
+                    model.fireTableDataChanged();
+                }
+
+                if (selectedTraderId != null) {
+                    // Durchlaufe das Model, um die Zeilennummer der ID zu finden
+                    for (int i = 0; i < model.getRowCount(); i++) {
+                        Object value = model.getValueAt(i, Column.ID.ordinal());
+                        Long currentId = null;
+                        if (value instanceof Long) {
+                            currentId = (Long) value;
+                        } else if (value instanceof Integer) {
+                            currentId = ((Integer) value).longValue();
+                        }
+
+                        if (selectedTraderId.equals(currentId)) {
+
+                            // Konvertiere die Model-Zeilennummer in die Ansichts-Zeilennummer
+                            int viewRow = list.convertRowIndexToView(i);
+
+                            // Setze die Markierung
+                            list.getSelectionModel().setSelectionInterval(viewRow, viewRow);
+
+                            // Optional: Scrolle zur markierten Zeile
+                  //          list.scrollRectToVisible(list.getCellRect(viewRow, 0, true));
+
+                            break; // Gefunden, Schleife verlassen
+                        }
+                    }
+                }
+
+            }
+
+        });
 
     }
-
-  
 
     public static class MyModel extends DefaultTableModel {
 
@@ -224,8 +330,6 @@ public class TraderListPanel extends javax.swing.JPanel {
         public Class getColumnClass(int columnIndex) {
             return def[columnIndex].cls;
         }
-        
-        
 
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -319,7 +423,6 @@ public class TraderListPanel extends javax.swing.JPanel {
         }
     }
 
-   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

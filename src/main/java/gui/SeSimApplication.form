@@ -559,7 +559,7 @@
             </Component>
             <Component class="gui.TraderListPanel" name="traderListPanel1">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new TraderListPanel(this)"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new TraderListPanel(this,&#xa;new TraderListPanel.Column[]  {&#xa;TraderListPanel.Column.ID,&#xa;TraderListPanel.Column.NAME,&#xa;TraderListPanel.Column.STATUS,&#xa;TraderListPanel.Column.EQUITY,&#xa;TraderListPanel.Column.PNL&#xa;&#xa;&#xa;})"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">

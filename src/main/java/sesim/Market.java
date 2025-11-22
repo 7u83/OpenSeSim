@@ -1187,7 +1187,7 @@ public class Market implements Asset {
 
     }
 
-    String symbol = "AAPL";
+    String symbol = "RBTN";
 
     public String getSymbol() {
         return symbol;
@@ -1388,14 +1388,11 @@ public class Market implements Asset {
                 Order buyer = ul_buy.first();
                 long price = seller.limit;
 
-                if (buyer.account.getOwner().getName().equals("Margin Bob-58")) {
-                    System.out.printf("Marginbob58\n");
-                }
 
                 long bvol = buyer.position.getTradableShares_Long(buyer.volume, price, buyer.leverage);
-                if (bvol < 0) {
+         /*       if (bvol < 0) {
                     System.out.printf("BVKN\n");
-                }
+                }*/
 
                 if (bvol <= 0) {
                     buyer.status = Order.CLOSED;
@@ -1524,13 +1521,14 @@ public class Market implements Asset {
                 break;
             }
 
-            if (p.account.getOwner().getName().equals("Margin Bob-0")) {
+        /*    if (p.account.getOwner().getName().equals("MBob-1500")) {
                 System.out.printf("BOB-0 long");
-            }
+            }*/
 
             boolean result = longStops.remove(p);
-            System.out.printf("Remove res: %b, p.od: %d, .stop: %d, size: %d\n", result, p.id, p.getStopPrice_Long(), longStops.size());
+          //  System.out.printf("Remove res: %b, p.od: %d, .stop: %d, size: %d\n", result, p.id, p.getStopPrice_Long(), longStops.size());
 
+           
             p.account.isLiquided = true;
             p.account.cancelAllOrders();
             //    System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.stopPrice);
@@ -1547,11 +1545,11 @@ public class Market implements Asset {
             if (price <= stopPrice) {
                 break;
             }
-            if (p.account.getOwner().getName().equals("Margin Bob-0")) {
-                System.out.printf("BOB-0 shortstop");
-            }
+//            if (p.account.getOwner().getName().equals("MBob-1500")) {
+//                System.out.printf("BOB-0 shortstop");
+//            }
             
-            System.out.printf("Stop slip %d\n",stopPrice-price);
+          //  System.out.printf("Stop slip %d\n",stopPrice-price);
 
             shortStops.remove(p);
             // System.out.printf("SHORT STOP REACHED %d\n",price);
@@ -1618,13 +1616,13 @@ public class Market implements Asset {
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-        if (logging) {
+/*        if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
-        }
+        }*/
 
         synchronized (executor) {
 
@@ -1664,13 +1662,13 @@ public class Market implements Asset {
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-        if (logging) {
+  /*      if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
-        }
+        }*/
 
         synchronized (executor) {
 

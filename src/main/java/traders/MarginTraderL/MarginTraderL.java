@@ -28,6 +28,7 @@ package traders.MarginTraderL;
 import org.json.JSONObject;
 import sesim.Account;
 import sesim.AutoTraderBase;
+import sesim.AutoTraderGui;
 import sesim.Market;
 import sesim.Order;
 import sesim.Position;
@@ -55,7 +56,7 @@ public class MarginTraderL extends AutoTraderBase
         long initialDelay = 0;
 
         // Additional random delay added to initialDelay (in milliseconds)
-        long initialDelayRange = 60000*120;
+        long initialDelayRange = 60000;
 
         // Leverage used for trades
         int leverage = 50;
@@ -69,31 +70,31 @@ public class MarginTraderL extends AutoTraderBase
         long maxFreeMarginUsage = 100;
 
         long minShortLimit = -20;
-        long maxShortLimit = +21;
+        long maxShortLimit = +20;
         long minLongDeviation = 1;
 
         long minLongLimit = -20;
-        long maxLongLimit = +21;
+        long maxLongLimit = +20;
         long minShortDeviation = 1;
 
-        long waitForFill = 30000;
+        long waitForFill = 60000;
         long waitforFillRange = 60000;
 
         long holdLongPositionTime = 30000;
-        long holdLongPositionTimeRange = 60000*120;
+        long holdLongPositionTimeRange = 60000 * 2;
 
         long holdShortPositionTime = 30000;
-        long holdShortPositionTimeRange = 60000*120;
+        long holdShortPositionTimeRange = 60000 * 2;
 
         long coolDownTime = 3000;
-        long coolDownTimeRange = 60000*10;
+        long coolDownTimeRange = 60000;
 
     }
     Config cfg = new Config();
 
     @Override
     public void start() {
-      //  sesim.Logger.info("Starting Margin Trader L");
+        //  sesim.Logger.info("Starting Margin Trader L");
         account.setListener(this);
         long initialDelay = Sim.random.nextLong(cfg.initialDelay + 1)
                 + Sim.random.nextLong(cfg.initialDelayRange + 1);
@@ -101,16 +102,23 @@ public class MarginTraderL extends AutoTraderBase
         sim.addEvent(sim.getCurrentTimeMillis() + initialDelay, NEXTTRADE);
     }
 
+   // long numEvents = 0;
+  //  long stopEvent = 152825;
+
     @Override
     public void processEvent(long time, Event e) {
-        
-        if (account.isLiquidated()){
+   /*     numEvents++;
+        if (getName().equals("MBob-30") && numEvents > stopEvent) {
+            System.out.printf("Its MBob-30 again\n");
+        }*/
+
+        if (account.isLiquidated()) {
             setStatus("Ruined/Liquidated");
             return;
         }
 
         if (e == NEXTTRADE) {
-          //  sesim.Logger.info("Margin Trader Starting trade");
+            //  sesim.Logger.info("Margin Trader Starting trade");
             nextTrade();
         }
         if (e == FILLTIMEOUT) {
@@ -128,7 +136,7 @@ public class MarginTraderL extends AutoTraderBase
         // Determine whether long or short and limit price
         byte type;
         long limit;
-     //   long price = account.getDefaultMarket().getBestPrice_0().getPrice_Long();
+        //   long price = account.getDefaultMarket().getBestPrice_0().getPrice_Long();
         long price = account.getDefaultMarket().getLastPrice_Long(); //.getPrice_Long();
 
         if (Sim.random.nextBoolean()) {
@@ -143,12 +151,11 @@ public class MarginTraderL extends AutoTraderBase
         long volume = margin * cfg.leverage / limit;
         submitTrade(type, volume, limit);
 
-        setStatus("Open %s- vol:%d", (type == Order.SELL ? "Short" : "Long"),volume);
+        setStatus("Open %s- vol:%d", (type == Order.SELL ? "Short" : "Long"), volume);
         isOpening = true;
 
-     //   sesim.Logger.info("My first trade uses %d margin and %d shares with %d limit\n", margin, volume, limit);
-     //   sesim.Logger.info("ORDER=%s", currentOrder.toString());
-
+        //   sesim.Logger.info("My first trade uses %d margin and %d shares with %d limit\n", margin, volume, limit);
+        //   sesim.Logger.info("ORDER=%s", currentOrder.toString());
     }
 
     void closeTrade(long volume) {
@@ -164,11 +171,11 @@ public class MarginTraderL extends AutoTraderBase
             limit = getRandomPrice_Long(price,
                     cfg.minShortLimit, cfg.maxShortLimit, cfg.minShortDeviation);
         }
-        
+
         isOpening = false;
         submitTrade(type, Math.abs(volume), limit);
-        
-        setStatus("Close %s, vol:%d", (type == Order.SELL ? "Long" : "Short"),volume);
+
+        setStatus("Close %s, vol:%d", (type == Order.SELL ? "Long" : "Short"), volume);
 
     }
 
@@ -184,8 +191,8 @@ public class MarginTraderL extends AutoTraderBase
 
     void submitTrade(byte type, long volume, long limit) {
         // Calulate time to wait for fill
-        waitForFill = sim.getCurrentTimeMillis()+cfg.waitForFill + 
-                Sim.random.nextLong(cfg.waitforFillRange + 1);
+        waitForFill = sim.getCurrentTimeMillis() + cfg.waitForFill
+                + Sim.random.nextLong(cfg.waitforFillRange + 1);
 
         sim.addEvent(waitForFill, FILLTIMEOUT);
 
@@ -235,6 +242,16 @@ public class MarginTraderL extends AutoTraderBase
     @Override
     public void accountUpdated(Account a, Order o) {
 
+//        String name = getName();
+
+  /*      if (getName().equals("MBob-30") && numEvents > stopEvent) {
+            System.out.printf("Its MBob-30 again\n");
+        }
+
+        if (account.getOrders().size() > 1) {
+            System.out.printf("ERROR %s\n", getName());
+        }*/
+
         if (currentOrder == null) {
             return;
         }
@@ -260,6 +277,11 @@ public class MarginTraderL extends AutoTraderBase
     @Override
     public void setConfig(JSONObject cfg) {
 
+    }
+    
+    @Override
+    public AutoTraderGui getGui(){
+        return new MarginTraderGui();
     }
 
 }
