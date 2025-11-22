@@ -26,7 +26,7 @@
 package traders.ManTrader;
 
 import gui.OpenOrdersList;
-import gui.tools.UpdateExecutor;
+import gui.util.UpdateExecutor;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Window;

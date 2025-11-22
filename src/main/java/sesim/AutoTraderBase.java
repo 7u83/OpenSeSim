@@ -173,7 +173,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
      * not produce a zero delta.
      * </p>
      *
-     * @param lastPrice the current price (in smallest currency unit, e.g.,
+     * @param value the current price (in smallest currency unit, e.g.,
      * cents)
      * @param minDeviation the minimum relative deviation (per mille, can be
      * negative)
@@ -183,13 +183,24 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
      * @return a randomly generated delta that can be added to lastPrice to get
      * a new price
      */
-    static public long getRandomPriceDelta_Long(long lastPrice,
+    static public long getRandomDelta_Long(long value,
             long minDeviation, long maxDeviation, long minAbsoluteDeviation) {
 
         // Calculate minimum and maximum delta based on relative deviations 
         // (per mille)
-        long minDelta = (lastPrice * minDeviation) / 1000;
-        long maxDelta = (lastPrice * maxDeviation) / 1000;
+        long product;
+        product = value * minDeviation;
+       long minDelta = (product >= 0)
+                ? (product + 5000) / 10000
+                : (product - 5000) / 10000;
+        //long minDelta = (value * minDeviation) / 10000;
+        
+        
+        product = value * maxDeviation;
+        long maxDelta = (product >= 0)
+                ? (product + 5000) / 10000
+                : (product - 5000) / 10000;
+        //long maxDelta = (value * maxDeviation) / 10000;
 
         // Ensure minimum delta is at least the absolute minimum
         if (Math.abs(minDelta) < minAbsoluteDeviation && minDeviation != 0) {
@@ -200,8 +211,8 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         }
 
         // Prevent negative price
-        if (minDelta + lastPrice < 0) {
-            minDelta = -lastPrice;
+        if (minDelta + value < 0) {
+            minDelta = -value;
         }
 
         // Calculate range of possible deltas
@@ -219,7 +230,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
      * parameters.
      * <p>
      * This function internally computes a random price delta using
-     * {@link #getRandomPriceDelta_Long(long, long, long, long)} and adds it to
+     * {@link #getRandomDelta_Long(long, long, long, long)} and adds it to
      * the last price. The resulting price is guaranteed to be at least 1
      * (cannot go below 1 unit).
      * </p>
@@ -236,11 +247,11 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
      */
     public static long getRandomPrice_Long(long lastPrice,
             long minDeviation, long maxDeviation, long minAbsDeviation) {
-        
+
         // Compute random delta for the last price
-        long delta = getRandomPriceDelta_Long(lastPrice,
+        long delta = getRandomDelta_Long(lastPrice,
                 minDeviation, maxDeviation, minAbsDeviation);
- 
+
         // Apply delta to last price
         long newPrice = lastPrice + delta;
 

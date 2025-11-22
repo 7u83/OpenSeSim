@@ -26,9 +26,9 @@
 package gui;
 
 import static gui.TraderListPanel.Column.ID;
-import gui.tools.NummericCellRenderer;
-import gui.tools.PercentageCellRenderer;
-import gui.tools.PercentageValue;
+import gui.util.NummericCellRenderer;
+import gui.util.PercentageCellRenderer;
+import gui.util.PercentageValue;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FontMetrics;

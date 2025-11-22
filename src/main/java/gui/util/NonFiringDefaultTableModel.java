@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui.tools;
+package gui.util;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;

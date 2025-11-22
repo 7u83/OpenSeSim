@@ -547,7 +547,7 @@ public class RandomTraderL extends AutoTraderBase
     private Order doBuy() {
         long money_avail = account.getMoney_Long();
         // how much money we ant to invest?
-        long money = getRandomPriceDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
+        long money = getRandomDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
         if (money>money_avail){
             money=money_avail;
         }
@@ -566,7 +566,7 @@ public class RandomTraderL extends AutoTraderBase
     private Order doSell() {
         long shares = account.getShares_Long();
         // how many shares we want to sell?
-        long volume = getRandomPriceDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
+        long volume = getRandomDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
         if (volume>shares){
             volume=shares;
         }

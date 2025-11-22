@@ -31,10 +31,9 @@ import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
 import sesim.Market;
 import sesim.Order;
-import sesim.Position;
-import sesim.Scheduler;
 import sesim.Scheduler.Event;
 import sesim.Sim;
+import static sesim.util.Math.toFixedLong;
 
 /**
  *
@@ -50,7 +49,7 @@ public class MarginTraderL extends AutoTraderBase
     long waitForFill = 0;
     private boolean isOpening = false;
 
-    private class Config {
+    class Config {
 
         // Time before the first execution (in milliseconds)
         long initialDelay = 0;
@@ -69,16 +68,16 @@ public class MarginTraderL extends AutoTraderBase
         // trade (percent * 10)
         long maxFreeMarginUsage = 100;
 
-        long minShortLimit = -20;
-        long maxShortLimit = +20;
+        long minShortLimit = -200;
+        long maxShortLimit = +200;
         long minLongDeviation = 1;
 
-        long minLongLimit = -20;
-        long maxLongLimit = +20;
+        long minLongLimit = -200;
+        long maxLongLimit = +200;
         long minShortDeviation = 1;
 
         long waitForFill = 60000;
-        long waitforFillRange = 60000;
+        long waitForFillRange = 60000;
 
         long holdLongPositionTime = 30000;
         long holdLongPositionTimeRange = 60000 * 2;
@@ -102,15 +101,8 @@ public class MarginTraderL extends AutoTraderBase
         sim.addEvent(sim.getCurrentTimeMillis() + initialDelay, NEXTTRADE);
     }
 
-   // long numEvents = 0;
-  //  long stopEvent = 152825;
-
     @Override
     public void processEvent(long time, Event e) {
-   /*     numEvents++;
-        if (getName().equals("MBob-30") && numEvents > stopEvent) {
-            System.out.printf("Its MBob-30 again\n");
-        }*/
 
         if (account.isLiquidated()) {
             setStatus("Ruined/Liquidated");
@@ -149,6 +141,7 @@ public class MarginTraderL extends AutoTraderBase
                     cfg.minShortLimit, cfg.maxShortLimit, cfg.minShortDeviation);
         }
         long volume = margin * cfg.leverage / limit;
+
         submitTrade(type, volume, limit);
 
         setStatus("Open %s- vol:%d", (type == Order.SELL ? "Short" : "Long"), volume);
@@ -192,7 +185,7 @@ public class MarginTraderL extends AutoTraderBase
     void submitTrade(byte type, long volume, long limit) {
         // Calulate time to wait for fill
         waitForFill = sim.getCurrentTimeMillis() + cfg.waitForFill
-                + Sim.random.nextLong(cfg.waitforFillRange + 1);
+                + Sim.random.nextLong(cfg.waitForFillRange + 1);
 
         sim.addEvent(waitForFill, FILLTIMEOUT);
 
@@ -233,7 +226,6 @@ public class MarginTraderL extends AutoTraderBase
             return;
         }
 
-        setStatus("Hold Long");
         long c = cfg.coolDownTime + Sim.random.nextLong(cfg.coolDownTimeRange + 1);
         sim.addEvent(sim.getCurrentTimeMillis() + c, NEXTTRADE);
         setStatus("Cool Down %.1f", c / 1000f);
@@ -242,21 +234,7 @@ public class MarginTraderL extends AutoTraderBase
     @Override
     public void accountUpdated(Account a, Order o) {
 
-//        String name = getName();
-
-  /*      if (getName().equals("MBob-30") && numEvents > stopEvent) {
-            System.out.printf("Its MBob-30 again\n");
-        }
-
-        if (account.getOrders().size() > 1) {
-            System.out.printf("ERROR %s\n", getName());
-        }*/
-
-        if (currentOrder == null) {
-            return;
-        }
-
-        if (currentOrder.getStatus() != Order.CLOSED) {
+        if (o.getStatus() != Order.CLOSED) {
             return;
         }
         currentOrder = null;
@@ -271,17 +249,52 @@ public class MarginTraderL extends AutoTraderBase
 
     @Override
     public JSONObject getConfig() {
-        return new JSONObject();
+        JSONObject cfg = new JSONObject();
+        cfg.put("initial_delay", (double) (this.cfg.initialDelay) / 1000.0);
+        cfg.put("initial_delay_range", (double) (this.cfg.initialDelayRange) / 1000.0);
+        cfg.put("min_short_limit", (double) (this.cfg.minShortLimit) / 100.0);
+        cfg.put("max_short_limit", (double) (this.cfg.maxShortLimit) / 100.0);
+        cfg.put("min_long_limit", (double) (this.cfg.minLongLimit) / 100.0);
+        cfg.put("max_long_limit", (double) (this.cfg.maxLongLimit) / 100.0);
+        cfg.put("wait_for_fill", (double) (this.cfg.waitForFill) / 1000.0);
+        cfg.put("wait_for_fill_range", (double) (this.cfg.waitForFillRange) / 1000.0);
+
+        cfg.put("hold_short_position_time", (double) (this.cfg.holdShortPositionTime)/1000.0);
+        cfg.put("hold_short_position_time_range", (double) (this.cfg.holdShortPositionTimeRange)/1000.0);
+        cfg.put("hold_long_position_time", (double) (this.cfg.holdLongPositionTime)/1000.0);
+        cfg.put("hold_long_position_time_range", (double) (this.cfg.holdLongPositionTimeRange)/1000.0);
+        cfg.put("cool_down_time", (double) (this.cfg.coolDownTime)/1000.0);
+        cfg.put("cool_down_time_range", (double) (this.cfg.coolDownTimeRange)/1000.0);
+
+        cfg.put("leverage", this.cfg.leverage);
+        return cfg;
     }
 
     @Override
     public void setConfig(JSONObject cfg) {
+        this.cfg.initialDelay = (long) (1000 * cfg.optDouble("initial_delay", 0.0));
+        this.cfg.initialDelayRange = (long) (1000 * cfg.optDouble("initial_delay_range", 10.0));
+        this.cfg.minShortLimit = toFixedLong(cfg.optDouble("min_short_limit", -2.0), 100);
+        this.cfg.maxShortLimit = toFixedLong(cfg.optDouble("max_short_limit", 2.0), 100);
+        this.cfg.minLongLimit = toFixedLong(cfg.optDouble("min_long_limit", -2.0), 100);
+        this.cfg.maxLongLimit = toFixedLong(cfg.optDouble("max_long_limit", 2.0), 100);
+        this.cfg.waitForFill = toFixedLong(cfg.optDouble("wait_for_fill", 10), 1000);
+        this.cfg.waitForFillRange = toFixedLong(cfg.optDouble("wait_for_fill_range", 10), 1000);
+
+        this.cfg.holdShortPositionTime = toFixedLong(cfg.optDouble("hold_short_position_time", 60), 1000);
+        this.cfg.holdShortPositionTimeRange = toFixedLong(cfg.optDouble("hold_short_position_time_range", 120), 1000);
+        this.cfg.holdLongPositionTime = toFixedLong(cfg.optDouble("hold_long_position_time", 60), 1000);
+        this.cfg.holdLongPositionTimeRange = toFixedLong(cfg.optDouble("hold_long_position_time_range", 120), 1000);
+        this.cfg.coolDownTime = toFixedLong(cfg.optDouble("cool_down_time", 30), 1000);
+        this.cfg.coolDownTimeRange = toFixedLong(cfg.optDouble("cool_down_time_range", 60), 1000);
+
+        this.cfg.leverage = cfg.optInt("leverage", 50);
 
     }
-    
+
     @Override
-    public AutoTraderGui getGui(){
-        return new MarginTraderGui();
+    public AutoTraderGui getGui() {
+        return new MarginTraderGui(cfg);
     }
 
 }

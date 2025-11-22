@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui.tools;
+package gui.util;
 
 import java.awt.Component;
 import java.text.DecimalFormat;
@@ -62,7 +62,7 @@ public class NummericCellRenderer extends DefaultTableCellRenderer {
         this.setHorizontalAlignment(RIGHT);
     }
     
-    @Override
+/*    @Override
     public Component getTableCellRendererComponent(
             JTable table, Object value, boolean isSelected,
             boolean hasFocus, int row, int column) {
@@ -75,9 +75,43 @@ public class NummericCellRenderer extends DefaultTableCellRenderer {
 
         // Format the cell value as required
         value = formatter.format((Number) value);
+        
+        
+        
+        
+        
 
         // And pass it on to parent class
         return super.getTableCellRendererComponent(
                 table, value, isSelected, hasFocus, row, column);
+    }*/
+    
+    @Override
+    public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected,
+            boolean hasFocus, int row, int column) {
+
+        if (!(value instanceof Number)) {
+            return super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+        }
+
+        Number number = (Number) value;
+        String text;
+
+        double val = number.doubleValue();
+        if (Math.abs(val) >= 1_000_000_000) {
+            // Milliarden
+            text = formatter.format(val / 1_000_000_000) + "B";
+        } else if (Math.abs(val) >= 1_000_000) {
+            // Millionen
+            text = formatter.format(val / 1_000_000) + "M";
+        } else {
+            // normale Darstellung
+            text = formatter.format(val);
+        }
+
+        return super.getTableCellRendererComponent(
+                table, text, isSelected, hasFocus, row, column);
     }
 }

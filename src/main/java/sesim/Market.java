@@ -238,10 +238,10 @@ public class Market implements Asset {
                 return d > 0 ? 1 : -1;
             }
 
-            d = right.initial_volume - left.initial_volume;
+    /*        d = right.initial_volume - left.initial_volume;
             if (d != 0) {
                 return d > 0 ? 1 : -1;
-            }
+            }*/
 
             if (left.id < right.id) {
                 return -1;
@@ -1327,7 +1327,9 @@ public class Market implements Asset {
         updateOHLCData(q);
         updateQuoteReceivers(q);
     }
-
+    
+    long t_lastPrice = 0;
+    
     /**
      *
      */
@@ -1450,11 +1452,15 @@ public class Market implements Asset {
             // There is a match, calculate price and volume
             long price = b.id < a.id ? b.limit : a.limit;
             long volume = b.volume >= a.volume ? a.volume : b.volume;
+            
+            //price = (b.limit + a.limit) / 2;
 
             finishTrade(b, a, price, volume);
             volume_total += volume;
             money_total += price * volume;
 
+     //      this.t_lastPrice=price;
+            
 //            num_trades++;
             //      statistics.trades++;
             this.checkSLOrders(price);
@@ -1468,6 +1474,8 @@ public class Market implements Asset {
         q.price = money_total / volume_total;
         q.volume = volume_total;
         q.time = sim.scheduler.getCurrentTimeMillis();
+        
+//q.price=this.t_lastPrice;
 
         addQuoteToHistory(q);
 

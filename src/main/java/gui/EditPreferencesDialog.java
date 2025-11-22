@@ -76,7 +76,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         String dataDir = Globals.prefs_new.get(Globals.DATADIR, null);
         if (dataDir == null) {
             String userHome = System.getProperty("user.home", "");
-            Path path = Paths.get(userHome, ".sesim");
+            Path path = Paths.get(userHome, ".opensesim");
             dataDir = path.toString();
         }
 

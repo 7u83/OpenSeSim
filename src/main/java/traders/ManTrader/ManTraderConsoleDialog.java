@@ -26,7 +26,7 @@
 package traders.ManTrader;
 
 import gui.EscDialog;
-import gui.tools.UpdateExecutor;
+import gui.util.UpdateExecutor;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import sesim.Account;

@@ -54,8 +54,8 @@ public class RandomTraderM extends AutoTraderBase
     public long minAmountToBuyDeviation = 0;
     public long minAmountToSellDeviation = 0;
 
-    public long[] buyLimit = {-20, 20};
-    public long[] sellLimit = {-20, 20};
+    public long[] buyLimit = {-200, 200};
+    public long[] sellLimit = {-200, 200};
 
     public long minBuyDeviation = 1;
     public long minSellDeviation = 1;
@@ -146,7 +146,7 @@ public class RandomTraderM extends AutoTraderBase
 
             if (account.getShares_Long() < this.bankrupt_shares && account.getMoney_Long() < this.bankrupt_cash) {
                 setStatus("Ruined");
-            
+                return;
             }
 
             if (currentOrder == null) {
@@ -192,23 +192,23 @@ public class RandomTraderM extends AutoTraderBase
 //        cfg.put(AMOUNT_TO_BUY, amountToBuy);
 //        cfg.put(AMOUNT_TO_SELL, amountToSell);
         fields = new double[2];
-        fields[0] = Math.round((amountToBuy[0] / 10.0) * 10) / 10.0;
-        fields[1] = Math.round((amountToBuy[1] / 10.0) * 10) / 10.0;
+        fields[0] = Math.round((amountToBuy[0] / 100.0) * 10) / 10.0;
+        fields[1] = Math.round((amountToBuy[1] / 100.0) * 10) / 10.0;
         cfg.put(AMOUNT_TO_BUY, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((amountToSell[0] / 10.0) * 10) / 10.0;
-        fields[1] = Math.round((amountToSell[1] / 10.0) * 10) / 10.0;
+        fields[0] = Math.round((amountToSell[0] / 100.0) * 10) / 10.0;
+        fields[1] = Math.round((amountToSell[1] / 100.0) * 10) / 10.0;
         cfg.put(AMOUNT_TO_SELL, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((buyLimit[0] / 10.0) * 10) / 10.0;
-        fields[1] = Math.round((buyLimit[1] / 10.0) * 10) / 10.0;
+        fields[0] = Math.round((buyLimit[0] / 100.0) * 10) / 10.0;
+        fields[1] = Math.round((buyLimit[1] / 100.0) * 10) / 10.0;
         cfg.put(BUY_LIMIT, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((sellLimit[0] / 10.0) * 10) / 10.0;
-        fields[1] = Math.round((sellLimit[1] / 10.0) * 10) / 10.0;
+        fields[0] = Math.round((sellLimit[0] / 100.0) * 10) / 10.0;
+        fields[1] = Math.round((sellLimit[1] / 100.0) * 10) / 10.0;
         cfg.put(SELL_LIMIT, fields);
 
         fields = new double[2];
@@ -295,17 +295,17 @@ public class RandomTraderM extends AutoTraderBase
 
             //amountToBuy = to_float(cfg.getJSONArray(AMOUNT_TO_BUY));
             //amountToSell = to_float(cfg.getJSONArray(AMOUNT_TO_SELL));
-            amountToBuy[0] = (long) (10 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(0));
-            amountToBuy[1] = (long) (10 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(1));
+            amountToBuy[0] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(0));
+            amountToBuy[1] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(1));
 
-            amountToSell[0] = (long) (10 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(0));
-            amountToSell[1] = (long) (10 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(1));
+            amountToSell[0] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(0));
+            amountToSell[1] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(1));
 
-            buyLimit[0] = (long) (10 * cfg.getJSONArray(BUY_LIMIT).getDouble(0));
-            buyLimit[1] = (long) (10 * cfg.getJSONArray(BUY_LIMIT).getDouble(1));
+            buyLimit[0] = (long) (100 * cfg.getJSONArray(BUY_LIMIT).getDouble(0));
+            buyLimit[1] = (long) (100 * cfg.getJSONArray(BUY_LIMIT).getDouble(1));
 
-            sellLimit[0] = (long) (10 * cfg.getJSONArray(SELL_LIMIT).getDouble(0));
-            sellLimit[1] = (long) (10 * cfg.getJSONArray(SELL_LIMIT).getDouble(1));
+            sellLimit[0] = (long) (100 * cfg.getJSONArray(SELL_LIMIT).getDouble(0));
+            sellLimit[1] = (long) (100 * cfg.getJSONArray(SELL_LIMIT).getDouble(1));
 
             buyOrderTimeout[0] = (long) (1000 * cfg.getJSONArray(BUY_ORDER_TIMEOUT).getDouble(0));
             buyOrderTimeout[1] = (long) (1000 * cfg.getJSONArray(BUY_ORDER_TIMEOUT).getDouble(1));
@@ -583,7 +583,7 @@ public class RandomTraderM extends AutoTraderBase
     private Order doBuy() {
         long money_avail = account.getMoney_Long();
         // how much money we ant to invest?
-        long money = getRandomPriceDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
+        long money = getRandomDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
         if (money > money_avail) {
             money = money_avail;
         }
@@ -602,7 +602,7 @@ public class RandomTraderM extends AutoTraderBase
     private Order doSell() {
         long shares = account.getShares_Long();
         // how many shares we want to sell?
-        long volume = getRandomPriceDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
+        long volume = getRandomDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
         if (volume > shares) {
             volume = shares;
         }

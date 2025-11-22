@@ -56,17 +56,17 @@ public class RandomTraderMGui extends AutoTraderGui {
         //  this.buyVolMax.setValue(cfg.amountToBuy[1]);
         //  this.sellVolMin.setValue(cfg.amountToSell[0]);
 //        this.sellVolMax.setValue(cfg.amountToSell[1]);
-        this.buyVolMin.setValue((Float) (Math.round((cfg.amountToBuy[0] / 10f) * 10f) / 10f));
-        this.buyVolMax.setValue((Float) (Math.round((cfg.amountToBuy[1] / 10f) * 10f) / 10f));
+        this.buyVolMin.setValue((Float) (Math.round((cfg.amountToBuy[0] / 100f) * 10f) / 10f));
+        this.buyVolMax.setValue((Float) (Math.round((cfg.amountToBuy[1] / 100f) * 10f) / 10f));
 
-        this.sellVolMin.setValue((Float) (Math.round((cfg.amountToSell[0] / 10f) * 10f) / 10f));
-        this.sellVolMax.setValue((Float) (Math.round((cfg.amountToSell[1] / 10f) * 10f) / 10f));
+        this.sellVolMin.setValue((Float) (Math.round((cfg.amountToSell[0] / 100f) * 10f) / 10f));
+        this.sellVolMax.setValue((Float) (Math.round((cfg.amountToSell[1] / 100f) * 10f) / 10f));
 
-        this.buyLimitMin.setValue((Float) (Math.round((cfg.buyLimit[0] / 10f) * 10f) / 10f));
-        this.buyLimitMax.setValue((Float) (Math.round((cfg.buyLimit[1] / 10f) * 10f) / 10f));
+        this.buyLimitMin.setValue((Float) (Math.round((cfg.buyLimit[0] / 100f) * 100f) / 100f));
+        this.buyLimitMax.setValue((Float) (Math.round((cfg.buyLimit[1] / 100f) * 100f) / 100f));
 
-        this.sellLimitMin.setValue((Float) (Math.round((cfg.sellLimit[0] / 10f) * 10f) / 10f));
-        this.sellLimitMax.setValue((Float) (Math.round((cfg.sellLimit[1] / 10f) * 10f) / 10f));
+        this.sellLimitMin.setValue((Float) (Math.round((cfg.sellLimit[0] / 100f) * 100f) / 100f));
+        this.sellLimitMax.setValue((Float) (Math.round((cfg.sellLimit[1] / 100f) * 100f) / 100f));
 
         // this.buyWaitMin.setValue(cfg.buy_wait[0]);
         //  this.buyWaitMax.setValue(cfg.buy_wait[1]);
@@ -111,17 +111,17 @@ public class RandomTraderMGui extends AutoTraderGui {
         cfg.amountToSell[0] = (Float) this.sellVolMin.getValue();
         cfg.amountToSell[1] = (Float) this.sellVolMax.getValue();*/
 
-        cfg.amountToBuy[0] = (long) (10f * (Float) this.buyVolMin.getValue());
-        cfg.amountToBuy[1] = (long) (10f * (Float) this.buyVolMax.getValue());
+        cfg.amountToBuy[0] = (long) (100f * (Float) this.buyVolMin.getValue());
+        cfg.amountToBuy[1] = (long) (100f * (Float) this.buyVolMax.getValue());
 
-        cfg.amountToSell[0] = (long) (10f * (Float) this.sellVolMin.getValue());
-        cfg.amountToSell[1] = (long) (10f * (Float) this.sellVolMax.getValue());
+        cfg.amountToSell[0] = (long) (100f * (Float) this.sellVolMin.getValue());
+        cfg.amountToSell[1] = (long) (100f * (Float) this.sellVolMax.getValue());
 
-        cfg.buyLimit[0] = (long) (10f * (Float) this.buyLimitMin.getValue());
-        cfg.buyLimit[1] = (long) (10f * (Float) this.buyLimitMax.getValue());
+        cfg.buyLimit[0] = (long) (100f * (Float) this.buyLimitMin.getValue());
+        cfg.buyLimit[1] = (long) (100f * (Float) this.buyLimitMax.getValue());
 
-        cfg.sellLimit[0] = (long) (10f * (Float) this.sellLimitMin.getValue());
-        cfg.sellLimit[1] = (long) (10f * (Float) this.sellLimitMax.getValue());
+        cfg.sellLimit[0] = (long) (100f * (Float) this.sellLimitMin.getValue());
+        cfg.sellLimit[1] = (long) (100f * (Float) this.sellLimitMax.getValue());
 
         cfg.buyOrderTimeout[0] = (long) (1000f * (Float) this.buyWaitMin.getValue());
         cfg.buyOrderTimeout[1] = (long) (1000f * (Float) this.buyWaitMax.getValue());
@@ -462,7 +462,7 @@ public class RandomTraderMGui extends AutoTraderGui {
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(moodynessPannelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(moodinessSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                            .addComponent(moodinessSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
                             .addComponent(moodFrequencySpinner)))))
         );
         moodynessPannelLayout.setVerticalGroup(
@@ -522,16 +522,15 @@ public class RandomTraderMGui extends AutoTraderGui {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(moodynessPannel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(12, 12, 12))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -541,9 +540,9 @@ public class RandomTraderMGui extends AutoTraderGui {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(63, 63, 63)
                         .addComponent(moodynessPannel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

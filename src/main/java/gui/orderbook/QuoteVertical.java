@@ -26,7 +26,7 @@
 package gui.orderbook;
 
 import gui.Globals;
-import gui.tools.NummericCellRenderer;
+import gui.util.NummericCellRenderer;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;

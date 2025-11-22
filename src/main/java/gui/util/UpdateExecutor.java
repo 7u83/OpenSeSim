@@ -23,53 +23,55 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package gui.tools;
+package gui.util;
 
-import java.awt.Color;
-import java.awt.Component;
-import javax.swing.JTable;
-import static javax.swing.SwingConstants.RIGHT;
-import javax.swing.table.DefaultTableCellRenderer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
  * @author tube
  */
-    public class PercentageCellRenderer extends DefaultTableCellRenderer {
+public class UpdateExecutor {
 
-        public PercentageCellRenderer() {
-            setHorizontalAlignment(RIGHT);
-        }
+    volatile boolean busy;
+    volatile boolean update = true;
+    private int sleepTime=50;
 
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-
-            // value ist jetzt PerfValue!
-            PercentageValue perf = (PercentageValue) value;
-            float performance = perf.getValue();
-
-            Component c = super.getTableCellRendererComponent(
-                    table, perf.toString(), isSelected, hasFocus, row, column);
-
-            if (!isSelected) {
-                if (performance > 0) {
-                    setForeground(new Color(0, 100, 0));
-                } else if (performance < 0) {
-                    setForeground(Color.RED);
-                } else {
-                    setForeground(table.getForeground());
-                }
-                /*                Font defaultFont = table.getFont();
-                if (Math.abs(performance) > 10) {
-
-                    setFont(defaultFont.deriveFont(Font.BOLD));
-                } else {
-                    setFont(defaultFont);
-                }*/
-
-            }
-
-            return c;
-        }
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    
+    public UpdateExecutor(){}
+    public UpdateExecutor(int sleepTime){
+        this.sleepTime=sleepTime;
     }
+    
+
+    public void update(Runnable r) {
+
+        if (busy) {
+            update = true;
+            return;
+        }
+        busy = true;
+        update = true;
+
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (update) {
+                        update = false;
+                        r.run();
+                        try {
+                            Thread.sleep(sleepTime);   // update rate is limited 50 Hz
+                        } catch (InterruptedException e) {
+                        }
+                    }
+
+                } finally {
+                    busy = false;
+                }
+            }
+        });
+    }
+}

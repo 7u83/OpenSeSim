@@ -25,9 +25,9 @@
  */
 package gui;
 
-import gui.tools.NummericCellRenderer;
-import gui.tools.PercentageCellRenderer;
-import gui.tools.UpdateExecutor;
+import gui.util.NummericCellRenderer;
+import gui.util.PercentageCellRenderer;
+import gui.util.UpdateExecutor;
 import java.util.Map;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -95,7 +95,7 @@ public class PositionsListPanel extends javax.swing.JPanel {
                                 p.getEntryPrice(),
                                 p.getEquityValue(),
                                 p.getStopPrice(),
-                                new gui.tools.PercentageValue(p.getPnLPercent())
+                                new gui.util.PercentageValue(p.getPnLPercent())
                             };
                             model.addRow(rowData);
                         }

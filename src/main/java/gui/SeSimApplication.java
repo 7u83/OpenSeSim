@@ -83,11 +83,10 @@ public class SeSimApplication extends javax.swing.JFrame {
     public SeSimApplication() {
 
         initComponents();
-        
-               ToolTipManager.sharedInstance().setInitialDelay(200); // Zeit bis Tooltip erscheint (ms)
+
+        ToolTipManager.sharedInstance().setInitialDelay(200); // Zeit bis Tooltip erscheint (ms)
         ToolTipManager.sharedInstance().setDismissDelay(50000); // Zeit bis Tooltip verschwindet (ms)
         ToolTipManager.sharedInstance().setReshowDelay(200);   // Zeit zwischen Tooltips (ms)
-
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] screens = ge.getScreenDevices();
@@ -127,7 +126,6 @@ public class SeSimApplication extends javax.swing.JFrame {
             // Simuliere X-Button-Klick
             logDialog.dispatchEvent(new WindowEvent(logDialog, WindowEvent.WINDOW_CLOSING));
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
-
 
         HelpBroker hb = AppHelp.getHelpBroker();
         HelpSet hs = AppHelp.getHelpSet();
@@ -608,7 +606,6 @@ public class SeSimApplication extends javax.swing.JFrame {
             pauseSim();
             return;
         }
-        
 
         this.runButton.setEnabled(false);
         this.stopButton.setEnabled(true);
@@ -616,17 +613,15 @@ public class SeSimApplication extends javax.swing.JFrame {
         //Globals.sim.getExchange().terminate();
         Globals.sim.reset();
         Globals.sim.startTraders(Globals.getConfig());
-        
+
         this.setTradingLogFile();
-                        try {
+        try {
             Globals.sim.getExchange().setTradingLog(tradingLogCheckBox.isSelected());
         } catch (FileNotFoundException ex) {
-            sesim.Logger.error("Cannot write log %s: %s",logFileName, ex.getMessage());
+            sesim.Logger.error("Cannot write log %s: %s", logFileName, ex.getMessage());
             tradingLogCheckBox.setSelected(false);
         }
 
-        
-        
         Globals.sim.setPause(false);
         Globals.sim.startScheduler();
 
@@ -798,7 +793,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             FileFilter selected_filter = fc.getFileFilter();
             if (selected_filter == sesim_filter) {
-               // System.out.printf("Filter", selected_filter.toString());
+                // System.out.printf("Filter", selected_filter.toString());
                 if (!fn.toLowerCase().endsWith("." + Globals.SESIM_FILEEXTENSION)) {
                     f = new File(fn + "." + Globals.SESIM_FILEEXTENSION);
                 }
@@ -904,7 +899,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                         public void windowClosing(WindowEvent e) {
                             super.windowClosing(e);
 
-                          //  System.out.printf("Closingn");
+                            //  System.out.printf("Closingn");
                             rawOrderBookDialog.dispose();
                             rawOrderBookDialog.stop();
                             rawOrderBookDialog = null;
@@ -947,7 +942,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                 traderListDialog.setVisible(true);
             } else if (traderListDialog != null) {
-              //  System.out.printf("Set visible = false\n");
+                //  System.out.printf("Set visible = false\n");
                 traderListDialog.setVisible(false);
             }
         });
@@ -995,7 +990,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                         public void windowClosing(WindowEvent e) {
                             super.windowClosing(e);
 
-         //                   System.out.printf("Closingn");
+                            //                   System.out.printf("Closingn");
                             unlimitedOrdersDialog.dispose();
                             unlimitedOrdersDialog.stop();
                             unlimitedOrdersDialog = null;
@@ -1007,7 +1002,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                 unlimitedOrdersDialog.setVisible(true);
             } else if (unlimitedOrdersDialog != null) {
-            //    System.out.printf("Set visible = false\n");
+                //    System.out.printf("Set visible = false\n");
                 unlimitedOrdersDialog.setVisible(false);
 
             }
@@ -1036,7 +1031,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                         public void windowClosing(WindowEvent e) {
                             super.windowClosing(e);
 
-                      //      System.out.printf("Closingn");
+                            //      System.out.printf("Closingn");
                             stopOrderBookDialog.dispose();
                             stopOrderBookDialog.stop();
                             stopOrderBookDialog = null;
@@ -1048,7 +1043,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                 stopOrderBookDialog.setVisible(true);
             } else if (unlimitedOrdersDialog != null) {
-              //  System.out.printf("Set visible = false\n");
+                //  System.out.printf("Set visible = false\n");
                 stopOrderBookDialog.setVisible(false);
 
             }
@@ -1073,47 +1068,44 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_viewLogActionPerformed
 
-     String logFileName=null;
-    void setTradingLogFile(){
-        
-    
-           String logDir = Globals.prefs_new.get(Globals.DATADIR, "");
+    String logFileName = null;
+
+    void setTradingLogFile() {
+
+        String logDir = Globals.prefs_new.get(Globals.DATADIR, "");
         Path directoryPath = Paths.get(logDir);
-       
 
         if (Files.notExists(directoryPath)) {
             try {
                 Files.createDirectories(directoryPath);
-                
-                
+
             } catch (IOException e) {
-                sesim.Logger.error("Creating data directory %s: %s",logDir, e.getMessage());
+                sesim.Logger.error("Creating data directory %s: %s", logDir, e.getMessage());
                 this.tradingLogCheckBox.setSelected(false);
                 return;
             }
         }
-        
-        logFileName=directoryPath.resolve("tradinglog.dat").toString();
+
+        logFileName = directoryPath.resolve("tradinglog.dat").toString();
         Globals.sim.getExchange().setTradingLogFile(logFileName);
-    }    
-    
-    
+    }
+
+
     private void tradingLogCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tradingLogCheckBoxActionPerformed
-        
+
         try {
             Globals.sim.getExchange().setTradingLog(tradingLogCheckBox.isSelected());
         } catch (FileNotFoundException ex) {
-            sesim.Logger.error("Cannot write log %s: %s",logFileName, ex.getMessage());
+            sesim.Logger.error("Cannot write log %s: %s", logFileName, ex.getMessage());
             tradingLogCheckBox.setSelected(false);
         }
-        
+
     }//GEN-LAST:event_tradingLogCheckBoxActionPerformed
 
     TradingLogDialog tradingLogDialog = null;
-    
+
     private void viewTradingLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTradingLogActionPerformed
         javax.swing.SwingUtilities.invokeLater(() -> {
-            
 
             if (this.viewTradingLog.getState()) {
                 if (tradingLogDialog == null) {
@@ -1131,7 +1123,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                 tradingLogDialog.setLocationRelativeTo(SeSimApplication.this);
                 tradingLogDialog.setVisible(true);
             } else if (tradingLogDialog != null) {
-              //  System.out.printf("Set visible = false\n");
+                //  System.out.printf("Set visible = false\n");
                 tradingLogDialog.setVisible(false);
             }
         });
