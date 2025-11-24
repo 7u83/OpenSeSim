@@ -85,7 +85,22 @@
             <version>5.10.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        
+
+    
     </dependencies>
+
+  
     <build>
         <plugins>
             <plugin>
@@ -131,7 +146,8 @@
                         <version>3.5.0</version>
                         <executions>
                             <execution>
-                                <id>create-dist-jar</id> <phase>package</phase>
+                                <id>create-dist-jar</id> 
+                                <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
@@ -142,18 +158,18 @@
                                             <mainClass>gui.SeSimApplication</mainClass>
                                         </transformer>
                                     </transformers>
-                                                    <filters>
-                    <filter>
-                        <artifact>*:*</artifact>
-                        <excludes>
-                            <exclude>META-INF/versions/**</exclude>
-                            <exclude>META-INF/MANIFEST.MF</exclude>
-                            <exclude>META-INF/*.SF</exclude>
-                            <exclude>META-INF/*.DSA</exclude>
-                            <exclude>META-INF/*.RSA</exclude>
-                        </excludes>
-                    </filter>
-                </filters>
+                                    <filters>
+                                        <filter>
+                                            <artifact>*:*</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/versions/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                                <exclude>META-INF/*.SF</exclude>
+                                                <exclude>META-INF/*.DSA</exclude>
+                                                <exclude>META-INF/*.RSA</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>

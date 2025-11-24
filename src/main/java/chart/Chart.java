@@ -172,7 +172,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     /**
      * Background color of X-legend
      */
-    protected Color xl_bgcolor = Color.white;
+    protected Color xl_bgcolor = Globals.colors.bg;
 
     /**
      * Height of X-legend
@@ -361,7 +361,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         g.setColor(cur);
     }
 
-    private void drawCandleItem(DrawCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+    private void drawCandleItem(DrawCtx ctx, SubChartDef d, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
 
         //    System.out.printf("Draw ohlc: %f %f %f %f\n", i.getOpen(), i.getHigh(),i.getLow(),i.getClose());
         Graphics2D g = ctx.g;
@@ -369,7 +369,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         if (i.getOpen() < i.getClose()) {
             int xl = (int) (x + candleWidth / 2);
 
-            g.setColor(Color.BLACK);
+            g.setColor(d.textcolor);
             g.drawLine(xl, (int) ctx.getY(i.getClose()), xl, (int) ctx.getY(i.getHigh()));
             g.drawLine(xl, (int) ctx.getY(i.getLow()), xl, (int) ctx.getY(i.getOpen()));
 
@@ -378,20 +378,20 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             g.setColor(Color.GREEN);
             g.fillRect((int) (x), (int) ctx.getY(i.getClose()), (int) w, (int) h);
-            g.setColor(Color.BLACK);
+            g.setColor(d.textcolor);
             g.drawRect((int) (x), (int) ctx.getY(i.getClose()), (int) w, (int) h);
 
         } else {
             int xl = (int) (x + candleWidth / 2);
-            g.setColor(Color.RED);
+            g.setColor(d.textcolor);
             g.drawLine(xl, (int) ctx.getY(i.getHigh()), xl, (int) ctx.getY(i.getClose()));
             g.drawLine(xl, (int) ctx.getY(i.getOpen()), xl, (int) ctx.getY(i.getLow()));
 
             float w = candleWidth;
             float h = (int) (ctx.getY(i.getClose()) - ctx.getY(i.getOpen()));
-
+            g.setColor(Color.RED);
             g.fillRect(x, (int) ctx.getY(i.getOpen()), (int) w, (int) h);
-            g.setColor(Color.BLACK);
+            g.setColor(d.textcolor);
             g.drawRect((x), (int) ctx.getY(i.getOpen()), (int) w, (int) h);
 
         }
@@ -426,10 +426,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     ChartType ct = ChartType.CANDLESTICK;
 
-    private void drawItem(DrawCtx ctx, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
+    private void drawItem(DrawCtx ctx, SubChartDef d, int prevx, int x, OHLCDataItem prev, OHLCDataItem i) {
         switch (ct) {
             case CANDLESTICK:
-                this.drawCandleItem(ctx, prevx, x, prev, i);
+                this.drawCandleItem(ctx, d, prevx, x, prev, i);
                 break;
             case LINE:
                 this.drawLineItem(ctx, prevx, x, prev, i);
@@ -457,7 +457,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             g.setColor(cur);
         }
-        g.setColor(Color.BLACK);
+        g.setColor(d.textcolor);
         // Dimension rv = this.getSize();
         int yw = (this.rightYAxisAreaWidth * this.emWidth);
 
@@ -559,7 +559,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         for (int i = first_bar; i < last_bar && i < data.size(); i++) {
             OHLCDataItem di = data.get(i);
             int x = (int) ((i - first_bar) * emWidth * x_unit_width); //em_width;
-            this.drawItem(ctx, (int) (x - emWidth * x_unit_width), x, prev, di); //, ctx.scaling, data.getMin());
+            this.drawItem(ctx, d, (int) (x - emWidth * x_unit_width), x, prev, di); //, ctx.scaling, data.getMin());
             prev = di;
         }
 
@@ -592,6 +592,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         public OHLCData data;
 
         public Color bgcolor = null;
+        public Color textcolor = null;
 
         public boolean leftYAxis = false;
         public boolean righYAxis = true;
@@ -671,10 +672,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             g.drawLine(mouseX, 0, mouseX, getHeight());  // vertikale Linie
         }
 
-        /*         long x  =        (long)(emWidth * x_unit_width * time);
-         x/time =  (long)(emWidth * x_unit_width);
-         1/time = (long)(emWidth * x_unit_width)/x;*/
-        long n; //= (long) (mouseX * emWidth * x_unit_width);
+
+        long n; 
 
         double bars = clip.width / (emWidth * x_unit_width) * data.getFrameSize();
 
@@ -683,7 +682,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //             bars, (int) (emWidth * x_unit_width), 0, clip.width);
 
         String text = formatTimeMillis(n); // first_bar* data.getFrameSize()+(long)(mouseX*emWidth * x_unit_width));
-        //     System.out.printf("Current X: %s - ? %d %d\n", text, mouseX, first_bar);
+        //     System.out.printf("Current X: %s - ? %d %d\n", textcolor, mouseX, first_bar);
 
         // FontMetrics für die aktuelle Schriftart
         FontMetrics fm = g.getFontMetrics();
@@ -711,17 +710,28 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
 // Beispielkoordinaten
         int y = clip.height - (textHeight + 2 * padding);
-        g.setColor(new Color(255, 255, 200));
+        g.setColor(Globals.colors.bgLightYellow);
         g.fillRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
-        g.setColor(c);
+        g.setColor(Globals.colors.text);
         g.drawRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
         // Text innerhalb des Rechtecks zeichnen
         g.drawString(text, x + padding, y + fm.getAscent() + padding);
 
-        /*DrawCtx ctx = this.makeDrawCtx(cd, g, h1);
-        if (ctx == null) {
-            return;
-        }*/
+
+        
+        // 1. Hole die globale Skalierung/Transformation von g, die von FlatLaF gesetzt wurde
+AffineTransform gTransform = g.getTransform();
+
+// 2. Wende diese Skalierung auf die Mauskoordinaten an (nur wenn g transformiert ist)
+Point2D mouse = new Point(mouseX, mouseY); // Untransformierte Mauskoordinaten
+
+if (gTransform != null && !gTransform.isIdentity()) {
+    // Die Mauskoordinaten in das skalierte Koordinatensystem bringen
+    mouse = gTransform.transform(mouse, null);
+}
+        
+        
+        
         AffineTransform inverse = null;
         try {
             inverse = ctx.gyr.getTransform().createInverse();
@@ -729,32 +739,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
 
-        /*     Graphics2D g2 = (Graphics2D) g.create();
-        ctx.g = g2;
-        int w = (clip.width - (this.leftYAxisAreaWidth * this.emWidth + this.rightYAxisAreaWidth * this.emWidth));
-        ctx.g.translate(this.leftYAxisAreaWidth * this.emWidth + w, h1);
-        int chartwin_height = clip.height - this.xAxisAreaHight * emWidth;
-        int subchartwin_height = (int) (chartwin_height * cd.height);
 
-        //      ctx.g.setClip(clip.x, clip.y, this.rightYAxisAreaWidth * this.emWidth, subchartwin_height);
-        ctx.g.setClip(clip.x, clip.y, this.rightYAxisAreaWidth * this.emWidth, subchartwin_height);
-         */
         float val = ctx.getValAtY(mouseY - h1);
         text = String.format("%.2f", val);
 
         textWidth = fm.stringWidth(text);
 
-        /*     x = clip.x + this.rightYAxisAreaWidth * emWidth - (textWidth + 2 * padding);
-        y = mouseY - h1;
 
-        if (y < 0) {
-            y = 0;
-        }
-        if (y > ctx.rect.height) {
-            y = 70;
-        }
-         */
-        Point2D mouse = new Point(mouseX, mouseY);
+     //   Point2D mouse = new Point(mouseX, mouseY);
         Point2D p = inverse.transform(mouse, null);
 
         // System.out.printf("DrawCrss Point %f, %f\n", p.getX(), p.getY());
@@ -768,14 +760,14 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         }
 
         //ctx.gyr.setColor(Color.WHITE);
-        ctx.gyr.setColor(new Color(255, 255, 200));
+        ctx.gyr.setColor(Globals.colors.bgLightYellow);
         ctx.gyr.fillRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
-        ctx.gyr.setColor(c);
+        ctx.gyr.setColor(Globals.colors.text);
         ctx.gyr.drawRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
         // Text innerhalb des Rechtecks zeichnen
         ctx.gyr.drawString(text, x + padding, y + fm.getAscent() + padding);
 
-        //    System.out.printf("yval %f\n", val);
+        
     }
 
     DrawCtx makeDrawCtx(SubChartDef d, Graphics2D g, int h) {
@@ -825,6 +817,29 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
         g2 = (Graphics2D) g.create();
         ctx.gyr = g2;
+ /*       
+// 1. Hole die aktuelle (globale) Transformation von g, die Skalierung und Translation enthält
+AffineTransform currentTx = g.getTransform();
+
+
+if (currentTx != null && !currentTx.isIdentity()) {
+    // 2. Erzeuge eine NEUE Transformation, die nur die Skalierung (Scale/Shear) beibehält.
+    //    Die Translationskomponenten (Translate X/Y) werden auf 0.0 gesetzt.
+    AffineTransform cleanTx = new AffineTransform(
+        currentTx.getScaleX(), currentTx.getShearY(),
+        currentTx.getShearX(), currentTx.getScaleY(),
+        0.0, 0.0 
+    );
+    // 3. Setze diese bereinigte Transformation auf ctx.gyr
+    ctx.gyr.setTransform(cleanTx);
+} else {
+    // 4. Fallback für Standard-LaFs (Nimbus, Metal), bei denen g keine Transformation hat
+    ctx.gyr.setTransform(new AffineTransform());
+}        
+   */     
+        
+       
+        
         ctx.gyr.translate(clip.x + this.leftYAxisAreaWidth * this.emWidth + chartWidth, h);
         //ctx.gyr.setClip(0,0,this.leftYAxisAreaWidth * this.emWidth,100);
 

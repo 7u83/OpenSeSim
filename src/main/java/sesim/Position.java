@@ -39,8 +39,8 @@ public class Position {
     long shares;
     long entryPrice;
     long margin;
-    private boolean isShort;
-    long borrowed = 0;
+  //  private boolean isShort;
+   // long borrowed = 0;
     private long stopPrice;
     long id;
 
@@ -52,6 +52,15 @@ public class Position {
         entryPrice = 0;
         margin = 0;
         this.account = account;
+    }
+    
+    public Position(Position p){
+        this.asset=p.asset;
+        this.id=p.id;
+        this.account=p.account;
+        this.margin=p.margin;
+        this.netCashFlow=p.netCashFlow;
+        this.shares=p.shares;
     }
 
     public String getName() {
@@ -136,19 +145,12 @@ public class Position {
         return getMarketValue_Long() / asset.getMarket().money_df;
     }
 
-    public long getEquityValue_Long() {
-        //long mypnl = pnl;
-        
-        return netCashFlow + shares * asset.getMarket().getLastPrice_Long();
-//        mypnl-=val;
-        
-    //    if (margin == 0) {
-     //return totalEntryCost - se.getMarket().getLastPrice_Long() * shares - pnl;
-  //  return mypnl;
-         //   return se.getMarket().getLastPrice_Long() * shares - pnl;
-            //return getMarketValue_Long();
-   //     }
-     //   return  margin+getPnL_Long();
+    public long getEquityValue_Long(long price) {
+        return netCashFlow + shares * price; //asset.getMarket().getLastPrice_Long();
+    }
+    
+    public long getEquityValue_Long(){
+        return getEquityValue_Long(asset.getMarket().getLastPrice_Long());
     }
 
     public float getEquityValue() {

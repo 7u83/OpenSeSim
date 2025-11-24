@@ -68,6 +68,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 import sesim.AppHelp;
 import traders.RandomTraderL;
 
@@ -715,7 +716,8 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             try {
                 File f = fc.getSelectedFile();
-                Globals.loadFile(f);
+                JSONObject cfg = Globals.loadConfigFromFile(f);
+                Globals.putConfig(cfg);
                 String workdir = fc.getCurrentDirectory().getAbsolutePath();
                 Globals.prefs_new.put(Globals.PrefKeys.WORKDIR, workdir);
                 Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, f.getAbsolutePath());
@@ -800,8 +802,8 @@ public class SeSimApplication extends javax.swing.JFrame {
             }
 
             try {
-                Globals.saveFile(f);
-                Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, fn);
+                Globals.saveFile(f, Globals.getConfig());
+                //Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, fn);
                 setTitle(f.getName());
                 return;
 
@@ -833,7 +835,8 @@ public class SeSimApplication extends javax.swing.JFrame {
         String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
 
         try {
-            Globals.loadString(df);
+            JSONObject cfg = Globals.loadConfigFromString(df);
+            Globals.putConfig(cfg);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Can't load file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -1131,6 +1134,9 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_viewTradingLogActionPerformed
     static boolean f = false;
 
+
+
+
     /**
      * @param args the command line arguments
      * @throws java.lang.IllegalAccessException
@@ -1138,42 +1144,49 @@ public class SeSimApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
 
-        /*    long rc = RandomTraderL.getRandomDelta_Long(800, 0, 1000);
-        System.out.printf("Price=%d", rc);
-        if (rc!=0){
-            System.exit(0);
-        }*/
         Platform.startup(() -> {
-            // JavaFX Runtime wird initialisiert
+            // Initialize JavaFX Runtime 
         });
+
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
 
-        //   import java.awt.Toolkit;
-        // create ConsoleHandler 
         ConsoleHandler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.ALL); // alles loggen
-        consoleHandler.setFormatter(new SimpleFormatter()); // lesbare Ausgabe
+        consoleHandler.setLevel(Level.ALL);
+        consoleHandler.setFormatter(new SimpleFormatter());
 
         // Append handler
         rootLogger.addHandler(consoleHandler);
         rootLogger.setLevel(Level.ALL);
 
-        sesim.Logger.debug("Starting application on the new SesimLogger");
-
+        // init globals
         Globals.initGlobals();
-        //    Globals.sim.se = new Exchange();
-        Globals.sim = new sesim.Sim();
-
         Globals.prefs_new = Preferences.userRoot().node("/opensesim");
+        
+        sesim.Logger.info("Data directory is %s", Globals.getDataDir());
+
+        Globals.setLookAndFeel();
+
         Globals.prefs_new.put(Globals.PrefKeys.CURRENTFILE, "");
 
-        Globals.setLookAndFeel(Globals.prefs_new.get("laf", "Nimbus"));
+        // Create a Sim instance
+        Globals.sim = new sesim.Sim();
 
-        JDialog.setDefaultLookAndFeelDecorated(true);
+    /*    JDialog.setDefaultLookAndFeelDecorated(true);
         JFrame.setDefaultLookAndFeelDecorated(false);
-        JPopupMenu.setDefaultLightWeightPopupEnabled(true);
+        JPopupMenu.setDefaultLightWeightPopupEnabled(true);*/
 
+     /*   UIManager.installLookAndFeel("FlatLaf Light", "com.formdev.flatlaf.FlatLightLaf");
+        UIManager.installLookAndFeel("FlatLaf Dark", "com.formdev.flatlaf.FlatDarkLaf");
+        UIManager.installLookAndFeel("FlatLaf IntelliJ", "com.formdev.flatlaf.FlatIntelliJLaf");
+        UIManager.installLookAndFeel("FlatLaf Darcula", "com.formdev.flatlaf.FlatDarculaLaf");*/
+
+        /*          try {
+            Class.forName("mdlaf.MaterialLookAndFeel");
+            UIManager.installLookAndFeel("Material UI", "mdlaf.MaterialLookAndFeel");
+        } catch (ClassNotFoundException e) {
+            // Material-UI nicht verfügbar
+        }*/
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

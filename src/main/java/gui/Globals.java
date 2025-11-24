@@ -25,11 +25,14 @@
  */
 package gui;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -38,7 +41,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,6 +64,74 @@ public class Globals {
     public interface CfgListener {
 
         void cfgChanged();
+    }
+
+    public static class Colors {
+
+        public Color tableRed = Color.RED;
+        public Color tableGreen = Color.GREEN;
+        public Color tableBgLightRed = Color.RED;
+        
+        public Color tableDarkGreen = new Color(0, 100, 0);
+        public Color tableBgLightGreen = new Color(200,255,200);
+        
+        public Color tableBgLightGray = new Color(220,220,220);
+        
+        
+        public Color red = Color.RED;
+        public Color green = Color.GREEN;
+        public Color bgLightYellow = Color.YELLOW;
+        
+        public Color bg = Color.WHITE;
+        public Color text = Color.BLACK;
+        
+    }
+
+    static public Colors colors = new Colors();
+
+    static boolean lafInstalled = false;
+
+    static void setLookAndFeel() {
+        if (!lafInstalled) {
+            UIManager.installLookAndFeel("FlatLaf Light", "com.formdev.flatlaf.FlatLightLaf");
+            UIManager.installLookAndFeel("FlatLaf Dark", "com.formdev.flatlaf.FlatDarkLaf");
+            lafInstalled = true;
+        }
+        String selected = prefs_new.get("laf", "Nimbus");
+
+        UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
+        for (UIManager.LookAndFeelInfo lafInfo1 : lafInfo) {
+            if (lafInfo1.getName().equals(selected)) {
+                String lafClassName = lafInfo1.getClassName();
+                try {
+                    UIManager.setLookAndFeel(lafClassName);
+                    //  UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
+                    break;
+                } catch (Exception e) {
+
+                }
+            }
+        }
+
+        JDialog.setDefaultLookAndFeelDecorated(Globals.prefs_new.getBoolean("laf_decorated_dialogs", true));
+        JFrame.setDefaultLookAndFeelDecorated(Globals.prefs_new.getBoolean("laf_decorated_frames", true));
+        JPopupMenu.setDefaultLightWeightPopupEnabled(Globals.prefs_new.getBoolean("laf_lightweight_popups", true));
+
+        colors.tableRed = gui.util.ColorUtilsRGB.readableRed(UIManager.getColor("Table.background"));
+        colors.tableBgLightRed = gui.util.ColorUtilsRGB.readable(new Color(255, 200, 200), UIManager.getColor("Table.foreground"));
+        
+        colors.tableGreen = gui.util.ColorUtilsRGB.readableGreen(UIManager.getColor("Table.background"));
+        colors.tableBgLightGreen = gui.util.ColorUtilsRGB.readable(new Color(200, 255, 200), UIManager.getColor("Table.foreground"));
+        
+        colors.tableBgLightGray = gui.util.ColorUtilsRGB.readable(new Color(220, 220, 220), UIManager.getColor("Table.foreground"));
+        
+        colors.bgLightYellow = gui.util.ColorUtilsRGB.readable(new Color(255, 255, 200), UIManager.getColor("TextField.foreground"));
+        
+        colors.tableDarkGreen = gui.util.ColorUtilsRGB.readable(new Color(0, 100, 0), UIManager.getColor("Table.background"));
+        colors.bg=UIManager.getColor("TextField.background");
+        colors.text=UIManager.getColor("TextField.foreground");
+        
+        
     }
 
     static ArrayList<CfgListener> cfg_listeners = new ArrayList<>();
@@ -106,22 +179,20 @@ public class Globals {
         public static final String GODMODE = "godmode";
     }
 
-/*   public static String DEFAULT_EXCHANGE_CFG
+    /*   public static String DEFAULT_EXCHANGE_CFG
             = "{"
             + "  money_decimals: 2,"
             + "  shares_decimals: 0"
             + "}";*/
-
     //CfgStrings 
     static void setLookAndFeel(String selected) {
 
-        try {
+        /*       try {
             String look = "com.seaglasslookandfeel.SeaGlassLookAndFeel";
             Class.forName(look);
             UIManager.installLookAndFeel("Sea Glass", look);
         } catch (ClassNotFoundException e) {
-        }
-
+        }*/
         UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
         for (UIManager.LookAndFeelInfo lafInfo1 : lafInfo) {
             if (lafInfo1.getName().equals(selected)) {
@@ -137,8 +208,31 @@ public class Globals {
         }
     }
 
-    static AutoTraderLoader x_tloader;
+    public static String getDataDir() {
+        String dataDir = Globals.prefs_new.get(Globals.DATADIR, null);
+        if (dataDir == null) {
+            String userHome = System.getProperty("user.home", "");
+            Path path = Paths.get(userHome, ".opensesim");
+            dataDir = path.toString();
+        }
+        return dataDir;
+    }
 
+    public static String createDataDir() {
+        String logDir = getDataDir();
+        Path directoryPath = Paths.get(logDir);
+        if (Files.notExists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                sesim.Logger.error("Creating data directory %s: %s", logDir, e.getMessage());
+                return null;
+            }
+        }
+        return logDir;
+    }
+
+    //static AutoTraderLoader x_tloader;
     static void initGlobals() {
         String[] a = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
 
@@ -150,14 +244,11 @@ public class Globals {
 
         pathlist.add(dp);
 
-        for (String p : a) {
+        /*        for (String p : a) {
             sesim.Logger.debug("SysProp Path List: %s", p);
-        }
-
-        sesim.Logger.debug("CLASDINGS %s", dp); 
-
-        x_tloader = new AutoTraderLoader(pathlist);
-
+        }*/
+//        sesim.Logger.debug("CLASDINGS %s", dp);
+//        x_tloader = new AutoTraderLoader(pathlist);
     }
 
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
@@ -166,7 +257,7 @@ public class Globals {
         //String traders_json = Globals.prefs_new.get(PrefKeys.TRADERS, "[]");
         //JSONArray traders = new JSONArray(traders_json);
 
-    //    JSONArray traders = getConfig().getJSONArray(PrefKeys.TRADERS);
+        //    JSONArray traders = getConfig().getJSONArray(PrefKeys.TRADERS);
         JSONArray traders = Sim.getTraders(getConfig());
         return traders;
     }
@@ -175,15 +266,44 @@ public class Globals {
         //String cfglist = Globals.prefs_new.get(PrefKeys.STRATEGIES, "{}");
         //JSONObject cfgs = new JSONObject(cfglist);
 
-       // JSONObject strategies = getConfig().getJSONObject(PrefKeys.STRATEGIES);
-       JSONObject strategies = Sim.getStrategies(getConfig());
+        // JSONObject strategies = getConfig().getJSONObject(PrefKeys.STRATEGIES);
+        JSONObject strategies = Sim.getStrategies(getConfig());
         return strategies;
     }
 
     static public final JSONObject getConfig() {
-        String cfglist = Globals.prefs_new.get(PrefKeys.CONFIG, "{}");
-        JSONObject cfgs = new JSONObject(cfglist);
-        return cfgs;
+        String dataDir = createDataDir();
+        if (dataDir == null) {
+            return new JSONObject();
+        }
+        String fileName = "current-config.sesim";
+
+        File f = new File(dataDir, fileName);
+        try {
+            return Globals.loadConfigFromFile(f);
+        } catch (IOException ex) {
+            return new JSONObject();
+        }
+
+    }
+
+    static public final void putConfig(JSONObject cfg) {
+        String dataDir = createDataDir();
+        if (dataDir == null) {
+            return;
+        }
+        String fileName = "current-config.sesim";
+
+        File f = new File(dataDir, fileName);
+        try {
+            saveFile(f, cfg);
+        } catch (FileNotFoundException ex) {
+            try {
+                sesim.Logger.error("Saving file %s", f.getCanonicalPath());
+            } catch (IOException ex1) {
+                LOGGER.log(Level.SEVERE, null, ex1);
+            }
+        }
     }
 
     static public final void putStrategies(JSONObject strategies) {
@@ -202,10 +322,6 @@ public class Globals {
         Sim.putTraders(sobj, traders);
         //sobj.put(Sim.CfgKeys.TRADERS, traders);
         putConfig(sobj);
-    }
-
-    static public final void putConfig(JSONObject cfg) {
-        Globals.prefs_new.put(Globals.PrefKeys.CONFIG, cfg.toString());
     }
 
     static public JSONObject getStrategy(String name) {
@@ -243,54 +359,38 @@ public class Globals {
         putStrategies(cfgs);
     }
 
-    public static void saveFile(File f) throws FileNotFoundException {
+    public static void saveFile(File f, JSONObject sobj) throws FileNotFoundException {
 
-        JSONObject sobj = getConfig(); //new JSONObject();
-
-   /*     JSONArray traders = getTraders();
-        JSONObject strategies = getStrategies();
-
-        sobj.put(PrefKeys.SESIMVERSION, SESIM_FILEVERSION);
-        sobj.put(PrefKeys.STRATEGIES, strategies);
-        sobj.put(PrefKeys.TRADERS, traders);*/
-
+        //JSONObject sobj = getConfig();
         PrintWriter out;
         out = new PrintWriter(f.getAbsolutePath());
         out.print(sobj.toString(4));
         out.close();
-
     }
 
-    public static void loadString(String s) throws IOException {
+    public static JSONObject loadConfigFromString(String s) throws IOException {
         JSONObject sobj = new JSONObject(s);
 
         Double version = sobj.getDouble(PrefKeys.SESIMVERSION);
         if (version > SESIM_FILEVERSION) {
             throw new IOException("File has wrong version.");
         }
+        return sobj;
+    }
 
-  /*      JSONArray traders = sobj.getJSONArray(PrefKeys.TRADERS);
-        JSONObject strategies = sobj.getJSONObject(PrefKeys.STRATEGIES);
+    public static JSONObject loadConfigFromFile(File f) throws IOException {
 
-        putStrategies(strategies);
-        putTraders(traders);*/
-        putConfig(sobj);
+        f.getAbsoluteFile();
+        String s;
+        s = new String(Files.readAllBytes(f.toPath()));
+
+        return loadConfigFromString(s);
 
     }
 
     public static void clearAll() {
         putStrategies(new JSONObject());
         putTraders(new JSONArray());
-    }
-
-    public static void loadFile(File f) throws IOException {
-
-        f.getAbsoluteFile();
-        String s;
-        s = new String(Files.readAllBytes(f.toPath()));
-
-        loadString(s);
-
     }
 
 }

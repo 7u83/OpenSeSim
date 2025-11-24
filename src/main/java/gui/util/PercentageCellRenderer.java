@@ -54,9 +54,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 
             if (!isSelected) {
                 if (performance > 0) {
-                    setForeground(new Color(0, 100, 0));
+                    //setForeground(new Color(0, 100, 0));
+                    setForeground(gui.Globals.colors.tableDarkGreen);
                 } else if (performance < 0) {
-                    setForeground(Color.RED);
+                    
+                    setForeground(gui.Globals.colors.tableRed);
                 } else {
                     setForeground(table.getForeground());
                 }

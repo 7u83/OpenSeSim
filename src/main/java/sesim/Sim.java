@@ -385,6 +385,7 @@ public class Sim {
                         (long) (shares * se.shares_df),
                         (long) (initialPrice * se.money_df),
                         1);
+                trader.getAccount().makeSnapShot();
 
                 if (trader == null) {
                     base = strategyCfg.getString("base");

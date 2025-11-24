@@ -25,16 +25,30 @@
  */
 package gui;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Frame;
 import java.awt.Window;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.LookAndFeel;
+import javax.swing.PopupFactory;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -82,6 +96,10 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
 
         this.dataDirectory.setText(dataDir);
 
+        this.decoratedDialogs.setSelected(Globals.prefs_new.getBoolean("laf_decorated_dialogs", true));
+        this.decoratedFrames.setSelected(Globals.prefs_new.getBoolean("laf_decorated_frames", true));
+        this.lightWightPopups.setSelected(Globals.prefs_new.getBoolean("laf_lightweight_popups", true));
+
     }
 
     /**
@@ -93,11 +111,9 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lafComboBox = new javax.swing.JComboBox<>();
         cancelButton = new javax.swing.JButton();
         applyButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         jDevleopmentFeaturesCheckBox = new javax.swing.JCheckBox();
         godmodeCheckBox = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
@@ -106,15 +122,14 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         dataDirectory = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         selectFileButton = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        lafComboBox = new javax.swing.JComboBox<>();
+        decoratedDialogs = new javax.swing.JCheckBox();
+        decoratedFrames = new javax.swing.JCheckBox();
+        lightWightPopups = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        lafComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        lafComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lafComboBoxActionPerformed(evt);
-            }
-        });
 
         cancelButton.setMnemonic('c');
         cancelButton.setText("Cancel");
@@ -139,8 +154,6 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                 okButtonActionPerformed(evt);
             }
         });
-
-        jLabel1.setText("Look and Feel:");
 
         jDevleopmentFeaturesCheckBox.setText("Develeopment");
 
@@ -168,6 +181,53 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel1.setText("Look and Feel:");
+
+        lafComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        lafComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lafComboBoxActionPerformed(evt);
+            }
+        });
+
+        decoratedDialogs.setText("Decorated dialogs");
+
+        decoratedFrames.setText("Decorated frames");
+
+        lightWightPopups.setText("Lightweight Popups");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(decoratedDialogs)
+                    .addComponent(decoratedFrames)
+                    .addComponent(lightWightPopups))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decoratedDialogs)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decoratedFrames)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lightWightPopups)
+                .addContainerGap(12, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -178,14 +238,8 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 246, Short.MAX_VALUE)
-                                .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jDevleopmentFeaturesCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(godmodeCheckBox)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -193,11 +247,14 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(applyButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cancelButton)))
+                                .addComponent(cancelButton))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(godmodeCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(52, 52, 52))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -206,16 +263,17 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                         .addComponent(dataDirectory)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(selectFileButton)
-                        .addGap(5, 5, 5))))
+                        .addGap(5, 5, 5))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lafComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(59, 59, 59)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -226,11 +284,11 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
                     .addComponent(dataDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(selectFileButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jDevleopmentFeaturesCheckBox)
-                    .addComponent(godmodeCheckBox))
-                .addGap(34, 34, 34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addComponent(jDevleopmentFeaturesCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(godmodeCheckBox)
+                .addGap(7, 7, 7)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(applyButton)
@@ -246,14 +304,15 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_lafComboBoxActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        if (old_laf != new_laf) {
+
+        /*if (old_laf != new_laf) {
             try {
                 UIManager.setLookAndFeel(old_laf);
             } catch (UnsupportedLookAndFeelException ex) {
                 Logger.getLogger(EditPreferencesDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
             resetUI();
-        }
+        }*/
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
@@ -261,20 +320,289 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         for (Window w : Window.getWindows()) {
 
             SwingUtilities.updateComponentTreeUI(w);
-            w.pack();
+            // w.pack();
+        }
+    }
+
+    private void safeLiveLAFChange(String lafName) {
+        this.dispose();
+
+        Timer timer = new Timer(100, e -> {
+            try {
+                // DIESE Methode fehlte - die gleiche wie in Globals.setLookAndFeel!
+                String className = findClassNameForLAF(lafName);
+                UIManager.setLookAndFeel(className);
+
+                for (Window w : Window.getWindows()) {
+                    if (w instanceof JFrame && w.isVisible()) {
+                        SwingUtilities.updateComponentTreeUI(w);
+                        break;
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private String findClassNameForLAF(String lafName) {
+        UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
+        for (UIManager.LookAndFeelInfo info : lafInfo) {
+            if (info.getName().equals(lafName)) {
+                return info.getClassName();
+            }
+        }
+        return lafName;
+    }
+
+    private void nuclearUIUpdate() {
+        try {
+            // 1. Popup Factory zurücksetzen (ohne Reflection)
+            PopupFactory.setSharedInstance(new PopupFactory());
+
+            // 2. Alle Fenster durchlaufen und komplett aktualisieren
+            Window[] windows = Window.getWindows();
+            for (Window window : windows) {
+                if (window.isDisplayable()) {
+                    updateWindowAndAllChildren(window);
+                }
+            }
+
+            // 3. ToolTips zurücksetzen
+            ToolTipManager.sharedInstance().setInitialDelay(300);
+            ToolTipManager.sharedInstance().setDismissDelay(10000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateWindowAndAllChildren(Window window) {
+        // Hauptfenster aktualisieren
+        SwingUtilities.updateComponentTreeUI(window);
+
+        // Menüleiste und deren Popups aktualisieren
+        updateMenuBarRecursively(window);
+
+        // Alle Komponenten im Fenster durchsuchen
+        if (window instanceof Container) {
+            updateContainerRecursively((Container) window);
+        }
+
+        // Fenster neu zeichnen
+        window.revalidate();
+        window.repaint();
+    }
+
+    private void updateMenuBarRecursively(Window window) {
+        JMenuBar menuBar = null;
+
+        if (window instanceof JFrame) {
+            menuBar = ((JFrame) window).getJMenuBar();
+        } else if (window instanceof JDialog) {
+            menuBar = ((JDialog) window).getJMenuBar();
+        }
+
+        if (menuBar != null) {
+            // Menüleiste aktualisieren
+            SwingUtilities.updateComponentTreeUI(menuBar);
+
+            // Alle Menüs und deren Popups durchlaufen
+            for (int i = 0; i < menuBar.getMenuCount(); i++) {
+                JMenu menu = menuBar.getMenu(i);
+                if (menu != null) {
+                    updateMenuAndPopup(menu);
+                }
+            }
+        }
+    }
+
+    private void updateMenuAndPopup(JMenu menu) {
+        try {
+            // Menü selbst aktualisieren
+            menu.updateUI();
+
+            // Popup des Menüs holen und aktualisieren
+            JPopupMenu popupMenu = menu.getPopupMenu();
+            if (popupMenu != null) {
+                updatePopupAndChildren(popupMenu);
+            }
+
+            // Rekursiv für Untermenüs
+            for (Component comp : menu.getMenuComponents()) {
+                if (comp instanceof JMenu) {
+                    updateMenuAndPopup((JMenu) comp);
+                } else if (comp instanceof JComponent) {
+                    ((JComponent) comp).updateUI();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateContainerRecursively(Container container) {
+        for (Component comp : container.getComponents()) {
+            // Komponente selbst aktualisieren
+            if (comp instanceof JComponent) {
+                ((JComponent) comp).updateUI();
+            }
+
+            // Popup-Menü der Komponente
+            if (comp instanceof JComponent) {
+                JPopupMenu componentPopup = ((JComponent) comp).getComponentPopupMenu();
+                if (componentPopup != null) {
+                    updatePopupAndChildren(componentPopup);
+                }
+            }
+
+            // Gefundene Popup-Menüs
+            if (comp instanceof JPopupMenu) {
+                updatePopupAndChildren((JPopupMenu) comp);
+            }
+
+            // Rekursiv in Containern suchen
+            if (comp instanceof Container) {
+                updateContainerRecursively((Container) comp);
+            }
+        }
+    }
+
+    private void updatePopupAndChildren(JPopupMenu popup) {
+        try {
+            // Popup selbst aktualisieren
+            SwingUtilities.updateComponentTreeUI(popup);
+            popup.updateUI();
+
+            // Alle Kinder des Popups aktualisieren
+            for (Component child : popup.getComponents()) {
+                if (child instanceof JComponent) {
+                    ((JComponent) child).updateUI();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+// Zum Testen: Einfache Version ohne komplexe Logik
+
+    private void restartApplication() {
+        try {
+            String javaBin = System.getProperty("java.home") + "/bin/java";
+            String classpath = System.getProperty("java.class.path");
+            String mainClass = SeSimApplication.class.getName();
+
+            ProcessBuilder builder = new ProcessBuilder(
+                    javaBin, "-cp", classpath, mainClass
+            );
+            builder.start();
+            System.exit(0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    "Bitte starten Sie die Anwendung manuell neu.",
+                    "Info", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
         }
     }
 
     private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
-
         String selected = (String) this.lafComboBox.getSelectedItem();
+        // Einfach, sauber, stabil
+        Globals.prefs_new.put("laf", selected);
+        Globals.prefs_new.putBoolean("laf_decorated_dialogs",
+                this.decoratedDialogs.isSelected()
+        );
+        Globals.prefs_new.putBoolean("laf_decorated_frames",
+                this.decoratedFrames.isSelected()
+        );
 
+        Globals.prefs_new.putBoolean("laf_lightweight_popups",
+                this.lightWightPopups.isSelected()
+        );
+
+        boolean restart = false;
+
+        if (!old_laf.getName().equals(selected)) {
+            restart = true;
+        }
+
+        if (this.lightWightPopups.isSelected() 
+                != JPopupMenu.getDefaultLightWeightPopupEnabled()) {
+            restart = true;
+        }
+        
+/*        if (this.decoratedDialogs.isSelected()
+                != JDialog
+                ){
+            restart = true;
+        }*/
+
+        if (!restart)
+            return;
+
+        int option = JOptionPane.showConfirmDialog(this,
+                "✓ Look and Feel wurde gespeichert\n\n"
+                + "Um Darstellungsprobleme zu vermeiden, wird ein Neustart empfohlen.\n\n"
+                + "Jetzt neu starten?",
+                "Einstellung gespeichert",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE);
+
+        if (option == JOptionPane.YES_OPTION) {
+            restartApplication();
+        }
+
+        // this.dispose();
+        /*        
+        String selected = (String) this.lafComboBox.getSelectedItem();
+    
+    try {
+        // Korrekten Klassennamen finden
+        String className = findClassNameForLAF(selected);
+        
+        // LookAndFeel setzen
+        UIManager.setLookAndFeel(className);
+        
+        // Nuclear Update durchführen
+        nuclearUIUpdate();
+        
+        // Erfolg speichern
+        Globals.prefs_new.put("laf", selected);
+        
+        JOptionPane.showMessageDialog(this, 
+            "Look and Feel wurde geändert!\n" +
+            "Falls Popup-Menüs nicht korrekt angezeigt werden,\n" +
+            "bitte die Anwendung neu starten.",
+            "Erfolg", JOptionPane.INFORMATION_MESSAGE);
+            
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+            "Fehler beim LookAndFeel-Wechsel: " + e.getMessage() + 
+            "\n\nBitte Anwendung neu starten.",
+            "Fehler", JOptionPane.ERROR_MESSAGE);
+    }
+   /*     String selected = (String) this.lafComboBox.getSelectedItem();
+        if (LookAndFeelUtils.applyLookAndFeel(selected)) {
+            Globals.prefs_new.put("laf", selected);
+            JOptionPane.showMessageDialog(this, "Erfolg!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Fehler!", "Fehler", JOptionPane.ERROR_MESSAGE);
+        }*/
+
+ /*            String selected = (String) this.lafComboBox.getSelectedItem();
+//this.safeLiveLAFChange(selected);
         Globals.setLookAndFeel(selected);
         new_laf = UIManager.getLookAndFeel();
-        resetUI();
-
+        this.nuclearUIUpdate();
+        //reetUI();*/
 
     }//GEN-LAST:event_applyButtonActionPerformed
+
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         this.applyButtonActionPerformed(evt);
@@ -285,6 +613,7 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
         Globals.prefs_new.put(Globals.DEVELSTATUS, sel);
         sel = this.godmodeCheckBox.isSelected() == true ? "true" : "false";
         Globals.prefs_new.put(Globals.GODMODE, sel);
+
         Globals.notifyCfgListeners();
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
@@ -352,14 +681,18 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JButton applyButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JTextField dataDirectory;
+    private javax.swing.JCheckBox decoratedDialogs;
+    private javax.swing.JCheckBox decoratedFrames;
     private javax.swing.JCheckBox godmodeCheckBox;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JCheckBox jDevleopmentFeaturesCheckBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JComboBox<String> lafComboBox;
+    private javax.swing.JCheckBox lightWightPopups;
     private javax.swing.JButton okButton;
     private javax.swing.JButton selectFileButton;
     // End of variables declaration//GEN-END:variables

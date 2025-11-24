@@ -54,16 +54,17 @@ public class MainChart extends chart.Chart {
         main.height = 0.8f;
         main.type = this.chart_type;
         main.data = data;
-        main.bgcolor = Color.WHITE;
+        main.bgcolor = Globals.colors.bg;
         main.paddingTop = 0.02f;
         //main.rightYData(data);
         main.log = logMenu.isSelected();
         main.rightYData = data;
-        main.rightYColor = Color.WHITE;
-        main.crossColor = Color.BLACK;
+        main.rightYColor = Globals.colors.bg;
+        main.crossColor = Globals.colors.text;
         main.pad_top=1;
         main.pad_bot=1;
         main.yformatter=Globals.sim.getExchange().getMoneyFormatter();
+        main.textcolor=Globals.colors.text;
 
         addChart(main);
 
@@ -72,12 +73,13 @@ public class MainChart extends chart.Chart {
         vol.paddingTop = 0.08f;
         vol.type = ChartType.VOL;
         vol.data = data;
-        vol.bgcolor = Color.WHITE;
+        vol.bgcolor = Globals.colors.bg;
         vol.rightYData = data;
-        vol.rightYColor = Color.WHITE;
-        vol.crossColor = Color.BLACK;
+        vol.rightYColor = Globals.colors.bg;
+        vol.crossColor = Globals.colors.text;
         vol.pad_top=1;
         vol.yformatter=Globals.sim.getExchange().getSharesFormatter();
+        vol.textcolor=Globals.colors.text;
         addChart(vol);
     }
 

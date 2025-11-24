@@ -128,11 +128,14 @@ public class OrderBook extends RawOrderBook {
             Object firstColValue = getModel().getValueAt(modelRow, 0);
 
             if ("Red".equals(firstColValue)) {
-                c.setBackground(new Color(255, 200, 200));
+                //c.setBackground(new Color(255, 200, 200));
+                c.setBackground(Globals.colors.tableBgLightRed);
             } else if ("Gray".equals(firstColValue)) {
-                c.setBackground(new Color(220, 220, 220));
+                //c.setBackground(new Color(220, 220, 220));
+                c.setBackground(Globals.colors.tableBgLightGray);
             } else if ("Green".equals(firstColValue)) {
-                c.setBackground(new Color(200, 255, 200));
+                //c.setBackground(new Color(200, 255, 200));
+                c.setBackground(Globals.colors.tableBgLightGreen);
             } else {
                 c.setBackground(list.getBackground());
             }
