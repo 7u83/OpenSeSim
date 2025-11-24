@@ -25,7 +25,6 @@
  */
 package gui;
 
-import static gui.TraderListPanel.Column.ID;
 import gui.util.NummericCellRenderer;
 import gui.util.PercentageCellRenderer;
 import gui.util.PercentageValue;
@@ -33,12 +32,20 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.FontMetrics;
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import static javax.swing.SwingConstants.RIGHT;
@@ -62,6 +69,9 @@ public class TraderListPanel extends javax.swing.JPanel {
     DefaultTableModel model;
     Frame parentFrame = null;
     TimerTask updater;
+    // NEU: Map zum Speichern ausgeblendeter Spalten
+    // Key: Column Enum, Value: TableColumn Objekt
+    private final Map<Column, TableColumn> hiddenColumns = new HashMap<>();
 
     // Definition of columns
     public static enum Column {
@@ -71,9 +81,9 @@ public class TraderListPanel extends javax.swing.JPanel {
         SHARES("Shares", null, Float.class),
         MARGIN("Margin", null, Float.class),
         EQUITY("Equtiy", null, Float.class),
-        FREEMARGIN("Free Margin",null, Float.class),
+        FREEMARGIN("Free Margin", null, Float.class),
         CASH("Cash", null, Float.class),
-        PNL("PnL", new PercentageCellRenderer(), PercentageValue.class); // Letzte Spalte
+        PNL("PnL", new PercentageCellRenderer(), PercentageValue.class);
 
         public final String header;
         private TableCellRenderer renderer;
@@ -84,25 +94,25 @@ public class TraderListPanel extends javax.swing.JPanel {
             renderer = r;
             this.cls = cls;
         }
-        
+
         public TableCellRenderer getRenderer() {
-        if (renderer == null) {
-            switch (this) {
-                case SHARES:
-                    renderer = new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals());
-                    break;
-                case MARGIN:
-                case EQUITY:
-                case FREEMARGIN:
-                case CASH:
-                    renderer = new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals());
-                    break;
-                default:
+            if (renderer == null) {
+                switch (this) {
+                    case SHARES:
+                        renderer = new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals());
+                        break;
+                    case MARGIN:
+                    case EQUITY:
+                    case FREEMARGIN:
+                    case CASH:
+                        renderer = new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals());
+                        break;
+                    default:
                     // renderer bleibt null oder schon gesetzt
+                }
             }
+            return renderer;
         }
-        return renderer;
-    }
 
     }
 
@@ -114,10 +124,6 @@ public class TraderListPanel extends javax.swing.JPanel {
     }
 
     Column[] columnList = Column.values();
-    
-    /*{
-        Column.ID, Column.NAME,Column.PNL
-    };*/
 
     public TraderListPanel(Frame parent, Column[] columnList) {
         initComponents();
@@ -125,12 +131,23 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        this.columnList = columnList;
+        // this.columnList = columnList;
         setupTable();
+        addContextMenu();
+
+        TableColumnModel colModel = list.getColumnModel();
+        for (int i = colModel.getColumnCount() - 1; i >= 0; i--) {
+            TableColumn col = colModel.getColumn(i);
+            Column columnEnum = (Column) col.getIdentifier(); // besser Identifier setzen
+            if (!Arrays.asList(columnList).contains(columnEnum)) {
+                this.hideColumn(columnEnum);
+            }
+        }
+
     }
 
     /**
-     * Creates new form TraderListPanel2
+     * Creates new form TraderListPanel
      */
     public TraderListPanel() {
 
@@ -139,7 +156,8 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
         setupTable();
-
+// NEU: Kontextmenü nach der Tabellen-Einrichtung hinzufügen
+        addContextMenu();
     }
 
     private void setupTable() {
@@ -149,10 +167,8 @@ public class TraderListPanel extends javax.swing.JPanel {
         for (Column a : Column.values()) {
             list.getColumnModel().getColumn(a.ordinal()).setHeaderValue(a.header);
             list.getColumnModel().getColumn(a.ordinal()).setIdentifier(a);
-            
-     //       if (a.getRenderer() != null) {
-                list.getColumnModel().getColumn(a.ordinal()).setCellRenderer(a.getRenderer());
-     //      }
+
+            list.getColumnModel().getColumn(a.ordinal()).setCellRenderer(a.getRenderer());
 
         }
 
@@ -162,6 +178,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             TableColumn col = colModel.getColumn(i);
             Column columnEnum = (Column) col.getIdentifier(); // besser Identifier setzen
             if (!Arrays.asList(columnList).contains(columnEnum)) {
+                hiddenColumns.put(columnEnum, col);
                 colModel.removeColumn(col);
             }
         }
@@ -181,7 +198,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 /*        list.getColumnModel().getColumn(Column.PNL.ordinal()).setPreferredWidth(preferredWidth);
         list.getColumnModel().getColumn(Column.PNL.ordinal()).setMinWidth(preferredWidth);
         list.getColumnModel().getColumn(Column.PNL.ordinal()).setMaxWidth(maxWidth);
-*/
+         */
         AtomicBoolean running = new AtomicBoolean(false);
         Timer timer = new Timer();
         updater = new TimerTask() {
@@ -295,8 +312,7 @@ public class TraderListPanel extends javax.swing.JPanel {
                             list.getSelectionModel().setSelectionInterval(viewRow, viewRow);
 
                             // Optional: Scrolle zur markierten Zeile
-                  //          list.scrollRectToVisible(list.getCellRect(viewRow, 0, true));
-
+                            //          list.scrollRectToVisible(list.getCellRect(viewRow, 0, true));
                             break; // Gefunden, Schleife verlassen
                         }
                     }
@@ -306,6 +322,113 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         });
 
+    }
+
+    /**
+     * NEU: Erstellt und fügt das Kontextmenü zur Tabelle hinzu.
+     */
+    private void addContextMenu() {
+        JPopupMenu popupMenu = new JPopupMenu("Spalten verwalten");
+
+        for (final Column colEnum : Column.values()) {
+            final String header = colEnum.header;
+            // Bestimme den Anfangszustand: Ist die Spalte aktuell sichtbar?
+            boolean isVisible = list.getColumnModel().getColumnIndex(colEnum) != -1;
+
+            final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(header, isVisible);
+            menuItem.setName(header); // Kann optional zur Identifizierung verwendet werden
+
+            // ID-Spalte sollte immer sichtbar sein und nicht abwählbar
+            if (colEnum == Column.ID) {
+           //     menuItem.setEnabled(false);
+            }
+
+            menuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (menuItem.isSelected()) {
+                        // Spalte anzeigen (hinzufügen)
+                        showColumn(colEnum);
+                    } else {
+                        // Spalte ausblenden (entfernen)
+                        hideColumn(colEnum);
+                    }
+                }
+            });
+            popupMenu.add(menuItem);
+        }
+
+        // Fügen Sie den MouseListener hinzu, um das Menü anzuzeigen
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+    }
+
+    /**
+     * NEU: Blendet eine Spalte aus und speichert sie.
+     *
+     * * @param colEnum Die auszublendende Spalte.
+     */
+    private void hideColumn(Column colEnum) {
+        TableColumnModel colModel = list.getColumnModel();
+        try {
+            int viewIndex = colModel.getColumnIndex(colEnum);
+            TableColumn col = colModel.getColumn(viewIndex);
+            colModel.removeColumn(col);
+            hiddenColumns.put(colEnum, col);
+        } catch (IllegalArgumentException ex) {
+            // Spalte ist bereits ausgeblendet, nichts tun.
+        }
+    }
+
+    /**
+     * NEU: Zeigt eine ausgeblendete Spalte wieder an.
+     *
+     * * @param colEnum Die anzuzeigende Spalte.
+     */
+    private void showColumn(Column colEnum) {
+        TableColumn col = hiddenColumns.get(colEnum);
+        if (col != null) {
+            TableColumnModel colModel = list.getColumnModel();
+
+            // Finde die korrekte Einfügeposition, basierend auf der ursprünglichen
+            // Reihenfolge der Enum-Werte, die sichtbar sind.
+            int insertIndex = 0;
+            Column[] allColumns = Column.values();
+            for (int i = 0; i < allColumns.length; i++) {
+                Column current = allColumns[i];
+                if (current == colEnum) {
+                    // Wir haben die Spalte gefunden, die wir einfügen wollen. 
+                    // Der Einfügeindex ist die Anzahl der *sichtbaren* Spalten, die *vor* dieser Spalte im Enum stehen.
+                    // Das ist bereits der Wert von insertIndex.
+                    break;
+                }
+
+                // Überprüfe, ob die aktuelle Spalte (im Enum vor der einzufügenden) sichtbar ist
+                // Wenn sie nicht in hiddenColumns ist, dann ist sie sichtbar.
+                if (!hiddenColumns.containsKey(current)) {
+                    insertIndex++;
+                }
+            }
+
+            // Füge die Spalte an der berechneten Position ein
+            colModel.addColumn(col);
+            colModel.moveColumn(colModel.getColumnCount() - 1, insertIndex);
+
+            hiddenColumns.remove(colEnum);
+        }
     }
 
     public static class MyModel extends DefaultTableModel {

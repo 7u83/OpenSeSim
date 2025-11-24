@@ -168,12 +168,11 @@ public class SeSimApplication extends javax.swing.JFrame {
         jSplitPane5 = new javax.swing.JSplitPane();
         statistics1 = new gui.Statistics();
         clock1 = new gui.Clock();
-        traderListPanel1 = new TraderListPanel(this,
+        traderListPanel = new TraderListPanel(this,
             new TraderListPanel.Column[]  {
-                TraderListPanel.Column.ID,
                 TraderListPanel.Column.NAME,
-                TraderListPanel.Column.STATUS,
-                TraderListPanel.Column.EQUITY,
+                TraderListPanel.Column.SHARES,
+                TraderListPanel.Column.CASH,
                 TraderListPanel.Column.PNL
 
             });
@@ -330,7 +329,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
             jSplitPane5.setTopComponent(statistics1);
             jSplitPane5.setRightComponent(clock1);
-            jSplitPane5.setRightComponent(traderListPanel1);
+            jSplitPane5.setRightComponent(traderListPanel);
 
             jSplitPane3.setLeftComponent(jSplitPane5);
 
@@ -1245,7 +1244,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem simMenuStop;
     private gui.Statistics statistics1;
     private javax.swing.JButton stopButton;
-    private gui.TraderListPanel traderListPanel1;
+    private gui.TraderListPanel traderListPanel;
     private javax.swing.JCheckBox tradingLogCheckBox;
     private javax.swing.JCheckBoxMenuItem viewLog;
     private javax.swing.JMenu viewMenu;
