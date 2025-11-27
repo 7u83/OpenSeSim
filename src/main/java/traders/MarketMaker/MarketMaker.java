@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders;
+package traders.MarketMaker;
 
 import org.json.JSONObject;
 import sesim.AutoTraderBase;
@@ -58,6 +58,8 @@ public class MarketMaker extends AutoTraderBase {
      */
     float depthPercent = 8;
 
+    int interval = 2000;
+
     /**
      * Represents a single market maker order.
      */
@@ -91,7 +93,7 @@ public class MarketMaker extends AutoTraderBase {
 
         // Schedule the first timer event
         sim.addEvent(sim.getCurrentTimeMillis()
-                + (long) (1000f * this.timerInterval), TIMEREVENT);
+                + (long) (interval * this.timerInterval), TIMEREVENT);
 
     }
 
@@ -110,7 +112,7 @@ public class MarketMaker extends AutoTraderBase {
         float dist = (centerPrice - lowestPrice) / (numPositions + 1);
 
         // Allocate cash per order
-        float cashPerBuyOrder = account.getMoney() / (numPositions + 1);
+        float cashPerBuyOrder = account.getMoney()*0.5f / (numPositions + 1);
 
         float price = lowestPrice + dist;
 
@@ -169,7 +171,7 @@ public class MarketMaker extends AutoTraderBase {
      */
     private boolean readjustOrders() {
 
-        // Do nothing if any order is still open
+        /*       // Do nothing if any order is still open
         for (int i = 0; i < numPositions; i++) {
             if (orders[i].o == null) {
                 continue;
@@ -179,21 +181,37 @@ public class MarketMaker extends AutoTraderBase {
                 return false;
             }
         }
-
+         */
         float price = se.getLastPrice();
-        if (price <= orders[numPositions - 1].sellLimit) {
+        if (price <= orders[numPositions - 1].sellLimit
+                && price >= orders[0].buyLimit) {
             return false;  // No adjustment needed
         }
 
         // Cancel all current orders
         for (int i = 0; i < numPositions; i++) {
-            if (orders[i].o==null)
+            if (orders[i].o == null) {
                 continue;
+            }
             se.cancelOrder(account, orders[i].o.getID());
         }
 
-        this.initOrders(); // Reinitialize orders with new prices
+        //   this.initOrders(); // Reinitialize orders with new prices
+        resetTrader();
         return true;
+
+    }
+
+    Order resetOrder = null;
+
+    void resetTrader() {
+        setStatus("Reset");
+        if (account.getShares() == 0) {
+            initOrders();
+            return;
+        }
+
+        resetOrder = se.createOrder_Long(account, Order.SELL, account.getShares_Long(), 0, 0, 1);
 
     }
 
@@ -206,13 +224,23 @@ public class MarketMaker extends AutoTraderBase {
      */
     @Override
     public void processEvent(long time, Scheduler.Event e) {
+        if (resetOrder != null) {
+            if (resetOrder.getStatus() != Order.CLOSED) {
+                sim.addEvent(sim.getCurrentTimeMillis() + (long) (interval * this.timerInterval), TIMEREVENT);
+                
+                return;
+            }
+            resetOrder = null;
+            this.initOrders();
+        }
+
         if (!readjustOrders()) {
             this.flipOrders();  // Flip orders if no readjustment
         }
 
         // Schedule the next timer event
-        sim.addEvent(sim.getCurrentTimeMillis() + (long) (1000f * this.timerInterval), TIMEREVENT);
-        
+        sim.addEvent(sim.getCurrentTimeMillis() + (long) (interval * this.timerInterval), TIMEREVENT);
+
     }
 
     @Override

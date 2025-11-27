@@ -413,6 +413,10 @@ public class Sim {
                     ((AutoTraderBase) trader).color = c;
                 }
 
+                if (this.traders.size() % 10000 == 0) {
+                    sesim.Logger.info("Traders %d", traders.size());
+                }
+
             }
 
         }
@@ -421,6 +425,9 @@ public class Sim {
         //System.out.printf("Failr Value is %f\n", se.fairValue);
         for (int i = 0; i < traders.size(); i++) {
             traders.get(i).start();
+            if (i % 10000 == 0) {
+                sesim.Logger.info("Traders start %d", i);
+            }
         }
 
     }

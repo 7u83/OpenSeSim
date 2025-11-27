@@ -36,7 +36,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +50,8 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import static javax.swing.SwingConstants.RIGHT;
 import javax.swing.SwingUtilities;
@@ -164,6 +169,9 @@ public class TraderListPanel extends javax.swing.JPanel {
         model = new MyModel(Column.values());
         list.setModel(model);
 
+        MyRowSorter sorter = new MyRowSorter((MyModel) model);
+        list.setRowSorter(sorter);
+
         for (Column a : Column.values()) {
             list.getColumnModel().getColumn(a.ordinal()).setHeaderValue(a.header);
             list.getColumnModel().getColumn(a.ordinal()).setIdentifier(a);
@@ -221,6 +229,7 @@ public class TraderListPanel extends javax.swing.JPanel {
     }
 
     final void updateModel() {
+
         if (Globals.sim == null) {
             return;
         }
@@ -233,35 +242,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        //   Quote q = Globals.sim.getExchange().getLastQuoete();
-        //   float price = q == null ? 0 : q.getPrice();
-        int size = Globals.sim.traders.size();
-        float price = Globals.sim.getExchange().getLastPrice();
-        model.setRowCount(size);
-        for (int i = 0; i < size; i++) {
-            AutoTraderInterface at = Globals.sim.traders.get(i);
-            Account a = at.getAccount();
-
-            model.setValueAt(i, i, Column.ID.ordinal());
-
-            int[] atc = at.getColor();
-            Color c = null;
-            if (atc != null) {
-                c = new Color(atc[0], atc[1], atc[2]);
-            }
-            model.setValueAt(new NameValue(at.getName(), c), i, Column.NAME.ordinal());
-
-            model.setValueAt(at.getStatus(), i, Column.STATUS.ordinal());
-            model.setValueAt(a.getMoney(), i, Column.CASH.ordinal());
-            model.setValueAt(a.getShares(), i, Column.SHARES.ordinal());
-
-            //  float wealth = a.getShares() * price + a.getMoney();
-            model.setValueAt(a.getEquity(), i, Column.EQUITY.ordinal());
-            model.setValueAt(a.getMarginUsed(), i, Column.MARGIN.ordinal());
-            model.setValueAt(a.getFreeMargin(), i, Column.FREEMARGIN.ordinal());
-            model.setValueAt(new PercentageValue(a.getPerformance(price)), i, Column.PNL.ordinal());
-
-        }
+        ((MyModel) (model)).sortTraders();
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -285,11 +266,16 @@ public class TraderListPanel extends javax.swing.JPanel {
                 }
 
                 List l = list.getRowSorter().getSortKeys();
-
+             //   model.fireTableRowsUpdated(0, model.getRowCount() - 1);
+                model.fireTableDataChanged();
+       
+                    list.getRowSorter().allRowsChanged();
+       
                 if (!l.isEmpty()) {
                     list.getRowSorter().allRowsChanged();
                 } else {
                     model.fireTableDataChanged();
+
                 }
 
                 if (selectedTraderId != null) {
@@ -319,9 +305,7 @@ public class TraderListPanel extends javax.swing.JPanel {
                 }
 
             }
-
         });
-
     }
 
     /**
@@ -340,7 +324,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             // ID-Spalte sollte immer sichtbar sein und nicht abwählbar
             if (colEnum == Column.ID) {
-           //     menuItem.setEnabled(false);
+                //     menuItem.setEnabled(false);
             }
 
             menuItem.addActionListener(new ActionListener() {
@@ -431,7 +415,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         }
     }
 
-    public static class MyModel extends DefaultTableModel {
+    private class MyModel extends DefaultTableModel {
 
         public MyModel(Object arg0[][], Object arg1[]) {
             super(arg0, arg1);
@@ -446,11 +430,15 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         @Override
         public int getColumnCount() {
+            if (def==null)
+                return 0;
             return def.length;
         }
 
         @Override
         public Class getColumnClass(int columnIndex) {
+            if (def==null)
+                return null;
             return def[columnIndex].cls;
         }
 
@@ -471,11 +459,151 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         @Override
         public void fireTableRowsUpdated(int firstRow, int lastRow) {
+            super.fireTableRowsUpdated(firstRow, lastRow);
         }
 
         @Override
         public void fireTableCellUpdated(int row, int column) {
 
+        }
+
+        //public ArrayList<AutoTraderInterface> traders = null;
+        public ArrayList<ArrayList<Object>> sortedTraders = null;
+
+        byte sortCol = 0;
+        boolean sortAsc=false;
+
+        void sortTraders() {
+            //ArrayList<AutoTraderInterface> t = new ArrayList<>();
+
+            ArrayList<ArrayList<Object>> t = new ArrayList<>();
+            for (AutoTraderInterface a : Globals.sim.traders) {
+                //t.add(a);
+                ArrayList<Object> objects = new ArrayList<>();
+                for (Column c : Column.values()) {
+                    objects.add(getValue(a, c.ordinal()));
+                }
+                t.add(objects);
+            }
+            t.sort(new TraderComparator(sortCol,!sortAsc));
+            sortedTraders = t;
+            //traders = t;
+        }
+
+        class TraderComparator implements Comparator<ArrayList<Object>> {
+
+            byte col;
+            boolean asc;
+
+            TraderComparator(byte col, boolean asc) {
+                this.col = col;
+                this.asc = asc;
+            }
+
+            @Override
+            public int compare(ArrayList<Object> left, ArrayList<Object> right) {
+                Object l, r;
+                l = left.get(col); //getValue(left, col);
+                r = right.get(col); //getValue(right, col);
+
+                if (l == null && r == null) {
+                    return 0;
+                }
+
+                if (asc) {
+                    if (l == null) {
+                        return 1;
+                    }
+                    if (r == null) {
+                        return -1;
+                    }
+                    return ((Comparable<Object>) r).compareTo(l);
+                }
+
+                if (l == null) {
+                    return -1;
+                }
+                if (r == null) {
+                    return 1;
+                }
+                return ((Comparable<Object>) l).compareTo(r);
+
+            }
+
+        }
+
+        public Object getValue(AutoTraderInterface at, int column) {
+
+            Account a = at.getAccount();
+            float price = Globals.sim.getExchange().getLastPrice();
+
+            if (column == Column.ID.ordinal()) {
+                return 1;
+            }
+
+            if (column == Column.NAME.ordinal()) {
+
+                int[] atc = at.getColor();
+                Color c = null;
+                if (atc != null) {
+                    c = new Color(atc[0], atc[1], atc[2]);
+                }
+                return new NameValue(at.getName(), c);
+            }
+
+            if (column == Column.STATUS.ordinal()) {
+                return at.getStatus();
+            }
+
+            if (column == Column.CASH.ordinal()) {
+                return a.getMoney();
+            }
+
+            if (column == Column.SHARES.ordinal()) {
+                return a.getShares();
+            }
+            if (column == Column.EQUITY.ordinal()) {
+                return a.getEquity();
+            }
+
+            if (column == Column.MARGIN.ordinal()) {
+                return a.getMarginUsed();
+            }
+
+            if (column == Column.FREEMARGIN.ordinal()) {
+                return a.getFreeMargin();
+            }
+
+            if (column == Column.PNL.ordinal()) {
+                return new PercentageValue(a.getPerformance(price));
+            }
+
+            return null;
+            //  return super.getValueAt(row, column);
+
+        }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+
+            AutoTraderInterface at;
+            if (sortedTraders == null) {
+                at = Globals.sim.traders.get(row);
+                return this.getValue(at, column);
+            } else {
+                return sortedTraders.get(row).get(column);
+
+                //at = traders.get(row);
+            }
+            //Account a = at.getAccount();
+            //float price = Globals.sim.getExchange().getLastPrice();
+
+            //return this.getValue(at, column);
+        }
+
+        @Override
+        public int getRowCount() {
+            return Globals.sim.traders.size();
         }
 
     }
@@ -533,7 +661,12 @@ public class TraderListPanel extends javax.swing.JPanel {
                 } else {
                     setBackground(table.getBackground());
                 }
-                /*                Font defaultFont = table.getFont();
+                /*                Font defaultFod) {
+                Color color = n.getColor();
+                if (color != null) {
+                    this.setBackground(n.getColor());
+                } else {
+                    setBackground(nt = table.getFont();
                 if (Math.abs(performance) > 10) {
 
                     setFont(defaultFont.deriveFont(Font.BOLD));
@@ -543,6 +676,114 @@ public class TraderListPanel extends javax.swing.JPanel {
             }
 
             return c;
+        }
+    }
+
+    class MyRowSorter extends RowSorter<MyModel> {
+
+        private final MyModel model;
+        private List<SortKey> sortKeys = Collections.emptyList();
+
+        public MyRowSorter(MyModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public MyModel getModel() {
+            return model;
+        }
+
+        @Override
+        public void setSortKeys(List<? extends SortKey> keys) {
+            // In Java 8 besser in eine modifizierbare Liste kopieren
+            this.sortKeys = new ArrayList<SortKey>(keys);
+
+            if (!keys.isEmpty()) {
+                SortKey k = keys.get(0);
+                int col = k.getColumn();
+                boolean asc = k.getSortOrder() == SortOrder.ASCENDING;
+                //    model.reloadSorted(col, asc);
+            }
+
+            fireSortOrderChanged();
+        }
+
+        @Override
+        public List<SortKey> getSortKeys() {
+            return sortKeys;
+        }
+
+        // Keine Abbildung nötig, 1:1 Durchreichung
+        @Override
+        public int convertRowIndexToModel(int row) {
+            return row;
+        }
+
+        @Override
+        public int convertRowIndexToView(int row) {
+            return row;
+        }
+
+        @Override
+        public void modelStructureChanged() {
+            fireSortOrderChanged();
+        }
+
+        @Override
+        public void allRowsChanged() {
+
+            fireSortOrderChanged();
+            //model.fireTableDataChanged();
+        }
+
+        @Override
+        public void rowsInserted(int firstRow, int endRow) {
+        }
+
+        @Override
+        public void rowsDeleted(int firstRow, int endRow) {
+        }
+
+        @Override
+        public void rowsUpdated(int firstRow, int endRow) {
+        }
+
+        @Override
+        public void rowsUpdated(int firstRow, int endRow, int col) {
+        }
+
+        @Override
+        public void toggleSortOrder(int column) {
+
+            boolean asc = true;
+
+            if (!sortKeys.isEmpty()) {
+                SortKey current = sortKeys.get(0);
+
+                if (current.getColumn() == column) {
+                    // Richtung umdrehen
+                    asc = current.getSortOrder() != SortOrder.ASCENDING;
+                }
+            }
+
+            model.sortCol = (byte) column;
+            model.sortAsc = asc;
+
+            // Neue SortKeys-Liste setzen
+            List<SortKey> newKeys = new ArrayList<>();
+            newKeys.add(new SortKey(column, asc ? SortOrder.ASCENDING : SortOrder.DESCENDING));
+
+            setSortKeys(newKeys);
+        }
+
+        @Override
+        public int getViewRowCount() {
+            return model.getRowCount();
+        }
+
+        @Override
+        public int getModelRowCount() {
+            return model.getRowCount();
         }
     }
 
