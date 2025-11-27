@@ -138,7 +138,8 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         // this.columnList = columnList;
         setupTable();
-        addContextMenu();
+        
+           
 
         TableColumnModel colModel = list.getColumnModel();
         for (int i = colModel.getColumnCount() - 1; i >= 0; i--) {
@@ -149,6 +150,8 @@ public class TraderListPanel extends javax.swing.JPanel {
             }
         }
 
+        
+        addContextMenu();
     }
 
     /**

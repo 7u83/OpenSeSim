@@ -171,6 +171,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         traderListPanel = new TraderListPanel(this,
             new TraderListPanel.Column[]  {
                 TraderListPanel.Column.NAME,
+                TraderListPanel.Column.STATUS,
                 TraderListPanel.Column.SHARES,
                 TraderListPanel.Column.CASH,
                 TraderListPanel.Column.PNL
