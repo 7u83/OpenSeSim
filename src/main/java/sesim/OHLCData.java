@@ -37,42 +37,44 @@ public class OHLCData {
     private long min = 0;
 
     private int barDuration = 60000;
- //   int max_size = 100;
-    Market se;
+    //   int max_size = 100;
+    Market market;
 
     /*public OHLCData() {
 
     }*/
-
     /**
      * Create an OHLCData object that stores OHLCDataItems
      *
-     * @param se
+     * @param market
      * @param timeFrameLength Time frame stored in one OHLCDataItem
      */
-    public OHLCData(Market se, int timeFrameLength) {
-        this.se=se;
+    public OHLCData(Market market, int timeFrameLength) {
+        this.market = market;
         this.barDuration = timeFrameLength;
-        //data = new OHLCData(se, timeFrameLength);
+        //data = new OHLCData(market, timeFrameLength);
     }
-    
-    public OHLCData(Market se, int barDuration, OHLCData base){
-        this(se,barDuration);
-        
-        for (OHLCDataItem i: base.data){
-            this.realTimeAdd(i.time, i.open,i.volume);
-            this.realTimeAdd(i.time, i.high,0);
-            this.realTimeAdd(i.time, i.low,0);
-            this.realTimeAdd(i.time, i.close,0);            
+
+    public OHLCData(Market market, int barDuration, OHLCData base) {
+        this(market, barDuration);
+        for (OHLCDataItem i : base.data) {
+            if (i.volume == 0) {
+                continue; // Springe zum nächsten Basis-Bar
+            }
+
+            this.realTimeAdd(i.time, i.open, i.volume);
+            this.realTimeAdd(i.time, i.high, 0);
+            this.realTimeAdd(i.time, i.low, 0);
+            this.realTimeAdd(i.time, i.close, 0);
         }
     }
 
     public float getMax() {
-        return max/se.money_df;
+        return max / market.money_df;
     }
 
     public float getMin() {
-        return min/se.money_df;
+        return min / market.money_df;
     }
 
     public int size() {
@@ -98,11 +100,11 @@ public class OHLCData {
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
-            return new MinMax(se.money_df, di.low, di.high);
+            return new MinMax(market.money_df, di.low, di.high);
         }
 
         OHLCDataItem di = data.get(first);
-        MinMax minmax = new MinMax(se.money_df, di.low, di.high);
+        MinMax minmax = new MinMax(market.money_df, di.low, di.high);
 
         for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);
@@ -120,11 +122,11 @@ public class OHLCData {
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
-            return new MinMax(se.shares_df, di.volume, di.volume);
+            return new MinMax(market.shares_df, di.volume, di.volume);
         }
 
         OHLCDataItem di = data.get(first);
-        MinMax minmax = new MinMax(se.shares_df, di.volume, di.volume);
+        MinMax minmax = new MinMax(market.shares_df, di.volume, di.volume);
 
         for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);
@@ -138,13 +140,12 @@ public class OHLCData {
         return minmax;
     }
 
- /*   long getFrameStart(long time) {
+    /*   long getFrameStart(long time) {
 
         long rt = time / frame_size;
         return rt * frame_size;
 
     }*/
-
     public ArrayList<OHLCDataItem> data = new ArrayList<>();
 
     public OHLCDataItem get(int n) {
@@ -162,30 +163,28 @@ public class OHLCData {
 
     }
 
-  /*  public Iterator<OHLCDataItem> iterator() {
+    /*  public Iterator<OHLCDataItem> iterator() {
         return data.iterator();
     }*/
-
     // Start and end of current frame
- //   private long current_frame_end = 0;
+    //   private long current_frame_end = 0;
 //    private long current_frame_start = 0;
     private long last_price = 0;
 
-     boolean realTimeAdd(long time, long price, long volume) {
+    boolean realTimeAdd(long time, long price, long volume) {
 
-       // System.out.printf("REALTIME ADD QUOTE time: %d, vol:%f\n",time,volume);
-
+        //   System.out.printf("REALTIME ADD QUOTE time: %d, price: %d, vol:%d\n",time,price,volume);
         if (data.isEmpty()) {
             //System.out.printf("Data ist empty\n");
             if (time < barDuration) {
                 //System.out.printf("Adding Qute to frame 0\n");
-                data.add(new OHLCDataItem(se,0, price, volume));
+                data.add(new OHLCDataItem(market, 0, price, volume));
                 last_price = price;
                 return true;
             }
         }
 
-        long nFrame = (long)data.size() * (long)barDuration;
+        long nFrame = (long) data.size() * (long) barDuration;
         //System.out.printf("nFrame is: %d, data.size(): %d\n", nFrame, data.size());
         if (time < nFrame) {
             last_price = price;
@@ -197,15 +196,15 @@ public class OHLCData {
 
         }
 
-        while (time > nFrame+barDuration ) {
+        while (time > nFrame + barDuration) {
 
-            data.add(new OHLCDataItem(se, nFrame, last_price, 0));
-          //  System.out.printf("Add empty frame %d\n", nFrame);            
+            data.add(new OHLCDataItem(market, nFrame, last_price, 0));
+            //  System.out.printf("Add empty frame %d\n", nFrame);            
             nFrame += barDuration;
         }
 
         //System.out.printf("Add a new Frame %d\n", nFrame);
-        data.add(new OHLCDataItem(se, nFrame, price, volume));
+        data.add(new OHLCDataItem(market, nFrame, price, volume));
         last_price = price;
         return true;
 

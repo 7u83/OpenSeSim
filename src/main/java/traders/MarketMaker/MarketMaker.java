@@ -58,7 +58,7 @@ public class MarketMaker extends AutoTraderBase {
      */
     float depthPercent = 8;
 
-    int interval = 2000;
+    int interval = 1000;
 
     /**
      * Represents a single market maker order.

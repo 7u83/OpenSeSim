@@ -62,11 +62,11 @@ public class MarginTraderL extends AutoTraderBase
 
         // Minimum percentage of free margin to use for the next 
         // trade (percent * 10)
-        long minFreeMarginUsage = 100;
+        long minFreeMarginUsage = 500;
 
         // Maximum percentage of free margin to use for the next 
         // trade (percent * 10)
-        long maxFreeMarginUsage = 100;
+        long maxFreeMarginUsage = 500;
 
         long minShortLimit = -200;
         long maxShortLimit = +200;

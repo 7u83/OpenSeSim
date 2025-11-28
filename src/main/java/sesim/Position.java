@@ -270,6 +270,7 @@ public class Position {
             asset.getMarket().removeLiquidationStop(this);
 
         stopPrice=newStopPrice;
+        System.out.printf("Stop for %s, %d\n", this.account.getOwner().getName(),stopPrice);
         asset.getMarket().setLiquidationStop(this);
     }
     

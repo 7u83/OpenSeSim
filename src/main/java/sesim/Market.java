@@ -141,7 +141,7 @@ public class Market implements Asset {
         public void orderUpdated(Order o);
     }
 
-    int minOHLCBarDuration = 1000;
+    int minOHLCBarDuration = 5000;
     HashMap<Integer, OHLCData> ohlcByTimeFrameLength = new HashMap<>();
 
     /*    private OHLCData buildOHLCData(int timeFrame) {
@@ -1539,7 +1539,7 @@ public class Market implements Asset {
            
             p.account.isLiquided = true;
             p.account.cancelAllOrders();
-            //    System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.stopPrice);
+                System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.getStopPrice_Long());
             this.createOrderNoExec_Long(p.account, (byte)(Order.SELL ), Math.abs(p.shares), 0, 0, 1);
 
         }
@@ -1561,6 +1561,7 @@ public class Market implements Asset {
 
             shortStops.remove(p);
             // System.out.printf("SHORT STOP REACHED %d\n",price);
+            System.out.printf("SHORT STOP REACHED %d <= %d\n",price, p.getStopPrice_Long());
             p.account.isLiquided = true;
             p.account.cancelAllOrders();
             this.createOrderNoExec_Long(p.account, (byte)(Order.BUY ), Math.abs(p.shares), 0, 0, 1);

@@ -135,10 +135,10 @@ public class TraderListPanel extends javax.swing.JPanel {
         if (Globals.sim == null) {
             return;
         }
-
+this.columnList=columnList;
         // this.columnList = columnList;
         setupTable();
-        
+        addContextMenu();        
            
 
         TableColumnModel colModel = list.getColumnModel();
@@ -147,11 +147,12 @@ public class TraderListPanel extends javax.swing.JPanel {
             Column columnEnum = (Column) col.getIdentifier(); // besser Identifier setzen
             if (!Arrays.asList(columnList).contains(columnEnum)) {
                 this.hideColumn(columnEnum);
+               
             }
         }
 
         
-        addContextMenu();
+
     }
 
     /**
@@ -189,8 +190,11 @@ public class TraderListPanel extends javax.swing.JPanel {
             TableColumn col = colModel.getColumn(i);
             Column columnEnum = (Column) col.getIdentifier(); // besser Identifier setzen
             if (!Arrays.asList(columnList).contains(columnEnum)) {
-                hiddenColumns.put(columnEnum, col);
-                colModel.removeColumn(col);
+                
+                this.hideColumn(columnEnum);
+                
+               // hiddenColumns.put(columnEnum, col);
+               // colModel.removeColumn(col);
             }
         }
 
@@ -311,16 +315,23 @@ public class TraderListPanel extends javax.swing.JPanel {
         });
     }
 
+    JPopupMenu popupMenu;
+    
     /**
      * NEU: Erstellt und fügt das Kontextmenü zur Tabelle hinzu.
      */
     private void addContextMenu() {
-        JPopupMenu popupMenu = new JPopupMenu("Spalten verwalten");
+        popupMenu = new JPopupMenu("Spalten verwalten");
 
         for (final Column colEnum : Column.values()) {
             final String header = colEnum.header;
             // Bestimme den Anfangszustand: Ist die Spalte aktuell sichtbar?
-            boolean isVisible = list.getColumnModel().getColumnIndex(colEnum) != -1;
+            boolean isVisible =false; 
+            try {
+                isVisible = list.getColumnModel().getColumnIndex(colEnum) != -1;
+            }catch (Exception e){
+                
+            }
 
             final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(header, isVisible);
             menuItem.setName(header); // Kann optional zur Identifizierung verwendet werden
