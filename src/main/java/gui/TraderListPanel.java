@@ -81,14 +81,14 @@ public class TraderListPanel extends javax.swing.JPanel {
     // Definition of columns
     public static enum Column {
         ID("ID", null, Long.class),
-        NAME("Name", new NameCellRenderer(), Object.class),
+        NAME("Name", null, Object.class),
         STATUS("Status", null, String.class),
         SHARES("Shares", null, Float.class),
         MARGIN("Margin", null, Float.class),
         EQUITY("Equtiy", null, Float.class),
         FREEMARGIN("Free Margin", null, Float.class),
         CASH("Cash", null, Float.class),
-        PNL("PnL", new PercentageCellRenderer(), PercentageValue.class);
+        PNL("PnL", null, PercentageValue.class);
 
         public final String header;
         private TableCellRenderer renderer;
@@ -103,6 +103,9 @@ public class TraderListPanel extends javax.swing.JPanel {
         public TableCellRenderer getRenderer() {
             if (renderer == null) {
                 switch (this) {
+                    case NAME:
+                        renderer = new NameCellRenderer();
+                        break;
                     case SHARES:
                         renderer = new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals());
                         break;
@@ -111,6 +114,9 @@ public class TraderListPanel extends javax.swing.JPanel {
                     case FREEMARGIN:
                     case CASH:
                         renderer = new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals());
+                        break;
+                    case PNL:
+                        renderer = new PercentageCellRenderer();
                         break;
                     default:
                     // renderer bleibt null oder schon gesetzt
@@ -135,24 +141,20 @@ public class TraderListPanel extends javax.swing.JPanel {
         if (Globals.sim == null) {
             return;
         }
-this.columnList=columnList;
-        // this.columnList = columnList;
-        setupTable();
-        addContextMenu();        
-           
+        this.columnList = columnList;
 
-        TableColumnModel colModel = list.getColumnModel();
+        setupTable();
+        addContextMenu();
+
+        /*      TableColumnModel colModel = list.getColumnModel();
         for (int i = colModel.getColumnCount() - 1; i >= 0; i--) {
             TableColumn col = colModel.getColumn(i);
             Column columnEnum = (Column) col.getIdentifier(); // besser Identifier setzen
             if (!Arrays.asList(columnList).contains(columnEnum)) {
                 this.hideColumn(columnEnum);
-               
+
             }
-        }
-
-        
-
+        }*/
     }
 
     /**
@@ -179,10 +181,12 @@ this.columnList=columnList;
         for (Column a : Column.values()) {
             list.getColumnModel().getColumn(a.ordinal()).setHeaderValue(a.header);
             list.getColumnModel().getColumn(a.ordinal()).setIdentifier(a);
-
             list.getColumnModel().getColumn(a.ordinal()).setCellRenderer(a.getRenderer());
-
         }
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        list.getColumnModel().getColumn(Column.ID.ordinal()).setCellRenderer(centerRenderer);
 
         TableColumnModel colModel = list.getColumnModel();
 
@@ -190,18 +194,18 @@ this.columnList=columnList;
             TableColumn col = colModel.getColumn(i);
             Column columnEnum = (Column) col.getIdentifier(); // besser Identifier setzen
             if (!Arrays.asList(columnList).contains(columnEnum)) {
-                
+
                 this.hideColumn(columnEnum);
-                
-               // hiddenColumns.put(columnEnum, col);
-               // colModel.removeColumn(col);
+
+                // hiddenColumns.put(columnEnum, col);
+                // colModel.removeColumn(col);
             }
         }
 
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        /*     DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         list.getColumnModel().getColumn(Column.ID.ordinal()).setCellRenderer(centerRenderer);
-
+         */
         String widestText = "-100.0%"; // Der breiteste mögliche Wert
         FontMetrics fm = list.getFontMetrics(list.getFont()); // Font der Tabelle
         int textWidth = fm.stringWidth(widestText);
@@ -273,11 +277,11 @@ this.columnList=columnList;
                 }
 
                 List l = list.getRowSorter().getSortKeys();
-             //   model.fireTableRowsUpdated(0, model.getRowCount() - 1);
+                //   model.fireTableRowsUpdated(0, model.getRowCount() - 1);
                 model.fireTableDataChanged();
-       
-                    list.getRowSorter().allRowsChanged();
-       
+
+                list.getRowSorter().allRowsChanged();
+
                 if (!l.isEmpty()) {
                     list.getRowSorter().allRowsChanged();
                 } else {
@@ -316,7 +320,7 @@ this.columnList=columnList;
     }
 
     JPopupMenu popupMenu;
-    
+
     /**
      * NEU: Erstellt und fügt das Kontextmenü zur Tabelle hinzu.
      */
@@ -326,11 +330,11 @@ this.columnList=columnList;
         for (final Column colEnum : Column.values()) {
             final String header = colEnum.header;
             // Bestimme den Anfangszustand: Ist die Spalte aktuell sichtbar?
-            boolean isVisible =false; 
+            boolean isVisible = false;
             try {
                 isVisible = list.getColumnModel().getColumnIndex(colEnum) != -1;
-            }catch (Exception e){
-                
+            } catch (Exception e) {
+
             }
 
             final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(header, isVisible);
@@ -386,6 +390,14 @@ this.columnList=columnList;
             TableColumn col = colModel.getColumn(viewIndex);
             colModel.removeColumn(col);
             hiddenColumns.put(colEnum, col);
+
+            /*        for (int i = colModel.getColumnCount() - 1; i >= 0; i--) {
+            col = colModel.getColumn(i);
+            Column columnEnum = (Column) col.getIdentifier();
+            col.setCellRenderer(columnEnum.getRenderer());
+            
+            System.out.printf("Setting CellRenderer %s for %d\n",columnEnum.toString(),i);
+          }*/
         } catch (IllegalArgumentException ex) {
             // Spalte ist bereits ausgeblendet, nichts tun.
         }
@@ -426,6 +438,13 @@ this.columnList=columnList;
             colModel.moveColumn(colModel.getColumnCount() - 1, insertIndex);
 
             hiddenColumns.remove(colEnum);
+            /*    for (int i = colModel.getColumnCount() - 1; i >= 0; i--) {
+                col = colModel.getColumn(i);
+                Column columnEnum = (Column) col.getIdentifier();
+                col.setCellRenderer(columnEnum.getRenderer());
+
+                System.out.printf("Setting CellRenderer %s for %d\n", columnEnum.toString(), i);
+            }*/
         }
     }
 
@@ -444,15 +463,17 @@ this.columnList=columnList;
 
         @Override
         public int getColumnCount() {
-            if (def==null)
+            if (def == null) {
                 return 0;
+            }
             return def.length;
         }
 
         @Override
         public Class getColumnClass(int columnIndex) {
-            if (def==null)
+            if (def == null) {
                 return null;
+            }
             return def[columnIndex].cls;
         }
 
@@ -485,7 +506,7 @@ this.columnList=columnList;
         public ArrayList<ArrayList<Object>> sortedTraders = null;
 
         byte sortCol = 0;
-        boolean sortAsc=false;
+        boolean sortAsc = false;
 
         void sortTraders() {
             //ArrayList<AutoTraderInterface> t = new ArrayList<>();
@@ -499,7 +520,7 @@ this.columnList=columnList;
                 }
                 t.add(objects);
             }
-            t.sort(new TraderComparator(sortCol,!sortAsc));
+            t.sort(new TraderComparator(sortCol, !sortAsc));
             sortedTraders = t;
             //traders = t;
         }
