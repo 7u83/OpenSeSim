@@ -208,9 +208,9 @@ public class GroovyTrader extends AutoTraderBase {
         }
 
         public Order createOrder(byte type, double vol, double limit, double stop) {
-            limit = se.roundMoney(limit);
-            vol = se.roundShares(vol);
-            return se.createOrder(account, type, (float) vol, (float) limit, (float) stop);
+            limit = market.roundMoney(limit);
+            vol = market.roundShares(vol);
+            return market.createOrder(account, type, (float) vol, (float) limit, (float) stop);
         }
 
         public void logError(String msg, Object... args) {
@@ -228,11 +228,11 @@ public class GroovyTrader extends AutoTraderBase {
             if (o == null) {
                 return false;
             }
-            return se.cancelOrder(account, o.getID());
+            return market.cancelOrder(account, o.getID());
         }
 
         public Quote getLastQuote() {
-            return se.getLastQuoete();
+            return market.getLastQuoete();
         }
 
         public float getLastPrice() {

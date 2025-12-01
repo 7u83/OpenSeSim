@@ -71,7 +71,7 @@ public class RandomTraderB extends AutoTraderBase {
     @Override
     public void start() {
         long delay = (long) (getRandom(initial_delay[0], initial_delay[1]) * 1000);
-      //  se.timer.createEvent(this, delay);
+      //  market.timer.createEvent(this, delay);
     }
 
     @Override
@@ -167,7 +167,7 @@ public class RandomTraderB extends AutoTraderBase {
            Iterator<Long> it = keys.iterator();
            while (it.hasNext()) {
       //          Order od = it.next();
-                boolean rc = se.cancelOrder(account, it.next());
+                boolean rc = market.cancelOrder(account, it.next());
            }
         }
         return n;
@@ -262,7 +262,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     public boolean doBuy() {
 
-//        AccountData ad = this.se.getAccountData(account_id);
+//        AccountData ad = this.market.getAccountData(account_id);
 
         sesim.Account account = this.account;
 
@@ -275,8 +275,8 @@ public class RandomTraderB extends AutoTraderBase {
         // how much money we ant to invest?
         float money = getRandomAmmount(account.getMoney(), buy_volume);
     
-        Quote q = se.getBestPrice_0();
-        //q=se.getLastQuoete();
+        Quote q = market.getBestPrice_0();
+        //q=market.getLastQuoete();
         float lp = q == null ? getStart() : q.getPrice();
 
         float limit;
@@ -287,14 +287,14 @@ public class RandomTraderB extends AutoTraderBase {
 
     //    System.out.printf("Volume : %f", volume);
         
-        limit = se.roundMoney(limit);
-        volume = se.roundShares(volume);
+        limit = market.roundMoney(limit);
+        volume = market.roundShares(volume);
         
         if (volume <= 0 || money <= 0) {
             return false;
         }
 
-        se.createOrder(account, type, volume, limit,0f);
+        market.createOrder(account, type, volume, limit,0f);
 
         return true;
 
@@ -302,7 +302,7 @@ public class RandomTraderB extends AutoTraderBase {
 
     public boolean doSell() {
         //   RandomTraderConfig myoldconfig = (RandomTraderConfig) this.oldconfig;
-        //AccountData ad = this.se.getAccountData(account_id);
+        //AccountData ad = this.market.getAccountData(account_id);
         
         Account account = this.account;
 
@@ -311,12 +311,12 @@ public class RandomTraderB extends AutoTraderBase {
                
         // how much shares we ant to sell?
         float volume = getRandomAmmount(account.getShares(), sell_volume);
-        volume = se.roundShares(volume);
+        volume = market.roundShares(volume);
         
 
         //    float lp = 100.0; //se.getBestLimit(type);
-        Quote q = se.getBestPrice_0();
-          //      q=se.getLastQuoete();
+        Quote q = market.getBestPrice_0();
+          //      q=market.getLastQuoete();
         float lp = q == null ? getStart() : q.getPrice();
         
         
@@ -325,14 +325,14 @@ public class RandomTraderB extends AutoTraderBase {
 
         float limit;
         limit = lp + getRandomAmmount(lp, sell_limit);
-        se.roundMoney(limit);
+        market.roundMoney(limit);
 
 
         if (volume <= 0 || limit <=0) {
             return false;
         }
 
-        se.createOrder(account, type, volume, limit,0f);
+        market.createOrder(account, type, volume, limit,0f);
         
         return true;
 

@@ -289,7 +289,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 
                 }
 
-                if (selectedTraderId != null) {
+        /*        if (selectedTraderId != null) {
                     // Durchlaufe das Model, um die Zeilennummer der ID zu finden
                     for (int i = 0; i < model.getRowCount(); i++) {
                         Object value = model.getValueAt(i, Column.ID.ordinal());
@@ -313,7 +313,7 @@ public class TraderListPanel extends javax.swing.JPanel {
                             break; // Gefunden, Schleife verlassen
                         }
                     }
-                }
+                }*/
 
             }
         });
@@ -573,7 +573,9 @@ public class TraderListPanel extends javax.swing.JPanel {
             float price = Globals.sim.getExchange().getLastPrice();
 
             if (column == Column.ID.ordinal()) {
-                return 1;
+                int id = (int)at.getID();
+                return id;
+                
             }
 
             if (column == Column.NAME.ordinal()) {

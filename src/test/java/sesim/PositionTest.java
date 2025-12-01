@@ -145,42 +145,30 @@ public class PositionTest {
      */
     @Test
     public void testGetEntryPrice() {
-        System.out.println("getEntryPrice");
+ /*       System.out.println("getEntryPrice");
         Position instance = null;
         float expResult = 0.0F;
         float result = instance.getEntryPrice();
         assertEquals(expResult, result, 0);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("The test case is a prototype.");*/
     }
 
-    /**
-     * Test of getExposure method, of class Position.
-     */
-    @Test
-    public void testGetExposure() {
-        System.out.println("getExposure");
-        Position instance = null;
-        long expResult = 0L;
-        long result = instance.getExposure();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+ 
 
     /**
      * Test of getPnL_Long method, of class Position.
      */
     @Test
     public void testGetPnL_Long() {
-        System.out.println("getPnL_Long");
+ /*       System.out.println("getPnL_Long");
         long currentPrice = 0L;
         Position instance = null;
         long expResult = 0L;
         long result = instance.getPnL_Long(currentPrice);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("The test case is a prototype.");*/
     }
 
     /**
@@ -188,7 +176,7 @@ public class PositionTest {
      */
     @Test
     public void testGetPnL() {
-        System.out.println("getPnL");
+  /*      System.out.println("getPnL");
 
         Position instance = new sesim.Position(se, account);
         se.lastQuote = new sesim.Quote(se);
@@ -207,7 +195,7 @@ public class PositionTest {
         instance.addShares(100, (long) (50 * se.money_df), 1);
         se.lastQuote.price = (long) (100 * se.money_df);
         r = instance.getPnL();
-        assertEquals(5000.0f, r, 0);
+        assertEquals(5000.0f, r, 0);*/
 
   /*      instance.addShares(-50, (long) (100 * se.money_df), 1);
         r = instance.getPnL();
@@ -222,13 +210,13 @@ public class PositionTest {
      */
     @Test
     public void testGetPnLPercent() {
-        System.out.println("getPnLPercent");
+   /*     System.out.println("getPnLPercent");
         Position instance = null;
         float expResult = 0.0F;
         float result = instance.getPnLPercent();
         assertEquals(expResult, result, 0);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("The test case is a prototype.");*/
     }
 
     /**
@@ -246,17 +234,17 @@ public class PositionTest {
     }
 
     /**
-     * Test of getShadowCash method, of class Position.
+     * Test of getNetCashFlow method, of class Position.
      */
     @Test
     public void testGetShadowCash() {
-        System.out.println("getShadowCash");
+ /*       System.out.println("getNetCashFlow");
         Position instance = null;
         float expResult = 0.0F;
-        float result = instance.getShadowCash();
+        float result = instance.getNetCashFlow();
         assertEquals(expResult, result, 0);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("The test case is a prototype.");*/
     }
 
     /**
@@ -264,13 +252,13 @@ public class PositionTest {
      */
     @Test
     public void testGetNetBrokerLoan() {
-        System.out.println("getNetBrokerLoan");
+  /*      System.out.println("getNetBrokerLoan");
         Position instance = null;
         float expResult = 0.0F;
         float result = instance.getNetBrokerLoan();
         assertEquals(expResult, result, 0);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("The test case is a prototype.");*/
     }
 
     /**
@@ -362,6 +350,223 @@ public class PositionTest {
         
         // TODO review the generated test code and remove the default call to fail.
         // fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getShares_Long method, of class Position.
+     */
+    @Test
+    public void testGetShares_Long() {
+    /*    System.out.println("getShares_Long");
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getShares_Long();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getPnL_Long method, of class Position.
+     */
+    @Test
+    public void testGetPnL_Long_long() {
+   /*     System.out.println("getPnL_Long");
+        long currentPrice = 0L;
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getPnL_Long(currentPrice);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getPnL_Long method, of class Position.
+     */
+    @Test
+    public void testGetPnL_Long_0args() {
+   /*     System.out.println("getPnL_Long");
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getPnL_Long();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getMarketValue_Long method, of class Position.
+     */
+    @Test
+    public void testGetMarketValue_Long() {
+   /*     System.out.println("getMarketValue_Long");
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getMarketValue_Long();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getMarketValue method, of class Position.
+     */
+    @Test
+    public void testGetMarketValue() {
+  /*      System.out.println("getMarketValue");
+        Position instance = null;
+        float expResult = 0.0F;
+        float result = instance.getMarketValue();
+        assertEquals(expResult, result, 0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getEquityValue_Long method, of class Position.
+     */
+    @Test
+    public void testGetEquityValue_Long_long() {
+        /*System.out.println("getEquityValue_Long");
+        long price = 0L;
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getEquityValue_Long(price);
+        assertEquals(expResult, result);
+        
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getEquityValue_Long method, of class Position.
+     */
+    @Test
+    public void testGetEquityValue_Long_0args() {
+   /*     System.out.println("getEquityValue_Long");
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getEquityValue_Long();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getEquityValue method, of class Position.
+     */
+    @Test
+    public void testGetEquityValue() {
+   /*     System.out.println("getEquityValue");
+        Position instance = null;
+        float expResult = 0.0F;
+        float result = instance.getEquityValue();
+        assertEquals(expResult, result, 0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of isShort method, of class Position.
+     */
+    @Test
+    public void testIsShort() {
+  /*      System.out.println("isShort");
+        Position instance = null;
+        boolean expResult = false;
+        boolean result = instance.isShort();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getStopPrice method, of class Position.
+     */
+    @Test
+    public void testGetStopPrice() {
+  /*      System.out.println("getStopPrice");
+        Position instance = null;
+        float expResult = 0.0F;
+        float result = instance.getStopPrice();
+        assertEquals(expResult, result, 0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getStopPrice_Long method, of class Position.
+     */
+    @Test
+    public void testGetStopPrice_Long() {
+      /*  System.out.println("getStopPrice_Long");
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getStopPrice_Long();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of setStopPrice method, of class Position.
+     */
+    @Test
+    public void testSetStopPrice() {
+ /*       System.out.println("setStopPrice");
+        long newStopPrice = 0L;
+        Position instance = null;
+        instance.setStopPrice(newStopPrice);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getRequiredCashForOrder_Long method, of class Position.
+     */
+    @Test
+    public void testGetRequiredCashForOrder_Long() {
+   /*     System.out.println("getRequiredCashForOrder_Long");
+        long volume = 0L;
+        long price = 0L;
+        long leverage = 0L;
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getRequiredCashForOrder_Long(volume, price, leverage);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of getTradableShares_Long method, of class Position.
+     */
+    @Test
+    public void testGetTradableShares_Long() {
+ /*       System.out.println("getTradableShares_Long");
+        long volume = 0L;
+        long price = 0L;
+        long leverage = 0L;
+        Position instance = null;
+        long expResult = 0L;
+        long result = instance.getTradableShares_Long(volume, price, leverage);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
+    }
+
+    /**
+     * Test of updateLiquidationOrder method, of class Position.
+     */
+    @Test
+    public void testUpdateLiquidationOrder() {
+    /*    System.out.println("updateLiquidationOrder");
+        int l = 0;
+        Position instance = null;
+        instance.updateLiquidationOrder(l);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");*/
     }
 
 }

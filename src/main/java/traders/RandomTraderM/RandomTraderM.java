@@ -114,8 +114,8 @@ public class RandomTraderM extends AutoTraderBase
 
     @Override
     public void start() {
-        //bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
-        //bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
+        //bankrupt_shares = (long) (bankrupt_shares_cfg * market.shares_df);
+        //bankrupt_cash = (long) (bankrupt_cash_cfg * market.money_df);
         //     this.TRADEEVENT.name = this.getName();
         //     this.ORDERFILLEDEVENT.name = this.getName();
         Account a = account;
@@ -322,9 +322,9 @@ public class RandomTraderM extends AutoTraderBase
             bankrupt_shares = cfg.optLong(BANKRUPT_SHARES,0);
             bankrupt_cash = cfg.optLong(BANKRUPT_CASH,100);
 
-//            if (se != null) {
-//                bankrupt_shares = (long) (bankrupt_shares_cfg * se.shares_df);
-//                bankrupt_cash = (long) (bankrupt_cash_cfg * se.money_df);
+//            if (market != null) {
+//                bankrupt_shares = (long) (bankrupt_shares_cfg * market.shares_df);
+//                bankrupt_cash = (long) (bankrupt_cash_cfg * market.money_df);
 //            }
             minAmountToBuyDeviation = cfg.getLong(MIN_AMOUNT_TO_BUY_DEVIATION);
             minAmountToSellDeviation = cfg.getLong(MIN_AMOUNT_TO_SELL_DEVIATION);
@@ -431,7 +431,7 @@ public class RandomTraderM extends AutoTraderBase
 
         byte s = o.getStatus();
         if (s == Order.OPEN || s == Order.PARTIALLY_EXECUTED) {
-            se.cancelOrder(account, o.getID());
+            market.cancelOrder(account, o.getID());
 
             currentOrder = null;
             setStatus("Sleep after timeout");
@@ -535,7 +535,7 @@ public class RandomTraderM extends AutoTraderBase
 
     /*    private float getStart() {
 
-        return this.se.fairValue;
+        return this.market.fairValue;
 
     }*/
     /**
@@ -588,14 +588,14 @@ public class RandomTraderM extends AutoTraderBase
             money = money_avail;
         }
 
-        Quote q = se.getBestPrice_0();
+        Quote q = market.getBestPrice_0();
         long lp = q.getPrice_Long();
 
         long limit = this.getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
 
         long volume = money / limit;
 
-        return se.createOrder_Long(account, Order.BUYLIMIT, volume, limit, 0, leverage);
+        return market.createOrder_Long(account, Order.BUYLIMIT, volume, limit, 0, leverage);
 
     }
 
@@ -608,14 +608,14 @@ public class RandomTraderM extends AutoTraderBase
         }
 
         //    float lp = 100.0; //se.getBestLimit(type);
-        Quote q = se.getBestPrice_0();
+        Quote q = market.getBestPrice_0();
         long lp = q.getPrice_Long();
 
         long limit = this.getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1], minSellDeviation);
         //   limit = lp + getRandomAmmount(lp, sell_limit);
-        //  limit = lp + se.random.nextLong(0, 4) - 2;
+        //  limit = lp + market.random.nextLong(0, 4) - 2;
 
-        return se.createOrder_Long(account, Order.SELLLIMIT, volume, limit, 0, leverage);
+        return market.createOrder_Long(account, Order.SELLLIMIT, volume, limit, 0, leverage);
 
     }
 

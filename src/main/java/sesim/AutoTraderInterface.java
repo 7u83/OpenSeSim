@@ -99,5 +99,6 @@ public interface AutoTraderInterface {
     
     public Object initGlobal(Sim sim, Object global,JSONObject cfg);
         
+    public long getID();
     
 }

@@ -90,7 +90,7 @@ public class PositionsListPanel extends javax.swing.JPanel {
                                 p.getShares(),
                                 p.getLeverage(),
                                 p.getMargin(),
-                                p.getShadowCash(),
+                                p.getNetCashFlow(),
                                 p.getTotalEntryCost(),
                                 p.getEntryPrice(),
                                 p.getEquityValue(),

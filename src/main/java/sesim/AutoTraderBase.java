@@ -39,7 +39,7 @@ import sesim.Scheduler.EventProcessor;
 public abstract class AutoTraderBase implements AutoTraderInterface, EventProcessor {
 
     protected Account account;
-    protected Market se;
+    protected Market market;
     protected Sim sim;
     // protected AutoTraderConfig config;
 
@@ -48,12 +48,12 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     int[] color = null;
 
-    /*    public AutoTraderBase(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
-        account_id = se.createAccount(money, shares);
-        Exchange.Account a = se.getAccount(account_id);
+    /*    public AutoTraderBase(Exchange market, long id, String name, float money, float shares, AutoTraderConfig config) {
+        account_id = market.createAccount(money, shares);
+        Exchange.Account a = market.getAccount(account_id);
 
         //   a.owner=this;
-        this.se = se;
+        this.market = market;
         this.config = config;
         this.name = name;
         this.id = id;
@@ -66,7 +66,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     }
 
     public AutoTraderBase() {
-        se = null;
+        market = null;
         id = 0;
     }
 
@@ -79,15 +79,17 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         return name;
     }
 
+    @Override
     public int[] getColor() {
         return color;
     }
 
-//    @Override
+
+    @Override
     public long getID() {
         return id;
     }
-    private long id;
+    long id;
 
     @Override
     public Account getAccount() {
@@ -96,13 +98,13 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
     @Override
     public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
-        this.account = new Account(sim.getExchange(), money, shares); // se.createAccount(money, shares);
-        //       se.getAccount(account_id).owner = this;
+        this.account = new Account(sim.getExchange(), money, shares); // market.createAccount(money, shares);
+        //       market.getAccount(account_id).owner = this;
 
         this.sim = sim;
-        this.se = sim.getExchange();
+        this.market = sim.getExchange();
         this.account.owner = this;
-        this.se = se;
+//        this.market = market;
         this.name = name;
         this.id = id;
         this.strategyName = strat;
@@ -110,7 +112,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     }
 
     public Market getSE() {
-        return se;
+        return market;
     }
 
     @Override

@@ -27,10 +27,8 @@ package sesim;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -355,6 +353,14 @@ public class Account {
         return equity;
     }
 
+    public final long getEquity_Long(long price) {
+        long equity = cash;
+        for (Position pos : positions.values()) {
+            equity += pos.getEquityValue_Long(price);
+        }
+        return equity;
+    }
+
     float getCash() {
         return cash / defaultMarket.money_df;
     }
@@ -384,11 +390,11 @@ public class Account {
         return getFreeMargin_Long() / defaultMarket.money_df;
     }
 
-    Position createPosition() {
+  /*  Position createPosition() {
         //    Position p = new Position();
 //        positions.put(p,p);
         return null;
-    }
+    }*/
 
     public final Position getPosition(Asset asset) {
         // String s = "AAPL";
@@ -422,36 +428,35 @@ public class Account {
             return;
         }
         long currentEquity = getEquity_Long();
-        long totalUsedMargin = getMarginUsed_Long();
 
-        // Critical Equity = Total Used Margin (Margin Level 100%)
         long criticalEquity = 1000; //totalUsedMargin;
 
         // L_max ist die Free Margin (der Puffer in Cents)long criticalEquity = 0;
-        long lMax_additional = currentEquity - criticalEquity;
+        long maxEquityToLose = currentEquity - criticalEquity;
 
-        if (lMax_additional <= 0) {
+        if (maxEquityToLose <= 0) {
             //   System.out.println("WARNUNG: Margin Call ist bereits ausgelöst oder der Puffer ist aufgebraucht. Puffer: " + (lMax_additional / CENTS_PER_EURO) + " €");
             return;
         }
 
         /*  double lp = this.defaultMarket.getLastPrice();
         System.out.printf("Last Price for LS Calculation %f\n",lp);*/
-        double totalAbsoluteVolumeSum = 0.0;
+        long totalAbsoluteVolumeSum = 0;
         for (Position p : positions.values()) {
             // Absolute Volumen (P_aktuell * Shares) zur korrekten Gewichtung des Risikos
-            totalAbsoluteVolumeSum += lastPrice / p.asset.getMarket().money_df * Math.abs(p.getShares_Long());
+            totalAbsoluteVolumeSum += Math.abs(p.getMarketValue_Long());
+
         }
 
         //Map<String, Double> stopPrices = new HashMap<>();
         for (Position p : positions.values()) {
 
             // I. Gewichtung (W_i)
-            double positionVolume = p.asset.getMarket().getLastPrice() * Math.abs(p.getShares_Long());
-            double weight = positionVolume / totalAbsoluteVolumeSum;
+            long positionVolume = Math.abs(p.getMarketValue_Long());
+            double weight = (double) positionVolume / (double) totalAbsoluteVolumeSum;
 
             // II. Tolerierter Verlust für diese Position (L_i) in Cents
-            long toleratedLoss_i_long = (long) (lMax_additional * weight);
+            long toleratedLoss_i_long = (long) (maxEquityToLose * weight);
 
             // III. Verlust pro Aktie (V_Aktie) in Euro
             long shares = Math.abs(p.getShares_Long());
@@ -459,23 +464,34 @@ public class Account {
                 continue;
             }
 
-            double lossPerShare_double = ((double) toleratedLoss_i_long) / shares / 100;
+            //long lossPerShare_double = (toleratedLoss_i_long) / shares;
+            
+            double lossPerShare_double = ((double) toleratedLoss_i_long) / shares;
+            long lossPerShare = (long) Math.round(lossPerShare_double);
 
             // IV. Endgültiger Stop-Kurs (S_check, i)
-            double currentPrice = lastPrice / p.asset.getMarket().money_df;
-            double stopPrice;
+            long currentPrice = p.asset.getMarket().getLastPrice_Long();
+            long stopPrice;
 
             if (p.isShort()) {
                 // Short: Verlust bei steigendem Kurs -> Stop liegt ÜBER dem aktuellen Preis
-                stopPrice = currentPrice + lossPerShare_double;
+                stopPrice = currentPrice + lossPerShare;
             } else {
                 // Long: Verlust bei fallendem Kurs -> Stop liegt UNTER dem aktuellen Preis
-                stopPrice = currentPrice - lossPerShare_double;
+                stopPrice = currentPrice - lossPerShare;
             }
 
             // p.stopPrice=(long)(stopPrice*se.money_df);
-            p.setStopPrice((long) (stopPrice * defaultMarket.money_df));
-            //  System.out.printf("StopPrice: %f\n", stopPrice);
+            p.setStopPrice( stopPrice );
+            
+    /*        System.out.printf("StopPrice for %s is %f - current: %f. netCashFlow: %f, Shares: %d, Rest: %f\n", 
+                    this.getOwner().getName(),
+                    stopPrice/100.00,
+                    p.asset.getMarket().getLastPrice(),
+                    p.getNetCashFlow(),
+                    p.getShares_Long(),
+                    (p.netCashFlow+p.getShares_Long()*stopPrice+this.cash)/100.0
+            );*/
 
             // Speichern des Ergebnisses
             //  stopPrices.put(p.getName(), stopPrice); 
@@ -609,7 +625,7 @@ public class Account {
         long shadow_cash = 0;
         long totalEntryCost = 0;
 
-        public float getShadowCash() {
+        public float getNetCashFlow() {
             return shadow_cash / se.money_df;
         }
 

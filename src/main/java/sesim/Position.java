@@ -99,10 +99,10 @@ public class Position {
     }
 
     // Exposure = total Position value
-    public long getExposure() {
+/*    public long getExposure() {
         return Math.abs(shares * entryPrice);
     }
-
+*/
     // unrealized PnL für aktuelle Preis
     public long getPnL_Long(long currentPrice) {
 
@@ -137,10 +137,15 @@ public class Position {
         return (getPnL() / base) * 100.0f;
     }
 
+    /**
+     * Get the market value of the position
+     * @return market value in units
+     */
     public long getMarketValue_Long() {
-        return totalEntryCost - asset.getMarket().getLastPrice_Long() * shares - netCashFlow;
+        return asset.getMarket().getLastPrice_Long() * shares;
     }
 
+    
     public float getMarketValue() {
         return getMarketValue_Long() / asset.getMarket().money_df;
     }
@@ -165,13 +170,13 @@ public class Position {
     long netCashFlow = 0;
     long totalEntryCost = 0;
 
-    public float getShadowCash() {
+   public float getNetCashFlow() {
         return netCashFlow / asset.getMarket().money_df;
     }
 
-    public float getNetBrokerLoan() {
+/*    public float getNetBrokerLoan() {
         return netCashFlow / asset.getMarket().money_df;
-    }
+    }*/
     public boolean mops = true;
 
     boolean isShort() {
@@ -270,7 +275,7 @@ public class Position {
             asset.getMarket().removeLiquidationStop(this);
 
         stopPrice=newStopPrice;
-        System.out.printf("Stop for %s, %d\n", this.account.getOwner().getName(),stopPrice);
+        //System.out.printf("Stop for %s, %d\n", this.account.getOwner().getName(),stopPrice);
         asset.getMarket().setLiquidationStop(this);
     }
     

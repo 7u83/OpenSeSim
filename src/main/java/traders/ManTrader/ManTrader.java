@@ -73,8 +73,8 @@ public class ManTrader extends AutoTraderBase
     String soundFile = null;
     int soundVolume = 50;
 
-//    public ManTrader(Exchange se, long id, String name, float money, float shares, AutoTraderConfig config) {
-//        //  super(se, id, name, money, shares, null);
+//    public ManTrader(Exchange market, long id, String name, float money, float shares, AutoTraderConfig config) {
+//        //  super(market, id, name, money, shares, null);
 //        super();
 //    }
     public final ConcurrentHashMap<Long, Order> allOrders = new ConcurrentHashMap<>();
@@ -95,7 +95,7 @@ public class ManTrader extends AutoTraderBase
     public void start() {
 
         account.setListener(this);
-        se.addQuoteReceiver(this);
+        market.addQuoteReceiver(this);
         //se.timer.createEvent(this, 0);
         //   consoleDialog = new ManTraderConsoleDialog(Globals.frame, false, account_id);
 
@@ -149,9 +149,9 @@ public class ManTrader extends AutoTraderBase
             return consoleDialog;
         }
 
-        consoleDialog = new ManTraderConsoleDialog(parent, false, se, account, this);
+        consoleDialog = new ManTraderConsoleDialog(parent, false, market, account, this);
 
-        consoleDialog.init(se, account);
+        consoleDialog.init(market, account);
         consoleDialog.doUpdate(account, this);
         consoleDialog.setLocationRelativeTo(parent);
         consoleDialog.pack(); //

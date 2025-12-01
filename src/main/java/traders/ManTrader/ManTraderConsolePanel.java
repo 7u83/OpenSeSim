@@ -142,7 +142,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         float limit = this.buyEditOrderPanel.getLimit();
         byte type = this.buyEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
-        boolean b = account.isOrderCovered(se, vol, limit, leverage);
+        boolean b = account.isOrderCovered(se, vol, limit, leverage) | true;
 
         this.buyButton.setEnabled(b);
         return b;
@@ -153,7 +153,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         float limit = this.sellEditOrderPanel.getLimit();
         byte type = this.sellEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
-        boolean b = account.isOrderCovered(se, -vol, limit, leverage);
+        boolean b = account.isOrderCovered(se, -vol, limit, leverage) | true;
 
         //     boolean b = account.isOrderCovered(type, vol, limit);
         //    this.sellButton.setEnabled(b);

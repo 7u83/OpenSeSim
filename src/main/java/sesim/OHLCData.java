@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import sesim.util.MinMax;
 import java.util.*;
 
 /**
@@ -203,7 +204,7 @@ public class OHLCData {
             nFrame += barDuration;
         }
 
-        //System.out.printf("Add a new Frame %d\n", nFrame);
+        //System.out.printf(SHORT STOP REACHED"Add a new Frame %d\n", nFrame);
         data.add(new OHLCDataItem(market, nFrame, price, volume));
         last_price = price;
         return true;

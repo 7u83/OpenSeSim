@@ -25,12 +25,15 @@
  */
 package sesim;
 
+import java.text.DecimalFormat;
+
 /**
  *
- * @author tube
+ * @author 7u83
  */
 public interface Asset {
     String getSymbol();
     Market getMarket();
     float getDf();
+    public DecimalFormat getFormatter();
 }

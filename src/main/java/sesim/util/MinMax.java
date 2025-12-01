@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package sesim.util;
 
 /**
  *
@@ -31,65 +31,49 @@ package sesim;
  */
 public class MinMax {
 
-    protected long min;
-    protected long max;
-    protected float min_log;
-    protected float max_log;    
-    
-    private boolean log;
-    
+    public long min;
+    public long max;
+
     float df;
 
-    MinMax(float df, long min, long max) {
-        this.df=df;
+    public MinMax(float df, long min, long max) {
+        this.df = df;
         this.min = min;
         this.max = max;
-        this.log = false;
     }
 
     public float getDiff() {
-        return !log ? (max - min)/df : max_log - min_log;
+        return (max - min) / df;
     }
 
-    public float getDiff(boolean plog) {
-        return !plog ? (max - min)/df : max_log - min_log;
-    }
-
-    
     public float getMin() {
-        return !log ? min/df : min_log;
+        return min / df;
+
     }
-    
-    public float getMin(boolean plog) {
-        return !plog ? min/df : min_log;
-    }
-    
 
     public float getMax() {
-        return !log ? max/df : max_log;
+        return max / df;
     }
 
-    public float getMax(boolean plog) {
-        return !plog ? max/df : max_log;
+    public void setMin(float min) {
+        this.min = (long) (min * df);
     }
-    
-    
-    public void setLog(boolean log){
-        min_log = (float) Math.log(min);
-        max_log = (float) Math.log(max);
-        this.log=log;
-    }
-    
-   public void setMin(float min){
-        this.min=(long)(min*df);
-    }
-    
-   /* public void setMax(float max){
-        this.max=max;
-    }*/
 
- /*   public boolean isLog(){
-        return log;
-    }*/
+    public void updateMax(long val) {
+        if (val > max) {
+            max = val;
+        }
+    }
+
+    public void updateMin(long val) {
+        if (val < min) {
+            min = val;
+        }
+    }
     
+    public void update(long val){
+        updateMax(val);
+        updateMin(val);
+    }
+
 }

@@ -27,6 +27,7 @@ package sesim;
 
 import gui.Globals;
 import gui.NewStrategyDialog;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -105,6 +106,11 @@ public class Sim {
         @Override
         public float getDf() {
             return se.getDf();
+        }
+
+        @Override
+        public DecimalFormat getFormatter() {
+            return null;
         }
 
     }
@@ -396,6 +402,7 @@ public class Sim {
                 ((AutoTraderBase) trader).setStrategyName(strategy_name);
 
                 this.traders.add(trader);
+                ((AutoTraderBase)trader).id=traders.size()-1;
 
                 Boolean exclude = t.optBoolean("ExcludeInitial", false);
                 if (!exclude) {
@@ -421,8 +428,8 @@ public class Sim {
 
         }
 
-        //  Globals.sim.se.fairValue = 1.0;
-        //System.out.printf("Failr Value is %f\n", se.fairValue);
+        //  Globals.sim.market.fairValue = 1.0;
+        //System.out.printf("Failr Value is %f\n", market.fairValue);
         for (int i = 0; i < traders.size(); i++) {
             traders.get(i).start();
             if (i % 10000 == 0) {

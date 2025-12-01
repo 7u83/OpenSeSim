@@ -46,7 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
-import sesim.MinMax;
+import sesim.util.MinMax;
 import sesim.Quote;
 
 /**
@@ -468,8 +468,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //    ctx.g.fillRect(0, 0, 100, 100);
         // g.drawLine(0,0,clip.width,clip.height);
 
-        float y1 = ctx.getY(ctx.c_mm.getMin(false));
-        float y2 = ctx.getY(ctx.c_mm.getMax(false));
+        float y1 = ctx.getY(ctx.c_mm.getMin());
+        float y2 = ctx.getY(ctx.c_mm.getMax());
 
         // nice first val
         double R = ctx.c_mm.getMax() - ctx.c_mm.getMin();

@@ -57,6 +57,9 @@ public class MarketMaker extends AutoTraderBase {
      * For example, 8 means the lowest buy order is 8% below the current price.
      */
     float depthPercent = 8;
+    
+    
+    float cashToUse = 50.0f;
 
     int interval = 1000;
 
@@ -101,7 +104,7 @@ public class MarketMaker extends AutoTraderBase {
      * Creates and initializes the market maker orders
      */
     private void initOrders() {
-        float centerPrice = se.getLastPrice();
+        float centerPrice = market.getLastPrice();
 
         // Lowest price for buy orders
         float lowestPrice = centerPrice - depthPercent * centerPrice / 100f;
@@ -112,24 +115,28 @@ public class MarketMaker extends AutoTraderBase {
         float dist = (centerPrice - lowestPrice) / (numPositions + 1);
 
         // Allocate cash per order
-        float cashPerBuyOrder = account.getMoney()*0.5f / (numPositions + 1);
+        float cashPerBuyOrder = account.getMoney()* (cashToUse/100.0f) / (numPositions + 1);
 
         float price = lowestPrice + dist;
 
         for (int i = 0; i < numPositions; i++) {
             orders[i] = new MMOrder();
-            orders[i].buyLimit = se.roundMoney(price);
+            orders[i].buyLimit = market.roundMoney(price);
             price += dist;
-            orders[i].sellLimit = se.roundMoney(price);
-            orders[i].volume = se.roundShares(cashPerBuyOrder / price);
+            orders[i].sellLimit = market.roundMoney(price);
+            orders[i].volume = market.roundShares(cashPerBuyOrder / price);
 
             // Create initial buy order
-            orders[i].o = se.createOrder(account, Order.BUYLIMIT,
+            orders[i].o = market.createOrder(account, Order.BUYLIMIT,
                     orders[i].volume, orders[i].buyLimit, 0f);
 
         }
 
-        setStatus("%f - %f", lowestPrice, centerPrice);
+        
+        setStatus("%s - %s", 
+                market.getFormatter().format(lowestPrice),
+                market.getFormatter().format(centerPrice)
+        );
 
     }
 
@@ -146,14 +153,14 @@ public class MarketMaker extends AutoTraderBase {
             if (o.getStatus() == Order.CLOSED) {
                 if (o.getType() == Order.SELLLIMIT) {
                     // Create new buy order if previous was sell
-                    Order n = se.createOrder(account, Order.BUYLIMIT,
+                    Order n = market.createOrder(account, Order.BUYLIMIT,
                             orders[i].volume, orders[i].buyLimit, 0f);
                     if (n != null) {
                         orders[i].o = n;
                     }
                 } else {
                     // Create new sell order if previous was buy
-                    Order n = se.createOrder(account, Order.SELLLIMIT,
+                    Order n = market.createOrder(account, Order.SELLLIMIT,
                             orders[i].volume, orders[i].sellLimit, 0f);
                     if (n != null) {
                         orders[i].o = n;
@@ -171,18 +178,7 @@ public class MarketMaker extends AutoTraderBase {
      */
     private boolean readjustOrders() {
 
-        /*       // Do nothing if any order is still open
-        for (int i = 0; i < numPositions; i++) {
-            if (orders[i].o == null) {
-                continue;
-            }
-            byte s = orders[i].o.getStatus();
-            if (s != Order.OPEN) {
-                return false;
-            }
-        }
-         */
-        float price = se.getLastPrice();
+        float price = market.getLastPrice();
         if (price <= orders[numPositions - 1].sellLimit
                 && price >= orders[0].buyLimit) {
             return false;  // No adjustment needed
@@ -193,10 +189,9 @@ public class MarketMaker extends AutoTraderBase {
             if (orders[i].o == null) {
                 continue;
             }
-            se.cancelOrder(account, orders[i].o.getID());
+            market.cancelOrder(account, orders[i].o.getID());
         }
 
-        //   this.initOrders(); // Reinitialize orders with new prices
         resetTrader();
         return true;
 
@@ -211,7 +206,7 @@ public class MarketMaker extends AutoTraderBase {
             return;
         }
 
-        resetOrder = se.createOrder_Long(account, Order.SELL, account.getShares_Long(), 0, 0, 1);
+        resetOrder = market.createOrder_Long(account, Order.SELL, account.getShares_Long(), 0, 0, 1);
 
     }
 
@@ -251,23 +246,31 @@ public class MarketMaker extends AutoTraderBase {
 
     @Override
     public String getDisplayName() {
-        return "MarketMaker";
+        return "Market Maker";
     }
 
     @Override
     public AutoTraderGui getGui() {
-        return null;
+        return new MarkeMakerGui(this);
 
     }
 
     @Override
     public JSONObject getConfig() {
-        return new JSONObject();
+        JSONObject cfg = new JSONObject();
+        cfg.put("num_positions", this.numPositions);
+        cfg.put("timer_interval", this.timerInterval);
+        cfg.put("depth_percent", this.depthPercent);
+        cfg.put("cash_to_use",this.cashToUse);
+        return cfg;
     }
 
     @Override
     public void setConfig(JSONObject cfg) {
-
+        this.numPositions=cfg.optInt("num_positions",16);
+        this.timerInterval=(float)cfg.optDouble("timer_interval",3.0);
+        this.depthPercent=(float) cfg.optDouble("depth_percent",8);
+        this.cashToUse=(float) cfg.optDouble("cash_to_use",50);
     }
 
 }

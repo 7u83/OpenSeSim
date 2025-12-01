@@ -65,6 +65,11 @@ public class Market implements Asset {
         return shares_df;
     }
 
+    @Override
+    public DecimalFormat getFormatter() {
+        return money_formatter;
+    }
+
     public int getMoneyDecimals() {
         return money_decimals;
     }
@@ -238,11 +243,10 @@ public class Market implements Asset {
                 return d > 0 ? 1 : -1;
             }
 
-    /*        d = right.initial_volume - left.initial_volume;
+            /*        d = right.initial_volume - left.initial_volume;
             if (d != 0) {
                 return d > 0 ? 1 : -1;
             }*/
-
             if (left.id < right.id) {
                 return -1;
             }
@@ -1327,9 +1331,9 @@ public class Market implements Asset {
         updateOHLCData(q);
         updateQuoteReceivers(q);
     }
-    
+
     long t_lastPrice = 0;
-    
+
     /**
      *
      */
@@ -1390,9 +1394,8 @@ public class Market implements Asset {
                 Order buyer = ul_buy.first();
                 long price = seller.limit;
 
-
                 long bvol = buyer.position.getTradableShares_Long(buyer.volume, price, buyer.leverage);
-         /*       if (bvol < 0) {
+                /*       if (bvol < 0) {
                     System.out.printf("BVKN\n");
                 }*/
 
@@ -1452,19 +1455,17 @@ public class Market implements Asset {
             // There is a match, calculate price and volume
             long price = b.id < a.id ? b.limit : a.limit;
             long volume = b.volume >= a.volume ? a.volume : b.volume;
-            
-            //price = (b.limit + a.limit) / 2;
 
+            //price = (b.limit + a.limit) / 2;
             finishTrade(b, a, price, volume);
             volume_total += volume;
             money_total += price * volume;
 
-     //      this.t_lastPrice=price;
-            
+            //      this.t_lastPrice=price;
 //            num_trades++;
             //      statistics.trades++;
             this.checkSLOrders(price);
-
+            checkLiquidationStops(price);
         }
 
         if (volume_total == 0) {
@@ -1474,12 +1475,10 @@ public class Market implements Asset {
         q.price = money_total / volume_total;
         q.volume = volume_total;
         q.time = sim.scheduler.getCurrentTimeMillis();
-        
-//q.price=this.t_lastPrice;
 
+//q.price=this.t_lastPrice;
         addQuoteToHistory(q);
 
-        checkLiquidationStops(q.price);
         checkPriceEvents(q.price);
 
         //this.quoteHistory.add(q);
@@ -1524,47 +1523,49 @@ public class Market implements Asset {
             Position p = longStops.last();
             // System.out.printf("LONG FIRST %d\n",p.stopPrice);
             long stopPrice = p.getStopPrice_Long();
-            
+
             if (price >= stopPrice) {
                 break;
             }
 
-        /*    if (p.account.getOwner().getName().equals("MBob-1500")) {
+            if (p.account.getOwner().getName().equals("MBob-900")) {
                 System.out.printf("BOB-0 long");
-            }*/
-
+            }
             boolean result = longStops.remove(p);
-          //  System.out.printf("Remove res: %b, p.od: %d, .stop: %d, size: %d\n", result, p.id, p.getStopPrice_Long(), longStops.size());
+            //  System.out.printf("Remove res: %b, p.od: %d, .stop: %d, size: %d\n", result, p.id, p.getStopPrice_Long(), longStops.size());
 
-           
             p.account.isLiquided = true;
             p.account.cancelAllOrders();
-                System.out.printf("LONG STOP REACHED %d <= %d\n",price, p.getStopPrice_Long());
-            this.createOrderNoExec_Long(p.account, (byte)(Order.SELL ), Math.abs(p.shares), 0, 0, 1);
+            System.out.printf("LONG STOP REACHED %s\n", p.account.getOwner().getName());
+            System.out.printf("LONG STOP REACHED %d <= %d\n", price, p.getStopPrice_Long());
+            this.createOrderNoExec_Long(p.account, (byte) (Order.SELL), Math.abs(p.shares), 0, 0, 1);
 
         }
 
         while (!shortStops.isEmpty()) {
 
             Position p = shortStops.first();
-            
+
             long stopPrice = p.getStopPrice_Long();
-            
+
             if (price <= stopPrice) {
                 break;
             }
-//            if (p.account.getOwner().getName().equals("MBob-1500")) {
-//                System.out.printf("BOB-0 shortstop");
-//            }
-            
-          //  System.out.printf("Stop slip %d\n",stopPrice-price);
+            if (p.account.getOwner().getName().equals("MBob-900")) {
+                System.out.printf("BOB-0 shortstop");
+            }
 
+            //  System.out.printf("Stop slip %d\n",stopPrice-price);
             shortStops.remove(p);
-            // System.out.printf("SHORT STOP REACHED %d\n",price);
-            System.out.printf("SHORT STOP REACHED %d <= %d\n",price, p.getStopPrice_Long());
+            System.out.printf("SHORT STOP REACHED %s\n", p.account.getOwner().getName());
+            System.out.printf("SHORT STOP REACHED %d <= %d\n", price, p.getStopPrice_Long());
+            if (p.account.getOwner().getName().equals("MBob-4")) {
+                System.out.printf("mbob4\n");
+
+            }
             p.account.isLiquided = true;
             p.account.cancelAllOrders();
-            this.createOrderNoExec_Long(p.account, (byte)(Order.BUY ), Math.abs(p.shares), 0, 0, 1);
+            this.createOrderNoExec_Long(p.account, (byte) (Order.BUY), Math.abs(p.shares), 0, 0, 1);
         }
     }
 
@@ -1625,14 +1626,13 @@ public class Market implements Asset {
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-/*        if (logging) {
+        /*        if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
         }*/
-
         synchronized (executor) {
 
             //num_orders++;
@@ -1671,14 +1671,13 @@ public class Market implements Asset {
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-  /*      if (logging) {
+        /*      if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
         }*/
-
         synchronized (executor) {
 
             //num_orders++;

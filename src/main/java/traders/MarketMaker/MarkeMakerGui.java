@@ -33,9 +33,25 @@ import sesim.AutoTraderGui;
  */
 public class MarkeMakerGui extends AutoTraderGui {
 
+    MarketMaker m;
+    
     /** Creates new form MarkeMakerGui */
-    public MarkeMakerGui() {
+    public MarkeMakerGui(MarketMaker m) {
         initComponents();
+        this.m=m;
+        
+        this.numberOfPositions.setValue(m.numPositions);
+        this.runInterval.setValue(m.timerInterval);
+        this.depthPercent.setValue(m.depthPercent);
+        this.cashToUse.setValue(m.cashToUse);
+        
+    }
+    
+    public void save(){
+        m.numPositions=(int) this.numberOfPositions.getValue();
+        m.timerInterval=(Float) this.runInterval.getValue();
+        m.depthPercent=(Float) this.depthPercent.getValue();
+        m.cashToUse=(Float) this.cashToUse.getValue();
     }
 
     /** This method is called from within the constructor to
@@ -47,20 +63,89 @@ public class MarkeMakerGui extends AutoTraderGui {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        numberOfPositions = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
+        runInterval = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
+        depthPercent = new javax.swing.JSpinner();
+        jLabel4 = new javax.swing.JLabel();
+        cashToUse = new javax.swing.JSpinner();
+
+        jLabel1.setText("Number of positions:");
+
+        numberOfPositions.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
+
+        jLabel2.setText("Run interval:");
+
+        runInterval.setModel(new javax.swing.SpinnerNumberModel(0.5f, 0.5f, null, 1.0f));
+
+        jLabel3.setText("Percentage Depth:");
+
+        depthPercent.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+
+        jLabel4.setText("Cash to use:");
+
+        cashToUse.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(numberOfPositions)
+                            .addComponent(runInterval, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(depthPercent)
+                            .addComponent(cashToUse))))
+                .addContainerGap(193, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(numberOfPositions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(runInterval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(depthPercent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(cashToUse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner cashToUse;
+    private javax.swing.JSpinner depthPercent;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JSpinner numberOfPositions;
+    private javax.swing.JSpinner runInterval;
     // End of variables declaration//GEN-END:variables
 
 }
