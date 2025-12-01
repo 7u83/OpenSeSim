@@ -52,6 +52,7 @@ public class Sim {
         public static final String TRADERS = "traders";
         public static final String EXCHANGE = "exchange";
         public static final String RANDOM = "random";
+        
     }
 
     public static final String DEFAULT_RANDOM_CFG
@@ -76,13 +77,13 @@ public class Sim {
 
     }
 
-    private Market se;
+    private Market defaultMarket;
 
-    public Market getExchange() {
-        return se;
+    public Market getDefaultMarket() {
+        return defaultMarket;
     }
 
-    static class TempAsset implements Asset {
+    /*   static class TempAsset implements Asset {
 
         private final String symbol;
         private final Market se;
@@ -113,19 +114,27 @@ public class Sim {
             return null;
         }
 
-    }
+        @Override
+        public String getName() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
 
+        @Override
+        public int getDecimals() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
+
+    }*/
     HashMap<String, Asset> assets = new HashMap<>();
 
-    public Asset getAsset(String symbol) {
+    /*    public Asset getAsset(String symbol) {
         Asset a = assets.get(symbol);
         if (a == null) {
             a = new TempAsset(symbol, se);
             assets.put(symbol, a);
         }
         return a;
-    }
-
+    }*/
     public AutoTraderLoader tloader;
 
     Scheduler scheduler;
@@ -165,22 +174,24 @@ public class Sim {
 
     public Sim() {
         scheduler = new Scheduler();
-        se = new Market(this);
+        defaultMarket = new Market(this, defaultCurrency);
         initAutoTraderLoader();
         reset();
     }
 
-    public ArrayList<AutoTraderInterface> traders = null;
+    Currency defaultCurrency = new Currency("TLR", "Taler", 2);
+
+    public ArrayList<AutoTrader> traders = null;
 
     public final void reset() {
         if (traders != null) {
-            for (AutoTraderInterface t : traders) {
+            for (AutoTrader t : traders) {
                 t.stop();
             }
         }
         traders = new ArrayList();
         scheduler = new Scheduler();
-        se.reset();
+        defaultMarket.reset();
     }
 
     /**
@@ -193,10 +204,10 @@ public class Sim {
      * @param cfg
      * @return
      */
-    private AutoTraderInterface createTraderNew(Market se, long id, String name, float money, float shares, String strat, JSONObject cfg) {
+    private AutoTrader createTraderNew(Market se, long id, String name, float money, float shares, String strat, JSONObject cfg) {
 
         String base = cfg.getString("base");
-        AutoTraderInterface ac = tloader.getStrategyBase(base);
+        AutoTrader ac = tloader.getStrategyBase(base);
         if (ac == null) {
             return null;
         }
@@ -209,7 +220,7 @@ public class Sim {
     void resetAutoTraders() {
         ArrayList<String> names = tloader.getDefaultStrategyNames();
         for (String name : names) {
-            AutoTraderInterface ac = tloader.getStrategyBase(name);
+            AutoTrader ac = tloader.getStrategyBase(name);
             ac.reset();
         }
     }
@@ -310,7 +321,7 @@ public class Sim {
         Order.resetIdGenerator();
 
         Logger.info("Sim started");
-        se.putConfig(getExchangeCfg(cfg));
+        defaultMarket.putConfig(getExchangeCfg(cfg));
 
         long randomSeed = getRandomSeed(cfg);
         boolean useSeed = useRandomSeed(cfg);
@@ -328,18 +339,18 @@ public class Sim {
 
         JSONArray tlist = Sim.getTraders(cfg);
 
-        boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE, true);
+        boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(defaultMarket.CFG_AUTO_INITIAL_PRICE, true);
         double initialPrice;
         if (autoInitialPrice) {
             initialPrice = Sim.calculateInitialPrice(tlist);
         } else {
-            initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE, 100.0f));
+            initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(defaultMarket.CFG_INITIAL_PRICE, 100.0f));
         }
 
         Logger.info("Initial prices is: %f", initialPrice);
-        this.se.setFairValue((float) initialPrice);
+        this.defaultMarket.setFairValue((float) initialPrice);
 
-        se.initLastQuote();
+        defaultMarket.initLastQuote();
 
         Float moneyTotal = 0.0f;
         Float sharesTotal = 0.0f;
@@ -353,7 +364,7 @@ public class Sim {
             JSONObject strategyCfg = getStrategy(cfg, strategy_name);
 
             // String base = strategy.getString("base");
-            //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
+            //    AutoTrader ac = Globals.tloader.getStrategyBase(base);
             //     System.out.printf("Load Strat: %s\n", strategy_name);
             //      System.out.printf("Base %s\n", base);
             Integer count = t.getInt("Count");
@@ -373,7 +384,7 @@ public class Sim {
             Object global = null;
 
             for (int i1 = 0; i1 < count; i1++) {
-                AutoTraderInterface trader;
+                AutoTrader trader;
 
                 String base = strategyCfg.getString("base");
                 trader = tloader.getStrategyBase(base);
@@ -387,9 +398,9 @@ public class Sim {
 
                 //trader.init(this, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategyCfg);
                 trader.init(this, id, t.getString("Name") + "-" + i1, money + (float) (initialPrice * shares), 0, strategy_name, strategyCfg);
-                trader.getAccount().getPosition(se).addShares(
-                        (long) (shares * se.shares_df),
-                        (long) (initialPrice * se.money_df),
+                trader.getAccount().getPosition(defaultMarket).addShares(
+                        (long) (shares * defaultMarket.shares_df),
+                        (long) (initialPrice * defaultCurrency.getDf()),
                         1);
                 trader.getAccount().makeSnapShot();
 
@@ -402,7 +413,7 @@ public class Sim {
                 ((AutoTraderBase) trader).setStrategyName(strategy_name);
 
                 this.traders.add(trader);
-                ((AutoTraderBase)trader).id=traders.size()-1;
+                ((AutoTraderBase) trader).id = traders.size() - 1;
 
                 Boolean exclude = t.optBoolean("ExcludeInitial", false);
                 if (!exclude) {

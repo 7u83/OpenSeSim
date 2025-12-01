@@ -611,13 +611,13 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.runButton.setEnabled(false);
         this.stopButton.setEnabled(true);
 
-        //Globals.sim.getExchange().terminate();
+        //Globals.sim.getDefaultMarket().terminate();
         Globals.sim.reset();
         Globals.sim.startTraders(Globals.getConfig());
 
         this.setTradingLogFile();
         try {
-            Globals.sim.getExchange().setTradingLog(tradingLogCheckBox.isSelected());
+            Globals.sim.getDefaultMarket().setTradingLog(tradingLogCheckBox.isSelected());
         } catch (FileNotFoundException ex) {
             sesim.Logger.error("Cannot write log %s: %s", logFileName, ex.getMessage());
             tradingLogCheckBox.setSelected(false);
@@ -632,7 +632,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         chartPanel.reset();
         if (this.rawOrderBookDialog != null) {
-            rawOrderBookDialog.start(Globals.sim.getExchange(), Order.BUYLIMIT, Order.SELLLIMIT);
+            rawOrderBookDialog.start(Globals.sim.getDefaultMarket(), Order.BUYLIMIT, Order.SELLLIMIT);
         }
 
         this.orderBooksHorizontal.start();
@@ -660,11 +660,11 @@ public class SeSimApplication extends javax.swing.JFrame {
     }
 
     void resetSim() {
-        //      Globals.sim.getExchange().terminate();
+        //      Globals.sim.getDefaultMarket().terminate();
         Globals.sim.reset();
         chartPanel.reset();
         if (this.rawOrderBookDialog != null) {
-            this.rawOrderBookDialog.start(Globals.sim.getExchange(), Order.BUYLIMIT, Order.SELLLIMIT);
+            this.rawOrderBookDialog.start(Globals.sim.getDefaultMarket(), Order.BUYLIMIT, Order.SELLLIMIT);
         }
 
         this.orderBooksHorizontal.start();
@@ -868,7 +868,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_simMenuStopActionPerformed
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
-        //Globals.sim.getExchange().timer.pause();
+        //Globals.sim.getDefaultMarket().timer.pause();
         pauseSim();
     }//GEN-LAST:event_pauseButtonActionPerformed
 
@@ -894,7 +894,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                     rawOrderBookDialog = new RawOrderBookDialog(this, false);
 
-                    rawOrderBookDialog.start(Globals.sim.getExchange(), Order.BUYLIMIT, Order.SELLLIMIT);
+                    rawOrderBookDialog.start(Globals.sim.getDefaultMarket(), Order.BUYLIMIT, Order.SELLLIMIT);
                     rawOrderBookDialog.setTitle("Level 3 Order Book");
 
                     rawOrderBookDialog.addWindowListener(new WindowAdapter() {
@@ -985,7 +985,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                     unlimitedOrdersDialog = new RawOrderBookDialog(this, false);
 
-                    unlimitedOrdersDialog.start(Globals.sim.getExchange(), Order.BUY, Order.SELL);
+                    unlimitedOrdersDialog.start(Globals.sim.getDefaultMarket(), Order.BUY, Order.SELL);
                     unlimitedOrdersDialog.setTitle("Unlimited Orders");
 
                     unlimitedOrdersDialog.addWindowListener(new WindowAdapter() {
@@ -1024,7 +1024,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                     stopOrderBookDialog = new RawOrderBookDialog(this, false);
 
-                    stopOrderBookDialog.start(Globals.sim.getExchange(), Order.BUYSTOP, Order.SELLSTOP);
+                    stopOrderBookDialog.start(Globals.sim.getDefaultMarket(), Order.BUYSTOP, Order.SELLSTOP);
                     stopOrderBookDialog.setTitle("Stop Orders");
                     stopOrderBookDialog.setTitles("Stop Buy", "Stop Sell");
                     stopOrderBookDialog.setPriceColumn(Order.STOP);
@@ -1090,14 +1090,14 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
 
         logFileName = directoryPath.resolve("tradinglog.dat").toString();
-        Globals.sim.getExchange().setTradingLogFile(logFileName);
+        Globals.sim.getDefaultMarket().setTradingLogFile(logFileName);
     }
 
 
     private void tradingLogCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tradingLogCheckBoxActionPerformed
 
         try {
-            Globals.sim.getExchange().setTradingLog(tradingLogCheckBox.isSelected());
+            Globals.sim.getDefaultMarket().setTradingLog(tradingLogCheckBox.isSelected());
         } catch (FileNotFoundException ex) {
             sesim.Logger.error("Cannot write log %s: %s", logFileName, ex.getMessage());
             tradingLogCheckBox.setSelected(false);

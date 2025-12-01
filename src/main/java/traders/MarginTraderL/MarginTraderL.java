@@ -129,7 +129,7 @@ public class MarginTraderL extends AutoTraderBase
         byte type;
         long limit;
         //   long price = account.getDefaultMarket().getBestPrice_0().getPrice_Long();
-        long price = account.getDefaultMarket().getLastPrice_Long(); //.getPrice_Long();
+        long price = sim.getDefaultMarket().getLastPrice_Long(); //.getPrice_Long();
 
         if (Sim.random.nextBoolean()) {
             type = Order.BUY;
@@ -154,7 +154,7 @@ public class MarginTraderL extends AutoTraderBase
     void closeTrade(long volume) {
         byte type;
         long limit;
-        long price = account.getDefaultMarket().getBestPrice_0().getPrice_Long();
+        long price = sim.getDefaultMarket().getBestPrice_0().getPrice_Long();
         if (volume < 0) {
             type = Order.BUY;
             limit = getRandomPrice_Long(price,
@@ -173,7 +173,7 @@ public class MarginTraderL extends AutoTraderBase
     }
 
     void nextTrade() {
-        long shares = account.getPosition(account.getDefaultMarket()).getShares_Long();
+        long shares = account.getPosition(sim.getDefaultMarket()).getShares_Long();
         if (shares == 0) {
             openTrade();
         } else {
@@ -190,7 +190,7 @@ public class MarginTraderL extends AutoTraderBase
         sim.addEvent(waitForFill, FILLTIMEOUT);
 
         // Calculate volume and create order
-        currentOrder = account.getDefaultMarket().createOrder_Long(account,
+        currentOrder = sim.getDefaultMarket().createOrder_Long(account,
                 (byte) (type | Order.LIMIT), volume, limit, 0, cfg.leverage);
 
     }
@@ -205,7 +205,7 @@ public class MarginTraderL extends AutoTraderBase
     }
 
     void hold() {
-        long shares = account.getPosition(account.getDefaultMarket()).getShares_Long();
+        long shares = account.getPosition(sim.getDefaultMarket()).getShares_Long();
         if (isOpening) {
             // We have got no shares when opening position
             if (shares == 0) {

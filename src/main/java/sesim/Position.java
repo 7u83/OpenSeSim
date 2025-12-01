@@ -87,7 +87,7 @@ public class Position {
     }
 
     public float getMargin() {
-        return getMargin_Long() / asset.getMarket().money_df;
+        return getMargin_Long() / account.currency.getDf();
     }
 
     public long getMargin_Long() {
@@ -117,7 +117,7 @@ public class Position {
     }
 
     public float getPnL() {
-        return (asset.getMarket().getLastPrice_Long() * shares + netCashFlow) / asset.getMarket().money_df;
+        return (asset.getMarket().getLastPrice_Long() * shares + netCashFlow) / asset.getMarket().currency.getDf();
     }
 
     public float getPnLPercent() {
@@ -147,7 +147,7 @@ public class Position {
 
     
     public float getMarketValue() {
-        return getMarketValue_Long() / asset.getMarket().money_df;
+        return getMarketValue_Long() / asset.getMarket().currency.getDf();
     }
 
     public long getEquityValue_Long(long price) {
@@ -160,18 +160,18 @@ public class Position {
 
     public float getEquityValue() {
 
-        return getEquityValue_Long() / asset.getMarket().money_df;
+        return getEquityValue_Long() / asset.getMarket().currency.getDf();
     }
 
     public float getTotalEntryCost() {
-        return totalEntryCost / asset.getMarket().money_df;
+        return totalEntryCost / asset.getMarket().currency.getDf();
     }
 
     long netCashFlow = 0;
     long totalEntryCost = 0;
 
    public float getNetCashFlow() {
-        return netCashFlow / asset.getMarket().money_df;
+        return netCashFlow / asset.getMarket().currency.getDf();
     }
 
 /*    public float getNetBrokerLoan() {
@@ -263,7 +263,7 @@ public class Position {
     }
     
     public float getStopPrice(){
-        return this.stopPrice/asset.getMarket().money_df;
+        return this.stopPrice/asset.getMarket().currency.getDf();
     }
     
     public long getStopPrice_Long(){

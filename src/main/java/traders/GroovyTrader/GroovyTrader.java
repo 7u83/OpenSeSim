@@ -166,7 +166,7 @@ public class GroovyTrader extends AutoTraderBase {
         }
 
         public float getShares() {
-            return account.getShares();
+            return account.getShares(sim.getDefaultMarket());
         }
 
     }
@@ -208,7 +208,7 @@ public class GroovyTrader extends AutoTraderBase {
         }
 
         public Order createOrder(byte type, double vol, double limit, double stop) {
-            limit = market.roundMoney(limit);
+            limit = market.getCurrency().round(limit);
             vol = market.roundShares(vol);
             return market.createOrder(account, type, (float) vol, (float) limit, (float) stop);
         }
@@ -286,23 +286,23 @@ public class GroovyTrader extends AutoTraderBase {
         }
 
         public GroovyPriceEvent scheduleOnPriceAbove(String groovyFun, double price) {
-            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getExchange(), price);
-            sim.getExchange().sheduleOnPriceAbove(e);
+            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getDefaultMarket(), price);
+            sim.getDefaultMarket().sheduleOnPriceAbove(e);
             return e;
         }
 
         public void cancelScheduleOnPriceAbove(GroovyPriceEvent e) {
-            sim.getExchange().cancelScheduleOnPriceAbove(e);
+            sim.getDefaultMarket().cancelScheduleOnPriceAbove(e);
         }
 
         public GroovyPriceEvent scheduleOnPriceBelow(String groovyFun, double price) {
-            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getExchange(), price);
-            sim.getExchange().sheduleOnPriceBelow(e);
+            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getDefaultMarket(), price);
+            sim.getDefaultMarket().sheduleOnPriceBelow(e);
             return e;
         }
 
         public void cancelSchedulePriceBelow(GroovyPriceEvent e) {
-            sim.getExchange().cancelScheduleOnPriceBelow(e);
+            sim.getDefaultMarket().cancelScheduleOnPriceBelow(e);
         }
 
         String groovyAccountUpdateFun = null;

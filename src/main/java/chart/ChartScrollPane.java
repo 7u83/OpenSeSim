@@ -32,7 +32,7 @@ public class ChartScrollPane extends JScrollPane {
         chart.initChart();
         chart.invalidate();
         chart.repaint();
-        Globals.sim.getExchange().addQuoteReceiver(chart);
+        Globals.sim.getDefaultMarket().addQuoteReceiver(chart);
     }
 
 }

@@ -63,7 +63,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import sesim.Account;
 
-import sesim.AutoTraderInterface;
+import sesim.AutoTrader;
 
 /**
  *
@@ -107,13 +107,13 @@ public class TraderListPanel extends javax.swing.JPanel {
                         renderer = new NameCellRenderer();
                         break;
                     case SHARES:
-                        renderer = new NummericCellRenderer(Globals.sim.getExchange().getSharesDecimals());
+                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getSharesDecimals());
                         break;
                     case MARGIN:
                     case EQUITY:
                     case FREEMARGIN:
                     case CASH:
-                        renderer = new NummericCellRenderer(Globals.sim.getExchange().getMoneyDecimals());
+                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getMoneyDecimals());
                         break;
                     case PNL:
                         renderer = new PercentageCellRenderer();
@@ -245,7 +245,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        if (Globals.sim.getExchange() == null) {
+        if (Globals.sim.getDefaultMarket() == null) {
             return;
         }
 
@@ -512,7 +512,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             //ArrayList<AutoTraderInterface> t = new ArrayList<>();
 
             ArrayList<ArrayList<Object>> t = new ArrayList<>();
-            for (AutoTraderInterface a : Globals.sim.traders) {
+            for (AutoTrader a : Globals.sim.traders) {
                 //t.add(a);
                 ArrayList<Object> objects = new ArrayList<>();
                 for (Column c : Column.values()) {
@@ -567,10 +567,10 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         }
 
-        public Object getValue(AutoTraderInterface at, int column) {
+        public Object getValue(AutoTrader at, int column) {
 
             Account a = at.getAccount();
-            float price = Globals.sim.getExchange().getLastPrice();
+            float price = Globals.sim.getDefaultMarket().getLastPrice();
 
             if (column == Column.ID.ordinal()) {
                 int id = (int)at.getID();
@@ -597,7 +597,7 @@ public class TraderListPanel extends javax.swing.JPanel {
             }
 
             if (column == Column.SHARES.ordinal()) {
-                return a.getShares();
+                return a.getShares(Globals.sim.getDefaultMarket());
             }
             if (column == Column.EQUITY.ordinal()) {
                 return a.getEquity();
@@ -623,7 +623,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         @Override
         public Object getValueAt(int row, int column) {
 
-            AutoTraderInterface at;
+            AutoTrader at;
             if (sortedTraders == null) {
                 at = Globals.sim.traders.get(row);
                 return this.getValue(at, column);
@@ -633,7 +633,7 @@ public class TraderListPanel extends javax.swing.JPanel {
                 //at = traders.get(row);
             }
             //Account a = at.getAccount();
-            //float price = Globals.sim.getExchange().getLastPrice();
+            //float price = Globals.sim.getDefaultMarket().getLastPrice();
 
             //return this.getValue(at, column);
         }

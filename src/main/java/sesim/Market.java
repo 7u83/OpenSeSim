@@ -43,9 +43,11 @@ import sesim.TradingLogWriter.TradingLogRecord;
  * @author 7u83
  */
 public class Market implements Asset {
+    
+    Asset currency;
 
     //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
-    public float money_df = 100;
+ //   public float money_df = 100;
     private int money_decimals = 2;
     DecimalFormat money_formatter = getFormatter(2);
 
@@ -54,11 +56,11 @@ public class Market implements Asset {
      *
      * @param n number of decimals
      */
-    public void setMoneyDecimals(int n) {
+/*    public void setMoneyDecimals(int n) {
         money_df = (float) Math.pow(10, n);
         money_decimals = n;
         money_formatter = getFormatter(n);
-    }
+    }*/
 
     @Override
     public float getDf() {
@@ -100,10 +102,14 @@ public class Market implements Asset {
     public float roundShares(double shares) {
         return roundToDecimals(shares, shares_df);
     }
-
-    public float roundMoney(double money) {
-        return roundToDecimals(money, money_df);
+    
+    public Asset getCurrency(){
+        return currency;
     }
+
+/*    public float roundMoney(double money) {
+        return roundToDecimals(money, money_df);
+    }*/
 
     public DecimalFormat getFormatter(int n) {
         //      DecimalFormat formatter;
@@ -129,6 +135,21 @@ public class Market implements Asset {
     @Override
     public Market getMarket() {
         return this;
+    }
+
+    @Override
+    public String getName() {
+        return "";
+    }
+
+    @Override
+    public int getDecimals() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public float round(double val) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     //public Scheduler timer; 
@@ -383,7 +404,7 @@ public class Market implements Asset {
 
         @Override
         public float getLimit() {
-            return limit / se.money_df;
+            return limit / se.currency.getDf();
         }
 
         @Override
@@ -539,7 +560,7 @@ public class Market implements Asset {
 
         public PriceEvent(Market se, double price) {
             this();
-            this.price = (long) (price * se.money_df);
+            this.price = (long) (price * se.currency.getDf());
         }
 
         public PriceEvent(long price) {
@@ -552,13 +573,14 @@ public class Market implements Asset {
     /**
      * Constructor
      */
-    public Market(Sim sim) {
+    public Market(Sim sim, Asset currency) {
 
         quoteReceiverList = (new CopyOnWriteArrayList<>());
         this.sim = sim;
         //  this.money_formatter = getMoneyFormatter(2);
-
+        this.currency=currency;
         initExchange();
+        
         //       executor.start();
 
     }
@@ -580,8 +602,8 @@ public class Market implements Asset {
             orders = numOrders;
             lastTradeTime = lastQuote.time;
             OHLCData d = getOHLCdata(minOHLCBarDuration);
-            high = priceHigh / money_df;
-            low = priceLow / money_df;
+            high = priceHigh / currency.getDf();
+            low = priceLow / currency.getDf();
 
         }
 
@@ -644,7 +666,7 @@ public class Market implements Asset {
     }
 
     void setFairValue(float v) {
-        this.fairValue = (long) (v * money_df);
+        this.fairValue = (long) (v * currency.getDf());
     }
 
     /*   public void terminate() {
@@ -671,7 +693,7 @@ public class Market implements Asset {
             //  System.out.printf("get last quote failed\n");
             return 0f;
         }
-        return q.price / money_df;
+        return q.price / currency.getDf();
     }
 
     public long getLastPrice_Long() {
@@ -707,7 +729,7 @@ public class Market implements Asset {
     public final String CFG_INITIAL_PRICE = "initial_price";
 
     public void putConfig(JSONObject cfg) {
-        this.setMoneyDecimals(cfg.optInt(CFG_MONEY_DECIMALS, 2));
+  //      this.setMoneyDecimals(cfg.optInt(CFG_MONEY_DECIMALS, 2));
         this.setSharesDecimals(cfg.optInt(CFG_SHARES_DECIMALS, 0));
     }
 
@@ -1287,7 +1309,7 @@ public class Market implements Asset {
                     TradingLogRecord.Action.SELL,
                     seller);
             e.trasaction_volume = (float) volume / shares_df;
-            e.transaction_price = (float) price / money_df;
+            e.transaction_price = (float) price / currency.getDf();
             tradingLog.add(e);
 
             e = new TradingLogRecord(
@@ -1295,7 +1317,7 @@ public class Market implements Asset {
                     TradingLogRecord.Action.BUY,
                     buyer);
             e.trasaction_volume = (float) volume / shares_df;
-            e.transaction_price = (float) price / money_df;
+            e.transaction_price = (float) price / currency.getDf();
             tradingLog.add(e);
         }
 
@@ -1696,8 +1718,8 @@ public class Market implements Asset {
     public Order createOrder(Account a, byte type, float volume, float limit, float stop) {
         return createOrder_Long(a, type,
                 (long) (volume * shares_df),
-                (long) (limit * money_df),
-                (long) (stop * money_df),
+                (long) (limit * currency.getDf()),
+                (long) (stop * currency.getDf()),
                 1
         );
     }
@@ -1705,8 +1727,8 @@ public class Market implements Asset {
     public Order createOrder(Account a, byte type, float volume, float limit, float stop, int leverage) {
         return createOrder_Long(a, type,
                 (long) (volume * shares_df),
-                (long) (limit * money_df),
-                (long) (stop * money_df),
+                (long) (limit * currency.getDf()),
+                (long) (stop * currency.getDf()),
                 leverage
         );
     }

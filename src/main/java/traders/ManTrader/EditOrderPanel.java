@@ -23,7 +23,7 @@ import sesim.Quote;
  */
 public class EditOrderPanel extends javax.swing.JPanel {
 
-    Market se;
+    Market market;
     Account account;
     byte type;
 
@@ -58,7 +58,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
     public EditOrderPanel(Market e, Account a, byte type) {
         this();
-        se = e;
+        market = e;
         account = a;
         this.type = type;
         //this.loadFields();
@@ -67,7 +67,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
     public EditOrderPanel(Market e, Account a, Order o) {
         this();
         account = a;
-        se = e;
+        market = e;
         type = o.getType();
 
         this.volumeSpinner.setValue(o.getVolume());
@@ -87,19 +87,18 @@ public class EditOrderPanel extends javax.swing.JPanel {
         if (Order.isSell(type)){
             vol=-vol;
         }
-        float price = this.account.getRequiredCashForOrder(
-                se, 
+        float price = this.account.getRequiredCashForOrder(market, 
                 vol,
                 this.getLimit(),
                 this.getLeverage()
                 );
-        String s = se.getMoneyFormatter().format(price);
+        String s = market.getMoneyFormatter().format(price);
         this.priceLabel.setText(s);
     }
 
     public float getPrice() {
         float price = this.getVolume() * this.getLimit();
-        price = se.roundMoney(price);
+        price = market.getCurrency().round(price);
         return price;
     }
 
@@ -307,15 +306,15 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadValuesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadValuesButtonActionPerformed
-        Quote q = se.getBestPrice_0();
+        Quote q = market.getBestPrice_0();
 
         //if (type == Order.BUY) {
-        this.limitSpinner.setValue((Float) se.roundMoney(q.getPrice()));
-        //  this.volumeSpinner.setValue(se.roundShares(account.getMoney() / price));
+        this.limitSpinner.setValue((Float) market.getCurrency().round(q.getPrice()));
+        //  this.volumeSpinner.setValue(market.roundShares(account.getMoney() / price));
         //}
         //if (type == Order.SELL) {
-        //       this.limitSpinner.setValue((Float) se.roundMoney(q.getPrice()));
-        //this.volumeSpinner.setValue(se.roundShares(account.getShares()));
+        //       this.limitSpinner.setValue((Float) market.roundMoney(q.getPrice()));
+        //this.volumeSpinner.setValue(market.roundShares(account.getShares()));
         //}
         setPrice();
     }//GEN-LAST:event_loadValuesButtonActionPerformed
@@ -329,22 +328,22 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_volumeSpinnerStateChanged
 
     private void setVolButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setVolButtonActionPerformed
-        Quote q = se.getBestPrice_0();
+        Quote q = market.getBestPrice_0();
         // Float price = q == null ? 0.0f : q.getPrice();
 
         if ((type & 0x01) == Order.BUY) {
             float l = this.getLimit();
-            if (l < 1 / se.shares_df) {
-                l = 1 / 1 / se.shares_df;
+            if (l < 1 / market.shares_df) {
+                l = 1 / 1 / market.shares_df;
             }
 
-            this.volumeSpinner.setValue(se.roundShares(account.getCashAvailable() / l));
+            this.volumeSpinner.setValue(market.roundShares(account.getCashAvailable() / l));
 
         }
         if (type == Order.SELL) {
-            double avail = account.getSharesAvailable();
+      //      double avail = account.getSharesAvailable();
 
-            this.volumeSpinner.setValue(se.roundShares(account.getSharesAvailable()));
+//            this.volumeSpinner.setValue(market.roundShares(account.getSharesAvailable()));
         }        // TODO add your handling code here:
         this.volumeSpinner.revalidate();
 
@@ -364,10 +363,10 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_limitCheckBoxActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Quote q = se.getBestPrice_0();
+        Quote q = market.getBestPrice_0();
 
         //if (type == Order.BUY) {
-        this.stopSpinner.setValue((Float) se.roundMoney(q.getPrice()));
+        this.stopSpinner.setValue((Float) market.getCurrency().round(q.getPrice()));
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 

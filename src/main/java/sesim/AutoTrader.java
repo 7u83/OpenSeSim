@@ -35,7 +35,7 @@ import org.json.JSONObject;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface AutoTraderInterface {
+public interface AutoTrader {
 
     public abstract boolean getDevelStatus();
 

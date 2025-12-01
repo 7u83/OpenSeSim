@@ -104,7 +104,7 @@ public class RandomTraderA extends AutoTraderBase
 
             long t = 0;
             
-            if (account.getShares()==0 && account.getMoney()<0.3){
+            if (account.getShares(sim.getDefaultMarket())==0 && account.getMoney()<0.3){
                 setStatus("Ruined");
                
             }
@@ -394,7 +394,7 @@ public class RandomTraderA extends AutoTraderBase
 
         float volume = money / limit;
 
-        limit = market.roundMoney(limit);
+        limit = market.getCurrency().round(limit);
         volume = market.roundShares(volume);
         if (limit <= 0) {
             return null;
@@ -462,7 +462,7 @@ public class RandomTraderA extends AutoTraderBase
     private Order doSell() {
 
         // how many shares we want to sell?
-        float volume = getRandomAmmount(account.getShares(), sell_volume);
+        float volume = getRandomAmmount(account.getShares(sim.getDefaultMarket()), sell_volume);
         volume = market.roundShares(volume);
 
         //    float lp = 100.0; //se.getBestLimit(type);
@@ -474,7 +474,7 @@ public class RandomTraderA extends AutoTraderBase
      //   limit = lp + getRandomAmmount(lp, sell_limit);
       //  limit = lp + market.random.nextLong(0, 4) - 2;
 
-        market.roundMoney(limit);
+        market.getCurrency().round(limit);
         if (limit <= 0) {
             return null;
         }

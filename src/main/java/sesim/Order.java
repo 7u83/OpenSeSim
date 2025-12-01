@@ -213,7 +213,7 @@ public class Order implements OrderBookEntry {
     }
 
     public float getCost() {
-        return cost / market.money_df;
+        return cost / market.currency.getDf();
     }
 
     public static boolean isSell(byte type) {
@@ -241,7 +241,7 @@ public class Order implements OrderBookEntry {
     }
 
     public float getAveragePrice() {
-        return getAveragePrice_Long() / market.money_df;
+        return getAveragePrice_Long() / market.currency.getDf();
     }
 
     public byte getStatus() {
@@ -283,7 +283,7 @@ public class Order implements OrderBookEntry {
 
     @Override
     public float getLimit() {
-        return limit / market.money_df;
+        return limit / market.currency.getDf();
     }
 
     @Override
@@ -306,7 +306,7 @@ public class Order implements OrderBookEntry {
 
     @Override
     public float getStop() {
-        return stop / market.money_df;
+        return stop / market.currency.getDf();
     }
 
     @Override

@@ -36,7 +36,7 @@ import sesim.Scheduler.EventProcessor;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AutoTraderBase implements AutoTraderInterface, EventProcessor {
+public abstract class AutoTraderBase implements AutoTrader, EventProcessor {
 
     protected Account account;
     protected Market market;
@@ -95,14 +95,16 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     public Account getAccount() {
         return account;
     }
+    
+   
 
     @Override
     public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
-        this.account = new Account(sim.getExchange(), money, shares); // market.createAccount(money, shares);
+        this.account = new Account(sim.defaultCurrency,sim.getDefaultMarket(), money, shares); // market.createAccount(money, shares);
         //       market.getAccount(account_id).owner = this;
 
         this.sim = sim;
-        this.market = sim.getExchange();
+        this.market = sim.getDefaultMarket();
         this.account.owner = this;
 //        this.market = market;
         this.name = name;

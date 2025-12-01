@@ -71,11 +71,11 @@ public class OHLCData {
     }
 
     public float getMax() {
-        return max / market.money_df;
+        return max / market.currency.getDf();
     }
 
     public float getMin() {
-        return min / market.money_df;
+        return min / market.currency.getDf();
     }
 
     public int size() {
@@ -101,11 +101,11 @@ public class OHLCData {
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
-            return new MinMax(market.money_df, di.low, di.high);
+            return new MinMax(market.currency.getDf(), di.low, di.high);
         }
 
         OHLCDataItem di = data.get(first);
-        MinMax minmax = new MinMax(market.money_df, di.low, di.high);
+        MinMax minmax = new MinMax(market.currency.getDf(), di.low, di.high);
 
         for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);

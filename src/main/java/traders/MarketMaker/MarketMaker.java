@@ -121,9 +121,9 @@ public class MarketMaker extends AutoTraderBase {
 
         for (int i = 0; i < numPositions; i++) {
             orders[i] = new MMOrder();
-            orders[i].buyLimit = market.roundMoney(price);
+            orders[i].buyLimit = market.getCurrency().round(price);
             price += dist;
-            orders[i].sellLimit = market.roundMoney(price);
+            orders[i].sellLimit = market.getCurrency().round(price);
             orders[i].volume = market.roundShares(cashPerBuyOrder / price);
 
             // Create initial buy order
@@ -201,12 +201,12 @@ public class MarketMaker extends AutoTraderBase {
 
     void resetTrader() {
         setStatus("Reset");
-        if (account.getShares() == 0) {
+        if (account.getPosition(sim.getDefaultMarket()).getShares() == 0) {
             initOrders();
             return;
         }
 
-        resetOrder = market.createOrder_Long(account, Order.SELL, account.getShares_Long(), 0, 0, 1);
+        resetOrder = market.createOrder_Long(account, Order.SELL, account.getShares_Long(sim.getDefaultMarket()), 0, 0, 1);
 
     }
 

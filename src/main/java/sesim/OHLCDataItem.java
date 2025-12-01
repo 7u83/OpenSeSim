@@ -64,19 +64,19 @@ public class OHLCDataItem {
     }
     
     public float getOpen() {
-        return open/se.money_df;
+        return open/se.currency.getDf();
     }
 
     public float getHigh() {
-        return high/se.money_df;
+        return high/se.currency.getDf();
     }
 
     public float getLow() {
-        return low/se.money_df;
+        return low/se.currency.getDf();
     }
 
     public float getClose() {
-        return close/se.money_df;
+        return close/se.currency.getDf();
     }
 
     public float getVolume() {

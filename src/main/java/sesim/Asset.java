@@ -32,8 +32,11 @@ import java.text.DecimalFormat;
  * @author 7u83
  */
 public interface Asset {
-    String getSymbol();
-    Market getMarket();
-    float getDf();
+    public String getSymbol();
+    public String getName();
+    public Market getMarket();
+    public int getDecimals();
+    public float getDf();
     public DecimalFormat getFormatter();
+    public float round(double val);
 }

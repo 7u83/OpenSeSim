@@ -43,17 +43,17 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         JSONObject jo = sesim.Sim.getExchangeCfg(Globals.getConfig());
 
         this.moneyDecimalsSpinner.setValue(
-                jo.optInt(Globals.sim.getExchange().CFG_MONEY_DECIMALS, 2)
+                jo.optInt(Globals.sim.getDefaultMarket().CFG_MONEY_DECIMALS, 2)
         );
         this.sharesDecimalsSpinner.setValue(
-                jo.optInt(Globals.sim.getExchange().CFG_SHARES_DECIMALS, 0)
+                jo.optInt(Globals.sim.getDefaultMarket().CFG_SHARES_DECIMALS, 0)
         );
 
         this.initialPrice.setValue(
-                (Double) jo.optDouble(Globals.sim.getExchange().CFG_INITIAL_PRICE, 100)
+                (Double) jo.optDouble(Globals.sim.getDefaultMarket().CFG_INITIAL_PRICE, 100)
         );
 
-        boolean autoCalc = jo.optBoolean(Globals.sim.getExchange().CFG_AUTO_INITIAL_PRICE, true);
+        boolean autoCalc = jo.optBoolean(Globals.sim.getDefaultMarket().CFG_AUTO_INITIAL_PRICE, true);
         this.autoInitialPrice.setSelected(autoCalc);
 
         // initialPrice enable/disable
@@ -182,10 +182,10 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         JSONObject jo = new JSONObject();
-        jo.put(Globals.sim.getExchange().CFG_MONEY_DECIMALS, (Integer) this.moneyDecimalsSpinner.getValue());
-        jo.put(Globals.sim.getExchange().CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
-        jo.put(Globals.sim.getExchange().CFG_INITIAL_PRICE, (Double) this.initialPrice.getValue());
-        jo.put(Globals.sim.getExchange().CFG_AUTO_INITIAL_PRICE, (Boolean) this.autoInitialPrice.isSelected());
+        jo.put(Globals.sim.getDefaultMarket().CFG_MONEY_DECIMALS, (Integer) this.moneyDecimalsSpinner.getValue());
+        jo.put(Globals.sim.getDefaultMarket().CFG_SHARES_DECIMALS, (Integer) this.sharesDecimalsSpinner.getValue());
+        jo.put(Globals.sim.getDefaultMarket().CFG_INITIAL_PRICE, (Double) this.initialPrice.getValue());
+        jo.put(Globals.sim.getDefaultMarket().CFG_AUTO_INITIAL_PRICE, (Boolean) this.autoInitialPrice.isSelected());
       //  System.out.printf("EC: %s\n", jo.toString(3));
 
         JSONObject cfg = Globals.getConfig();

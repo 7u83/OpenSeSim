@@ -43,7 +43,7 @@ public class QuotePanel extends javax.swing.JPanel implements sesim.Market.Quote
         initComponents();
         if (Globals.sim==null)
             return;
-        Globals.sim.getExchange().addQuoteReceiver(this);
+        Globals.sim.getDefaultMarket().addQuoteReceiver(this);
     }
 
     /**

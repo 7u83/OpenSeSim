@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, tube
+ * Copyright (c) 2017, 2025 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,74 +25,82 @@
  */
 package sesim;
 
+import java.text.DecimalFormat;
+
 /**
  *
  * @author tube
  */
-public class Quote implements Comparable {
+public class Currency implements Asset {
 
-    Market market;
-    long bid;
-    long bid_volume;
-    long ask;
-    long ask_volume;
+    private String symbol;
+    private String name;
+    private float df = 100;
+    private int decimals;
+    private DecimalFormat formatter;
 
-    long price;
-    long volume;
-    long time;
-    //  public long id;
-
-    public void print() {
-        System.out.print("Quote ("
-                + time
-                + ") :"
-                + price
-                + " / "
-                + volume
-                + "\n"
-        );
-
-    }
-
-    public Quote(Market market) {
-        this.market = market;
+    public Currency(String symbol, String name, int decimals) {
+        this.symbol = symbol;
+        this.name = name;
+        this.setDecimals(decimals);
     }
 
     @Override
-    public int compareTo(Object o) {
-        int ret;
-        Quote q = (Quote) o;
+    public String getSymbol() {
+        return symbol;
+    }
 
-        ret = (int) (this.time - q.time);
-        if (ret != 0) {
-            return ret;
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Market getMarket() {
+        return null;
+    }
+
+    @Override
+    public float getDf() {
+        return df;
+    }
+
+    @Override
+    public DecimalFormat getFormatter() {
+        return formatter;
+    }
+
+    private void setDecimals(int n) {
+        df = (float) Math.pow(10, n);
+        decimals = n;
+        formatter = getFormatter(n);
+    }
+
+    public DecimalFormat getFormatter(int n) {
+
+        String s = "#0.";
+        if (n == 0) {
+            s = "#";
+        } else {
+            for (int i = 0; i < n; i++) {
+                s = s + "0";
+            }
         }
-        return 0;
-
+        return new DecimalFormat(s);
     }
 
-    public float getPrice() {
-        return price / market.currency.getDf();
+    @Override
+    public int getDecimals() {
+        return decimals;
     }
 
-    public float getBid() {
-        return bid / market.currency.getDf();
+    @Override
+    public float round(double val) {
+        return roundToDecimals(val, df);
     }
 
-    public float getAsk() {
-        return ask / market.currency.getDf();
-    }
-
-    public float getVolume() {
-        return volume / market.shares_df;
-    }
-
-    public long getPrice_Long() {
-        return price;
-    }
-
-    public long getVolume_Long() {
-        return volume;
+    public float roundToDecimals(double val, double f) {
+        return (float) ((Math.floor(val * f) / f));
     }
 
 }

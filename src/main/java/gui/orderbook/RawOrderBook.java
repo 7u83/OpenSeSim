@@ -105,7 +105,7 @@ public class RawOrderBook extends javax.swing.JPanel implements Market.BookListe
     }
 
     protected ArrayList<? extends OrderBookEntry> getOrderBook() {
-        return Globals.sim.getExchange().getRawOrderBook(type, depth);
+        return Globals.sim.getDefaultMarket().getRawOrderBook(type, depth);
         // return Globals.sim.se.getCompressedOrderBook(type);
     }
     
@@ -139,8 +139,8 @@ public class RawOrderBook extends javax.swing.JPanel implements Market.BookListe
                             @Override
                             public void run() {
                                 setGodMode(Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true"));
-                                vol_column.setCellRenderer(new NummericCellRenderer(Globals.sim.getExchange().getSharesFormatter()));
-                                price_column.setCellRenderer(new NummericCellRenderer(Globals.sim.getExchange().getMoneyFormatter()));
+                                vol_column.setCellRenderer(new NummericCellRenderer(Globals.sim.getDefaultMarket().getSharesFormatter()));
+                                price_column.setCellRenderer(new NummericCellRenderer(Globals.sim.getDefaultMarket().getMoneyFormatter()));
                                 model.setData(newOb);
                                 model.fireTableDataChanged();
                             }

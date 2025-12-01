@@ -132,7 +132,7 @@ public class RandomTraderL extends AutoTraderBase
 
             long t = 0;
 
-            if (account.getShares_Long() < this.bankrupt_shares && account.getMoney_Long() < this.bankrupt_cash) {
+            if (account.getShares_Long(sim.getDefaultMarket()) < this.bankrupt_shares && account.getMoney_Long() < this.bankrupt_cash) {
                 setStatus("Ruined");
                 
             }
@@ -564,7 +564,7 @@ public class RandomTraderL extends AutoTraderBase
     }
 
     private Order doSell() {
-        long shares = account.getShares_Long();
+        long shares = account.getShares_Long(sim.getDefaultMarket());
         // how many shares we want to sell?
         long volume = getRandomDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
         if (volume>shares){
