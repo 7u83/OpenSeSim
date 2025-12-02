@@ -25,6 +25,7 @@
  */
 package gui;
 
+import gui.AssetEditor.AssetListDialog;
 import java.awt.AWTEvent;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -189,6 +190,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             jSeparator4 = new javax.swing.JPopupMenu.Separator();
             exitMenuItem = new javax.swing.JMenuItem();
             editMenu = new javax.swing.JMenu();
+            jMenuItem1 = new javax.swing.JMenuItem();
             editExchangeMenuItem = new javax.swing.JMenuItem();
             jSeparator1 = new javax.swing.JPopupMenu.Separator();
             pasteMenuItem = new javax.swing.JMenuItem();
@@ -413,6 +415,14 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             editMenu.setMnemonic('e');
             editMenu.setText("Edit");
+
+            jMenuItem1.setText("Assets");
+            jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jMenuItem1ActionPerformed(evt);
+                }
+            });
+            editMenu.add(jMenuItem1);
 
             editExchangeMenuItem.setMnemonic('y');
             editExchangeMenuItem.setText("Exchange ...");
@@ -1132,6 +1142,13 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         // TODO add your handling code here:
     }//GEN-LAST:event_viewTradingLogActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        AssetListDialog ad = new AssetListDialog(this,true);
+        ad.setLocationRelativeTo(this);
+        ad.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
     static boolean f = false;
 
 
@@ -1215,6 +1232,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem fileSaveAsMenuItem;
     private javax.swing.JMenuItem fileSaveMenuItem;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
