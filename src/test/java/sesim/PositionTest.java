@@ -60,8 +60,9 @@ public class PositionTest {
     @BeforeEach
     public void setUp() {
         sim = new sesim.Sim();
-         Currency c= new Currency("TL","Taler",2);
-        market = new Market(sim,c);
+         AssetBase c= new AssetBase("TL","Taler",2);
+         AssetBase a= new AssetBase("CSL","CSL",0);
+        market = new Market(sim,c,a);
         market.setSymbol("SYM");
        
         account = new sesim.Account(c,market, iniCash, iniShares);
