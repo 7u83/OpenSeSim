@@ -80,32 +80,32 @@ public class Order implements OrderBookEntry {
     // ID generator
     private static final AtomicLong ID_GEN = new AtomicLong(0);
 
-    Order(Market se, Account account, byte type, long volume, long limit, long stop) {
+    Order(Market market, Account account, byte type, long volume, long limit, long stop) {
         this.account = account;
-        this.position = account.getPosition(se);
-        this.market = se;
+        this.position = account.getPosition(market);
+        this.market = market;
         id = ID_GEN.getAndIncrement();
         this.type = type;
         this.limit = limit;
         this.volume = volume;
         this.initial_volume = this.volume;
-        this.created = se.sim.scheduler.getCurrentTimeMillis();
+        this.created = market.sim.scheduler.getCurrentTimeMillis();
         this.status = OPEN;
         this.cost = 0;
         this.stop = stop;
         this.leverage=1;
     }
 
-    Order(Market se, Account account, byte type, long volume, long limit, long stop, int leverage) {
+    Order(Market market, Account account, byte type, long volume, long limit, long stop, int leverage) {
         this.account = account;
-        this.position = account.getPosition(se);
-        this.market = se;
+        this.position = account.getPosition(market);
+        this.market = market;
         id = ID_GEN.getAndIncrement();
         this.type = type;
         this.limit = limit; //se.roundMoney(limit);
         this.volume = volume; //se.roundShares(volume);
         this.initial_volume = this.volume;
-        this.created = se.sim.scheduler.getCurrentTimeMillis();
+        this.created = market.sim.scheduler.getCurrentTimeMillis();
         this.status = OPEN; //Exchange.OrderStatus.OPEN;
         this.cost = 0;
         this.stop = stop;

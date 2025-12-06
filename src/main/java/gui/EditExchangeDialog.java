@@ -40,7 +40,7 @@ public class EditExchangeDialog extends EscDialog /*javax.swing.JDialog*/ {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(parent);
-        JSONObject jo = sesim.Sim.getExchangeCfg(Globals.getConfig());
+        JSONObject jo = null; //sesim.Sim.getExchangeCfg(Globals.getConfig());
 
         this.moneyDecimalsSpinner.setValue(
                 jo.optInt(Globals.sim.getDefaultMarket().CFG_MONEY_DECIMALS, 2)

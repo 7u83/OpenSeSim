@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Position {
     private static final AtomicLong ID_GEN = new AtomicLong(0);
-    final Asset asset;
+    final Market asset;
     final Account account;
 
     long shares;
@@ -44,7 +44,7 @@ public class Position {
     private long stopPrice;
     long id;
 
-    public Position(Asset asset, Account account) {
+    public Position(Market asset, Account account) {
         this.asset = asset;
         id = ID_GEN.incrementAndGet();
 

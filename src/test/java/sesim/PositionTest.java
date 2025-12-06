@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +63,7 @@ public class PositionTest {
         sim = new sesim.Sim();
          AssetBase c= new AssetBase("TL","Taler",2);
          AssetBase a= new AssetBase("CSL","CSL",0);
-        market = new Market(sim,c,a);
+        market = new Market(sim,c,a, new JSONObject());
         market.setSymbol("SYM");
        
         account = new sesim.Account(c,market, iniCash, iniShares);

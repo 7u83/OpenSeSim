@@ -23,20 +23,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package gui.util;
 
-import java.text.DecimalFormat;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.util.Enumeration;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
-/**
- *
- * @author 7u83
- */
-public interface Asset {
-    public String getSymbol();
-    public String getName();
- //   public Market getMarket();
-    public int getDecimals();
-    public float getDf();
-    public DecimalFormat getFormatter();
-    public float round(double val);
+public final class HiDPIScaler {
+    public static void autoScale() {
+        double scale = Toolkit.getDefaultToolkit().getScreenResolution() / 96.0;
+        if (scale <= 1.05) {
+            return; // kein HiDPI
+        }
+
+        UIDefaults ui = UIManager.getLookAndFeelDefaults();
+
+        // Basisfont prüfen (sicherstellen, dass wir nicht doppelt skalieren)
+        Font baseFont = ui.getFont("defaultFont");
+        if (baseFont == null) {
+            baseFont = UIManager.getFont("Label.font");
+        }
+        if (baseFont != null && baseFont.getSize() > 13) {
+            return; // LaF skaliert bereits
+        }
+
+        // Durch alle Keys iterieren (Java 8-kompatibel)
+        for (Enumeration<Object> e = ui.keys(); e.hasMoreElements(); ) {
+            Object key = e.nextElement();
+            Object value = ui.get(key);
+            if (value instanceof Font) {
+                Font f = (Font) value;
+                float newSize = (float) (f.getSize2D() * scale);
+                // Verwende FontUIResource, damit UIManager den Font als Resource erkennt
+                ui.put(key, new FontUIResource(f.deriveFont(newSize)));
+            }
+        }
+    }
 }

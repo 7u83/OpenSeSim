@@ -31,7 +31,7 @@ import java.text.DecimalFormat;
  *
  * @author tube
  */
-public class Currency implements Asset {
+public class AssetBase implements Asset {
 
     private String symbol;
     private String name;
@@ -39,7 +39,7 @@ public class Currency implements Asset {
     private int decimals;
     private DecimalFormat formatter;
 
-    public Currency(String symbol, String name, int decimals) {
+    public AssetBase(String symbol, String name, int decimals) {
         this.symbol = symbol;
         this.name = name;
         this.setDecimals(decimals);
@@ -55,10 +55,10 @@ public class Currency implements Asset {
         return name;
     }
 
-    @Override
-    public Market getMarket() {
+//    @Override
+/*    public Market getMarket() {
         return null;
-    }
+    }*/
 
     @Override
     public float getDf() {

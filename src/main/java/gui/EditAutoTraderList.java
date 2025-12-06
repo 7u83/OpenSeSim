@@ -55,6 +55,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sesim.Config;
 //import sesim.AutoTraderConfig;
 
 /**
@@ -156,7 +157,7 @@ public class EditAutoTraderList extends javax.swing.JPanel {
 
     final void load() {
 
-        JSONArray traders = Globals.getTraders();
+        JSONArray traders = Config.getTraders(Globals.getConfig());
         DefaultTableModel model = (DefaultTableModel) list.getModel();
         model.setRowCount(traders.length());
 

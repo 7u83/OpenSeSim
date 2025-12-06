@@ -1,4 +1,19 @@
 {
+    "markets": {"DDM": {"RBTN": {
+        "auto_initial_price": true,
+        "initial_price": 100
+    }}},
+    "default_market": {},
+    "assets": {
+        "DDM": {
+            "decimals": 2,
+            "name": "Mark"
+        },
+        "RBTN": {
+            "decimals": 0,
+            "name": "VEB Robotron"
+        }
+    },
     "traders": [
         {
             "Color": [],
@@ -29,8 +44,8 @@
         ],
         "min_amount_to_sell_deviation": 0,
         "sleep_after_buy": [
-            10,
-            30
+            0,
+            0
         ],
         "bankrupt_cash": 100,
         "sell_order_timeout": [
@@ -52,8 +67,8 @@
             50
         ],
         "sleep_after_sell": [
-            10,
-            30
+            0,
+            0
         ],
         "sell_limit": [
             -2,

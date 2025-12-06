@@ -25,6 +25,8 @@
  */
 package gui;
 
+import javax.swing.JDialog;
+
 /**
  * A dialog that closes automatically when the Escape key is pressed.
  * Extends {@link javax.swing.JDialog}.
@@ -46,10 +48,6 @@ public class EscDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
- //this.setLocationRelativeTo(this.getParent());
-    //    this.setLocationRelativeTo(parent);
-
-        // Key binding for Esc
         getRootPane().registerKeyboardAction(
                 e -> dispose(),
                 javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0),
@@ -57,6 +55,19 @@ public class EscDialog extends javax.swing.JDialog {
         );
 
     }
+    
+        public EscDialog(JDialog parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+
+        getRootPane().registerKeyboardAction(
+                e -> dispose(),
+                javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0),
+                javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW
+        );
+
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

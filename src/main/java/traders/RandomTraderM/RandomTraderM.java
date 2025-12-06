@@ -405,7 +405,7 @@ public class RandomTraderM extends AutoTraderBase
     }
 
     private Action getAction() {
-        if (sim.randNextInt(2) == 0) {
+        if (Sim.random.nextInt(2) == 0) {
             return Action.BUY;
         } else {
             return Action.SELL;

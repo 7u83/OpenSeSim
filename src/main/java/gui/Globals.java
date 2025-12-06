@@ -25,6 +25,7 @@
  */
 package gui;
 
+import gui.util.HiDPIScaler;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,6 +49,7 @@ import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sesim.AutoTraderLoader;
+import sesim.Config;
 import sesim.Sim;
 
 /**
@@ -92,6 +94,9 @@ public class Globals {
     static boolean lafInstalled = false;
 
     static void setLookAndFeel() {
+        
+        
+        
         if (!lafInstalled) {
             UIManager.installLookAndFeel("FlatLaf Light", "com.formdev.flatlaf.FlatLightLaf");
             UIManager.installLookAndFeel("FlatLaf Dark", "com.formdev.flatlaf.FlatDarkLaf");
@@ -116,6 +121,8 @@ public class Globals {
         JDialog.setDefaultLookAndFeelDecorated(Globals.prefs_new.getBoolean("laf_decorated_dialogs", true));
         JFrame.setDefaultLookAndFeelDecorated(Globals.prefs_new.getBoolean("laf_decorated_frames", true));
         JPopupMenu.setDefaultLightWeightPopupEnabled(Globals.prefs_new.getBoolean("laf_lightweight_popups", true));
+        
+  //      HiDPIScaler.autoScale();        
 
         colors.tableRed = gui.util.ColorUtilsRGB.readableRed(UIManager.getColor("Table.background"));
         colors.tableBgLightRed = gui.util.ColorUtilsRGB.readable(new Color(255, 200, 200), UIManager.getColor("Table.foreground"));
@@ -253,21 +260,21 @@ public class Globals {
 
     static public final Logger LOGGER = Logger.getLogger("com.cauwersin.sesim");
 
-    static public final JSONArray getTraders() {
+/*    static public final JSONArray getTraders() {
         //String traders_json = Globals.prefs_new.get(PrefKeys.TRADERS, "[]");
         //JSONArray traders = new JSONArray(traders_json);
 
         //    JSONArray traders = getConfig().getJSONArray(PrefKeys.TRADERS);
         JSONArray traders = Sim.getTraders(getConfig());
         return traders;
-    }
+    }*/
 
     static public final JSONObject getStrategies() {
         //String cfglist = Globals.prefs_new.get(PrefKeys.STRATEGIES, "{}");
         //JSONObject cfgs = new JSONObject(cfglist);
 
         // JSONObject strategies = getConfig().getJSONObject(PrefKeys.STRATEGIES);
-        JSONObject strategies = Sim.getStrategies(getConfig());
+        JSONObject strategies = Config.getStrategies(getConfig());
         return strategies;
     }
 
@@ -311,7 +318,7 @@ public class Globals {
 
         JSONObject sobj = getConfig();
         //sobj.put(PrefKeys.STRATEGIES, strategies);
-        Sim.putStrategies(sobj, strategies);
+        Config.putStrategies(sobj, strategies);
         putConfig(sobj);
 
     }
@@ -319,7 +326,7 @@ public class Globals {
     static public final void putTraders(JSONArray traders) {
         // Globals.prefs_new.put(Globals.PrefKeys.TRADERS, traders.toString());
         JSONObject sobj = getConfig();
-        Sim.putTraders(sobj, traders);
+        Config.putTraders(sobj, traders);
         //sobj.put(Sim.CfgKeys.TRADERS, traders);
         putConfig(sobj);
     }

@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package gui;
+import sesim.Config;
 
 import org.json.JSONObject;
 
@@ -52,8 +53,8 @@ public class RandomSeedDialog extends javax.swing.JDialog {
     private void setConfig() {
         JSONObject cfg = Globals.getConfig();
 
-        boolean us = sesim.Sim.useRandomSeed(cfg);
-        long s = sesim.Sim.getRandomSeed(cfg);
+        boolean us = Config.getUseRandomSeed(cfg);
+        long s = Config.getRandomSeed(cfg);
         
         seed.setValue(s);
 
@@ -67,7 +68,7 @@ public class RandomSeedDialog extends javax.swing.JDialog {
 
 
         JSONObject cfg = Globals.getConfig();
-        JSONObject rand = sesim.Sim.getRandomCfg(cfg);
+        JSONObject rand = Config.getRandomCfg(cfg);
 
         rand.put("use_seed", useSeed.isSelected());
         rand.put("seed", (Long) seed.getValue());

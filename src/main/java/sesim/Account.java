@@ -54,16 +54,16 @@ public class Account {
     protected AutoTrader owner;
 
     final ConcurrentHashMap<Long, Order> orders;
-    private final HashMap<Asset, Position> positions;
+    private final HashMap<Market, Position> positions;
 
-    private HashMap<Asset, Position> snap_positions = new HashMap<>();
+    private HashMap<Market, Position> snap_positions = new HashMap<>();
     private long snap_cash;
 
     void makeSnapShot() {
         snap_positions = new HashMap<>();
-        for (Asset a : positions.keySet()) {
-            Position p = new Position(positions.get(a));
-            snap_positions.put(a, p);
+        for (Market m : positions.keySet()) {
+            Position p = new Position(positions.get(m));
+            snap_positions.put(m, p);
         }
         snap_cash = cash;
     }
@@ -89,7 +89,7 @@ public class Account {
         initial_equity = this.getEquity_Long();
     }
 
-    public Map<Asset, Position> getPositions() {
+    public Map<Market, Position> getPositions() {
         return Collections.unmodifiableMap(positions);
     }
 
@@ -272,20 +272,20 @@ public class Account {
         return cashNeeded <= this.getFreeMargin();
     }
 
-    public boolean isOrderCovered_Long(Market se, long volume, long price, int leverage) {
-        return isOrderCovered_Long(getPosition(se), volume, price, leverage);
+    public boolean isOrderCovered_Long(Market market, long volume, long price, int leverage) {
+        return isOrderCovered_Long(getPosition(market), volume, price, leverage);
     }
 
-    public boolean isOrderCovered(Market se, float volume, float price, int leverage) {
-        return isOrderCovered_Long(getPosition(se),
-                (long) (volume * se.shares_df),
+    public boolean isOrderCovered(Market market, float volume, float price, int leverage) {
+        return isOrderCovered_Long(getPosition(market),
+                (long) (volume * market.shares_df),
                 (long) (price * currency.getDf()),
                 leverage);
     }
 
-    public float getRequiredCashForOrder(Market se, float volume, float price, int leverage) {
-        return getPosition(se).getRequiredCashForOrder_Long(
-                (long) (volume * se.shares_df),
+    public float getRequiredCashForOrder(Market market, float volume, float price, int leverage) {
+        return getPosition(market).getRequiredCashForOrder_Long(
+                (long) (volume * market.shares_df),
                 (long) (price * currency.getDf()),
                 leverage
         ) / currency.getDf();
@@ -395,7 +395,7 @@ public class Account {
 //        positions.put(p,p);
         return null;
     }*/
-    public final Position getPosition(Asset asset) {
+    public final Position getPosition(Market asset) {
         // String s = "AAPL";
         Position p = this.positions.get(asset);
         if (p != null) {

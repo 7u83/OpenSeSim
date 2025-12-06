@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 
 /**
@@ -63,6 +64,11 @@ public class EscDialog extends javax.swing.JDialog {
         addEscListener();
     }
 
+        public EscDialog(JDialog parent, boolean modal) {
+        super(parent, modal ? ModalityType.DOCUMENT_MODAL : ModalityType.MODELESS);
+        initComponents();
+        addEscListener();
+    }
    
     /**
      * This method is called from within the constructor to initialize the form.

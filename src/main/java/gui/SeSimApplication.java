@@ -191,7 +191,6 @@ public class SeSimApplication extends javax.swing.JFrame {
             exitMenuItem = new javax.swing.JMenuItem();
             editMenu = new javax.swing.JMenu();
             jMenuItem1 = new javax.swing.JMenuItem();
-            editExchangeMenuItem = new javax.swing.JMenuItem();
             jSeparator1 = new javax.swing.JPopupMenu.Separator();
             pasteMenuItem = new javax.swing.JMenuItem();
             deleteMenuItem = new javax.swing.JMenuItem();
@@ -276,7 +275,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                     .addComponent(stopButton)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap())
+                    .addGap(27, 27, 27))
             );
             runControlsLayout.setVerticalGroup(
                 runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -301,7 +300,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(tradingLogCheckBox, javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(clock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -416,22 +415,13 @@ public class SeSimApplication extends javax.swing.JFrame {
             editMenu.setMnemonic('e');
             editMenu.setText("Edit");
 
-            jMenuItem1.setText("Assets");
+            jMenuItem1.setText("Markets");
             jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     jMenuItem1ActionPerformed(evt);
                 }
             });
             editMenu.add(jMenuItem1);
-
-            editExchangeMenuItem.setMnemonic('y');
-            editExchangeMenuItem.setText("Exchange ...");
-            editExchangeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    editExchangeMenuItemActionPerformed(evt);
-                }
-            });
-            editMenu.add(editExchangeMenuItem);
             editMenu.add(jSeparator1);
 
             pasteMenuItem.setMnemonic('s');
@@ -833,13 +823,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.saveFile(true);
     }//GEN-LAST:event_fileSaveAsMenuItemActionPerformed
 
-    private void editExchangeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExchangeMenuItemActionPerformed
-        EditExchangeDialog ed = new EditExchangeDialog((Frame) this.getParent(), true);
-        int rc = ed.showdialog();
-        //  System.out.printf("EDRET: %d\n",rc);
-
-    }//GEN-LAST:event_editExchangeMenuItemActionPerformed
-
     private void resetToDefaults() {
         InputStream is = getClass().getResourceAsStream("/files/defaultcfg.json");
         String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
@@ -1146,6 +1129,8 @@ public class SeSimApplication extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
         AssetListDialog ad = new AssetListDialog(this,true);
+        ad.pack();
+        ad.setMinimumSize(ad.getSize());
         ad.setLocationRelativeTo(this);
         ad.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -1223,7 +1208,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private gui.Clock clock1;
     private javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
-    private javax.swing.JMenuItem editExchangeMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem editPreferences;
     private javax.swing.JMenuItem exitMenuItem;

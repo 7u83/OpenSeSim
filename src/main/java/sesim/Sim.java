@@ -42,6 +42,9 @@ import sesim.Scheduler.Event;
  */
 public class Sim {
 
+    private HashMap<String, Asset> assets = new HashMap<>();
+    private HashMap<Asset, HashMap<Asset, Market>> currencies = new HashMap();
+
     /**
      * Keys in cconfig file used by Sim
      */
@@ -52,14 +55,8 @@ public class Sim {
         public static final String TRADERS = "traders";
         public static final String EXCHANGE = "exchange";
         public static final String RANDOM = "random";
-        
-    }
 
-    public static final String DEFAULT_RANDOM_CFG
-            = "{"
-            + "seed: 0,"
-            + "use_seed: false"
-            + "}";
+    }
 
     public static int randNextInt() {
         return random.nextInt();
@@ -125,9 +122,7 @@ public class Sim {
         }
 
     }*/
-    HashMap<String, Asset> assets = new HashMap<>();
-
-    /*    public Asset getAsset(String symbol) {
+ /*    public Asset getAsset(String symbol) {
         Asset a = assets.get(symbol);
         if (a == null) {
             a = new TempAsset(symbol, se);
@@ -172,14 +167,16 @@ public class Sim {
         return scheduler.delEvent(t, e);
     }
 
+    Asset defaultAsset = new AssetBase("RBTN", "VEB Robotron", 0);
+
     public Sim() {
         scheduler = new Scheduler();
-        defaultMarket = new Market(this, defaultCurrency);
+        defaultMarket = new Market(this, defaultCurrency, defaultAsset, new JSONObject());
         initAutoTraderLoader();
         reset();
     }
 
-    Currency defaultCurrency = new Currency("TLR", "Taler", 2);
+    AssetBase defaultCurrency = new AssetBase("TLR", "Taler", 2);
 
     public ArrayList<AutoTrader> traders = null;
 
@@ -191,6 +188,8 @@ public class Sim {
         }
         traders = new ArrayList();
         scheduler = new Scheduler();
+        
+        
         defaultMarket.reset();
     }
 
@@ -236,61 +235,23 @@ public class Sim {
         tloader = new AutoTraderLoader(pathlist);
     }
 
-    static public final JSONObject getStrategies(JSONObject cfg) {
-        return cfg.getJSONObject(CfgKeys.STRATEGIES);
-    }
-
-    static public final void putStrategies(JSONObject sobj, JSONObject strategies) {
-        sobj.put(CfgKeys.STRATEGIES, strategies);
-    }
-
-    static public final JSONArray getTraders(JSONObject cfg) {
-        JSONArray traders = cfg.getJSONArray(CfgKeys.TRADERS);
-        return traders;
-    }
-
-    static public final void putTraders(JSONObject cfg, JSONArray traders) {
-        cfg.put(CfgKeys.TRADERS, traders);
-    }
-
-    static public JSONObject getStrategy(JSONObject cfg, String name) {
-        return getStrategies(cfg).optJSONObject(name);
-    }
     public static String DEFAULT_EXCHANGE_CFG
             = "{"
             + "  money_decimals: 2,"
             + "  shares_decimals: 0"
             + "}";
 
-    public static JSONObject getExchangeCfg(JSONObject cfg) {
+/*    public static JSONObject getExchangeCfg(JSONObject cfg) {
         JSONObject exchange = cfg.optJSONObject(CfgKeys.EXCHANGE);
         if (exchange == null) {
             exchange = new JSONObject(DEFAULT_EXCHANGE_CFG);
         }
         return exchange;
         //return cfg.getJSONObject(CfgKeys.EXCHANGE);
-    }
-
-    public static JSONObject getRandomCfg(JSONObject cfg) {
-        JSONObject rand = cfg.optJSONObject(CfgKeys.RANDOM);
-        if (rand != null) {
-            return rand;
-        }
-        return new JSONObject(DEFAULT_RANDOM_CFG);
-    }
+    }*/
 
     static public final void putExchangeCfg(JSONObject sobj, JSONObject exchange) {
         sobj.put(CfgKeys.EXCHANGE, exchange);
-    }
-
-    public static boolean useRandomSeed(JSONObject cfg) {
-        JSONObject rand = getRandomCfg(cfg);
-        return rand.optBoolean("use_seed", false);
-    }
-
-    public static long getRandomSeed(JSONObject cfg) {
-        JSONObject rand = getRandomCfg(cfg);
-        return rand.optLong("seed", 0);
     }
 
     public static double calculateInitialPrice(JSONArray tlist) {
@@ -316,17 +277,9 @@ public class Sim {
 
     public static SplittableRandom random = new SplittableRandom(12);
 
-    public void startTraders(JSONObject cfg) {
-
-        Order.resetIdGenerator();
-
-        Logger.info("Sim started");
-        defaultMarket.putConfig(getExchangeCfg(cfg));
-
-        long randomSeed = getRandomSeed(cfg);
-        boolean useSeed = useRandomSeed(cfg);
-        resetAutoTraders();
-
+    private void startRandomGenerator(JSONObject cfg) {
+        long randomSeed = Config.getRandomSeed(cfg);
+        boolean useSeed = Config.getUseRandomSeed(cfg);
         if (useSeed) {
             random = new SplittableRandom(randomSeed);
         } else {
@@ -336,15 +289,77 @@ public class Sim {
         }
 
         Logger.info("Random seed is %d", randomSeed);
+    }
 
-        JSONArray tlist = Sim.getTraders(cfg);
+    private void initAssets(JSONObject cfg) {
+        assets = new HashMap<>();
+        JSONObject jassets = Config.getAssets(cfg);
+        for (String symbol : jassets.keySet()) {
+            JSONObject jasset = jassets.optJSONObject(symbol);
+            AssetBase a = new AssetBase(
+                    symbol,
+                    jasset.optString("name", symbol),
+                    jasset.optInt("decimals", 0)
+            );
+            assets.put(symbol, a);
+        }
+    }
 
-        boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(defaultMarket.CFG_AUTO_INITIAL_PRICE, true);
+    private void initMarkets(JSONObject cfg) {
+        JSONObject jcurrencies = Config.getMarkets(cfg);
+
+        String defaultCurrencySymbol = Config.getDefaultCurrency(cfg);
+        String defaultAssetSymbol = Config.getDefaultAsset(cfg);
+
+        for (String currencySymbol : jcurrencies.keySet()) {
+            JSONObject jmarkets = jcurrencies.optJSONObject(currencySymbol);
+
+            HashMap<Asset, Market> markets = new HashMap<>();
+            Asset currency = assets.get(currencySymbol);
+
+            for (String assetSymbol : jmarkets.keySet()) {
+                Asset asset = assets.get(assetSymbol);
+                Market market = new Market(this, currency, asset, jmarkets.optJSONObject(assetSymbol));
+                
+                
+                
+                markets.put(asset, market);
+
+                if (assetSymbol.equals(defaultAssetSymbol)
+                        && currencySymbol.equals(defaultCurrencySymbol)) {
+                    
+                    this.defaultMarket=market;
+                }
+
+                System.out.printf("Pair: %s/%s\n", currencySymbol, assetSymbol);
+            }
+            this.currencies.put(currency, markets);
+        }
+
+    }
+
+    public void startTraders(JSONObject cfg) {
+
+        Logger.info("Sim started");
+
+        Order.resetIdGenerator();
+        startRandomGenerator(cfg);
+
+        this.initAssets(cfg);
+        this.initMarkets(cfg);
+
+   //     defaultMarket.putConfig(getExchangeCfg(cfg));
+
+        resetAutoTraders();
+
+        JSONArray tlist = Config.getTraders(cfg);
+
+        boolean autoInitialPrice = defaultMarket.autoInitialPrice;
         double initialPrice;
         if (autoInitialPrice) {
             initialPrice = Sim.calculateInitialPrice(tlist);
         } else {
-            initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(defaultMarket.CFG_INITIAL_PRICE, 100.0f));
+            initialPrice = (float) (defaultMarket.initalPrice);
         }
 
         Logger.info("Initial prices is: %f", initialPrice);
@@ -361,7 +376,7 @@ public class Sim {
             if (strategy_name == null) {
                 continue;
             }
-            JSONObject strategyCfg = getStrategy(cfg, strategy_name);
+            JSONObject strategyCfg = Config.getStrategy(cfg, strategy_name);
 
             // String base = strategy.getString("base");
             //    AutoTrader ac = Globals.tloader.getStrategyBase(base);

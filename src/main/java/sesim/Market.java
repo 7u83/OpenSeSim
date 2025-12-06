@@ -42,7 +42,7 @@ import sesim.TradingLogWriter.TradingLogRecord;
  * @desc Market class
  * @author 7u83
  */
-public class Market implements Asset {
+public class Market  {
     
     Asset currency;
 
@@ -62,12 +62,12 @@ public class Market implements Asset {
         money_formatter = getFormatter(n);
     }*/
 
-    @Override
+//    @Override
     public float getDf() {
         return shares_df;
     }
 
-    @Override
+ //   @Override
     public DecimalFormat getFormatter() {
         return money_formatter;
     }
@@ -132,22 +132,22 @@ public class Market implements Asset {
         return shares_formatter;
     }
 
-    @Override
+//    @Override
     public Market getMarket() {
         return this;
     }
 
-    @Override
+ //   @Override
     public String getName() {
         return "";
     }
 
-    @Override
+  //  @Override
     public int getDecimals() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
+ //   @Override
     public float round(double val) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -569,16 +569,25 @@ public class Market implements Asset {
         }
 
     }
+    
+    Asset asset;
+    
+    public Asset getAsset(){
+        return asset;
+    }
 
     /**
      * Constructor
      */
-    public Market(Sim sim, Asset currency) {
+    public Market(Sim sim, Asset currency, Asset asset, JSONObject cfg) {
 
         quoteReceiverList = (new CopyOnWriteArrayList<>());
         this.sim = sim;
         //  this.money_formatter = getMoneyFormatter(2);
         this.currency=currency;
+        this.asset=asset;
+        this.setCfg(cfg);
+        
         initExchange();
         
         //       executor.start();
@@ -728,9 +737,19 @@ public class Market implements Asset {
     public final String CFG_AUTO_INITIAL_PRICE = "auto_initial_price";
     public final String CFG_INITIAL_PRICE = "initial_price";
 
-    public void putConfig(JSONObject cfg) {
+/*    public void putConfig(JSONObject cfg) {
   //      this.setMoneyDecimals(cfg.optInt(CFG_MONEY_DECIMALS, 2));
         this.setSharesDecimals(cfg.optInt(CFG_SHARES_DECIMALS, 0));
+    }*/
+    
+    
+    float initalPrice=100.0f;
+    boolean autoInitialPrice=true;
+    
+    
+    void setCfg(JSONObject cfg){
+        this.initalPrice=(float)cfg.optDouble("initial_price",100.00);
+        this.autoInitialPrice=cfg.optBoolean("auto_initial_price",true);
     }
 
     private Long getBestPrice_Long() {

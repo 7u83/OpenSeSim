@@ -28,8 +28,8 @@ package gui.AssetEditor;
 import gui.EscDialog;
 import java.awt.Dialog;
 import java.awt.Window;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
-
 
 import org.json.JSONObject;
 
@@ -39,19 +39,37 @@ import org.json.JSONObject;
  */
 public class AssetEditorDialog extends EscDialog {
 
-    
-
-
     /**
      * Creates new form CreateAssetDialog
      */
-
     public AssetEditorDialog(JFrame parent) {
         super(parent, true);
         initComponents();
-        
+        initFields();
     }
 
+    public AssetEditorDialog(JDialog parent) {
+        super(parent, true);
+        initComponents();
+        initFields();
+
+    }
+
+    private void initFields() {
+        if (symbol == null) {
+            return;
+        }
+        this.symField.setText(symbol);
+        this.symField.setEnabled(false);
+        this.nameField.setText(name);
+        this.decimalsField.setValue(decimals);
+    }
+
+    /*   public AssetEditorDialog(JDialog owner) {
+        super(owner, true);
+        initComponents();
+
+    }*/
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -63,6 +81,12 @@ public class AssetEditorDialog extends EscDialog {
 
         cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        nameField = new javax.swing.JTextField();
+        symField = new javax.swing.JTextField();
+        decimalsField = new javax.swing.JSpinner();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Edit Asset");
@@ -82,21 +106,59 @@ public class AssetEditorDialog extends EscDialog {
             }
         });
 
+        jLabel1.setText("Symbol:");
+
+        jLabel3.setText("Name:");
+
+        decimalsField.setModel(new javax.swing.SpinnerNumberModel(0, 0, 8, 1));
+
+        jLabel4.setText("Decimals:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(157, Short.MAX_VALUE)
-                .addComponent(okButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(okButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(symField, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(162, 162, 162))
+                            .addComponent(nameField)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(decimalsField, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(192, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(symField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(decimalsField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
@@ -106,27 +168,30 @@ public class AssetEditorDialog extends EscDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-  
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+    String symbol = null;
+    String name = null;
+    int decimals = 0;
 
-     /*   if (assetEditorPanel.save(godworld)){
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        symbol = this.symField.getText();
+        name = this.nameField.getText();
+        decimals = (int) this.decimalsField.getValue();
+
+        /*   if (assetEditorPanel.save(godworld)){
             dispose();
         }
         godworld.notifyUpdateListeners();*/
+        dispose();
         return;
-        
-        
-/*        
+
+        /*        
         JSONObject result = Json.get(assetEditorPanel);    
         System.out.printf("JSON: %s\n", result.toString(5));
         JSONObject all = Globals.getAssets();
         all.put(result.getString("symbol"), result);
         Globals.putAssets(all);
-  */
-
-
-
-    /*    if (this.asset == null) {
+         */
+ /*    if (this.asset == null) {
             try {
                 int selected = this.assetEditorPanel.assetTypesComboBox.getSelectedIndex();
                 Class<AbstractAsset> cls = (Class<AbstractAsset>) this.assetEditorPanel.asset_types.get(selected);
@@ -140,9 +205,8 @@ public class AssetEditorDialog extends EscDialog {
                 return;
             }
         }
-*/
-    
-        /*else {
+         */
+ /*else {
             if (!this.asset.getSymbol().equals(assetEditor.symField.getText())) {
                 try {
                     BasicAsset.rename(asset, assetEditor.symField.getText());
@@ -157,12 +221,11 @@ public class AssetEditorDialog extends EscDialog {
             }
 
         }*/
-      //  asset.setName(assetEditorPanel.nameField.getText());
-      //  asset.setDecimals((int) assetEditorPanel.decimalsField.getValue());
+        //  asset.setName(assetEditorPanel.nameField.getText());
+        //  asset.setDecimals((int) assetEditorPanel.decimalsField.getValue());
+        //   JSONObject cfg = world.getConfig();
 
-     //   JSONObject cfg = world.getConfig();
-
-     /*   try {
+        /*   try {
             String jstr = cfg.toString(5);
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
@@ -170,7 +233,7 @@ public class AssetEditorDialog extends EscDialog {
         System.out.printf("JSONARRAY %s\n", cfg.toString(3));
         JSONObject world_cfg = Globals.world.getConfig();
         Globals.prefs.put("world", world_cfg.toString());
-       */ 
+         */
 
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -180,7 +243,7 @@ public class AssetEditorDialog extends EscDialog {
 
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-/*    static public boolean runDialog(Window parent, GodWorld worldadm, JSONObject o, JSONObject old) {
+    /*    static public boolean runDialog(Window parent, GodWorld worldadm, JSONObject o, JSONObject old) {
 
         AssetEditorDialog d = new AssetEditorDialog(parent);
         d.godworld = worldadm;
@@ -197,7 +260,7 @@ public class AssetEditorDialog extends EscDialog {
         return true;
     }*/
 
-    /* 
+ /* 
     static public Id runDialog(Dialog parent, AbstractAsset asset) {
         AssetEditorDialog dialog = new AssetEditorDialog(parent, asset);
         dialog.assetEditorPanel.initFields(asset);
@@ -315,6 +378,12 @@ public class AssetEditorDialog extends EscDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
+    public javax.swing.JSpinner decimalsField;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JTextField nameField;
     private javax.swing.JButton okButton;
+    private javax.swing.JTextField symField;
     // End of variables declaration//GEN-END:variables
 }
