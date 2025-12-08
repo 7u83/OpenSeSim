@@ -395,7 +395,7 @@ public class RandomTraderA extends AutoTraderBase
         float volume = money / limit;
 
         limit = market.getCurrency().round(limit);
-        volume = market.roundShares(volume);
+        volume = market.getAsset().round(volume);
         if (limit <= 0) {
             return null;
         }
@@ -448,7 +448,7 @@ public class RandomTraderA extends AutoTraderBase
 
         float volume = money / limit;
    
-        volume = market.roundShares(volume);
+        volume = market.getAsset().round(volume);
         if (limit <= 0) {
             return null;
         }
@@ -463,7 +463,7 @@ public class RandomTraderA extends AutoTraderBase
 
         // how many shares we want to sell?
         float volume = getRandomAmmount(account.getShares(sim.getDefaultMarket()), sell_volume);
-        volume = market.roundShares(volume);
+        volume = market.getAsset().round(volume);
 
         //    float lp = 100.0; //se.getBestLimit(type);
         Quote q = market.getBestPrice_0();

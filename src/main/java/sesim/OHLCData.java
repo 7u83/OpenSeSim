@@ -123,11 +123,11 @@ public class OHLCData {
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
-            return new MinMax(market.shares_df, di.volume, di.volume);
+            return new MinMax(market.getAsset().getDf(), di.volume, di.volume);
         }
 
         OHLCDataItem di = data.get(first);
-        MinMax minmax = new MinMax(market.shares_df, di.volume, di.volume);
+        MinMax minmax = new MinMax(market.getAsset().getDf(), di.volume, di.volume);
 
         for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);

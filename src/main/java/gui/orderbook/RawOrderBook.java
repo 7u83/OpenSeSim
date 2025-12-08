@@ -139,8 +139,8 @@ public class RawOrderBook extends javax.swing.JPanel implements Market.BookListe
                             @Override
                             public void run() {
                                 setGodMode(Globals.prefs_new.get(Globals.CfgStrings.GODMODE, "false").equals("true"));
-                                vol_column.setCellRenderer(new NummericCellRenderer(Globals.sim.getDefaultMarket().getSharesFormatter()));
-                                price_column.setCellRenderer(new NummericCellRenderer(Globals.sim.getDefaultMarket().getMoneyFormatter()));
+                                vol_column.setCellRenderer(new NummericCellRenderer(Globals.sim.getDefaultMarket().getAsset().getFormatter()));
+                                price_column.setCellRenderer(new NummericCellRenderer(Globals.sim.getDefaultMarket().getCurrency().getFormatter()));
                                 model.setData(newOb);
                                 model.fireTableDataChanged();
                             }

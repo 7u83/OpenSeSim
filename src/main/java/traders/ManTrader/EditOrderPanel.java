@@ -92,7 +92,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
                 this.getLimit(),
                 this.getLeverage()
                 );
-        String s = market.getMoneyFormatter().format(price);
+        String s = market.getCurrency().getFormatter().format(price);
         this.priceLabel.setText(s);
     }
 
@@ -333,11 +333,11 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
         if ((type & 0x01) == Order.BUY) {
             float l = this.getLimit();
-            if (l < 1 / market.shares_df) {
-                l = 1 / 1 / market.shares_df;
+            if (l < 1 / market.getAsset().getDf()) {
+                l = 1 / 1 / market.getAsset().getDf();
             }
 
-            this.volumeSpinner.setValue(market.roundShares(account.getCashAvailable() / l));
+            this.volumeSpinner.setValue(market.getAsset().round(account.getCashAvailable() / l));
 
         }
         if (type == Order.SELL) {

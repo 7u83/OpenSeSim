@@ -205,11 +205,11 @@ public class Order implements OrderBookEntry {
     }
 
     public float getExecuted() {
-        return getExecuted_Long() / market.shares_df;
+        return getExecuted_Long() / market.getAsset().getDf();
     }
 
     public float getInitialVolume() {
-        return initial_volume / market.shares_df;
+        return initial_volume / market.getAsset().getDf();
     }
 
     public float getCost() {
@@ -278,7 +278,7 @@ public class Order implements OrderBookEntry {
 
     @Override
     public float getVolume() {
-        return volume / market.shares_df;
+        return volume / market.getAsset().getDf();
     }
 
     @Override

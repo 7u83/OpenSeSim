@@ -124,7 +124,7 @@ public class MarketMaker extends AutoTraderBase {
             orders[i].buyLimit = market.getCurrency().round(price);
             price += dist;
             orders[i].sellLimit = market.getCurrency().round(price);
-            orders[i].volume = market.roundShares(cashPerBuyOrder / price);
+            orders[i].volume = market.getAsset().round(cashPerBuyOrder / price);
 
             // Create initial buy order
             orders[i].o = market.createOrder(account, Order.BUYLIMIT,
@@ -134,8 +134,8 @@ public class MarketMaker extends AutoTraderBase {
 
         
         setStatus("%s - %s", 
-                market.getFormatter().format(lowestPrice),
-                market.getFormatter().format(centerPrice)
+                market.getCurrency().getFormatter().format(lowestPrice),
+                market.getCurrency().getFormatter().format(centerPrice)
         );
 
     }

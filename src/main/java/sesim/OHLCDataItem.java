@@ -80,7 +80,7 @@ public class OHLCDataItem {
     }
 
     public float getVolume() {
-        return volume/se.shares_df;
+        return volume/se.getAsset().getDf();
     }
 
     public long getTime() {

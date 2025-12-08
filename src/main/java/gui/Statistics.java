@@ -72,9 +72,9 @@ public class Statistics extends javax.swing.JPanel {
 
                 tradesLabel.setText(String.format("%d", s.trades));
 
-                high.setText(Globals.sim.getDefaultMarket().getMoneyFormatter().format(s.high));
+                high.setText(Globals.sim.getDefaultMarket().getCurrency().getFormatter().format(s.high));
 
-                low.setText(Globals.sim.getDefaultMarket().getMoneyFormatter().format(s.low));
+                low.setText(Globals.sim.getDefaultMarket().getCurrency().getFormatter().format(s.low));
 
                 float tps;
 

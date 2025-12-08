@@ -63,7 +63,7 @@ public class MainChart extends chart.Chart {
         main.crossColor = Globals.colors.text;
         main.pad_top=1;
         main.pad_bot=1;
-        main.yformatter=Globals.sim.getDefaultMarket().getMoneyFormatter();
+        main.yformatter=Globals.sim.getDefaultMarket().getCurrency().getFormatter();
         main.textcolor=Globals.colors.text;
 
         addChart(main);
@@ -78,7 +78,7 @@ public class MainChart extends chart.Chart {
         vol.rightYColor = Globals.colors.bg;
         vol.crossColor = Globals.colors.text;
         vol.pad_top=1;
-        vol.yformatter=Globals.sim.getDefaultMarket().getSharesFormatter();
+        vol.yformatter=Globals.sim.getDefaultMarket().getAsset().getFormatter();
         vol.textcolor=Globals.colors.text;
         addChart(vol);
     }

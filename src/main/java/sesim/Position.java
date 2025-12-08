@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Position {
     private static final AtomicLong ID_GEN = new AtomicLong(0);
-    final Market asset;
+    final Market market;
     final Account account;
 
     long shares;
@@ -45,7 +45,7 @@ public class Position {
     long id;
 
     public Position(Market asset, Account account) {
-        this.asset = asset;
+        this.market = asset;
         id = ID_GEN.incrementAndGet();
 
         shares = 0;
@@ -55,7 +55,7 @@ public class Position {
     }
     
     public Position(Position p){
-        this.asset=p.asset;
+        this.market=p.market;
         this.id=p.id;
         this.account=p.account;
         this.margin=p.margin;
@@ -64,7 +64,7 @@ public class Position {
     }
 
     public String getName() {
-        return asset.getSymbol();
+        return market.getSymbol();
     }
 
     public long getShares_Long() {
@@ -72,7 +72,7 @@ public class Position {
     }
 
     public float getShares() {
-        return shares / asset.getDf();
+        return shares / market.asset.getDf();
     }
 
     public float getLeverage() {
@@ -113,11 +113,11 @@ public class Position {
     }
 
     public long getPnL_Long() {
-        return asset.getMarket().getLastPrice_Long() * shares + netCashFlow;
+        return market.getLastPrice_Long() * shares + netCashFlow;
     }
 
     public float getPnL() {
-        return (asset.getMarket().getLastPrice_Long() * shares + netCashFlow) / asset.getMarket().currency.getDf();
+        return (market.getLastPrice_Long() * shares + netCashFlow) / market.currency.getDf();
     }
 
     public float getPnLPercent() {
@@ -142,12 +142,12 @@ public class Position {
      * @return market value in units
      */
     public long getMarketValue_Long() {
-        return asset.getMarket().getLastPrice_Long() * shares;
+        return market.getLastPrice_Long() * shares;
     }
 
     
     public float getMarketValue() {
-        return getMarketValue_Long() / asset.getMarket().currency.getDf();
+        return getMarketValue_Long() / market.currency.getDf();
     }
 
     public long getEquityValue_Long(long price) {
@@ -155,27 +155,27 @@ public class Position {
     }
     
     public long getEquityValue_Long(){
-        return getEquityValue_Long(asset.getMarket().getLastPrice_Long());
+        return getEquityValue_Long(market.getLastPrice_Long());
     }
 
     public float getEquityValue() {
 
-        return getEquityValue_Long() / asset.getMarket().currency.getDf();
+        return getEquityValue_Long() / market.currency.getDf();
     }
 
     public float getTotalEntryCost() {
-        return totalEntryCost / asset.getMarket().currency.getDf();
+        return totalEntryCost / market.currency.getDf();
     }
 
     long netCashFlow = 0;
     long totalEntryCost = 0;
 
    public float getNetCashFlow() {
-        return netCashFlow / asset.getMarket().currency.getDf();
+        return netCashFlow / market.currency.getDf();
     }
 
 /*    public float getNetBrokerLoan() {
-        return netCashFlow / asset.getMarket().money_df;
+        return netCashFlow / market.getMarket().money_df;
     }*/
     public boolean mops = true;
 
@@ -257,13 +257,13 @@ public class Position {
         if (this.margin != 0) {
             this.account.calculateLiquidationStops(price);
         }else{
-                       asset.getMarket().removeLiquidationStop(this);
+                       market.removeLiquidationStop(this);
         }
 
     }
     
     public float getStopPrice(){
-        return this.stopPrice/asset.getMarket().currency.getDf();
+        return this.stopPrice/market.currency.getDf();
     }
     
     public long getStopPrice_Long(){
@@ -272,11 +272,11 @@ public class Position {
     
     void setStopPrice(long newStopPrice){
 
-            asset.getMarket().removeLiquidationStop(this);
+            market.removeLiquidationStop(this);
 
         stopPrice=newStopPrice;
         //System.out.printf("Stop for %s, %d\n", this.account.getOwner().getName(),stopPrice);
-        asset.getMarket().setLiquidationStop(this);
+        market.setLiquidationStop(this);
     }
     
  
@@ -357,7 +357,7 @@ public class Position {
             if (liquidationOrder == null) {
                 return;
             }
-            asset.getMarket().cancelOrder(account, this.liquidationOrder.id);
+            market.cancelOrder(account, this.liquidationOrder.id);
             this.liquidationOrder = null;
             return;
         }
@@ -367,7 +367,7 @@ public class Position {
         int leverage = (int) (totalEntryCost / margin);
 
         if (liquidationOrder != null) {
-            asset.getMarket().cancelOrder(account, liquidationOrder.id);
+            market.cancelOrder(account, liquidationOrder.id);
         }
 
         /*    if (shares > 0) {

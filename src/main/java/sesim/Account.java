@@ -114,7 +114,7 @@ public class Account {
     }
 
     public float getShares(Market m) {
-        return getShares_Long(m)/m.getDf();
+        return getShares_Long(m)/m.asset.getDf();
 
     }
 
@@ -278,14 +278,14 @@ public class Account {
 
     public boolean isOrderCovered(Market market, float volume, float price, int leverage) {
         return isOrderCovered_Long(getPosition(market),
-                (long) (volume * market.shares_df),
+                (long) (volume * market.getAsset().getDf()),
                 (long) (price * currency.getDf()),
                 leverage);
     }
 
     public float getRequiredCashForOrder(Market market, float volume, float price, int leverage) {
         return getPosition(market).getRequiredCashForOrder_Long(
-                (long) (volume * market.shares_df),
+                (long) (volume * market.getAsset().getDf()),
                 (long) (price * currency.getDf()),
                 leverage
         ) / currency.getDf();
@@ -468,7 +468,7 @@ public class Account {
             long lossPerShare = (long) Math.round(lossPerShare_double);
 
             // IV. Endgültiger Stop-Kurs (S_check, i)
-            long currentPrice = p.asset.getMarket().getLastPrice_Long();
+            long currentPrice = p.market.getLastPrice_Long();
             long stopPrice;
 
             if (p.isShort()) {
@@ -485,7 +485,7 @@ public class Account {
             /*        System.out.printf("StopPrice for %s is %f - current: %f. netCashFlow: %f, Shares: %d, Rest: %f\n", 
                     this.getOwner().getName(),
                     stopPrice/100.00,
-                    p.asset.getMarket().getLastPrice(),
+                    p.market.getMarket().getLastPrice(),
                     p.getNetCashFlow(),
                     p.getShares_Long(),
                     (p.netCashFlow+p.getShares_Long()*stopPrice+this.cash)/100.0

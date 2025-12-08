@@ -363,7 +363,7 @@ public class Sim {
         }
 
         Logger.info("Initial prices is: %f", initialPrice);
-        this.defaultMarket.setFairValue((float) initialPrice);
+//        this.defaultMarket.setFairValue((float) initialPrice);
 
         defaultMarket.initLastQuote();
 
@@ -414,7 +414,7 @@ public class Sim {
                 //trader.init(this, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategyCfg);
                 trader.init(this, id, t.getString("Name") + "-" + i1, money + (float) (initialPrice * shares), 0, strategy_name, strategyCfg);
                 trader.getAccount().getPosition(defaultMarket).addShares(
-                        (long) (shares * defaultMarket.shares_df),
+                        (long) (shares * defaultMarket.getAsset().getDf()),
                         (long) (initialPrice * defaultCurrency.getDf()),
                         1);
                 trader.getAccount().makeSnapShot();

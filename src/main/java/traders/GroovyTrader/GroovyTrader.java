@@ -209,7 +209,7 @@ public class GroovyTrader extends AutoTraderBase {
 
         public Order createOrder(byte type, double vol, double limit, double stop) {
             limit = market.getCurrency().round(limit);
-            vol = market.roundShares(vol);
+            vol = market.getAsset().round(vol);
             return market.createOrder(account, type, (float) vol, (float) limit, (float) stop);
         }
 

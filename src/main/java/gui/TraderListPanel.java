@@ -107,13 +107,13 @@ public class TraderListPanel extends javax.swing.JPanel {
                         renderer = new NameCellRenderer();
                         break;
                     case SHARES:
-                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getSharesDecimals());
+                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getAsset().getDecimals());
                         break;
                     case MARGIN:
                     case EQUITY:
                     case FREEMARGIN:
                     case CASH:
-                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getMoneyDecimals());
+                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getCurrency().getDecimals());
                         break;
                     case PNL:
                         renderer = new PercentageCellRenderer();

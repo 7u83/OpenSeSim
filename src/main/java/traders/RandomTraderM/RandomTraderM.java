@@ -25,7 +25,6 @@
  */
 package traders.RandomTraderM;
 
-import traders.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -591,7 +590,7 @@ public class RandomTraderM extends AutoTraderBase
         Quote q = market.getBestPrice_0();
         long lp = q.getPrice_Long();
 
-        long limit = this.getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
+        long limit = getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
 
         long volume = money / limit;
 

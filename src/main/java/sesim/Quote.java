@@ -84,7 +84,7 @@ public class Quote implements Comparable {
     }
 
     public float getVolume() {
-        return volume / market.shares_df;
+        return volume / market.getAsset().getDf();
     }
 
     public long getPrice_Long() {

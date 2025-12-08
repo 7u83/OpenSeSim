@@ -26,14 +26,11 @@
 package sesim;
 
 import java.io.FileNotFoundException;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONObject;
 import sesim.Scheduler.Event;
 import sesim.TradingLogWriter.TradingLogRecord;
@@ -46,117 +43,18 @@ public class Market  {
     
     Asset currency;
 
-    //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
- //   public float money_df = 100;
-    private int money_decimals = 2;
-    DecimalFormat money_formatter = getFormatter(2);
-
-    /**
-     * Set the number of decimals used with money
-     *
-     * @param n number of decimals
-     */
-/*    public void setMoneyDecimals(int n) {
-        money_df = (float) Math.pow(10, n);
-        money_decimals = n;
-        money_formatter = getFormatter(n);
-    }*/
-
-//    @Override
-    public float getDf() {
-        return shares_df;
-    }
-
- //   @Override
-    public DecimalFormat getFormatter() {
-        return money_formatter;
-    }
-
-    public int getMoneyDecimals() {
-        return money_decimals;
-    }
-
-    public int getSharesDecimals() {
-        return shares_decimals;
-    }
-
-    public float shares_df = 1;
-    private int shares_decimals = 0;
-    private DecimalFormat shares_formatter = getFormatter(0);
-
-    /**
-     * Set the number of decimals for shares
-     *
-     * @param n number of decimals
-     */
-    public void setSharesDecimals(int n) {
-        shares_df = (float) Math.pow(10, n);
-        shares_decimals = n;
-        shares_formatter = getFormatter(n);
-    }
-
-    public float roundToDecimals(double val, double f) {
-        return (float) ((Math.floor(val * f) / f));
-    }
-
-    public float roundShares(double shares) {
-        return roundToDecimals(shares, shares_df);
-    }
     
     public Asset getCurrency(){
         return currency;
     }
 
-/*    public float roundMoney(double money) {
-        return roundToDecimals(money, money_df);
-    }*/
-
-    public DecimalFormat getFormatter(int n) {
-        //      DecimalFormat formatter;
-        String s = "#0.";
-        if (n == 0) {
-            s = "#";
-        } else {
-            for (int i = 0; i < n; i++) {
-                s = s + "0";
-            }
-        }
-        return new DecimalFormat(s);
-    }
-
-    public DecimalFormat getMoneyFormatter() {
-        return money_formatter;
-    }
-
-    public DecimalFormat getSharesFormatter() {
-        return shares_formatter;
-    }
-
-//    @Override
-    public Market getMarket() {
-        return this;
-    }
 
  //   @Override
     public String getName() {
         return "";
     }
 
-  //  @Override
-    public int getDecimals() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
- //   @Override
-    public float round(double val) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    //public Scheduler timer; 
-    //public ArrayList<AutoTraderInterface> traders_old;
-    /**
-     *
-     */
     public interface AccountListener {
 
         public void accountUpdated(Account a, Order o);
@@ -170,31 +68,19 @@ public class Market  {
     int minOHLCBarDuration = 5000;
     HashMap<Integer, OHLCData> ohlcByTimeFrameLength = new HashMap<>();
 
-    /*    private OHLCData buildOHLCData(int timeFrame) {
-        OHLCData data = new OHLCData(this, timeFrame);
-        if (this.quoteHistory == null) {
-            return data;
-        }
 
-        //      System.out.printf("--- build quote hostory for tf: %d\n", timeFrame);
-        for (Quote q : quoteHistory) {
-            data.realTimeAdd(q.time, q.price, q.volume);
-        }
-
-        return data;
-    }*/
     public OHLCData getOHLCdata(Integer timeFrameLength) {
         OHLCData data;
         data = ohlcByTimeFrameLength.get(timeFrameLength);
         if (data == null) {
 
-            synchronized (executor) {
+            synchronized (this) {
                 OHLCData o = new OHLCData(this, timeFrameLength, ohlcByTimeFrameLength.get(this.minOHLCBarDuration));
                 //    data = this.buildOHLCData(timeFrameLength);
                 ohlcByTimeFrameLength.put(timeFrameLength, o);
 
                 return o;
-            }
+           }
         }
 
         return data;
@@ -303,33 +189,7 @@ public class Market  {
             // Stabile Sortierung: ID als Tie-Breaker
             return Long.compare(a.id, b.id);
         }
-        /*
-        @Override
-        public int compare(Position left, Position right) {
 
-            long d;
-
-            if (isLong) {
-                d = left.getStopPrice_Long() - right.getStopPrice_Long();
-            } else {
-                d = right.getStopPrice_Long() - left.getStopPrice_Long();
-            }
-
-            if (d != 0) {
-                return d > 0 ? 1 : -1;
-            }
-
-            if (left.id < right.id) {
-                return -1;
-            }
-            if (left.id > right.id) {
-                return 1;
-            }
-
-            return 0;
-
-        }
-         */
 
     }
 
@@ -372,7 +232,7 @@ public class Market  {
 
     }
 
-//    IDGenerator order_id = new IDGenerator();
+
     public static class CompOrderBookEntry implements OrderBookEntry {
 
         long limit;
@@ -399,7 +259,7 @@ public class Market  {
 
         @Override
         public float getVolume() {
-            return volume / se.shares_df;
+            return volume / se.getAsset().getDf(); //shares_df;
         }
 
         @Override
@@ -443,10 +303,6 @@ public class Market  {
         }
     }
 
-    /**
-     * Histrory of quotes
-     */
-    // public List<Quote> quoteHistory; // = new TreeSet<>();
     SortedSet bidBook;
     SortedSet askBook;
     SortedSet marketBidBook;
@@ -590,7 +446,7 @@ public class Market  {
         
         initExchange();
         
-        //       executor.start();
+
 
     }
 
@@ -629,61 +485,21 @@ public class Market  {
         return new Statistics();
     }
 
-    class Executor extends Thread {
 
-        @Override
-        public void run() {
-            /*          synchronized (this) {
-                try {
-                    while (true) {
-
-                        this.wait();
-
-                        Order o;
-                        while (null != (o = order_queue.poll())) {
-                            addOrderToBook(o);
-                            Account a = o.account;
-                            a.orders.put(o.id, o);
-                            a.update(o);
-                            executeOrders();
-                        }
-
-                        updateBookReceivers(Order.SELLLIMIT);
-                        updateBookReceivers(Order.BUYLIMIT);
-                    }
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Exchange.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }*/
-        }
-
-    }
-
-    final Executor executor = new Executor();
-
-    /**
-     * Start the exchange
-     */
-    /*    public void start() {
-        timer.start();
-
-    }*/
     public void reset() {
         initExchange();
     }
 
-    void setFairValue(float v) {
+/*    void setFairValue(float v) {
         this.fairValue = (long) (v * currency.getDf());
-    }
+    }*/
 
     /*   public void terminate() {
         timer.terminate();
     }*/
     public void initLastQuote() {
         Quote q = new Quote(this);
-        q.price = this.fairValue;
+        q.price = (long)(initalPrice*currency.getDf());
         q.volume = 0;
         q.ask = q.price;
         q.bid = q.price;
@@ -833,7 +649,7 @@ public class Market  {
 
     public Quote getBestPrice_0() {
 
-        synchronized (executor) {
+  //      synchronized (executor) {
             SortedSet<Order> bid = bidBook;
             SortedSet<Order> ask = askBook;
 
@@ -902,7 +718,7 @@ public class Market  {
             }
 
             return lq;
-        }
+//        }
     }
 
     // Class to describe an executed order
@@ -1124,7 +940,7 @@ public class Market  {
         Order o;
 
 //        System.out.printf("Getting executor %d\n", Thread.currentThread().getId());
-        synchronized (executor) {
+        synchronized (this) {
 //            System.out.printf("Have executor %d\n", Thread.currentThread().getId());
             o = a.orders.get(order_id);
 
@@ -1189,7 +1005,7 @@ public class Market  {
      * @param o
      */
     //  long nextQuoteId = 0;
-    private long fairValue = 0;
+    //private long fairValue = 0;
 
     private void removeOrderIfExecuted(Order o) {
 
@@ -1327,7 +1143,7 @@ public class Market  {
                     this.sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.SELL,
                     seller);
-            e.trasaction_volume = (float) volume / shares_df;
+            e.trasaction_volume = (float) volume / asset.getDf(); //shares_df;
             e.transaction_price = (float) price / currency.getDf();
             tradingLog.add(e);
 
@@ -1335,7 +1151,7 @@ public class Market  {
                     this.sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.BUY,
                     buyer);
-            e.trasaction_volume = (float) volume / shares_df;
+            e.trasaction_volume = (float) volume / asset.getDf(); //shares_df;
             e.transaction_price = (float) price / currency.getDf();
             tradingLog.add(e);
         }
@@ -1674,7 +1490,7 @@ public class Market  {
                     o);
             tradingLog.add(e);
         }*/
-        synchronized (executor) {
+        synchronized (this) {
 
             //num_orders++;
             numOrders++;
@@ -1719,7 +1535,7 @@ public class Market  {
                     o);
             tradingLog.add(e);
         }*/
-        synchronized (executor) {
+//        synchronized (executor) {
 
             //num_orders++;
             numOrders++;
@@ -1729,14 +1545,14 @@ public class Market  {
             a.orders.put(o.id, o);
             a.update(o);
 
-        }
+  //      }
 
         return o;
     }
 
     public Order createOrder(Account a, byte type, float volume, float limit, float stop) {
         return createOrder_Long(a, type,
-                (long) (volume * shares_df),
+                (long) (volume * asset.getDf()), //shares_df),
                 (long) (limit * currency.getDf()),
                 (long) (stop * currency.getDf()),
                 1
@@ -1745,7 +1561,7 @@ public class Market  {
 
     public Order createOrder(Account a, byte type, float volume, float limit, float stop, int leverage) {
         return createOrder_Long(a, type,
-                (long) (volume * shares_df),
+                (long) (volume * asset.getDf()),
                 (long) (limit * currency.getDf()),
                 (long) (stop * currency.getDf()),
                 leverage
