@@ -1130,16 +1130,16 @@ public class Market {
                     this.sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.SELL,
                     seller);
-            e.trasaction_volume = (float) volume / asset.getDf(); //shares_df;
-            e.transaction_price = (float) price / currency.getDf();
+            e.trasaction_volume = (float)FixedPoint.toExternal(volume); // / asset.getDf(); //shares_df;
+            e.transaction_price = (float)FixedPoint.toExternal(price); // / currency.getDf();
             tradingLog.add(e);
 
             e = new TradingLogRecord(
                     this.sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.BUY,
                     buyer);
-            e.trasaction_volume = (float) volume / asset.getDf(); //shares_df;
-            e.transaction_price = (float) price / currency.getDf();
+            e.trasaction_volume = (float)FixedPoint.toExternal(volume); // / asset.getDf(); //shares_df;
+            e.transaction_price = (float)FixedPoint.toExternal(price); // / currency.getDf();
             tradingLog.add(e);
         }
 
