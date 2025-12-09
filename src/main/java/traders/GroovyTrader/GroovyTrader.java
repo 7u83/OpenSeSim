@@ -235,7 +235,7 @@ public class GroovyTrader extends AutoTraderBase {
             return market.getLastQuoete();
         }
 
-        public float getLastPrice() {
+        public double getLastPrice() {
             return getLastQuote().getPrice();
         }
 

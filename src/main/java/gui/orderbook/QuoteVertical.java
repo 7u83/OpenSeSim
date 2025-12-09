@@ -124,7 +124,7 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
     private javax.swing.JLabel volumeLabel;
     // End of variables declaration//GEN-END:variables
 
-    float last_price = -1;
+    double last_price = -1;
 
     boolean busy;
     boolean update;

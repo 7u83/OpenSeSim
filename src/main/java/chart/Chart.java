@@ -304,7 +304,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     class DrawCtx {
 
         MinMax c_mm = null;
-        float c_yscaling;
+        double c_yscaling;
         public int height;
 
         Rectangle rect;
@@ -316,27 +316,27 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         private int width;
         boolean log;
 
-        float getDiff() {
+        double getDiff() {
             if (log) {
                 return (float) (Math.log(c_mm.getMax()) - Math.log(c_mm.getMin()));
             }
             return c_mm.getDiff();
         }
 
-        float getY(float y) {
+        double getY(double y) {
 
-            float ys = rect.height / getDiff();
+            double ys = rect.height / getDiff();
             if (log) {
                 return rect.height + rect.y - ((float) Math.log(y) - (float) Math.log(c_mm.getMin())) * ys;
             }
             return (rect.height - ((y - c_mm.getMin()) * c_yscaling)) + rect.y;
         }
 
-        float getValAtY(float y) {
+        double getValAtY(double y) {
             //  float val = 0;
 
             if (log) {
-                float ys = rect.height / getDiff();
+                double ys = rect.height / getDiff();
 
                 return (float) Math.exp((rect.height + rect.y) / ys + (float) Math.log(c_mm.getMin()) - y / ys);
 
@@ -468,8 +468,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //    ctx.g.fillRect(0, 0, 100, 100);
         // g.drawLine(0,0,clip.width,clip.height);
 
-        float y1 = ctx.getY(ctx.c_mm.getMin());
-        float y2 = ctx.getY(ctx.c_mm.getMax());
+        double y1 = ctx.getY(ctx.c_mm.getMin());
+        double y2 = ctx.getY(ctx.c_mm.getMax());
 
         // nice first val
         double R = ctx.c_mm.getMax() - ctx.c_mm.getMin();
@@ -740,7 +740,7 @@ if (gTransform != null && !gTransform.isIdentity()) {
 
 
 
-        float val = ctx.getValAtY(mouseY - h1);
+        double val = ctx.getValAtY(mouseY - h1);
         text = String.format("%.2f", val);
 
         textWidth = fm.stringWidth(text);

@@ -104,7 +104,7 @@ public class MarketMaker extends AutoTraderBase {
      * Creates and initializes the market maker orders
      */
     private void initOrders() {
-        float centerPrice = market.getLastPrice();
+        double centerPrice = market.getLastPrice();
 
         // Lowest price for buy orders
         double lowestPrice = centerPrice - depthPercent * centerPrice / 100f;
@@ -178,7 +178,7 @@ public class MarketMaker extends AutoTraderBase {
      */
     private boolean readjustOrders() {
 
-        float price = market.getLastPrice();
+        double price = market.getLastPrice();
         if (price <= orders[numPositions - 1].sellLimit
                 && price >= orders[0].buyLimit) {
             return false;  // No adjustment needed

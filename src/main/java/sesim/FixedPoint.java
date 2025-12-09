@@ -26,15 +26,15 @@
 package sesim;
 
 public class FixedPoint {
-    static final long SCALE = 10_000; // 4 decimals
+    static final long SCALE = 10_0000; // 4 decimals
 
     // double -> long
-    static long toInternal(double value) {
+    public static long toInternal(double value) {
         return Math.round(value * SCALE);
     }
 
     // long -> double
-    static double toExternal(long internal) {
+    public static double toExternal(long internal) {
         return internal / (double) SCALE;
     }
 
@@ -52,10 +52,18 @@ public class FixedPoint {
     public static long multiply(long a, long b) {
         return Math.round((a * b) / (double) SCALE);
     }
+    
+    public static long floorMultiply(long a,long b){
+        return (a*b)/SCALE;
+    }
 
     // Division mit Rundung auf 4 Nachkommastellen
     public static long divide(long a, long b) {
         return Math.round((a * (double) SCALE) / b);
+    }
+    
+    public static long floorDivide(long a, long b){
+        return Math.floorDiv(a*SCALE, b);
     }
 
 

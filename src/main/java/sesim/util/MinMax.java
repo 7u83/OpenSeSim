@@ -25,6 +25,8 @@
  */
 package sesim.util;
 
+import sesim.FixedPoint;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -42,21 +44,21 @@ public class MinMax {
         this.max = max;
     }
 
-    public float getDiff() {
-        return (max - min) / df;
+    public double getDiff() {
+        return FixedPoint.toExternal(max - min); // / df;
     }
 
-    public float getMin() {
-        return min / df;
+    public double getMin() {
+        return FixedPoint.toExternal(min); //min / df;
 
     }
 
-    public float getMax() {
-        return max / df;
+    public double getMax() {
+        return FixedPoint.toExternal(max); //max / df;
     }
 
-    public void setMin(float min) {
-        this.min = (long) (min * df);
+    public void setMin(double min) {
+        this.min = FixedPoint.toInternal(min);
     }
 
     public void updateMax(long val) {

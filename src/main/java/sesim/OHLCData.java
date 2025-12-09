@@ -70,12 +70,12 @@ public class OHLCData {
         }
     }
 
-    public float getMax() {
-        return max / market.currency.getDf();
+    public double getMax() {
+        return FixedPoint.toExternal(max);
     }
 
-    public float getMin() {
-        return min / market.currency.getDf();
+    public double getMin() {
+        return FixedPoint.toExternal(min); 
     }
 
     public int size() {

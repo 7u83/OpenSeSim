@@ -35,7 +35,7 @@ public class AssetBase implements Asset {
 
     private String symbol;
     private String name;
-    private float df = 100;
+    private long df = 100;
     private int decimals;
     private DecimalFormat formatter;
 
@@ -71,7 +71,10 @@ public class AssetBase implements Asset {
     }
 
     private void setDecimals(int n) {
-        df = (float) Math.pow(10, n);
+        
+        df = (long) Math.pow(10, n);
+        df =  FixedPoint.SCALE/ df;
+        
         decimals = n;
         formatter = getFormatter(n);
     }
@@ -86,7 +89,7 @@ public class AssetBase implements Asset {
                 s = s + "0";
             }
         }
-        return new DecimalFormat(s);
+        return new DecimalFormat("#0.0000");
     }
 
     @Override
@@ -101,6 +104,11 @@ public class AssetBase implements Asset {
 
     public float roundToDecimals(double val, double f) {
         return (float) ((Math.floor(val * f) / f));
+    }
+    
+    @Override
+    public long round_Long(long val){
+        return (val / df) * df;
     }
 
 }

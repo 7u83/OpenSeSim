@@ -571,7 +571,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         public Object getValue(AutoTrader at, int column) {
 
             Account a = at.getAccount();
-            float price = Globals.sim.getDefaultMarket().getLastPrice();
+            double price = Globals.sim.getDefaultMarket().getLastPrice();
 
             if (column == Column.ID.ordinal()) {
                 int id = (int) at.getID();

@@ -29,6 +29,7 @@ import traders.*;
 import javax.swing.JDialog;
 import org.json.JSONObject;
 import sesim.AutoTraderGui;
+import sesim.FixedPoint;
 
 /**
  *
@@ -82,8 +83,8 @@ public class RandomTraderMGui extends AutoTraderGui {
         this.waitAfterSellMin.setValue((Float) (Math.round((cfg.sleepAfterSell[0] / 1000f) * 10f) / 10f));
         this.waitAfterSellMax.setValue((Float) (Math.round((cfg.sleepAfterSell[1] / 1000f) * 10f) / 10f));
 
-        this.bankruptShares.setValue(cfg.bankrupt_shares);
-        this.bankruptCash.setValue(cfg.bankrupt_cash);
+        this.bankruptShares.setValue(FixedPoint.toExternal(cfg.bankrupt_shares));
+        this.bankruptCash.setValue(FixedPoint.toExternal(cfg.bankrupt_cash));
         
         
         this.minAmountToBuyDeviation.setValue(cfg.minAmountToBuyDeviation);
@@ -141,8 +142,8 @@ public class RandomTraderMGui extends AutoTraderGui {
         cfg.sleepAfterSell[0] = (long) (1000f * (Float) this.waitAfterSellMin.getValue());
         cfg.sleepAfterSell[1] = (long) (1000f * (Float) this.waitAfterSellMax.getValue());
 
-        cfg.bankrupt_shares =  (Long)this.bankruptShares.getValue();
-        cfg.bankrupt_cash =  (Long)this.bankruptCash.getValue();
+        cfg.bankrupt_shares =  FixedPoint.toInternal((Double)this.bankruptShares.getValue());
+        cfg.bankrupt_cash =  FixedPoint.toInternal((Double)this.bankruptCash.getValue());
         
         
         cfg.minAmountToBuyDeviation=(Long) this.minAmountToBuyDeviation.getValue();
@@ -483,9 +484,9 @@ public class RandomTraderMGui extends AutoTraderGui {
 
         jLabel1.setText("Bankrupt if sahres are less than ");
 
-        bankruptShares.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1L));
+        bankruptShares.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
 
-        bankruptCash.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1L));
+        bankruptCash.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
 
         jLabel2.setText("and cash is below");
 

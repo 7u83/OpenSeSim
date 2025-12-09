@@ -200,7 +200,7 @@ public class Position {
     void addShares_Long(long volume, long price, int leverage) {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
-            long val = FixedPoint.multiply(volume, price);
+            long val = FixedPoint.floorMultiply(volume, price);
             netCashFlow -= val;
             totalEntryCost += val;
 
@@ -222,13 +222,13 @@ public class Position {
             if (Long.signum(shares) != Long.signum(nextShares)) {
                 // close old position
 
-                netCashFlow += FixedPoint.multiply(volume, price); //shares * price;
+                netCashFlow += FixedPoint.floorMultiply(shares, price); //shares * price;
                 //   totalEntryCost += (-shares * price);
 
                 account.cash += netCashFlow; // + margin;
                 shares = nextShares;
 
-                long val = FixedPoint.multiply(shares, price);
+                long val = FixedPoint.floorMultiply(shares, price);
                 netCashFlow = -val;
                 totalEntryCost = val;
 
@@ -240,7 +240,7 @@ public class Position {
 
             } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
             else {
-                long val = FixedPoint.multiply(volume, price);
+                long val = FixedPoint.floorMultiply(volume, price);
                 netCashFlow -= val;
                 totalEntryCost += val;
 

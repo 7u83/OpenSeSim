@@ -108,8 +108,8 @@ public class Account {
         return totalMargin;
     }
 
-    public float getMarginUsed() {
-        return getMarginUsed_Long() / currency.getDf();
+    public double getMarginUsed() {
+        return FixedPoint.toExternal(getMarginUsed_Long()); // / currency.getDf();
 
     }
 
@@ -335,7 +335,7 @@ public class Account {
     /*   public float getTotal(float lastPrice) {
         return lastPrice * getShares() + getMoney();
     }*/
-    public double getPerformance(float lastPrice) {
+    public double getPerformance(double lastPrice) {
 
         double total = getEquity();
         double iniTotal = getSnapShotEquity(); //lastPrice * getInitialShares() + getInitialMoney();
@@ -362,7 +362,7 @@ public class Account {
     }
 
     double getCash() {
-        return FixedPoint.toExternal(cash); // / currency.getDf();
+        return FixedPoint.toExternal(cash); 
     }
 
     public double getEquity() {

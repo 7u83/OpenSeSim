@@ -39,4 +39,5 @@ public interface Asset {
     public float getDf();
     public DecimalFormat getFormatter();
     public float round(double val);
+    public long round_Long(long val);
 }

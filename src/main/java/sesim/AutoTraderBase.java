@@ -166,6 +166,9 @@ public abstract class AutoTraderBase implements AutoTrader, EventProcessor {
         return true;
     }
 
+    
+    public static int callctr=0;
+    
     /**
      * Generates a random price delta (change) based on the given last price and
      * deviation parameters.
@@ -190,7 +193,10 @@ public abstract class AutoTraderBase implements AutoTrader, EventProcessor {
     static public long getRandomDelta_Long(long value,
             long minDeviation, long maxDeviation, long minAbsoluteDeviation) {
 
-        // Calculate minimum and maximum delta based on relative deviations 
+               
+callctr++;        
+
+// Calculate minimum and maximum delta based on relative deviations 
         // (per mille)
         long product;
         product = value * minDeviation;
@@ -221,7 +227,9 @@ public abstract class AutoTraderBase implements AutoTrader, EventProcessor {
 
         // Calculate range of possible deltas
         long range = maxDelta - minDelta + 1;
-
+if (range<0){
+    System.out.printf("Name: %s\n", "hello");
+}
         // Generate random delta within the range
         long delta = Sim.random.nextLong(range) + minDelta;
 

@@ -204,16 +204,16 @@ public class Order implements OrderBookEntry {
         return initial_volume - volume;
     }
 
-    public float getExecuted() {
-        return getExecuted_Long() / market.getAsset().getDf();
+    public double getExecuted() {
+        return FixedPoint.toExternal(getExecuted_Long()); 
     }
 
-    public float getInitialVolume() {
-        return initial_volume / market.getAsset().getDf();
+    public double getInitialVolume() {
+        return FixedPoint.toExternal(initial_volume); 
     }
 
     public double getCost() {
-        return cost / FixedPoint.toExternal(cost); // .getDf();
+        return cost / FixedPoint.toExternal(cost); 
     }
 
     public static boolean isSell(byte type) {
@@ -240,8 +240,8 @@ public class Order implements OrderBookEntry {
         return cost / e;
     }
 
-    public float getAveragePrice() {
-        return getAveragePrice_Long() / market.currency.getDf();
+    public double getAveragePrice() {
+        return FixedPoint.toExternal(getAveragePrice_Long()); 
     }
 
     public byte getStatus() {

@@ -71,20 +71,20 @@ public class Quote implements Comparable {
 
     }
 
-    public float getPrice() {
-        return price / market.currency.getDf();
+    public double getPrice() {
+        return FixedPoint.toExternal(price); 
     }
 
-    public float getBid() {
-        return bid / market.currency.getDf();
+    public double getBid() {
+        return FixedPoint.toExternal(bid);
     }
 
-    public float getAsk() {
-        return ask / market.currency.getDf();
+    public double getAsk() {
+        return FixedPoint.toExternal(ask); 
     }
 
-    public float getVolume() {
-        return volume / market.getAsset().getDf();
+    public double getVolume() {
+        return FixedPoint.toExternal(volume); 
     }
 
     public long getPrice_Long() {
