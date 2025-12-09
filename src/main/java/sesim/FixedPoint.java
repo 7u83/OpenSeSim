@@ -49,12 +49,12 @@ public class FixedPoint {
     }
 
     // Multiplikation mit Rundung auf 4 Nachkommastellen
-    static long multiply(long a, long b) {
+    public static long multiply(long a, long b) {
         return Math.round((a * b) / (double) SCALE);
     }
 
     // Division mit Rundung auf 4 Nachkommastellen
-    static long divide(long a, long b) {
+    public static long divide(long a, long b) {
         return Math.round((a * (double) SCALE) / b);
     }
 

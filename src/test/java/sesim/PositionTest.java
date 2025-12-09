@@ -55,7 +55,7 @@ public class PositionTest {
     public static void tearDownClass() {
     }
 
-    float iniCash = 1000;
+    double iniCash = 1000.0;
     float iniShares = 10;
 
     @BeforeEach
@@ -95,8 +95,8 @@ public class PositionTest {
     public void testGetShares() {
         System.out.println("getShares");
         Position instance = new sesim.Position(market, account);
-        float expResult = 0.0F;
-        float result = instance.getShares();
+        double expResult = 0.0;
+        double result = instance.getShares();
         assertEquals(expResult, result, 0);
         // TODO review the generated test code and remove the default call to fail.
         //   fail("The test case is a prototype.");
@@ -110,7 +110,7 @@ public class PositionTest {
         System.out.println("getLeverage");
         Position instance = new sesim.Position(market, account);
         float expResult = 1.0F;
-        float result = instance.getLeverage();
+        double result = instance.getLeverage();
         assertEquals(expResult, result, 0);
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -124,7 +124,7 @@ public class PositionTest {
         System.out.println("getMargin");
         Position instance = new sesim.Position(market, account);
         float expResult = 0.0F;
-        float result = instance.getMargin();
+        double result = instance.getMargin();
         assertEquals(expResult, result, 0);
         // TODO review the generated test code and remove the default call to fail.
         //   fail("The test case is a prototype.");
@@ -186,7 +186,7 @@ public class PositionTest {
         market.lastQuote = new sesim.Quote(market);
 
         market.lastQuote.price = (long) (100 * market.money_df);
-        instance.addShares(100, (long) (100 * market.money_df), 1);
+        instance.addShares_Long(100, (long) (100 * market.money_df), 1);
 
         float r;
         r = instance.getPnL();
@@ -196,12 +196,12 @@ public class PositionTest {
         r = instance.getPnL();
         assertEquals(3000.0f, r, 0);
 
-        instance.addShares(100, (long) (50 * market.money_df), 1);
+        instance.addShares_Long(100, (long) (50 * market.money_df), 1);
         market.lastQuote.price = (long) (100 * market.money_df);
         r = instance.getPnL();
         assertEquals(5000.0f, r, 0);*/
 
-  /*      instance.addShares(-50, (long) (100 * market.money_df), 1);
+  /*      instance.addShares_Long(-50, (long) (100 * market.money_df), 1);
         r = instance.getPnL();
         assertEquals(0.0f, r, 0);*/
 
@@ -231,7 +231,7 @@ public class PositionTest {
         System.out.println("getTotalEntryCost");
         Position instance = new sesim.Position(market, account);
 
-        instance.addShares(1, (long) (50 * market.currency.getDf()), 1);
+        instance.addShares_Long(1, (long) (50 * market.currency.getDf()), 1);
         assertEquals(50, instance.getTotalEntryCost(), 0);
         // TODO review the generated test code and remove the default call to fail.
         //  fail("The test case is a prototype.");
@@ -266,7 +266,7 @@ public class PositionTest {
     }
 
     /**
-     * Test of addShares method, of class Position.
+     * Test of addShares_Long method, of class Position.
      */
     @Test
     public void testAddShares() {
@@ -276,19 +276,19 @@ public class PositionTest {
 
         instance = new sesim.Position(market, account);
 
-        instance.addShares(15, (long) (20 * market.currency.getDf()), 1);
-        assertEquals(15f, instance.getShares(), 0);
+        instance.addShares(15.0, 20.0, 1);
+        assertEquals(15, instance.getShares(), 0);
         assertEquals(0.0f, instance.getMargin(), 0);
         assertEquals(300f, instance.getTotalEntryCost(), 0);
         assertEquals(iniCash - 15 * 20, account.getCash(), 0);
 
-        instance.addShares(15, (long) (20 * market.currency.getDf()), 1);
-        assertEquals(30f, instance.getShares(), 0);
+        instance.addShares(15.0, 20.0, 1);
+        assertEquals(30.0, instance.getShares(), 0);
         assertEquals(0.0f, instance.getMargin(), 0);
-        assertEquals(600f, instance.getTotalEntryCost(), 0);
+        assertEquals(600.0, instance.getTotalEntryCost(), 0);
         assertEquals(iniCash - 2 * 15 * 20, account.getCash(), 0);
 
-        instance.addShares(-5, (long) (10 * market.currency.getDf()), 1);
+        instance.addShares(-5, 10 , 1);
         assertEquals(25f, instance.getShares(), 0);
         assertEquals(0.0f, instance.getMargin(), 0);
         assertEquals(550f, instance.getTotalEntryCost(), 0);
@@ -298,7 +298,7 @@ public class PositionTest {
 
         instance = new sesim.Position(market, account);
 
-        instance.addShares(3, (long) (100 * market.currency.getDf()), 1);
+        instance.addShares(3, 100 , 1);
         assertEquals(3f, instance.getShares(), 0);
         assertEquals(0.0f, instance.getMargin(), 0);
         assertEquals(iniCash - 300, account.getCash(), 0);
@@ -307,7 +307,7 @@ public class PositionTest {
 
         market.lastQuote.price = (long) (50 * market.currency.getDf());
 
-        instance.addShares(-4, (long) (50 * market.currency.getDf()), 1);
+        instance.addShares_Long(-4, (long) (50 * market.currency.getDf()), 1);
         assertEquals(-1f, instance.getShares(), 0);
         assertEquals(50f, instance.getMargin(), 0);
         assertEquals(iniCash - 300 + 150, account.getCash(), 0);
@@ -316,7 +316,7 @@ public class PositionTest {
         
         instance = new sesim.Position(market, account);
           
-          
+        
 
         // TODO review the generated test code and remove the default call to fail.
         //     fail("The test case is a prototype.");
@@ -336,7 +336,7 @@ public class PositionTest {
         assertEquals(300, result);
         result = instance.getRequiredCashForOrder_Long(10, 30, 1);
         assertEquals(300, result);
-        instance.addShares(10, 30, 1);
+        instance.addShares_Long(10, 30, 1);
         result = instance.getRequiredCashForOrder_Long(-10, 30, 1);
         assertEquals(0, result);
         result = instance.getRequiredCashForOrder_Long(10, 30, 1);
@@ -345,7 +345,7 @@ public class PositionTest {
         assertEquals(30, result);
         result = instance.getRequiredCashForOrder_Long(-11, 30, 10);
         assertEquals(3, result);
-         instance.addShares(-20, 30, 1);
+         instance.addShares_Long(-20, 30, 1);
         result = instance.getRequiredCashForOrder_Long(10, 30, 1);
         assertEquals(0, result);
         result = instance.getRequiredCashForOrder_Long(11, 30, 10);

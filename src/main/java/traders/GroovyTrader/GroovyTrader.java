@@ -161,11 +161,11 @@ public class GroovyTrader extends AutoTraderBase {
 
     public class AccountApi {
 
-        public float getCashBalance() {
+        public double getCashBalance() {
             return account.getMoney();
         }
 
-        public float getShares() {
+        public double getShares() {
             return account.getShares(sim.getDefaultMarket());
         }
 

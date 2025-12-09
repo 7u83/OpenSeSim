@@ -107,13 +107,15 @@ public class TraderListPanel extends javax.swing.JPanel {
                         renderer = new NameCellRenderer();
                         break;
                     case SHARES:
-                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getAsset().getDecimals());
+                        //renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getAsset().getDecimals());
+                        renderer = new NummericCellRenderer(4);
                         break;
                     case MARGIN:
                     case EQUITY:
                     case FREEMARGIN:
                     case CASH:
-                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getCurrency().getDecimals());
+                        renderer = new NummericCellRenderer(4);
+                        //renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getCurrency().getDecimals());
                         break;
                     case PNL:
                         renderer = new PercentageCellRenderer();
@@ -289,7 +291,7 @@ public class TraderListPanel extends javax.swing.JPanel {
 
                 }
 
-        /*        if (selectedTraderId != null) {
+                /*        if (selectedTraderId != null) {
                     // Durchlaufe das Model, um die Zeilennummer der ID zu finden
                     for (int i = 0; i < model.getRowCount(); i++) {
                         Object value = model.getValueAt(i, Column.ID.ordinal());
@@ -314,7 +316,6 @@ public class TraderListPanel extends javax.swing.JPanel {
                         }
                     }
                 }*/
-
             }
         });
     }
@@ -573,9 +574,9 @@ public class TraderListPanel extends javax.swing.JPanel {
             float price = Globals.sim.getDefaultMarket().getLastPrice();
 
             if (column == Column.ID.ordinal()) {
-                int id = (int)at.getID();
+                int id = (int) at.getID();
                 return id;
-                
+
             }
 
             if (column == Column.NAME.ordinal()) {

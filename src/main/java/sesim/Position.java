@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author tube
  */
 public class Position {
+
     private static final AtomicLong ID_GEN = new AtomicLong(0);
     final Market market;
     final Account account;
@@ -39,8 +40,8 @@ public class Position {
     long shares;
     long entryPrice;
     long margin;
-  //  private boolean isShort;
-   // long borrowed = 0;
+    //  private boolean isShort;
+    // long borrowed = 0;
     private long stopPrice;
     long id;
 
@@ -53,14 +54,14 @@ public class Position {
         margin = 0;
         this.account = account;
     }
-    
-    public Position(Position p){
-        this.market=p.market;
-        this.id=p.id;
-        this.account=p.account;
-        this.margin=p.margin;
-        this.netCashFlow=p.netCashFlow;
-        this.shares=p.shares;
+
+    public Position(Position p) {
+        this.market = p.market;
+        this.id = p.id;
+        this.account = p.account;
+        this.margin = p.margin;
+        this.netCashFlow = p.netCashFlow;
+        this.shares = p.shares;
     }
 
     public String getName() {
@@ -71,13 +72,13 @@ public class Position {
         return shares;
     }
 
-    public float getShares() {
-        return shares / market.asset.getDf();
+    public double getShares() {
+        return FixedPoint.toExternal(getShares_Long());
     }
 
-    public float getLeverage() {
+    public double getLeverage() {
 
-        float leverage;
+        double leverage;
         if (getMargin() == 0) {
             leverage = 1;
         } else {
@@ -86,15 +87,15 @@ public class Position {
         return leverage;
     }
 
-    public float getMargin() {
-        return getMargin_Long() / account.currency.getDf();
+    public double getMargin() {
+        return FixedPoint.toExternal(getMargin_Long()); // / account.currency.getDf();
     }
 
     public long getMargin_Long() {
         return Math.abs(margin);
     }
 
-    public float getEntryPrice() {
+    public double getEntryPrice() {
         return this.getTotalEntryCost() / shares;
     }
 
@@ -102,7 +103,7 @@ public class Position {
 /*    public long getExposure() {
         return Math.abs(shares * entryPrice);
     }
-*/
+     */
     // unrealized PnL für aktuelle Preis
     public long getPnL_Long(long currentPrice) {
 
@@ -116,12 +117,15 @@ public class Position {
         return market.getLastPrice_Long() * shares + netCashFlow;
     }
 
-    public float getPnL() {
-        return (market.getLastPrice_Long() * shares + netCashFlow) / market.currency.getDf();
+    public double getPnL() {
+        return FixedPoint.multiply(market.getLastPrice_Long(), shares)
+                + netCashFlow;  // market.currency.getDf();
+
+        //return (market.getLastPrice_Long() * shares + netCashFlow) / market.currency.getDf();
     }
 
-    public float getPnLPercent() {
-        float base;
+    public double getPnLPercent() {
+        double base;
 
         if (getMargin() != 0) {
             // gehebelter Trade → Prozent relativ zur eingesetzten Margin
@@ -139,42 +143,44 @@ public class Position {
 
     /**
      * Get the market value of the position
+     *
      * @return market value in units
      */
     public long getMarketValue_Long() {
-        return market.getLastPrice_Long() * shares;
+        return FixedPoint.multiply(market.getLastPrice_Long(), shares);
     }
 
-    
-    public float getMarketValue() {
-        return getMarketValue_Long() / market.currency.getDf();
+    public double getMarketValue() {
+        return FixedPoint.toExternal(getMarketValue_Long());
     }
 
     public long getEquityValue_Long(long price) {
-        return netCashFlow + shares * price; //asset.getMarket().getLastPrice_Long();
+        return netCashFlow + FixedPoint.multiply(shares, price); //asset.getMarket().getLastPrice_Long();
     }
-    
-    public long getEquityValue_Long(){
+
+    public long getEquityValue_Long() {
         return getEquityValue_Long(market.getLastPrice_Long());
     }
 
-    public float getEquityValue() {
+    public double getEquityValue() {
 
-        return getEquityValue_Long() / market.currency.getDf();
+        return FixedPoint.toExternal(getEquityValue_Long());
+
+//getEquityValue_Long() / market.currency.getDf();
     }
 
-    public float getTotalEntryCost() {
-        return totalEntryCost / market.currency.getDf();
+    public double getTotalEntryCost() {
+        return FixedPoint.toExternal(totalEntryCost); // / market.currency.getDf();
     }
 
     long netCashFlow = 0;
     long totalEntryCost = 0;
 
-   public float getNetCashFlow() {
-        return netCashFlow / market.currency.getDf();
+    public double getNetCashFlow() {
+        return FixedPoint.toExternal(netCashFlow); // / market.currency.getDf();
     }
 
-/*    public float getNetBrokerLoan() {
+    /*    public float getNetBrokerLoan() {
         return netCashFlow / market.getMarket().money_df;
     }*/
     public boolean mops = true;
@@ -183,10 +189,18 @@ public class Position {
         return shares < 0;
     }
 
-    void addShares(long volume, long price, int leverage) {
+    void addShares(double volume, double price, int leverage) {
+        addShares_Long(
+                FixedPoint.toInternal(volume),
+                FixedPoint.toInternal(price),
+                leverage
+        );
+    }
+
+    void addShares_Long(long volume, long price, int leverage) {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
-            long val = volume * price;
+            long val = FixedPoint.multiply(volume, price);
             netCashFlow -= val;
             totalEntryCost += val;
 
@@ -208,13 +222,13 @@ public class Position {
             if (Long.signum(shares) != Long.signum(nextShares)) {
                 // close old position
 
-                netCashFlow += shares * price;
+                netCashFlow += FixedPoint.multiply(volume, price); //shares * price;
                 //   totalEntryCost += (-shares * price);
 
                 account.cash += netCashFlow; // + margin;
                 shares = nextShares;
 
-                long val = shares * price;
+                long val = FixedPoint.multiply(shares, price);
                 netCashFlow = -val;
                 totalEntryCost = val;
 
@@ -226,7 +240,7 @@ public class Position {
 
             } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
             else {
-                long val = volume * price;
+                long val = FixedPoint.multiply(volume, price);
                 netCashFlow -= val;
                 totalEntryCost += val;
 
@@ -256,30 +270,28 @@ public class Position {
 
         if (this.margin != 0) {
             this.account.calculateLiquidationStops(price);
-        }else{
-                       market.removeLiquidationStop(this);
+        } else {
+            market.removeLiquidationStop(this);
         }
 
     }
-    
-    public float getStopPrice(){
-        return this.stopPrice/market.currency.getDf();
+
+    public float getStopPrice() {
+        return this.stopPrice / market.currency.getDf();
     }
-    
-    public long getStopPrice_Long(){
+
+    public long getStopPrice_Long() {
         return this.stopPrice;
     }
-    
-    void setStopPrice(long newStopPrice){
 
-            market.removeLiquidationStop(this);
+    void setStopPrice(long newStopPrice) {
 
-        stopPrice=newStopPrice;
+        market.removeLiquidationStop(this);
+
+        stopPrice = newStopPrice;
         //System.out.printf("Stop for %s, %d\n", this.account.getOwner().getName(),stopPrice);
         market.setLiquidationStop(this);
     }
-    
- 
 
     public long getRequiredCashForOrder_Long(long volume, long price, long leverage) {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
@@ -319,9 +331,10 @@ public class Position {
             long marginRequired = Math.abs(val / leverage);
 
             long freeMargin = account.getFreeMargin_Long();
-            if (freeMargin<0)
-                freeMargin=0;
-            
+            if (freeMargin < 0) {
+                freeMargin = 0;
+            }
+
             if (freeMargin < marginRequired) {
                 return freeMargin * leverage / price;
             }

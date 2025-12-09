@@ -31,10 +31,10 @@ package gui.util;
  */
     public class PercentageValue implements Comparable<PercentageValue> {
 
-        private final float value;
+        private final double value;
         private final String display;
 
-        public PercentageValue(float value) {
+        public PercentageValue(double value) {
             this.value = value;
             this.display = String.format("%.1f%%", value);
         }
@@ -46,10 +46,10 @@ package gui.util;
 
         @Override
         public int compareTo(PercentageValue other) {
-            return Float.compare(this.value, other.value);
+            return Double.compare(this.value, other.value);
         }
 
-        public float getValue() {
+        public double getValue() {
             return value;
         }
     }

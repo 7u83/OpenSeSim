@@ -212,8 +212,8 @@ public class Order implements OrderBookEntry {
         return initial_volume / market.getAsset().getDf();
     }
 
-    public float getCost() {
-        return cost / market.currency.getDf();
+    public double getCost() {
+        return cost / FixedPoint.toExternal(cost); // .getDf();
     }
 
     public static boolean isSell(byte type) {
@@ -277,13 +277,13 @@ public class Order implements OrderBookEntry {
     }
 
     @Override
-    public float getVolume() {
-        return volume / market.getAsset().getDf();
+    public double getVolume() {
+        return FixedPoint.toExternal(volume); 
     }
 
     @Override
-    public float getLimit() {
-        return limit / market.currency.getDf();
+    public double getLimit() {
+        return FixedPoint.toExternal(limit); 
     }
 
     @Override
@@ -305,8 +305,8 @@ public class Order implements OrderBookEntry {
     }
 
     @Override
-    public float getStop() {
-        return stop / market.currency.getDf();
+    public double getStop() {
+        return FixedPoint.toExternal(stop); 
     }
 
     @Override

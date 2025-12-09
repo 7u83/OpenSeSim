@@ -47,7 +47,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
             // value ist jetzt PerfValue!
             PercentageValue perf = (PercentageValue) value;
-            float performance = perf.getValue();
+            double performance = perf.getValue();
 
             Component c = super.getTableCellRendererComponent(
                     table, perf.toString(), isSelected, hasFocus, row, column);

@@ -26,15 +26,9 @@
 package gui;
 
 import gui.AssetEditor.AssetListDialog;
-import java.awt.AWTEvent;
 import java.awt.Dialog;
-import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -53,25 +47,18 @@ import java.util.logging.SimpleFormatter;
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONObject;
 import sesim.Order;
-import javafx.application.Platform;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
-import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
 import sesim.AppHelp;
-import traders.RandomTraderL;
+//import traders.RandomTraderL;
 
 /**
  *

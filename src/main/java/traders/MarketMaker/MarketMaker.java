@@ -59,7 +59,7 @@ public class MarketMaker extends AutoTraderBase {
     float depthPercent = 8;
     
     
-    float cashToUse = 50.0f;
+    double cashToUse = 50.0f;
 
     int interval = 1000;
 
@@ -69,9 +69,9 @@ public class MarketMaker extends AutoTraderBase {
     class MMOrder {
 
         Order o = null;     // Underlying order object
-        float buyLimit;     // Limit price for buying
-        float sellLimit;    // Limit price for selling
-        float volume;       // Volume of shares to trade
+        double buyLimit;     // Limit price for buying
+        double sellLimit;    // Limit price for selling
+        double volume;       // Volume of shares to trade
     }
 
     /**
@@ -107,17 +107,17 @@ public class MarketMaker extends AutoTraderBase {
         float centerPrice = market.getLastPrice();
 
         // Lowest price for buy orders
-        float lowestPrice = centerPrice - depthPercent * centerPrice / 100f;
+        double lowestPrice = centerPrice - depthPercent * centerPrice / 100f;
 
         orders = new MMOrder[numPositions];
 
         // Spacing between orders
-        float dist = (centerPrice - lowestPrice) / (numPositions + 1);
+        double dist = (centerPrice - lowestPrice) / (numPositions + 1);
 
         // Allocate cash per order
-        float cashPerBuyOrder = account.getMoney()* (cashToUse/100.0f) / (numPositions + 1);
+        double cashPerBuyOrder = account.getMoney()* (cashToUse/100.0f) / (numPositions + 1);
 
-        float price = lowestPrice + dist;
+        double price = lowestPrice + dist;
 
         for (int i = 0; i < numPositions; i++) {
             orders[i] = new MMOrder();

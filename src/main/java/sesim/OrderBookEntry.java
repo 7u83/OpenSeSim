@@ -31,11 +31,11 @@ package sesim;
  */
     public interface OrderBookEntry {
 
-        public float getVolume();
+        public double getVolume();
 
-        public float getLimit();
+        public double getLimit();
 
-        public float getStop();
+        public double getStop();
         
         public long getVolume_Long();
         

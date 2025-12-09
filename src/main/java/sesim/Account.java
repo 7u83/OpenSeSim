@@ -71,14 +71,14 @@ public class Account {
     //int leverage = 10;
     //   Position thePosition = new Position(se, 1);
     //   Position defaultPosition;
-    Account(Asset currency, Market se, float money, float shares) {
+    Account(Asset currency, Market se, double cash, float shares) {
         this.currency = currency;
 
         //this.defaultMarket = se;
         orders = new ConcurrentHashMap();
         positions = new HashMap<>();
 
-        this.cash = (long) (money * currency.getDf());
+        this.cash = FixedPoint.toInternal(cash); //long) (money * currency.getDf());
 
         //initial_money = this.cash;
         //     this.shares = (long) (shares * se.shares_df);
@@ -100,7 +100,7 @@ public class Account {
     }
 
     // Sum of bound margin
-    public long getMarginUsed_Long() {
+    long getMarginUsed_Long() {
         long totalMargin = 0;
         for (Position pos : positions.values()) {
             totalMargin += pos.getMargin_Long();
@@ -113,8 +113,8 @@ public class Account {
 
     }
 
-    public float getShares(Market m) {
-        return getShares_Long(m)/m.asset.getDf();
+    public double getShares(Market m) {
+        return FixedPoint.toExternal(getShares_Long(m));
 
     }
 
@@ -126,8 +126,8 @@ public class Account {
 
     }
 
-    public float getMoney() {
-        return cash / currency.getDf();
+    public double getMoney() {
+        return FixedPoint.toExternal(cash);                     
     }
 
     /*   public float getInitialMoney() {
@@ -217,7 +217,7 @@ public class Account {
         return this.cash; // - this.getCashInOpenOrders_Long();
     }
 
-    public float getCashAvailable() {
+    public double getCashAvailable() {
         return this.getMoney() - this.getCashInOpenOrders();
     }
 
@@ -335,10 +335,10 @@ public class Account {
     /*   public float getTotal(float lastPrice) {
         return lastPrice * getShares() + getMoney();
     }*/
-    public float getPerformance(float lastPrice) {
+    public double getPerformance(float lastPrice) {
 
-        float total = getEquity();
-        float iniTotal = getSnapShotEquity(); //lastPrice * getInitialShares() + getInitialMoney();
+        double total = getEquity();
+        double iniTotal = getSnapShotEquity(); //lastPrice * getInitialShares() + getInitialMoney();
 
         return total / (iniTotal / 100) - 100;
 
@@ -361,12 +361,12 @@ public class Account {
         return equity;
     }
 
-    float getCash() {
-        return cash / currency.getDf();
+    double getCash() {
+        return FixedPoint.toExternal(cash); // / currency.getDf();
     }
 
-    public float getEquity() {
-        return getEquity_Long() / currency.getDf();
+    public double getEquity() {
+        return FixedPoint.toExternal(getEquity_Long());
     }
 
     public final long getSnapshotEquity_Long() {
@@ -377,8 +377,8 @@ public class Account {
         return equity;
     }
 
-    public float getSnapShotEquity() {
-        return getSnapshotEquity_Long() / currency.getDf();
+    public double getSnapShotEquity() {
+        return FixedPoint.toExternal(getSnapshotEquity_Long()); // / currency.getDf();
     }
 
     // Free Margin = Equity − MarginUsed
@@ -386,8 +386,8 @@ public class Account {
         return getEquity_Long() - getMarginUsed_Long();
     }
 
-    public float getFreeMargin() {
-        return getFreeMargin_Long() / currency.getDf();
+    public double getFreeMargin() {
+        return FixedPoint.toExternal(getFreeMargin_Long()); // / currency.getDf();
     }
 
     /*  Position createPosition() {
@@ -631,7 +631,7 @@ public class Account {
         }
         public boolean mops = true;
 
-        void addShares(long volume, long price, int leverage) {
+        void addShares_Long(long volume, long price, int leverage) {
             if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
                 long val = volume * price;

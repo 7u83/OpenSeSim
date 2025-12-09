@@ -258,13 +258,13 @@ public class Market  {
         }
 
         @Override
-        public float getVolume() {
-            return volume / se.getAsset().getDf(); //shares_df;
+        public double getVolume() {
+            return FixedPoint.toExternal(volume); // / se.getAsset().getDf(); //shares_df;
         }
 
         @Override
-        public float getLimit() {
-            return limit / se.currency.getDf();
+        public double getLimit() {
+            return FixedPoint.toExternal(limit); // / se.currency.getDf();
         }
 
         @Override
@@ -278,7 +278,7 @@ public class Market  {
         }
 
         @Override
-        public float getStop() {
+        public double getStop() {
             return -1;
         }
 
@@ -1119,10 +1119,10 @@ public class Market  {
         // buyer.account.cash -= money;
         // seller.account.cash += money;
         //  buyer.position.shares += volume;
-        buyer.position.addShares(volume, price, buyer.leverage);
+        buyer.position.addShares_Long(volume, price, buyer.leverage);
         // buyer.position.updateLiquidationOrder(buyer.leverage);
 
-        seller.position.addShares(-volume, price, seller.leverage);
+        seller.position.addShares_Long(-volume, price, seller.leverage);
 
         //seller.position.updateLiquidationOrder(seller.leverage);
         //seller.position.shares -= volume;
@@ -1550,7 +1550,7 @@ public class Market  {
         return o;
     }
 
-    public Order createOrder(Account a, byte type, float volume, float limit, float stop) {
+    public Order createOrder(Account a, byte type, double volume, double limit, double stop) {
         return createOrder_Long(a, type,
                 (long) (volume * asset.getDf()), //shares_df),
                 (long) (limit * currency.getDf()),
@@ -1559,11 +1559,16 @@ public class Market  {
         );
     }
 
-    public Order createOrder(Account a, byte type, float volume, float limit, float stop, int leverage) {
+    public Order createOrder(Account a, byte type, double volume, double limit, double stop, int leverage) {
         return createOrder_Long(a, type,
-                (long) (volume * asset.getDf()),
+                FixedPoint.toInternal(volume),
+                FixedPoint.toInternal(limit),
+                FixedPoint.toInternal(stop),
+                
+                
+            /*    (long) (volume * asset.getDf()),
                 (long) (limit * currency.getDf()),
-                (long) (stop * currency.getDf()),
+                (long) (stop * currency.getDf()),*/
                 leverage
         );
     }

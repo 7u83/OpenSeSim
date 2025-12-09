@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import sesim.Account;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
+import sesim.FixedPoint;
 import sesim.Market.AccountListener;
 import sesim.Order;
 import sesim.Quote;
@@ -128,12 +129,28 @@ public class RandomTraderM extends AutoTraderBase
         sim.addEvent(tradeEventTime, TRADEEVENT);
     }
 
+    
+    int ctr=0;
+    
     // boolean intask = false;
     @Override
     public void processEvent(long time, Event e) {
-        /*     if (getName().equals("Alice-0")) {
-            System.out.printf("Alice is alive\n");
-        }*/
+        
+       
+        
+        if (getName().equals("Bob-1")) {
+            ctr++;
+            if (ctr==3){
+                System.out.printf("CTR STOP\n");                                
+            }
+            
+            if (account.getMoney()<0){
+                System.out.printf("Ouch!\n");                
+            }
+            
+            
+
+        }
         //System.out.printf("Process Event for %s %d\n",this.getName(),time);
         if (time != tradeEventTime) {
             //    System.out.printf("Wrong Event for %s: %d != %d\n", this.getName(), time, tradeEventTime);
@@ -592,7 +609,7 @@ public class RandomTraderM extends AutoTraderBase
 
         long limit = getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
 
-        long volume = money / limit;
+        long volume = FixedPoint.divide(money,limit); // money / limit;
 
         return market.createOrder_Long(account, Order.BUYLIMIT, volume, limit, 0, leverage);
 
