@@ -26,7 +26,7 @@
 package sesim;
 
 public class FixedPoint {
-    static final long SCALE = 10_0000; // 4 decimals
+    static final long SCALE = 100; // 4 decimals
 
     // double -> long
     public static long toInternal(double value) {
