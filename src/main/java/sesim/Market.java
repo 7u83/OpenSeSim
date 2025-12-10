@@ -1561,7 +1561,7 @@ public class Market {
         );
     }
 
-    public Order createLeveragedOrder(Account a, byte type, long money) {
+    private Order createLeveragedOrder(Account a, byte type, long money) {
         if (!Order.isSell(type)) {
             return null;
         }
