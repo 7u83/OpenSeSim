@@ -1475,13 +1475,13 @@ public class Market {
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-        /*        if (logging) {
+               if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
-        }*/
+        }
         synchronized (this) {
 
             //num_orders++;
@@ -1520,13 +1520,13 @@ public class Market {
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-        /*      if (logging) {
+              if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
-        }*/
+        }
 //        synchronized (executor) {
         //num_orders++;
         numOrders++;
