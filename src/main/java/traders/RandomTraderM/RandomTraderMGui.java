@@ -25,11 +25,8 @@
  */
 package traders.RandomTraderM;
 
-import traders.*;
-import javax.swing.JDialog;
-import org.json.JSONObject;
 import sesim.AutoTraderGui;
-import sesim.FixedPoint;
+import sesim.util.FixedPoint;
 
 /**
  *
@@ -57,17 +54,17 @@ public class RandomTraderMGui extends AutoTraderGui {
         //  this.buyVolMax.setValue(cfg.amountToBuy[1]);
         //  this.sellVolMin.setValue(cfg.amountToSell[0]);
 //        this.sellVolMax.setValue(cfg.amountToSell[1]);
-        this.buyVolMin.setValue((Float) (Math.round((cfg.amountToBuy[0] / 100f) * 10f) / 10f));
-        this.buyVolMax.setValue((Float) (Math.round((cfg.amountToBuy[1] / 100f) * 10f) / 10f));
+        this.buyVolMin.setValue((Double) FixedPoint.toExternal(cfg.amountToBuy[0])); // / 100f) * 10f) / 10f));
+        this.buyVolMax.setValue((Double) FixedPoint.toExternal(cfg.amountToBuy[1])); // / 100f) * 10f) / 10f));
 
-        this.sellVolMin.setValue((Float) (Math.round((cfg.amountToSell[0] / 100f) * 10f) / 10f));
-        this.sellVolMax.setValue((Float) (Math.round((cfg.amountToSell[1] / 100f) * 10f) / 10f));
+        this.sellVolMin.setValue((Double) FixedPoint.toExternal(cfg.amountToSell[0])); // / 100f) * 10f) / 10f));
+        this.sellVolMax.setValue((Double) FixedPoint.toExternal(cfg.amountToSell[1])); // / 100f) * 10f) / 10f));
 
-        this.buyLimitMin.setValue((Float) (Math.round((cfg.buyLimit[0] / 100f) * 100f) / 100f));
-        this.buyLimitMax.setValue((Float) (Math.round((cfg.buyLimit[1] / 100f) * 100f) / 100f));
+        this.buyLimitMin.setValue((Double) FixedPoint.toExternal(cfg.buyLimit[0])); // / 100f) * 100f) / 100f));
+        this.buyLimitMax.setValue((Double) FixedPoint.toExternal(cfg.buyLimit[1])); // / 100f) * 100f) / 100f));
 
-        this.sellLimitMin.setValue((Float) (Math.round((cfg.sellLimit[0] / 100f) * 100f) / 100f));
-        this.sellLimitMax.setValue((Float) (Math.round((cfg.sellLimit[1] / 100f) * 100f) / 100f));
+        this.sellLimitMin.setValue((Double) FixedPoint.toExternal(cfg.sellLimit[0]));  // 100f) * 100f) / 100f));
+        this.sellLimitMax.setValue((Double) FixedPoint.toExternal(cfg.sellLimit[1])); // / 100f) * 100f) / 100f));
 
         // this.buyWaitMin.setValue(cfg.buy_wait[0]);
         //  this.buyWaitMax.setValue(cfg.buy_wait[1]);
@@ -89,8 +86,8 @@ public class RandomTraderMGui extends AutoTraderGui {
         
         this.minAmountToBuyDeviation.setValue(cfg.minAmountToBuyDeviation);
         this.minAmountToSellDeviation.setValue(cfg.minAmountToSellDeviation);
-        this.minSelLimitDeviation.setValue(cfg.minSellDeviation);
-        this.minbuyLimitDeviation.setValue(cfg.minBuyDeviation);
+        this.minSelLimitDeviation.setValue(FixedPoint.toExternal(cfg.minAbsSellDeviation));
+        this.minbuyLimitDeviation.setValue(FixedPoint.toExternal(cfg.minAbsBuyDeviation));
         
         this.moodCheckBox.setSelected(cfg.moodEnable);
         this.moodFrequencySpinner.setValue(cfg.moodFrequency);
@@ -112,17 +109,17 @@ public class RandomTraderMGui extends AutoTraderGui {
         cfg.amountToSell[0] = (Float) this.sellVolMin.getValue();
         cfg.amountToSell[1] = (Float) this.sellVolMax.getValue();*/
 
-        cfg.amountToBuy[0] = (long) (100f * (Float) this.buyVolMin.getValue());
-        cfg.amountToBuy[1] = (long) (100f * (Float) this.buyVolMax.getValue());
+        cfg.amountToBuy[0] = FixedPoint.toInternal((Double) this.buyVolMin.getValue());
+        cfg.amountToBuy[1] = FixedPoint.toInternal((Double) this.buyVolMax.getValue());
 
-        cfg.amountToSell[0] = (long) (100f * (Float) this.sellVolMin.getValue());
-        cfg.amountToSell[1] = (long) (100f * (Float) this.sellVolMax.getValue());
+        cfg.amountToSell[0] = FixedPoint.toInternal((Double) this.sellVolMin.getValue());
+        cfg.amountToSell[1] = FixedPoint.toInternal((Double) this.sellVolMax.getValue());
 
-        cfg.buyLimit[0] = (long) (100f * (Float) this.buyLimitMin.getValue());
-        cfg.buyLimit[1] = (long) (100f * (Float) this.buyLimitMax.getValue());
+        cfg.buyLimit[0] = FixedPoint.toInternal((Double)this.buyLimitMin.getValue());
+        cfg.buyLimit[1] = FixedPoint.toInternal((Double)this.buyLimitMax.getValue());
 
-        cfg.sellLimit[0] = (long) (100f * (Float) this.sellLimitMin.getValue());
-        cfg.sellLimit[1] = (long) (100f * (Float) this.sellLimitMax.getValue());
+        cfg.sellLimit[0] = FixedPoint.toInternal((Double) this.sellLimitMin.getValue());
+        cfg.sellLimit[1] = FixedPoint.toInternal((Double) this.sellLimitMax.getValue());
 
         cfg.buyOrderTimeout[0] = (long) (1000f * (Float) this.buyWaitMin.getValue());
         cfg.buyOrderTimeout[1] = (long) (1000f * (Float) this.buyWaitMax.getValue());
@@ -148,8 +145,8 @@ public class RandomTraderMGui extends AutoTraderGui {
         
         cfg.minAmountToBuyDeviation=(Long) this.minAmountToBuyDeviation.getValue();
         cfg.minAmountToSellDeviation=(Long) this.minAmountToSellDeviation.getValue();
-        cfg.minBuyDeviation=(Long) this.minbuyLimitDeviation.getValue();
-        cfg.minSellDeviation=(Long) this.minSelLimitDeviation.getValue();
+        cfg.minAbsBuyDeviation=FixedPoint.toInternal((Double)this.minbuyLimitDeviation.getValue());
+        cfg.minAbsSellDeviation=FixedPoint.toInternal((Double)this.minSelLimitDeviation.getValue());
         
         cfg.moodEnable=(Boolean) this.moodCheckBox.isSelected();
         cfg.moodiness=(Float) this.moodinessSpinner.getValue();
@@ -255,19 +252,19 @@ public class RandomTraderMGui extends AutoTraderGui {
 
         waitAfterBuyMax.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1000.0f));
 
-        buyVolMin.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+        buyVolMin.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
 
-        minbuyLimitDeviation.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1L));
+        minbuyLimitDeviation.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
 
-        buyVolMax.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+        buyVolMax.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
 
-        minSelLimitDeviation.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1L));
+        minSelLimitDeviation.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
 
-        sellVolMax.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+        sellVolMax.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
 
         minAmountToSellDeviation.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1L));
 
-        sellVolMin.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+        sellVolMin.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
 
         minAmountToBuyDeviation.setModel(new javax.swing.SpinnerNumberModel(0L, 0L, null, 1L));
 
@@ -287,13 +284,13 @@ public class RandomTraderMGui extends AutoTraderGui {
 
         buyWaitMax.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1000.0f));
 
-        buyLimitMin.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
+        buyLimitMin.setModel(new javax.swing.SpinnerNumberModel(0.0d, -100.0d, 100.0d, 1.0d));
 
-        buyLimitMax.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
+        buyLimitMax.setModel(new javax.swing.SpinnerNumberModel(0.0d, -100.0d, 100.0d, 1.0d));
 
-        sellLimitMax.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
+        sellLimitMax.setModel(new javax.swing.SpinnerNumberModel(0.0d, -100.0d, 100.0d, 1.0d));
 
-        sellLimitMin.setModel(new javax.swing.SpinnerNumberModel(0.0f, -100.0f, null, 1.0f));
+        sellLimitMin.setModel(new javax.swing.SpinnerNumberModel(0.0d, -100.0d, 100.0d, 1.0d));
 
         jLabel3.setText("min. abs. deviation");
 

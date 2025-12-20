@@ -87,6 +87,7 @@ public class TraderListPanel extends javax.swing.JPanel {
         MARGIN("Margin", null, Float.class),
         EQUITY("Equtiy", null, Float.class),
         FREEMARGIN("Free Margin", null, Float.class),
+        NETCASHFLOW("Net Cahs Flow", null, Float.class),
         CASH("Cash", null, Float.class),
         PNL("PnL", null, PercentageValue.class);
 
@@ -101,21 +102,23 @@ public class TraderListPanel extends javax.swing.JPanel {
         }
 
         public TableCellRenderer getRenderer() {
+            renderer = null;
             if (renderer == null) {
                 switch (this) {
                     case NAME:
                         renderer = new NameCellRenderer();
                         break;
                     case SHARES:
-                        //renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getAsset().getDecimals());
-                        renderer = new NummericCellRenderer(4);
+                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getAsset().getDecimals());
+                        //renderer = new NummericCellRenderer(4);
                         break;
                     case MARGIN:
                     case EQUITY:
                     case FREEMARGIN:
                     case CASH:
-                        renderer = new NummericCellRenderer(4);
-                        //renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getCurrency().getDecimals());
+                    case NETCASHFLOW:
+                        //renderer = new NummericCellRenderer(4);
+                        renderer = new NummericCellRenderer(Globals.sim.getDefaultMarket().getCurrency().getDecimals());
                         break;
                     case PNL:
                         renderer = new PercentageCellRenderer();
@@ -260,6 +263,14 @@ public class TraderListPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+
+                TableColumnModel colModel = list.getColumnModel();
+                for (int i = colModel.getColumnCount() - 1; i >= 0; i--) {
+                    TableColumn col = colModel.getColumn(i);
+                    Column columnEnum = (Column) col.getIdentifier();
+                    col.setCellRenderer(columnEnum.getRenderer());
+                }
+
                 Long selectedTraderId = null;
                 int selectedViewRow = list.getSelectedRow();
 
@@ -610,6 +621,10 @@ public class TraderListPanel extends javax.swing.JPanel {
 
             if (column == Column.FREEMARGIN.ordinal()) {
                 return a.getFreeMargin();
+            }
+
+            if (column == Column.NETCASHFLOW.ordinal()) {
+                return a.getPosition(Globals.sim.getDefaultMarket()).getNetCashFlow();
             }
 
             if (column == Column.PNL.ordinal()) {

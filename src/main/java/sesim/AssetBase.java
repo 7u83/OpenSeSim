@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
 import java.text.DecimalFormat;
 
 /**
@@ -89,7 +90,7 @@ public class AssetBase implements Asset {
                 s = s + "0";
             }
         }
-        return new DecimalFormat("#0.0000");
+        return new DecimalFormat(s);
     }
 
     @Override

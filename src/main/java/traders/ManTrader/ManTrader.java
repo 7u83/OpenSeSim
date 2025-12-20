@@ -85,8 +85,8 @@ public class ManTrader extends AutoTraderBase
     }
 
     @Override
-    public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
-        super.init(sim, id, name, money, shares, strat, cfg);
+    public void init(Sim sim, long id, String name, long money, String strat, JSONObject cfg) {
+        super.init(sim, id, name, money, strat, cfg);
         getAccount().setListener(this);
     }
     ManTraderConsoleDialog consoleDialog = null;

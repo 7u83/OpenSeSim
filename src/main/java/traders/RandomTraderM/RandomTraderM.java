@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import sesim.Account;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
-import sesim.FixedPoint;
+import sesim.util.FixedPoint;
 import sesim.Market.AccountListener;
 import sesim.Order;
 import sesim.Quote;
@@ -57,8 +57,8 @@ public class RandomTraderM extends AutoTraderBase
     public long[] buyLimit = {-200, 200};
     public long[] sellLimit = {-200, 200};
 
-    public long minBuyDeviation = 1;
-    public long minSellDeviation = 1;
+    public long minAbsBuyDeviation = 1;
+    public long minAbsSellDeviation = 1;
 
     public long[] buyOrderTimeout = {10000, 50000};
     public long[] sellOrderTimeout = {10000, 50000};
@@ -203,23 +203,23 @@ public class RandomTraderM extends AutoTraderBase
 //        cfg.put(AMOUNT_TO_BUY, amountToBuy);
 //        cfg.put(AMOUNT_TO_SELL, amountToSell);
         fields = new double[2];
-        fields[0] = Math.round((amountToBuy[0] / 100.0) * 10) / 10.0;
-        fields[1] = Math.round((amountToBuy[1] / 100.0) * 10) / 10.0;
+        fields[0] = FixedPoint.toExternal(amountToBuy[0]); // / 100.0) * 10) / 10.0;
+        fields[1] = FixedPoint.toExternal(amountToBuy[1]); // / 100.0) * 10) / 10.0;
         cfg.put(AMOUNT_TO_BUY, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((amountToSell[0] / 100.0) * 10) / 10.0;
-        fields[1] = Math.round((amountToSell[1] / 100.0) * 10) / 10.0;
+        fields[0] = FixedPoint.toExternal(amountToSell[0]); // / 100.0) * 10) / 10.0;
+        fields[1] = FixedPoint.toExternal(amountToSell[1]); // / 100.0) * 10) / 10.0;
         cfg.put(AMOUNT_TO_SELL, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((buyLimit[0] / 100.0) * 10) / 10.0;
-        fields[1] = Math.round((buyLimit[1] / 100.0) * 10) / 10.0;
+        fields[0] = FixedPoint.toExternal(buyLimit[0]); // / 100.0) * 10) / 10.0;
+        fields[1] = FixedPoint.toExternal(buyLimit[1]); // / 100.0) * 10) / 10.0;
         cfg.put(BUY_LIMIT, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((sellLimit[0] / 100.0) * 10) / 10.0;
-        fields[1] = Math.round((sellLimit[1] / 100.0) * 10) / 10.0;
+        fields[0] = FixedPoint.toExternal(sellLimit[0]); // / 100.0) * 10) / 10.0;
+        fields[1] = FixedPoint.toExternal(sellLimit[1]); // / 100.0) * 10) / 10.0;
         cfg.put(SELL_LIMIT, fields);
 
         fields = new double[2];
@@ -247,8 +247,8 @@ public class RandomTraderM extends AutoTraderBase
 
         cfg.put(MIN_AMOUNT_TO_BUY_DEVIATION, this.minAmountToBuyDeviation);
         cfg.put(MIN_AMOUNT_TO_SELL_DEVIATION, this.minAmountToSellDeviation);
-        cfg.put(MIN_BUY_DEVIATION, this.minBuyDeviation);
-        cfg.put(MIN_SELL_DEVIATION, this.minSellDeviation);
+        cfg.put(MIN_BUY_DEVIATION, FixedPoint.toExternal(this.minAbsBuyDeviation));
+        cfg.put(MIN_SELL_DEVIATION,FixedPoint.toExternal(this.minAbsSellDeviation));
 
         cfg.put(MOOD_ENABLE, moodEnable);
         cfg.put(MOOD_FREQUENCY, moodFrequency);
@@ -306,17 +306,17 @@ public class RandomTraderM extends AutoTraderBase
 
             //amountToBuy = to_float(cfg.getJSONArray(AMOUNT_TO_BUY));
             //amountToSell = to_float(cfg.getJSONArray(AMOUNT_TO_SELL));
-            amountToBuy[0] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(0));
-            amountToBuy[1] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(1));
+            amountToBuy[0] = FixedPoint.toInternal(cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(0));
+            amountToBuy[1] = FixedPoint.toInternal(cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(1));
 
-            amountToSell[0] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(0));
-            amountToSell[1] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(1));
+            amountToSell[0] = FixedPoint.toInternal(cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(0));
+            amountToSell[1] = FixedPoint.toInternal(cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(1));
 
-            buyLimit[0] = (long) (100 * cfg.getJSONArray(BUY_LIMIT).getDouble(0));
-            buyLimit[1] = (long) (100 * cfg.getJSONArray(BUY_LIMIT).getDouble(1));
+            buyLimit[0] = FixedPoint.toInternal(cfg.getJSONArray(BUY_LIMIT).getDouble(0));
+            buyLimit[1] = FixedPoint.toInternal(cfg.getJSONArray(BUY_LIMIT).getDouble(1));
 
-            sellLimit[0] = (long) (100 * cfg.getJSONArray(SELL_LIMIT).getDouble(0));
-            sellLimit[1] = (long) (100 * cfg.getJSONArray(SELL_LIMIT).getDouble(1));
+            sellLimit[0] = FixedPoint.toInternal(cfg.getJSONArray(SELL_LIMIT).getDouble(0));
+            sellLimit[1] = FixedPoint.toInternal(cfg.getJSONArray(SELL_LIMIT).getDouble(1));
 
             buyOrderTimeout[0] = (long) (1000 * cfg.getJSONArray(BUY_ORDER_TIMEOUT).getDouble(0));
             buyOrderTimeout[1] = (long) (1000 * cfg.getJSONArray(BUY_ORDER_TIMEOUT).getDouble(1));
@@ -340,8 +340,8 @@ public class RandomTraderM extends AutoTraderBase
             minAmountToBuyDeviation = cfg.getLong(MIN_AMOUNT_TO_BUY_DEVIATION);
             minAmountToSellDeviation = cfg.getLong(MIN_AMOUNT_TO_SELL_DEVIATION);
 
-            minBuyDeviation = cfg.getLong(MIN_BUY_DEVIATION);
-            minSellDeviation = cfg.getLong(MIN_SELL_DEVIATION);
+            minAbsBuyDeviation = FixedPoint.toInternal(cfg.optDouble(MIN_BUY_DEVIATION,0.01));
+            minAbsSellDeviation = FixedPoint.toInternal(cfg.optDouble(MIN_SELL_DEVIATION,0.01));
 
             moodEnable = cfg.optBoolean(MOOD_ENABLE, false);
             moodFrequency = (float) cfg.optDouble(MOOD_FREQUENCY, 0.5f);
@@ -555,12 +555,12 @@ public class RandomTraderM extends AutoTraderBase
      * @param minmax
      * @return
      */
-    private float getRandomAmmount(float val, float[] minmax) {
+/*    private float getRandomAmmount(float val, float[] minmax) {
 
         float min = val * minmax[0] / 100.0f;
         float max = val * minmax[1] / 100.0f;
         return getRandom(min, max);
-    }
+    }*/
 
     // static long minn = 10000000;
     //  static long maxn = -10;
@@ -601,12 +601,14 @@ public class RandomTraderM extends AutoTraderBase
             money = money_avail;
         }
 
-        Quote q = market.getBestPrice_0();
+        Quote q = market.getBestQuote_0();
         long lp = q.getPrice_Long();
+        
+        lp = market.getBestPrice_0();
         if (callctr == 1422973-1) {
             System.out.printf("callctrl called\n");
         }
-        long limit = getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
+        long limit = getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minAbsBuyDeviation);
 
         long volume = FixedPoint.floorDivide(money, limit); // money / limit;
         
@@ -629,13 +631,13 @@ if (callctr==1422973-1){
     //    volume = market.getAsset().round_Long(volume);
 
         //    float lp = 100.0; //se.getBestLimit(type);
-        Quote q = market.getBestPrice_0();
+        Quote q = market.getBestQuote_0();
         long lp = q.getPrice_Long();
         if (callctr == 1422973-1) {
             System.out.printf("callctrl1 called\n");
         }
 
-        long limit = getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1], minSellDeviation);
+        long limit = getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1], minAbsSellDeviation);
         //   limit = lp + getRandomAmmount(lp, sell_limit);
         //  limit = lp + market.random.nextLong(0, 4) - 2;
 

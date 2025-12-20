@@ -306,7 +306,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadValuesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadValuesButtonActionPerformed
-        Quote q = market.getBestPrice_0();
+        Quote q = market.getBestQuote_0();
 
         //if (type == Order.BUY) {
         this.limitSpinner.setValue((Float) market.getCurrency().round(q.getPrice()));
@@ -328,7 +328,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_volumeSpinnerStateChanged
 
     private void setVolButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setVolButtonActionPerformed
-        Quote q = market.getBestPrice_0();
+        Quote q = market.getBestQuote_0();
         // Float price = q == null ? 0.0f : q.getPrice();
 
         if ((type & 0x01) == Order.BUY) {
@@ -363,7 +363,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_limitCheckBoxActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Quote q = market.getBestPrice_0();
+        Quote q = market.getBestQuote_0();
 
         //if (type == Order.BUY) {
         this.stopSpinner.setValue((Float) market.getCurrency().round(q.getPrice()));

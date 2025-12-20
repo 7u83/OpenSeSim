@@ -26,11 +26,18 @@
 package gui.AssetEditor;
 
 import gui.Globals;
+import java.awt.Color;
+import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import static java.util.Collections.list;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import org.json.JSONArray;
 
@@ -57,6 +64,8 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
         JSONArray assets = Globals.getConfig().optJSONArray("assets");
 
         assetTable.setRowSelectionAllowed(true);
+
+        marketsTable.getColumnModel().getColumn(1).setCellRenderer(new InitialPriceRenderer());
 
         /*        assetTable.getColumnModel().getColumn(0).setPreferredWidth(30);
         assetTable.getColumnModel().getColumn(1).setPreferredWidth(250);
@@ -131,6 +140,16 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
     }
 
     public JSONObject getConfig() {
+        TableCellEditor editor = this.marketsTable.getCellEditor();
+        if (editor != null) {
+            editor.stopCellEditing();
+        }
+
+        editor = this.assetTable.getCellEditor();
+        if (editor != null) {
+            editor.stopCellEditing();
+        }
+
         this.updateCfg();
         return cfg;
     }
@@ -158,7 +177,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
 
         this.updateCurrencies();
         this.updateMarkets();
-        
+
         this.defaultAssetComboBox.setSelectedItem(Config.getDefaultAsset(cfg));
         this.defaultcurrencyComboBox.setSelectedItem(Config.getDefaultCurrency(cfg));
 
@@ -191,7 +210,7 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
             o.put("auto_initial_price", auto_initial_price);
             this.putMarket(currency, symbol, o);
         }
-        
+
         Config.putDefaultCurrency(cfg, (String) this.defaultcurrencyComboBox.getSelectedItem());
         Config.putDefaultAsset(cfg, (String) this.defaultAssetComboBox.getSelectedItem());
 
@@ -564,8 +583,8 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
     }// </editor-fold>//GEN-END:initComponents
 
     private void currencyComboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currencyComboboxActionPerformed
-            this.updateMarkets();
-            //this.updateAll();// TODO add your handling code here:
+        this.updateMarkets();
+        //this.updateAll();// TODO add your handling code here:
     }//GEN-LAST:event_currencyComboboxActionPerformed
 
     private void defaultcurrencyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultcurrencyComboBoxActionPerformed
@@ -574,8 +593,8 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
     }//GEN-LAST:event_defaultcurrencyComboBoxActionPerformed
 
     private void defaultAssetComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultAssetComboBoxActionPerformed
-      //  Config.putDefaultAsset(cfg, (String) this.defaultAssetComboBox.getSelectedItem());
-      //  this.updateAll();
+        //  Config.putDefaultAsset(cfg, (String) this.defaultAssetComboBox.getSelectedItem());
+        //  this.updateAll();
     }//GEN-LAST:event_defaultAssetComboBoxActionPerformed
 
 
@@ -592,4 +611,60 @@ public class AssetListPanel extends javax.swing.JPanel implements GuiSelectionLi
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable marketsTable;
     // End of variables declaration//GEN-END:variables
+
+    public class InitialPriceRenderer extends DefaultTableCellRenderer {
+
+        private static final int INITIAL_PRICE_COLUMN_INDEX = 1;
+        private static final int AUTO_INITIAL_PRICE_COLUMN_INDEX = 2;
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+
+            Component cellComponent = super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+
+            if (column == INITIAL_PRICE_COLUMN_INDEX) {
+
+                Object autoPriceValue = table.getModel().getValueAt(row, AUTO_INITIAL_PRICE_COLUMN_INDEX);
+
+                // Logik: Ist der Wert true? Dann soll es wie 'disabled' aussehen.
+                if (autoPriceValue instanceof Boolean && (Boolean) autoPriceValue) {
+
+                    // --- Verwenden Sie UIManager-Schlüssel für LaF-Konformität ---
+                    // 1. Hintergrundfarbe eines deaktivierten Textfeldes oder allgemeinen Hintergrunds
+                    Color disabledBg = UIManager.getColor("TextField.disabledBackground");
+                    if (disabledBg == null) {
+                        // Fallback, falls der Schlüssel nicht existiert (sehr altes/eigenes LaF)
+                        disabledBg = UIManager.getColor("Panel.background");
+                    }
+                    cellComponent.setBackground(disabledBg);
+
+                    // 2. Vordergrundfarbe (Textfarbe) für deaktivierte Komponenten
+                    Color disabledFg = UIManager.getColor("textInactiveText");
+                    if (disabledFg == null) {
+                        // Fallback
+                        disabledFg = UIManager.getColor("controlDkShadow");
+                    }
+                    cellComponent.setForeground(disabledFg);
+
+                } else {
+                    // Zustand: setEnabled(true)
+                    // Bei Auswahl die Standard-Auswahlfarben verwenden
+                    cellComponent.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+                    cellComponent.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+                }
+
+                setHorizontalAlignment(RIGHT);
+
+            } else {
+                // Standardverhalten für andere Spalten
+                cellComponent.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+                cellComponent.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+                setHorizontalAlignment(LEFT);
+            }
+
+            return cellComponent;
+        }
+    }
 }

@@ -8,12 +8,15 @@ package chart;
 import chart.Chart;
 import gui.Globals;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Objects;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import sesim.Market;
@@ -31,7 +34,7 @@ public class MainChart extends chart.Chart {
      * Creates new form MainChart
      */
     public MainChart() {
-      //  System.out.printf("This is the main chart constructor\n");
+        //  System.out.printf("This is the main chart constructor\n");
 
         initComponents();
 
@@ -61,10 +64,10 @@ public class MainChart extends chart.Chart {
         main.rightYData = data;
         main.rightYColor = Globals.colors.bg;
         main.crossColor = Globals.colors.text;
-        main.pad_top=1;
-        main.pad_bot=1;
-        main.yformatter=Globals.sim.getDefaultMarket().getCurrency().getFormatter();
-        main.textcolor=Globals.colors.text;
+        main.pad_top = 1;
+        main.pad_bot = 1;
+        main.yformatter = Globals.sim.getDefaultMarket().getCurrency().getFormatter();
+        main.textcolor = Globals.colors.text;
 
         addChart(main);
 
@@ -77,9 +80,9 @@ public class MainChart extends chart.Chart {
         vol.rightYData = data;
         vol.rightYColor = Globals.colors.bg;
         vol.crossColor = Globals.colors.text;
-        vol.pad_top=1;
-        vol.yformatter=Globals.sim.getDefaultMarket().getAsset().getFormatter();
-        vol.textcolor=Globals.colors.text;
+        vol.pad_top = 1;
+        vol.yformatter = Globals.sim.getDefaultMarket().getAsset().getFormatter();
+        vol.textcolor = Globals.colors.text;
         addChart(vol);
     }
 
@@ -105,10 +108,28 @@ public class MainChart extends chart.Chart {
     };
 
     private final Integer default_cmopression = 60 * 60 * 1000;
+    
+    Point popupPoint=null;
 
     abstract class PopupMenuAdapter implements PopupMenuListener {
 
+        @Override
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+
+            SwingUtilities.invokeLater(() -> {
+                Point p = ctxMenu.getLocationOnScreen();
+                popupPoint=p;
+                System.out.println("Popup-Position = " + p);
+            });
+
+            /*          Point screen = ctxMenu.getLocationOnScreen();
+        System.out.println("Auf Bildschirm: " + screen);
+
+        // Position relativ zum Invoker (z. B. JPanel)
+        Component inv = ctxMenu.getInvoker();
+        Point invPos = new Point(screen);
+        SwingUtilities.convertPointFromScreen(invPos, inv);
+        System.out.println("Im Invoker: " + invPos);*/
         }
 
         public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
@@ -241,6 +262,8 @@ public class MainChart extends chart.Chart {
         candleTypeMEnuItem = new javax.swing.JRadioButtonMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         logMenu = new javax.swing.JCheckBoxMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        setBreakPoint = new javax.swing.JMenuItem();
         typeButtonGroup = new javax.swing.ButtonGroup();
 
         compMenu.setText("Compression");
@@ -249,6 +272,7 @@ public class MainChart extends chart.Chart {
         typeMenu.setText("Chart Type");
 
         typeButtonGroup.add(lineTypeItem);
+        lineTypeItem.setMnemonic('l');
         lineTypeItem.setText("Line");
         lineTypeItem.setActionCommand("LINE");
         lineTypeItem.addItemListener(new java.awt.event.ItemListener() {
@@ -264,6 +288,7 @@ public class MainChart extends chart.Chart {
         typeMenu.add(lineTypeItem);
 
         typeButtonGroup.add(candleTypeMEnuItem);
+        candleTypeMEnuItem.setMnemonic('c');
         candleTypeMEnuItem.setText("Candle Stick");
         candleTypeMEnuItem.setActionCommand("CNADLESTICK");
         candleTypeMEnuItem.addItemListener(new java.awt.event.ItemListener() {
@@ -276,6 +301,7 @@ public class MainChart extends chart.Chart {
         ctxMenu.add(typeMenu);
         ctxMenu.add(jSeparator1);
 
+        logMenu.setMnemonic('l');
         logMenu.setText("Log Scale");
         logMenu.setToolTipText("");
         logMenu.addItemListener(new java.awt.event.ItemListener() {
@@ -284,6 +310,15 @@ public class MainChart extends chart.Chart {
             }
         });
         ctxMenu.add(logMenu);
+        ctxMenu.add(jSeparator2);
+
+        setBreakPoint.setText("Set breakpoint");
+        setBreakPoint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setBreakPointActionPerformed(evt);
+            }
+        });
+        ctxMenu.add(setBreakPoint);
 
         addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
@@ -361,10 +396,21 @@ public class MainChart extends chart.Chart {
     private void lineTypeItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lineTypeItemItemStateChanged
         if (this.lineTypeItem.isSelected()) {
             this.chart_type = ChartType.LINE;
-          //  System.out.printf("Set LIne\n");
+            //  System.out.printf("Set LIne\n");
         }
         doRedraw();
     }//GEN-LAST:event_lineTypeItemItemStateChanged
+
+    private void setBreakPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBreakPointActionPerformed
+//        Point p = this.ctxMenu.getLocationOnScreen();
+//        System.out.printf("POINT: %d, %d\n", p.x, p.y);
+        if (popupPoint==null)
+            return;
+        Long t = this.locatonToTime(popupPoint);
+        System.out.println("Time:"+t);
+        Globals.sim.addBreakPoint(t, Globals.theApp::acceptBreakPoint);
+        
+    }//GEN-LAST:event_setBreakPointActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -372,8 +418,10 @@ public class MainChart extends chart.Chart {
     private javax.swing.JMenu compMenu;
     private javax.swing.JPopupMenu ctxMenu;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JRadioButtonMenuItem lineTypeItem;
     private javax.swing.JCheckBoxMenuItem logMenu;
+    private javax.swing.JMenuItem setBreakPoint;
     private javax.swing.ButtonGroup typeButtonGroup;
     private javax.swing.JMenu typeMenu;
     // End of variables declaration//GEN-END:variables

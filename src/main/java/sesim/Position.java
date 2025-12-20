@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -107,14 +108,15 @@ public class Position {
     // unrealized PnL für aktuelle Preis
     public long getPnL_Long(long currentPrice) {
 
-        return currentPrice * shares - netCashFlow;
+        return FixedPoint.multiply(currentPrice, shares) - netCashFlow;
 
         //long diff = currentPrice - entryPrice;
         //return isShort ? -shares * diff : shares * diff;
     }
 
     public long getPnL_Long() {
-        return market.getLastPrice_Long() * shares + netCashFlow;
+        return getPnL_Long(market.getLastPrice_Long());
+                //market.getLastPrice_Long() * shares + netCashFlow;
     }
 
     public double getPnL() {
@@ -191,8 +193,8 @@ public class Position {
 
     void addShares(double volume, double price, int leverage) {
         addShares_Long(
-                FixedPoint.toInternal(volume),
-                FixedPoint.toInternal(price),
+                market.asset.round_Long(FixedPoint.toInternal(volume)),
+                market.currency.round_Long(FixedPoint.toInternal(price)),
                 leverage
         );
     }
@@ -276,8 +278,8 @@ public class Position {
 
     }
 
-    public float getStopPrice() {
-        return this.stopPrice / market.currency.getDf();
+    public double getStopPrice() {
+        return FixedPoint.toExternal(this.stopPrice); 
     }
 
     public long getStopPrice_Long() {

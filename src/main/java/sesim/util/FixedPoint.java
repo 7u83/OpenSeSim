@@ -23,13 +23,16 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package sesim.util;
+
+
 
 public class FixedPoint {
-    static final long SCALE = 100; // 4 decimals
+    public static final long SCALE = 1_0000; // 4 decimals
 
     // double -> long
     public static long toInternal(double value) {
+        
         return Math.round(value * SCALE);
     }
 

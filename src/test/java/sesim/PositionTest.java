@@ -66,7 +66,7 @@ public class PositionTest {
         market = new Market(sim,c,a, new JSONObject());
         market.setSymbol("SYM");
        
-        account = new sesim.Account(c,market, iniCash, iniShares);
+        account = new sesim.Account(c, (long) iniCash);
 
     }
 

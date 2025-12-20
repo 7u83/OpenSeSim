@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
 import sesim.util.MinMax;
 import java.util.*;
 

@@ -25,8 +25,6 @@
  */
 package sesim.util;
 
-import sesim.FixedPoint;
-
 /**
  *
  * @author 7u83 <7u83@mail.ru>

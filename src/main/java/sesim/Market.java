@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -488,9 +489,9 @@ public class Market {
  /*   public void terminate() {
         timer.terminate();
     }*/
-    public void initLastQuote() {
+    public void initLastQuote(double price) {
         Quote q = new Quote(this);
-        q.price = FixedPoint.toInternal(initalPrice);
+        q.price = FixedPoint.toInternal(price);
         q.volume = 0;
         q.ask = q.price;
         q.bid = q.price;
@@ -635,7 +636,7 @@ public class Market {
         return lq.price;
     }
 
-    public Quote getBestPrice_0() {
+    public Quote getBestQuote_0() {
 
         //      synchronized (executor) {
         SortedSet<Order> bid = bidBook;
@@ -707,6 +708,57 @@ public class Market {
 
         return lq;
 //        }
+    }
+
+    public long getBestPrice_0() {
+
+        SortedSet<Order> bid = bidBook;
+        SortedSet<Order> ask = askBook;
+
+        Quote lq = this.getLastQuoete();
+
+        Order b = null, a = null;
+        if (!bid.isEmpty()) {
+            b = bid.first();
+        }
+        if (!ask.isEmpty()) {
+            a = ask.first();
+        }
+
+        if (b == null && a == null) {
+            return lq.price;
+        }
+
+        if (a != null && b != null) {
+
+            if (lq.price < b.limit) {
+                return b.limit;
+
+            }
+            if (lq.price > a.limit) {
+                return a.limit;
+
+            }
+            return lq.price;
+        }
+
+        if (a != null) {
+
+            if (lq.price > a.limit) {
+                return a.limit;
+            }
+            return lq.price;
+        }
+
+        if (b != null) {
+
+            if (lq.price < b.limit) {
+                return b.limit;
+
+            }
+            return lq.price;
+        }
+        return lq.price;
     }
 
     // Class to describe an executed order
@@ -932,6 +984,14 @@ public class Market {
 //            System.out.printf("Have executor %d\n", Thread.currentThread().getId());
             o = a.orders.get(order_id);
 
+            if (logging) {
+                TradingLogRecord e = new TradingLogRecord(
+                        sim.scheduler.getCurrentTimeMillis(),
+                        TradingLogRecord.Action.CANCEL_ORDER,
+                        o);
+                tradingLog.add(e);
+            }
+
             //   System.out.print("The Order:"+o.limit+"\n");
             if (o != null) {
                 if (o.isBuy()) {
@@ -1130,16 +1190,16 @@ public class Market {
                     this.sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.SELL,
                     seller);
-            e.trasaction_volume = (float)FixedPoint.toExternal(volume); // / asset.getDf(); //shares_df;
-            e.transaction_price = (float)FixedPoint.toExternal(price); // / currency.getDf();
+            e.trasaction_volume = (float) FixedPoint.toExternal(volume); // / asset.getDf(); //shares_df;
+            e.transaction_price = (float) FixedPoint.toExternal(price); // / currency.getDf();
             tradingLog.add(e);
 
             e = new TradingLogRecord(
                     this.sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.BUY,
                     buyer);
-            e.trasaction_volume = (float)FixedPoint.toExternal(volume); // / asset.getDf(); //shares_df;
-            e.transaction_price = (float)FixedPoint.toExternal(price); // / currency.getDf();
+            e.trasaction_volume = (float) FixedPoint.toExternal(volume); // / asset.getDf(); //shares_df;
+            e.transaction_price = (float) FixedPoint.toExternal(price); // / currency.getDf();
             tradingLog.add(e);
         }
 
@@ -1458,6 +1518,7 @@ public class Market {
     public Order createOrder_Long(Account a, byte type, long volume,
             long limit, long stop, int leverage) {
 
+        volume = asset.round_Long(volume);
         if (volume <= 0) {
             return null;
         }
@@ -1471,11 +1532,9 @@ public class Market {
 
         }
 
-        volume = asset.round_Long(volume);
-
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-               if (logging) {
+        if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
@@ -1520,7 +1579,7 @@ public class Market {
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-              if (logging) {
+        if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,

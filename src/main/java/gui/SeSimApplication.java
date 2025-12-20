@@ -26,6 +26,7 @@
 package gui;
 
 import gui.AssetEditor.AssetListDialog;
+import gui.BreakPoints.BreakPointsDialog;
 import java.awt.Dialog;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -72,6 +73,8 @@ public class SeSimApplication extends javax.swing.JFrame {
     public SeSimApplication() {
 
         initComponents();
+        
+        Globals.theApp=this;
 
         ToolTipManager.sharedInstance().setInitialDelay(200); // Zeit bis Tooltip erscheint (ms)
         ToolTipManager.sharedInstance().setDismissDelay(50000); // Zeit bis Tooltip verschwindet (ms)
@@ -123,6 +126,17 @@ public class SeSimApplication extends javax.swing.JFrame {
         CustomHelpHandler.installHelp(this, hs);
 
         this.meinToolBar.setFloatable(false);
+        
+      //  Globals.sim.addBreakPoint(1000*60, this::acceptBreakPoint);
+        
+        
+        
+    }
+    
+    public void acceptBreakPoint(Long time){
+        /*Globals.sim.setPause(true);
+        this.pauseButton.setEnabled(false);*/
+        this.pauseSim();
     }
 
     /**
@@ -177,11 +191,12 @@ public class SeSimApplication extends javax.swing.JFrame {
             jSeparator4 = new javax.swing.JPopupMenu.Separator();
             exitMenuItem = new javax.swing.JMenuItem();
             editMenu = new javax.swing.JMenu();
-            jMenuItem1 = new javax.swing.JMenuItem();
-            jSeparator1 = new javax.swing.JPopupMenu.Separator();
+            marketsMenuItem = new javax.swing.JMenuItem();
             pasteMenuItem = new javax.swing.JMenuItem();
             deleteMenuItem = new javax.swing.JMenuItem();
             jSeparator2 = new javax.swing.JPopupMenu.Separator();
+            jMenuItem2 = new javax.swing.JMenuItem();
+            jSeparator6 = new javax.swing.JPopupMenu.Separator();
             editPreferences = new javax.swing.JMenuItem();
             simMenu = new javax.swing.JMenu();
             simMenuStart = new javax.swing.JMenuItem();
@@ -402,14 +417,13 @@ public class SeSimApplication extends javax.swing.JFrame {
             editMenu.setMnemonic('e');
             editMenu.setText("Edit");
 
-            jMenuItem1.setText("Markets");
-            jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            marketsMenuItem.setText("Markets");
+            marketsMenuItem.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    jMenuItem1ActionPerformed(evt);
+                    marketsMenuItemActionPerformed(evt);
                 }
             });
-            editMenu.add(jMenuItem1);
-            editMenu.add(jSeparator1);
+            editMenu.add(marketsMenuItem);
 
             pasteMenuItem.setMnemonic('s');
             pasteMenuItem.setText("Strategies ...");
@@ -429,6 +443,15 @@ public class SeSimApplication extends javax.swing.JFrame {
             });
             editMenu.add(deleteMenuItem);
             editMenu.add(jSeparator2);
+
+            jMenuItem2.setText("BreakPoints");
+            jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jMenuItem2ActionPerformed(evt);
+                }
+            });
+            editMenu.add(jMenuItem2);
+            editMenu.add(jSeparator6);
 
             editPreferences.setMnemonic('p');
             editPreferences.setText("Preferences ...");
@@ -609,7 +632,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             sesim.Logger.error("Cannot write log %s: %s", logFileName, ex.getMessage());
             tradingLogCheckBox.setSelected(false);
         }
-
+        
         Globals.sim.setPause(false);
         Globals.sim.startScheduler();
 
@@ -1113,14 +1136,20 @@ public class SeSimApplication extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_viewTradingLogActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void marketsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marketsMenuItemActionPerformed
         // TODO add your handling code here:
         AssetListDialog ad = new AssetListDialog(this,true);
         ad.pack();
         ad.setMinimumSize(ad.getSize());
         ad.setLocationRelativeTo(this);
         ad.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_marketsMenuItemActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+       BreakPointsDialog bpd = new BreakPointsDialog(this,true);
+       bpd.setLocationRelativeTo(this);
+       bpd.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
     static boolean f = false;
 
 
@@ -1203,20 +1232,21 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem fileSaveAsMenuItem;
     private javax.swing.JMenuItem fileSaveMenuItem;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JSplitPane jSplitPane4;
     private javax.swing.JSplitPane jSplitPane5;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JMenuItem marketsMenuItem;
     private javax.swing.JToolBar meinToolBar;
     private javax.swing.JMenuBar menuBar;
     private gui.orderbook.RawOrderBook orderBookNew1;

@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
+
 /**
  *
  * @author tube

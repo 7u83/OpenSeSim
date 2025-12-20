@@ -33,7 +33,8 @@ import sesim.Market;
 import sesim.Order;
 import sesim.Scheduler.Event;
 import sesim.Sim;
-import static sesim.util.Math.toFixedLong;
+import sesim.util.FixedPoint;
+import static sesim.util.SeSimMath.toFixedLong;
 
 /**
  *
@@ -140,7 +141,7 @@ public class MarginTraderL extends AutoTraderBase
             limit = getRandomPrice_Long(price,
                     cfg.minShortLimit, cfg.maxShortLimit, cfg.minShortDeviation);
         }
-        long volume = margin * cfg.leverage / limit;
+        long volume = FixedPoint.floorDivide(margin * cfg.leverage , limit);
 
         submitTrade(type, volume, limit);
 
@@ -154,7 +155,7 @@ public class MarginTraderL extends AutoTraderBase
     void closeTrade(long volume) {
         byte type;
         long limit;
-        long price = sim.getDefaultMarket().getBestPrice_0().getPrice_Long();
+        long price = sim.getDefaultMarket().getBestQuote_0().getPrice_Long();
         if (volume < 0) {
             type = Order.BUY;
             limit = getRandomPrice_Long(price,

@@ -67,6 +67,8 @@ public class Globals {
 
         void cfgChanged();
     }
+    
+    public static SeSimApplication theApp;
 
     public static class Colors {
 
