@@ -49,9 +49,9 @@ public class MarkeMakerGui extends AutoTraderGui {
     
     public void save(){
         m.numPositions=(int) this.numberOfPositions.getValue();
-        m.timerInterval=(Float) this.runInterval.getValue();
-        m.depthPercent=(Float) this.depthPercent.getValue();
-        m.cashToUse=(Float) this.cashToUse.getValue();
+        m.timerInterval=(double) this.runInterval.getValue();
+        m.depthPercent=(double) this.depthPercent.getValue();
+        m.cashToUse=(double) this.cashToUse.getValue();
     }
 
     /** This method is called from within the constructor to
@@ -76,17 +76,17 @@ public class MarkeMakerGui extends AutoTraderGui {
 
         numberOfPositions.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
 
-        jLabel2.setText("Run interval:");
+        jLabel2.setText("Run interval (in sec)onds:");
 
-        runInterval.setModel(new javax.swing.SpinnerNumberModel(0.5f, 0.5f, null, 1.0f));
+        runInterval.setModel(new javax.swing.SpinnerNumberModel(0.5d, 0.5d, null, 1.0d));
 
         jLabel3.setText("Percentage Depth:");
 
-        depthPercent.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+        depthPercent.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
 
-        jLabel4.setText("Cash to use:");
+        jLabel4.setText("Cash to use (in %):");
 
-        cashToUse.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), Float.valueOf(100.0f), Float.valueOf(1.0f)));
+        cashToUse.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -96,22 +96,23 @@ public class MarkeMakerGui extends AutoTraderGui {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(numberOfPositions)
                             .addComponent(runInterval, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(35, 35, 35)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(depthPercent)
                             .addComponent(cashToUse))))
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addContainerGap(170, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,9 +130,9 @@ public class MarkeMakerGui extends AutoTraderGui {
                     .addComponent(depthPercent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(cashToUse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cashToUse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
                 .addContainerGap(184, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents

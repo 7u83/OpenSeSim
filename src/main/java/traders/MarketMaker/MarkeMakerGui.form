@@ -20,9 +20,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -31,18 +31,19 @@
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="depthPercent" max="32767" attributes="0"/>
                           <Component id="cashToUse" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="193" max="32767" attributes="0"/>
+              <EmptySpace pref="170" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -65,9 +66,9 @@
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                  <Component id="cashToUse" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cashToUse" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="184" max="32767" attributes="0"/>
           </Group>
@@ -89,13 +90,13 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Run interval:"/>
+        <Property name="text" type="java.lang.String" value="Run interval (in sec)onds:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="runInterval">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0.5" minimum="0.5" numberType="java.lang.Float" stepSize="1.0" type="number"/>
+          <SpinnerModel initial="0.5" minimum="0.5" numberType="java.lang.Double" stepSize="1.0" type="number"/>
         </Property>
       </Properties>
     </Component>
@@ -107,19 +108,19 @@
     <Component class="javax.swing.JSpinner" name="depthPercent">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0.0" maximum="100.0" minimum="0.0" numberType="java.lang.Float" stepSize="1.0" type="number"/>
+          <SpinnerModel initial="0.0" maximum="100.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cash to use:"/>
+        <Property name="text" type="java.lang.String" value="Cash to use (in %):"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="cashToUse">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0.0" maximum="100.0" minimum="0.0" numberType="java.lang.Float" stepSize="1.0" type="number"/>
+          <SpinnerModel initial="0.0" maximum="100.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
         </Property>
       </Properties>
     </Component>

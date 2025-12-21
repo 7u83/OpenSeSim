@@ -48,7 +48,7 @@ public class MarketMaker extends AutoTraderBase {
     /**
      * Interval in seconds to run the trader
      */
-    float timerInterval = 3;
+    double timerInterval = 3;
 
     /**
      * Depth of the lowest order relative to the current market price, in
@@ -56,7 +56,7 @@ public class MarketMaker extends AutoTraderBase {
      *
      * For example, 8 means the lowest buy order is 8% below the current price.
      */
-    float depthPercent = 8;
+    double depthPercent = 8;
     
     
     double cashToUse = 50.0f;
@@ -268,9 +268,9 @@ public class MarketMaker extends AutoTraderBase {
     @Override
     public void setConfig(JSONObject cfg) {
         this.numPositions=cfg.optInt("num_positions",16);
-        this.timerInterval=(float)cfg.optDouble("timer_interval",3.0);
-        this.depthPercent=(float) cfg.optDouble("depth_percent",8);
-        this.cashToUse=(float) cfg.optDouble("cash_to_use",50);
+        this.timerInterval=cfg.optDouble("timer_interval",3.0);
+        this.depthPercent=cfg.optDouble("depth_percent",8);
+        this.cashToUse=cfg.optDouble("cash_to_use",50);
     }
 
 }
