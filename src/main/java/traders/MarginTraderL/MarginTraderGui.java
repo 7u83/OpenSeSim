@@ -26,7 +26,7 @@
 package traders.MarginTraderL;
 
 import sesim.AutoTraderGui;
-import static sesim.util.Math.toFixedLong;
+import static sesim.util.SeSimMath.toFixedLong;
 
 /**
  *

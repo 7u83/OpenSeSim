@@ -35,7 +35,7 @@ import org.json.JSONObject;
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public interface AutoTraderInterface {
+public interface AutoTrader {
 
     public abstract boolean getDevelStatus();
 
@@ -83,7 +83,7 @@ public interface AutoTraderInterface {
      * @param shares Number of shares
      * @param cfg
      */
-    public void init(Sim sim, long id, String name, float money, float shares, String strategy, JSONObject cfg);
+    public void init(Sim sim, long id, String name, long money, String strategy, JSONObject cfg);
 
     public Account getAccount();
 

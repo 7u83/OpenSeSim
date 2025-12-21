@@ -80,12 +80,12 @@ public class TradingLogPanel extends javax.swing.JPanel {
      * beizubehalten, wenn Zeilen nur am Ende hinzugefügt oder entfernt werden.
      */
     private void checkAndUpdateLog() {
-        if (Globals.sim == null || Globals.sim.getExchange() == null) {
+        if (Globals.sim == null || Globals.sim.getDefaultMarket() == null) {
             return;
         }
         
         try {
-            TradingLogReader logReader = Globals.sim.getExchange().getTradingLog();
+            TradingLogReader logReader = Globals.sim.getDefaultMarket().getTradingLog();
             if (logReader != null) {
                 long currentSize = logReader.size();
                 
@@ -189,7 +189,7 @@ public class TradingLogPanel extends javax.swing.JPanel {
         public int getRowCount() {
             TradingLogReader l = null;
             try {
-                l = Globals.sim.getExchange().getTradingLog();
+                l = Globals.sim.getDefaultMarket().getTradingLog();
             } catch (FileNotFoundException ex) {
                 return 0;
             }
@@ -209,7 +209,7 @@ public class TradingLogPanel extends javax.swing.JPanel {
         public Object getValueAt(int rowIndex, int columnIndex) {
             TradingLogReader l = null;
             try {
-                l = Globals.sim.getExchange().getTradingLog();
+                l = Globals.sim.getDefaultMarket().getTradingLog();
             } catch (FileNotFoundException ex) {
                 return null;
             }

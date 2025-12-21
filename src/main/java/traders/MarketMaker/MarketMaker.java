@@ -59,7 +59,7 @@ public class MarketMaker extends AutoTraderBase {
     float depthPercent = 8;
     
     
-    float cashToUse = 50.0f;
+    double cashToUse = 50.0f;
 
     int interval = 1000;
 
@@ -69,9 +69,9 @@ public class MarketMaker extends AutoTraderBase {
     class MMOrder {
 
         Order o = null;     // Underlying order object
-        float buyLimit;     // Limit price for buying
-        float sellLimit;    // Limit price for selling
-        float volume;       // Volume of shares to trade
+        double buyLimit;     // Limit price for buying
+        double sellLimit;    // Limit price for selling
+        double volume;       // Volume of shares to trade
     }
 
     /**
@@ -104,27 +104,27 @@ public class MarketMaker extends AutoTraderBase {
      * Creates and initializes the market maker orders
      */
     private void initOrders() {
-        float centerPrice = market.getLastPrice();
+        double centerPrice = market.getLastPrice();
 
         // Lowest price for buy orders
-        float lowestPrice = centerPrice - depthPercent * centerPrice / 100f;
+        double lowestPrice = centerPrice - depthPercent * centerPrice / 100f;
 
         orders = new MMOrder[numPositions];
 
         // Spacing between orders
-        float dist = (centerPrice - lowestPrice) / (numPositions + 1);
+        double dist = (centerPrice - lowestPrice) / (numPositions + 1);
 
         // Allocate cash per order
-        float cashPerBuyOrder = account.getMoney()* (cashToUse/100.0f) / (numPositions + 1);
+        double cashPerBuyOrder = account.getMoney()* (cashToUse/100.0f) / (numPositions + 1);
 
-        float price = lowestPrice + dist;
+        double price = lowestPrice + dist;
 
         for (int i = 0; i < numPositions; i++) {
             orders[i] = new MMOrder();
-            orders[i].buyLimit = market.roundMoney(price);
+            orders[i].buyLimit = market.getCurrency().round(price);
             price += dist;
-            orders[i].sellLimit = market.roundMoney(price);
-            orders[i].volume = market.roundShares(cashPerBuyOrder / price);
+            orders[i].sellLimit = market.getCurrency().round(price);
+            orders[i].volume = market.getAsset().round(cashPerBuyOrder / price);
 
             // Create initial buy order
             orders[i].o = market.createOrder(account, Order.BUYLIMIT,
@@ -134,8 +134,8 @@ public class MarketMaker extends AutoTraderBase {
 
         
         setStatus("%s - %s", 
-                market.getFormatter().format(lowestPrice),
-                market.getFormatter().format(centerPrice)
+                market.getCurrency().getFormatter().format(lowestPrice),
+                market.getCurrency().getFormatter().format(centerPrice)
         );
 
     }
@@ -178,7 +178,7 @@ public class MarketMaker extends AutoTraderBase {
      */
     private boolean readjustOrders() {
 
-        float price = market.getLastPrice();
+        double price = market.getLastPrice();
         if (price <= orders[numPositions - 1].sellLimit
                 && price >= orders[0].buyLimit) {
             return false;  // No adjustment needed
@@ -201,12 +201,12 @@ public class MarketMaker extends AutoTraderBase {
 
     void resetTrader() {
         setStatus("Reset");
-        if (account.getShares() == 0) {
+        if (account.getPosition(sim.getDefaultMarket()).getShares() == 0) {
             initOrders();
             return;
         }
 
-        resetOrder = market.createOrder_Long(account, Order.SELL, account.getShares_Long(), 0, 0, 1);
+        resetOrder = market.createOrder_Long(account, Order.SELL, account.getShares_Long(sim.getDefaultMarket()), 0, 0, 1);
 
     }
 

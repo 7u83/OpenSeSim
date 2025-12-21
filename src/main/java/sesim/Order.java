@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.atomic.AtomicLong;
@@ -80,32 +81,32 @@ public class Order implements OrderBookEntry {
     // ID generator
     private static final AtomicLong ID_GEN = new AtomicLong(0);
 
-    Order(Market se, Account account, byte type, long volume, long limit, long stop) {
+    Order(Market market, Account account, byte type, long volume, long limit, long stop) {
         this.account = account;
-        this.position = account.getPosition(se);
-        this.market = se;
+        this.position = account.getPosition(market);
+        this.market = market;
         id = ID_GEN.getAndIncrement();
         this.type = type;
         this.limit = limit;
         this.volume = volume;
         this.initial_volume = this.volume;
-        this.created = se.sim.scheduler.getCurrentTimeMillis();
+        this.created = market.sim.scheduler.getCurrentTimeMillis();
         this.status = OPEN;
         this.cost = 0;
         this.stop = stop;
         this.leverage=1;
     }
 
-    Order(Market se, Account account, byte type, long volume, long limit, long stop, int leverage) {
+    Order(Market market, Account account, byte type, long volume, long limit, long stop, int leverage) {
         this.account = account;
-        this.position = account.getPosition(se);
-        this.market = se;
+        this.position = account.getPosition(market);
+        this.market = market;
         id = ID_GEN.getAndIncrement();
         this.type = type;
         this.limit = limit; //se.roundMoney(limit);
         this.volume = volume; //se.roundShares(volume);
         this.initial_volume = this.volume;
-        this.created = se.sim.scheduler.getCurrentTimeMillis();
+        this.created = market.sim.scheduler.getCurrentTimeMillis();
         this.status = OPEN; //Exchange.OrderStatus.OPEN;
         this.cost = 0;
         this.stop = stop;
@@ -204,16 +205,16 @@ public class Order implements OrderBookEntry {
         return initial_volume - volume;
     }
 
-    public float getExecuted() {
-        return getExecuted_Long() / market.shares_df;
+    public double getExecuted() {
+        return FixedPoint.toExternal(getExecuted_Long()); 
     }
 
-    public float getInitialVolume() {
-        return initial_volume / market.shares_df;
+    public double getInitialVolume() {
+        return FixedPoint.toExternal(initial_volume); 
     }
 
-    public float getCost() {
-        return cost / market.money_df;
+    public double getCost() {
+        return cost / FixedPoint.toExternal(cost); 
     }
 
     public static boolean isSell(byte type) {
@@ -240,8 +241,8 @@ public class Order implements OrderBookEntry {
         return cost / e;
     }
 
-    public float getAveragePrice() {
-        return getAveragePrice_Long() / market.money_df;
+    public double getAveragePrice() {
+        return FixedPoint.toExternal(getAveragePrice_Long()); 
     }
 
     public byte getStatus() {
@@ -277,13 +278,13 @@ public class Order implements OrderBookEntry {
     }
 
     @Override
-    public float getVolume() {
-        return volume / market.shares_df;
+    public double getVolume() {
+        return FixedPoint.toExternal(volume); 
     }
 
     @Override
-    public float getLimit() {
-        return limit / market.money_df;
+    public double getLimit() {
+        return FixedPoint.toExternal(limit); 
     }
 
     @Override
@@ -305,8 +306,8 @@ public class Order implements OrderBookEntry {
     }
 
     @Override
-    public float getStop() {
-        return stop / market.money_df;
+    public double getStop() {
+        return FixedPoint.toExternal(stop); 
     }
 
     @Override

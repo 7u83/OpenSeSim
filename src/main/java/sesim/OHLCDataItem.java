@@ -25,6 +25,8 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
+
 /**
  *
  * @author 7u83 <7u83@mail.ru>
@@ -63,24 +65,24 @@ public class OHLCDataItem {
         return ret;
     }
     
-    public float getOpen() {
-        return open/se.money_df;
+    public double getOpen() {
+        return FixedPoint.toExternal(open); //open/se.currency.getDf();
     }
 
-    public float getHigh() {
-        return high/se.money_df;
+    public double getHigh() {
+        return FixedPoint.toExternal(high); ///se.currency.getDf();
     }
 
-    public float getLow() {
-        return low/se.money_df;
+    public double getLow() {
+        return FixedPoint.toExternal(low); //low/se.currency.getDf();
     }
 
-    public float getClose() {
-        return close/se.money_df;
+    public double getClose() {
+        return FixedPoint.toExternal(close); //close/se.currency.getDf();
     }
 
-    public float getVolume() {
-        return volume/se.shares_df;
+    public double getVolume() {
+        return FixedPoint.toExternal(volume); ///se.getAsset().getDf();
     }
 
     public long getTime() {

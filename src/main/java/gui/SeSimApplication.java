@@ -25,15 +25,11 @@
  */
 package gui;
 
-import java.awt.AWTEvent;
+import gui.AssetEditor.AssetListDialog;
+import gui.BreakPoints.BreakPointsDialog;
 import java.awt.Dialog;
-import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -52,25 +48,18 @@ import java.util.logging.SimpleFormatter;
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONObject;
 import sesim.Order;
-import javafx.application.Platform;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
-import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
 import sesim.AppHelp;
-import traders.RandomTraderL;
+//import traders.RandomTraderL;
 
 /**
  *
@@ -84,6 +73,8 @@ public class SeSimApplication extends javax.swing.JFrame {
     public SeSimApplication() {
 
         initComponents();
+        
+        Globals.theApp=this;
 
         ToolTipManager.sharedInstance().setInitialDelay(200); // Zeit bis Tooltip erscheint (ms)
         ToolTipManager.sharedInstance().setDismissDelay(50000); // Zeit bis Tooltip verschwindet (ms)
@@ -135,6 +126,17 @@ public class SeSimApplication extends javax.swing.JFrame {
         CustomHelpHandler.installHelp(this, hs);
 
         this.meinToolBar.setFloatable(false);
+        
+      //  Globals.sim.addBreakPoint(1000*60, this::acceptBreakPoint);
+        
+        
+        
+    }
+    
+    public void acceptBreakPoint(Long time){
+        /*Globals.sim.setPause(true);
+        this.pauseButton.setEnabled(false);*/
+        this.pauseSim();
     }
 
     /**
@@ -189,11 +191,12 @@ public class SeSimApplication extends javax.swing.JFrame {
             jSeparator4 = new javax.swing.JPopupMenu.Separator();
             exitMenuItem = new javax.swing.JMenuItem();
             editMenu = new javax.swing.JMenu();
-            editExchangeMenuItem = new javax.swing.JMenuItem();
-            jSeparator1 = new javax.swing.JPopupMenu.Separator();
+            marketsMenuItem = new javax.swing.JMenuItem();
             pasteMenuItem = new javax.swing.JMenuItem();
             deleteMenuItem = new javax.swing.JMenuItem();
             jSeparator2 = new javax.swing.JPopupMenu.Separator();
+            jMenuItem2 = new javax.swing.JMenuItem();
+            jSeparator6 = new javax.swing.JPopupMenu.Separator();
             editPreferences = new javax.swing.JMenuItem();
             simMenu = new javax.swing.JMenu();
             simMenuStart = new javax.swing.JMenuItem();
@@ -274,7 +277,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                     .addComponent(stopButton)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(accelerationPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap())
+                    .addGap(27, 27, 27))
             );
             runControlsLayout.setVerticalGroup(
                 runControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -299,7 +302,7 @@ public class SeSimApplication extends javax.swing.JFrame {
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addComponent(runControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(tradingLogCheckBox, javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(clock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -414,15 +417,13 @@ public class SeSimApplication extends javax.swing.JFrame {
             editMenu.setMnemonic('e');
             editMenu.setText("Edit");
 
-            editExchangeMenuItem.setMnemonic('y');
-            editExchangeMenuItem.setText("Exchange ...");
-            editExchangeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            marketsMenuItem.setText("Markets");
+            marketsMenuItem.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    editExchangeMenuItemActionPerformed(evt);
+                    marketsMenuItemActionPerformed(evt);
                 }
             });
-            editMenu.add(editExchangeMenuItem);
-            editMenu.add(jSeparator1);
+            editMenu.add(marketsMenuItem);
 
             pasteMenuItem.setMnemonic('s');
             pasteMenuItem.setText("Strategies ...");
@@ -442,6 +443,15 @@ public class SeSimApplication extends javax.swing.JFrame {
             });
             editMenu.add(deleteMenuItem);
             editMenu.add(jSeparator2);
+
+            jMenuItem2.setText("BreakPoints");
+            jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jMenuItem2ActionPerformed(evt);
+                }
+            });
+            editMenu.add(jMenuItem2);
+            editMenu.add(jSeparator6);
 
             editPreferences.setMnemonic('p');
             editPreferences.setText("Preferences ...");
@@ -611,18 +621,18 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.runButton.setEnabled(false);
         this.stopButton.setEnabled(true);
 
-        //Globals.sim.getExchange().terminate();
+        //Globals.sim.getDefaultMarket().terminate();
         Globals.sim.reset();
         Globals.sim.startTraders(Globals.getConfig());
 
         this.setTradingLogFile();
         try {
-            Globals.sim.getExchange().setTradingLog(tradingLogCheckBox.isSelected());
+            Globals.sim.getDefaultMarket().setTradingLog(tradingLogCheckBox.isSelected());
         } catch (FileNotFoundException ex) {
             sesim.Logger.error("Cannot write log %s: %s", logFileName, ex.getMessage());
             tradingLogCheckBox.setSelected(false);
         }
-
+        
         Globals.sim.setPause(false);
         Globals.sim.startScheduler();
 
@@ -632,7 +642,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
         chartPanel.reset();
         if (this.rawOrderBookDialog != null) {
-            rawOrderBookDialog.start(Globals.sim.getExchange(), Order.BUYLIMIT, Order.SELLLIMIT);
+            rawOrderBookDialog.start(Globals.sim.getDefaultMarket(), Order.BUYLIMIT, Order.SELLLIMIT);
         }
 
         this.orderBooksHorizontal.start();
@@ -660,11 +670,11 @@ public class SeSimApplication extends javax.swing.JFrame {
     }
 
     void resetSim() {
-        //      Globals.sim.getExchange().terminate();
+        //      Globals.sim.getDefaultMarket().terminate();
         Globals.sim.reset();
         chartPanel.reset();
         if (this.rawOrderBookDialog != null) {
-            this.rawOrderBookDialog.start(Globals.sim.getExchange(), Order.BUYLIMIT, Order.SELLLIMIT);
+            this.rawOrderBookDialog.start(Globals.sim.getDefaultMarket(), Order.BUYLIMIT, Order.SELLLIMIT);
         }
 
         this.orderBooksHorizontal.start();
@@ -823,13 +833,6 @@ public class SeSimApplication extends javax.swing.JFrame {
         this.saveFile(true);
     }//GEN-LAST:event_fileSaveAsMenuItemActionPerformed
 
-    private void editExchangeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExchangeMenuItemActionPerformed
-        EditExchangeDialog ed = new EditExchangeDialog((Frame) this.getParent(), true);
-        int rc = ed.showdialog();
-        //  System.out.printf("EDRET: %d\n",rc);
-
-    }//GEN-LAST:event_editExchangeMenuItemActionPerformed
-
     private void resetToDefaults() {
         InputStream is = getClass().getResourceAsStream("/files/defaultcfg.json");
         String df = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
@@ -868,7 +871,7 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_simMenuStopActionPerformed
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
-        //Globals.sim.getExchange().timer.pause();
+        //Globals.sim.getDefaultMarket().timer.pause();
         pauseSim();
     }//GEN-LAST:event_pauseButtonActionPerformed
 
@@ -894,7 +897,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                     rawOrderBookDialog = new RawOrderBookDialog(this, false);
 
-                    rawOrderBookDialog.start(Globals.sim.getExchange(), Order.BUYLIMIT, Order.SELLLIMIT);
+                    rawOrderBookDialog.start(Globals.sim.getDefaultMarket(), Order.BUYLIMIT, Order.SELLLIMIT);
                     rawOrderBookDialog.setTitle("Level 3 Order Book");
 
                     rawOrderBookDialog.addWindowListener(new WindowAdapter() {
@@ -985,7 +988,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                     unlimitedOrdersDialog = new RawOrderBookDialog(this, false);
 
-                    unlimitedOrdersDialog.start(Globals.sim.getExchange(), Order.BUY, Order.SELL);
+                    unlimitedOrdersDialog.start(Globals.sim.getDefaultMarket(), Order.BUY, Order.SELL);
                     unlimitedOrdersDialog.setTitle("Unlimited Orders");
 
                     unlimitedOrdersDialog.addWindowListener(new WindowAdapter() {
@@ -1024,7 +1027,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
                     stopOrderBookDialog = new RawOrderBookDialog(this, false);
 
-                    stopOrderBookDialog.start(Globals.sim.getExchange(), Order.BUYSTOP, Order.SELLSTOP);
+                    stopOrderBookDialog.start(Globals.sim.getDefaultMarket(), Order.BUYSTOP, Order.SELLSTOP);
                     stopOrderBookDialog.setTitle("Stop Orders");
                     stopOrderBookDialog.setTitles("Stop Buy", "Stop Sell");
                     stopOrderBookDialog.setPriceColumn(Order.STOP);
@@ -1090,14 +1093,14 @@ public class SeSimApplication extends javax.swing.JFrame {
         }
 
         logFileName = directoryPath.resolve("tradinglog.dat").toString();
-        Globals.sim.getExchange().setTradingLogFile(logFileName);
+        Globals.sim.getDefaultMarket().setTradingLogFile(logFileName);
     }
 
 
     private void tradingLogCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tradingLogCheckBoxActionPerformed
 
         try {
-            Globals.sim.getExchange().setTradingLog(tradingLogCheckBox.isSelected());
+            Globals.sim.getDefaultMarket().setTradingLog(tradingLogCheckBox.isSelected());
         } catch (FileNotFoundException ex) {
             sesim.Logger.error("Cannot write log %s: %s", logFileName, ex.getMessage());
             tradingLogCheckBox.setSelected(false);
@@ -1132,6 +1135,21 @@ public class SeSimApplication extends javax.swing.JFrame {
         });
         // TODO add your handling code here:
     }//GEN-LAST:event_viewTradingLogActionPerformed
+
+    private void marketsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marketsMenuItemActionPerformed
+        // TODO add your handling code here:
+        AssetListDialog ad = new AssetListDialog(this,true);
+        ad.pack();
+        ad.setMinimumSize(ad.getSize());
+        ad.setLocationRelativeTo(this);
+        ad.setVisible(true);
+    }//GEN-LAST:event_marketsMenuItemActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+       BreakPointsDialog bpd = new BreakPointsDialog(this,true);
+       bpd.setLocationRelativeTo(this);
+       bpd.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
     static boolean f = false;
 
 
@@ -1206,7 +1224,6 @@ public class SeSimApplication extends javax.swing.JFrame {
     private gui.Clock clock1;
     private javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
-    private javax.swing.JMenuItem editExchangeMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem editPreferences;
     private javax.swing.JMenuItem exitMenuItem;
@@ -1215,19 +1232,21 @@ public class SeSimApplication extends javax.swing.JFrame {
     private javax.swing.JMenuItem fileSaveAsMenuItem;
     private javax.swing.JMenuItem fileSaveMenuItem;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JSplitPane jSplitPane4;
     private javax.swing.JSplitPane jSplitPane5;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JMenuItem marketsMenuItem;
     private javax.swing.JToolBar meinToolBar;
     private javax.swing.JMenuBar menuBar;
     private gui.orderbook.RawOrderBook orderBookNew1;

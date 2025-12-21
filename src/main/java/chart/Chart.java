@@ -278,10 +278,10 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
             Color cur = g.getColor();
             g.setColor(xl_bgcolor);
-            g.fillRect(clip.x, clip.height - (emWidth * this.xAxisAreaHight)-1,
-                    clip.width, (emWidth * this.xAxisAreaHight)+1);
-            g.drawRect(clip.x, clip.height - (emWidth * this.xAxisAreaHight)-1,
-                    clip.width, (emWidth * this.xAxisAreaHight)+1);
+            g.fillRect(clip.x, clip.height - (emWidth * this.xAxisAreaHight) - 1,
+                    clip.width, (emWidth * this.xAxisAreaHight) + 1);
+            g.drawRect(clip.x, clip.height - (emWidth * this.xAxisAreaHight) - 1,
+                    clip.width, (emWidth * this.xAxisAreaHight) + 1);
             // g.fillRect(clip.x, clip.y, clip.width, clip.height /*(emWidth * this.xAxisAreaHight)*/);
 //            g.drawRect(clip.y, clip.y, clip.width, (emWidth * this.xAxisAreaHight));
             g.setColor(cur);
@@ -304,7 +304,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
     class DrawCtx {
 
         MinMax c_mm = null;
-        float c_yscaling;
+        double c_yscaling;
         public int height;
 
         Rectangle rect;
@@ -316,27 +316,27 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         private int width;
         boolean log;
 
-        float getDiff() {
+        double getDiff() {
             if (log) {
                 return (float) (Math.log(c_mm.getMax()) - Math.log(c_mm.getMin()));
             }
             return c_mm.getDiff();
         }
 
-        float getY(float y) {
+        double getY(double y) {
 
-            float ys = rect.height / getDiff();
+            double ys = rect.height / getDiff();
             if (log) {
                 return rect.height + rect.y - ((float) Math.log(y) - (float) Math.log(c_mm.getMin())) * ys;
             }
             return (rect.height - ((y - c_mm.getMin()) * c_yscaling)) + rect.y;
         }
 
-        float getValAtY(float y) {
+        double getValAtY(double y) {
             //  float val = 0;
 
             if (log) {
-                float ys = rect.height / getDiff();
+                double ys = rect.height / getDiff();
 
                 return (float) Math.exp((rect.height + rect.y) / ys + (float) Math.log(c_mm.getMin()) - y / ys);
 
@@ -468,8 +468,8 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         //    ctx.g.fillRect(0, 0, 100, 100);
         // g.drawLine(0,0,clip.width,clip.height);
 
-        float y1 = ctx.getY(ctx.c_mm.getMin());
-        float y2 = ctx.getY(ctx.c_mm.getMax());
+        double y1 = ctx.getY(ctx.c_mm.getMin());
+        double y2 = ctx.getY(ctx.c_mm.getMax());
 
         // nice first val
         double R = ctx.c_mm.getMax() - ctx.c_mm.getMin();
@@ -625,6 +625,17 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
 
     }
 
+    public long locatonToTime(Point p) {
+        Point panelLocationOnScreen = this.getLocationOnScreen();
+        mouseX = p.x - panelLocationOnScreen.x;
+        mouseY = p.y - panelLocationOnScreen.y;
+             Rectangle clip = getVisibleRect();
+               double bars = clip.width / (emWidth * x_unit_width) * data.getFrameSize();
+
+        long n = (long) (bars * (mouseX + 1) / clip.width);
+        return n;
+    }
+
     void drawCross(Graphics2D g) {
         if (!mouseInside) {
             return;
@@ -672,8 +683,7 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             g.drawLine(mouseX, 0, mouseX, getHeight());  // vertikale Linie
         }
 
-
-        long n; 
+        long n;
 
         double bars = clip.width / (emWidth * x_unit_width) * data.getFrameSize();
 
@@ -699,16 +709,16 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
             return;
         }
 
-        // Rechteck zeichnen
+        
         int x = mouseX - (textWidth + 2 * padding) / 2;
-        if (x < 0) {
-            x = 0;
+        if (x < this.getVisibleRect().x) {
+            x = this.getVisibleRect().x;
         }
-        if (x + (textWidth + 2 * padding) >= ctx.g.getClipBounds().width) {
-            x = ctx.g.getClipBounds().width - (textWidth + 2 * padding);
+        if (x + (textWidth + 2 * padding) >= this.getVisibleRect().x+ctx.g.getClipBounds().width) {
+            x = this.getVisibleRect().x+ctx.g.getClipBounds().width - (textWidth + 2 * padding);
         }
 
-// Beispielkoordinaten
+
         int y = clip.height - (textHeight + 2 * padding);
         g.setColor(Globals.colors.bgLightYellow);
         g.fillRect(x, y, textWidth + 2 * padding, textHeight + 2 * padding);
@@ -717,36 +727,29 @@ public class Chart extends javax.swing.JPanel implements QuoteReceiver, Scrollab
         // Text innerhalb des Rechtecks zeichnen
         g.drawString(text, x + padding, y + fm.getAscent() + padding);
 
-
-        
         // 1. Hole die globale Skalierung/Transformation von g, die von FlatLaF gesetzt wurde
-AffineTransform gTransform = g.getTransform();
+        AffineTransform gTransform = g.getTransform();
 
-// 2. Wende diese Skalierung auf die Mauskoordinaten an (nur wenn g transformiert ist)
-Point2D mouse = new Point(mouseX, mouseY); // Untransformierte Mauskoordinaten
+        // 2. Wende diese Skalierung auf die Mauskoordinaten an (nur wenn g transformiert ist)
+        Point2D mouse = new Point(mouseX, mouseY); // Untransformierte Mauskoordinaten
 
-if (gTransform != null && !gTransform.isIdentity()) {
-    // Die Mauskoordinaten in das skalierte Koordinatensystem bringen
-    mouse = gTransform.transform(mouse, null);
-}
-        
-        
-        
+        if (gTransform != null && !gTransform.isIdentity()) {
+            // Die Mauskoordinaten in das skalierte Koordinatensystem bringen
+            mouse = gTransform.transform(mouse, null);
+        }
+
         AffineTransform inverse = null;
         try {
             inverse = ctx.gyr.getTransform().createInverse();
         } catch (Exception e) {
         }
 
-
-
-        float val = ctx.getValAtY(mouseY - h1);
+        double val = ctx.getValAtY(mouseY - h1);
         text = String.format("%.2f", val);
 
         textWidth = fm.stringWidth(text);
 
-
-     //   Point2D mouse = new Point(mouseX, mouseY);
+        //   Point2D mouse = new Point(mouseX, mouseY);
         Point2D p = inverse.transform(mouse, null);
 
         // System.out.printf("DrawCrss Point %f, %f\n", p.getX(), p.getY());
@@ -767,7 +770,6 @@ if (gTransform != null && !gTransform.isIdentity()) {
         // Text innerhalb des Rechtecks zeichnen
         ctx.gyr.drawString(text, x + padding, y + fm.getAscent() + padding);
 
-        
     }
 
     DrawCtx makeDrawCtx(SubChartDef d, Graphics2D g, int h) {
@@ -817,7 +819,7 @@ if (gTransform != null && !gTransform.isIdentity()) {
 
         g2 = (Graphics2D) g.create();
         ctx.gyr = g2;
- /*       
+        /*       
 // 1. Hole die aktuelle (globale) Transformation von g, die Skalierung und Translation enthält
 AffineTransform currentTx = g.getTransform();
 
@@ -836,10 +838,8 @@ if (currentTx != null && !currentTx.isIdentity()) {
     // 4. Fallback für Standard-LaFs (Nimbus, Metal), bei denen g keine Transformation hat
     ctx.gyr.setTransform(new AffineTransform());
 }        
-   */     
-        
-       
-        
+         */
+
         ctx.gyr.translate(clip.x + this.leftYAxisAreaWidth * this.emWidth + chartWidth, h);
         //ctx.gyr.setClip(0,0,this.leftYAxisAreaWidth * this.emWidth,100);
 
@@ -992,7 +992,8 @@ if (currentTx != null && !currentTx.isIdentity()) {
 
         if (autoScroll) {
             //System.out.printf("LASTMAX: %d, MAX:%d,PPX: %d\n", lastMaxPos, maxPos, pp.x);
-            if (pp.x == lastMaxPos || pp.x == maxPos) {
+            if ( (pp.x <= lastMaxPos && pp.x> lastMaxPos-50)|| 
+                    (pp.x <= maxPos && pp.x>maxPos-50)) {
                 lastMaxPos = pwidth - vp.getWidth();
                 int currentYPos = vp.getViewPosition().y;
                 vp.setViewPosition(new Point(lastMaxPos, currentYPos));

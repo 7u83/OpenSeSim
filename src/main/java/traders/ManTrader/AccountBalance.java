@@ -54,7 +54,7 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
         if (a == null) {
             return;
         }
-        a.getDefaultMarket().addQuoteReceiver(this);
+//        a.getDefaultMarket().addQuoteReceiver(this);
     }
     
     public AccountBalance(){
@@ -62,7 +62,7 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
     }
 
     public void updateBalance(Account account) {
-        DecimalFormat mf = account.getDefaultMarket().getMoneyFormatter();
+ /*       DecimalFormat mf = account.getDefaultMarket().getMoneyFormatter();
         //String s = mf.format(account.getMoney());
         cashLabel.setText(mf.format(account.getMoney()));
         DecimalFormat sf = account.getDefaultMarket().getSharesFormatter();
@@ -70,16 +70,16 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
 
         this.freeMargin.setText(mf.format(account.getFreeMargin()));
         this.equity.setText(mf.format(account.getEquity()));
-
-        float lp = account.getDefaultMarket().getLastPrice();
+*/
+        /*float lp = .getDefaultMarket().getLastPrice();
         float total = lp * account.getShares() + account.getMoney();
-        float iniTotal = lp * account.getInitialShares() + account.getInitialMoney();
+        float iniTotal = 0; //lp * account.getInitialShares(); // + account.getInitialMoney();
 
         float perc =  total/(iniTotal/100)-100 ;
 
-        String s = String.format("%s (%.1f%%)", (String) mf.format(total), perc);
+        String s = String.format("%s (%.1f%%)", (String) mf.format(total), perc);*/
 
-        this.totalLabel.setText(s);
+        this.totalLabel.setText("hallo");
     }
 
     ExecutorService executor = Executors.newSingleThreadExecutor();

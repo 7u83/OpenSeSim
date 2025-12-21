@@ -25,13 +25,13 @@
  */
 package traders.RandomTraderM;
 
-import traders.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sesim.Account;
 import sesim.AutoTraderBase;
 import sesim.AutoTraderGui;
+import sesim.util.FixedPoint;
 import sesim.Market.AccountListener;
 import sesim.Order;
 import sesim.Quote;
@@ -57,8 +57,8 @@ public class RandomTraderM extends AutoTraderBase
     public long[] buyLimit = {-200, 200};
     public long[] sellLimit = {-200, 200};
 
-    public long minBuyDeviation = 1;
-    public long minSellDeviation = 1;
+    public long minAbsBuyDeviation = 1;
+    public long minAbsSellDeviation = 1;
 
     public long[] buyOrderTimeout = {10000, 50000};
     public long[] sellOrderTimeout = {10000, 50000};
@@ -72,13 +72,12 @@ public class RandomTraderM extends AutoTraderBase
 //    public float bankrupt_cash_cfg = 1f;
     public long bankrupt_shares = 0;
     public long bankrupt_cash = 0;
-    
-    
-    public boolean moodEnable=false;
-    public float moodiness=0.5f;
-    public float moodFrequency=60.0f;
-    
-    int leverage=1;
+
+    public boolean moodEnable = false;
+    public float moodiness = 0.5f;
+    public float moodFrequency = 60.0f;
+
+    int leverage = 1;
 
     final String INITIAL_DELAY = "initial_delay";
     final String AMOUNT_TO_SELL = "amount_to_sell";
@@ -97,7 +96,7 @@ public class RandomTraderM extends AutoTraderBase
     final String MIN_AMOUNT_TO_BUY_DEVIATION = "min_amount_to_buy_deviation";
     final String MIN_BUY_DEVIATION = "min_buy_deviation";
     final String MIN_SELL_DEVIATION = "min_sell_deviation";
-    
+
     final String MOODINESS = "modiness";
     final String MOOD_FREQUENCY = "mood_frequency";
     final String MOOD_ENABLE = "mood_enable";
@@ -129,22 +128,36 @@ public class RandomTraderM extends AutoTraderBase
         sim.addEvent(tradeEventTime, TRADEEVENT);
     }
 
+    int ctr = 0;
+
     // boolean intask = false;
     @Override
     public void processEvent(long time, Event e) {
-        /*     if (getName().equals("Alice-0")) {
-            System.out.printf("Alice is alive\n");
-        }*/
+        
+        
+        
+        if (getName().equals("Bob-4844")) {
+            ctr++;
+            
+            if (ctr == 98) {
+                System.out.printf("CTR STOP\n");
+            }
+
+            if (account.getMoney() < 0) {
+                System.out.printf("Ouch!\n");
+            }
+
+        }
         //System.out.printf("Process Event for %s %d\n",this.getName(),time);
         if (time != tradeEventTime) {
             //    System.out.printf("Wrong Event for %s: %d != %d\n", this.getName(), time, tradeEventTime);
-          
+
         }
         if (e == this.TRADEEVENT) {
 
             long t = 0;
 
-            if (account.getShares_Long() < this.bankrupt_shares && account.getMoney_Long() < this.bankrupt_cash) {
+            if (account.getShares_Long(sim.getDefaultMarket()) < this.bankrupt_shares && account.getMoney_Long() < this.bankrupt_cash) {
                 setStatus("Ruined");
                 return;
             }
@@ -165,8 +178,6 @@ public class RandomTraderM extends AutoTraderBase
             //          long w = getSleepTimeAfterOrder();
 
         }*/
-
-     
 
     }
 
@@ -192,23 +203,23 @@ public class RandomTraderM extends AutoTraderBase
 //        cfg.put(AMOUNT_TO_BUY, amountToBuy);
 //        cfg.put(AMOUNT_TO_SELL, amountToSell);
         fields = new double[2];
-        fields[0] = Math.round((amountToBuy[0] / 100.0) * 10) / 10.0;
-        fields[1] = Math.round((amountToBuy[1] / 100.0) * 10) / 10.0;
+        fields[0] = FixedPoint.toExternal(amountToBuy[0]); // / 100.0) * 10) / 10.0;
+        fields[1] = FixedPoint.toExternal(amountToBuy[1]); // / 100.0) * 10) / 10.0;
         cfg.put(AMOUNT_TO_BUY, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((amountToSell[0] / 100.0) * 10) / 10.0;
-        fields[1] = Math.round((amountToSell[1] / 100.0) * 10) / 10.0;
+        fields[0] = FixedPoint.toExternal(amountToSell[0]); // / 100.0) * 10) / 10.0;
+        fields[1] = FixedPoint.toExternal(amountToSell[1]); // / 100.0) * 10) / 10.0;
         cfg.put(AMOUNT_TO_SELL, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((buyLimit[0] / 100.0) * 10) / 10.0;
-        fields[1] = Math.round((buyLimit[1] / 100.0) * 10) / 10.0;
+        fields[0] = FixedPoint.toExternal(buyLimit[0]); // / 100.0) * 10) / 10.0;
+        fields[1] = FixedPoint.toExternal(buyLimit[1]); // / 100.0) * 10) / 10.0;
         cfg.put(BUY_LIMIT, fields);
 
         fields = new double[2];
-        fields[0] = Math.round((sellLimit[0] / 100.0) * 10) / 10.0;
-        fields[1] = Math.round((sellLimit[1] / 100.0) * 10) / 10.0;
+        fields[0] = FixedPoint.toExternal(sellLimit[0]); // / 100.0) * 10) / 10.0;
+        fields[1] = FixedPoint.toExternal(sellLimit[1]); // / 100.0) * 10) / 10.0;
         cfg.put(SELL_LIMIT, fields);
 
         fields = new double[2];
@@ -231,17 +242,17 @@ public class RandomTraderM extends AutoTraderBase
         fields[1] = Math.round((sleepAfterSell[1] / 1000.0) * 10) / 10.0;
         cfg.put(SLEEP_AFTER_SELL, fields);
 
-        cfg.put(BANKRUPT_SHARES, bankrupt_shares);
-        cfg.put(BANKRUPT_CASH, bankrupt_cash);
+        cfg.put(BANKRUPT_SHARES, FixedPoint.toExternal(bankrupt_shares));
+        cfg.put(BANKRUPT_CASH, FixedPoint.toExternal(bankrupt_cash));
 
         cfg.put(MIN_AMOUNT_TO_BUY_DEVIATION, this.minAmountToBuyDeviation);
         cfg.put(MIN_AMOUNT_TO_SELL_DEVIATION, this.minAmountToSellDeviation);
-        cfg.put(MIN_BUY_DEVIATION, this.minBuyDeviation);
-        cfg.put(MIN_SELL_DEVIATION, this.minSellDeviation);
-        
-        cfg.put(MOOD_ENABLE,moodEnable);
-        cfg.put(MOOD_FREQUENCY,moodFrequency);
-        cfg.put(MOODINESS,moodiness);
+        cfg.put(MIN_BUY_DEVIATION, FixedPoint.toExternal(this.minAbsBuyDeviation));
+        cfg.put(MIN_SELL_DEVIATION,FixedPoint.toExternal(this.minAbsSellDeviation));
+
+        cfg.put(MOOD_ENABLE, moodEnable);
+        cfg.put(MOOD_FREQUENCY, moodFrequency);
+        cfg.put(MOODINESS, moodiness);
 
 
         /*     cfg.put(SELL_VOLUME, sell_volume);
@@ -295,17 +306,17 @@ public class RandomTraderM extends AutoTraderBase
 
             //amountToBuy = to_float(cfg.getJSONArray(AMOUNT_TO_BUY));
             //amountToSell = to_float(cfg.getJSONArray(AMOUNT_TO_SELL));
-            amountToBuy[0] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(0));
-            amountToBuy[1] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(1));
+            amountToBuy[0] = FixedPoint.toInternal(cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(0));
+            amountToBuy[1] = FixedPoint.toInternal(cfg.getJSONArray(AMOUNT_TO_BUY).getDouble(1));
 
-            amountToSell[0] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(0));
-            amountToSell[1] = (long) (100 * cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(1));
+            amountToSell[0] = FixedPoint.toInternal(cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(0));
+            amountToSell[1] = FixedPoint.toInternal(cfg.getJSONArray(AMOUNT_TO_SELL).getDouble(1));
 
-            buyLimit[0] = (long) (100 * cfg.getJSONArray(BUY_LIMIT).getDouble(0));
-            buyLimit[1] = (long) (100 * cfg.getJSONArray(BUY_LIMIT).getDouble(1));
+            buyLimit[0] = FixedPoint.toInternal(cfg.getJSONArray(BUY_LIMIT).getDouble(0));
+            buyLimit[1] = FixedPoint.toInternal(cfg.getJSONArray(BUY_LIMIT).getDouble(1));
 
-            sellLimit[0] = (long) (100 * cfg.getJSONArray(SELL_LIMIT).getDouble(0));
-            sellLimit[1] = (long) (100 * cfg.getJSONArray(SELL_LIMIT).getDouble(1));
+            sellLimit[0] = FixedPoint.toInternal(cfg.getJSONArray(SELL_LIMIT).getDouble(0));
+            sellLimit[1] = FixedPoint.toInternal(cfg.getJSONArray(SELL_LIMIT).getDouble(1));
 
             buyOrderTimeout[0] = (long) (1000 * cfg.getJSONArray(BUY_ORDER_TIMEOUT).getDouble(0));
             buyOrderTimeout[1] = (long) (1000 * cfg.getJSONArray(BUY_ORDER_TIMEOUT).getDouble(1));
@@ -319,8 +330,8 @@ public class RandomTraderM extends AutoTraderBase
             sleepAfterSell[0] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_SELL).getDouble(0));
             sleepAfterSell[1] = (long) (1000 * cfg.getJSONArray(SLEEP_AFTER_SELL).getDouble(1));
 
-            bankrupt_shares = cfg.optLong(BANKRUPT_SHARES,0);
-            bankrupt_cash = cfg.optLong(BANKRUPT_CASH,100);
+            bankrupt_shares = FixedPoint.toInternal(cfg.optDouble(BANKRUPT_SHARES, 0));
+            bankrupt_cash = FixedPoint.toInternal(cfg.optDouble(BANKRUPT_CASH, 1.00));
 
 //            if (market != null) {
 //                bankrupt_shares = (long) (bankrupt_shares_cfg * market.shares_df);
@@ -329,12 +340,12 @@ public class RandomTraderM extends AutoTraderBase
             minAmountToBuyDeviation = cfg.getLong(MIN_AMOUNT_TO_BUY_DEVIATION);
             minAmountToSellDeviation = cfg.getLong(MIN_AMOUNT_TO_SELL_DEVIATION);
 
-            minBuyDeviation = cfg.getLong(MIN_BUY_DEVIATION);
-            minSellDeviation = cfg.getLong(MIN_SELL_DEVIATION);
-            
+            minAbsBuyDeviation = FixedPoint.toInternal(cfg.optDouble(MIN_BUY_DEVIATION,0.01));
+            minAbsSellDeviation = FixedPoint.toInternal(cfg.optDouble(MIN_SELL_DEVIATION,0.01));
+
             moodEnable = cfg.optBoolean(MOOD_ENABLE, false);
-            moodFrequency = (float)cfg.optDouble(MOOD_FREQUENCY,0.5f);
-            moodiness = (float)cfg.optDouble(MOODINESS, 1.0);
+            moodFrequency = (float) cfg.optDouble(MOOD_FREQUENCY, 0.5f);
+            moodiness = (float) cfg.optDouble(MOODINESS, 1.0);
 
             /*
             sell_wait[0] = (long) (1000 * cfg.getJSONArray(SELL_WAIT).getDouble(0));
@@ -384,12 +395,12 @@ public class RandomTraderM extends AutoTraderBase
 
         //     System.out.printf("Cancel %s rc for %d = %b\n",getName(),tradeEventTime,rc);
         if (currentOrder.getType() == Order.BUYLIMIT) {
-            tradeEventTime = getRandom(sleepAfterBuy[0],           
-                    (long)(sleepAfterBuy[1]*global.bmoodyness)
+            tradeEventTime = getRandom(sleepAfterBuy[0],
+                    (long) (sleepAfterBuy[1] * global.bmoodyness)
             );
         } else {
-            tradeEventTime = getRandom(sleepAfterSell[0], 
-            (long)(sleepAfterSell[1]*global.smoodyness)
+            tradeEventTime = getRandom(sleepAfterSell[0],
+                    (long) (sleepAfterSell[1] * global.smoodyness)
             );
         }
 
@@ -405,7 +416,7 @@ public class RandomTraderM extends AutoTraderBase
     }
 
     private Action getAction() {
-        if (sim.randNextInt(2) == 0) {
+        if (Sim.random.nextInt(2) == 0) {
             return Action.BUY;
         } else {
             return Action.SELL;
@@ -440,14 +451,14 @@ public class RandomTraderM extends AutoTraderBase
 
         if (o.getType() == Order.BUYLIMIT) {
             setStatus("Sleep after buy");
-            long r = (long) getRandom(sleepAfterBuy[0], 
-                (long)(sleepAfterBuy[1]*global.bmoodyness)
+            long r = (long) getRandom(sleepAfterBuy[0],
+                    (long) (sleepAfterBuy[1] * global.bmoodyness)
             );
             return r;
         }
         setStatus("Sleep after sell");
-        return getRandom(sleepAfterSell[0], 
-        (long)(sleepAfterSell[1]*global.smoodyness)
+        return getRandom(sleepAfterSell[0],
+                (long) (sleepAfterSell[1] * global.smoodyness)
         );
     }
 
@@ -471,9 +482,9 @@ public class RandomTraderM extends AutoTraderBase
                 if (o.getStatus() == Order.CLOSED) {
                     setStatus("Holding");
 
-                    return  getRandom(sleepAfterBuy[0], 
-                            (long)(sleepAfterBuy[1]*global.bmoodyness)
-                            );
+                    return getRandom(sleepAfterBuy[0],
+                            (long) (sleepAfterBuy[1] * global.bmoodyness)
+                    );
 
                 }
                 this.currentOrder = o;
@@ -493,7 +504,7 @@ public class RandomTraderM extends AutoTraderBase
 
                     setStatus("Cool down");
                     return getRandom(sleepAfterSell[0],
-                    (long)(sleepAfterSell[1]*global.smoodyness)
+                            (long) (sleepAfterSell[1] * global.smoodyness)
                     );
 
                 }
@@ -544,14 +555,12 @@ public class RandomTraderM extends AutoTraderBase
      * @param minmax
      * @return
      */
-    private float getRandomAmmount(float val, float[] minmax) {
+/*    private float getRandomAmmount(float val, float[] minmax) {
 
         float min = val * minmax[0] / 100.0f;
         float max = val * minmax[1] / 100.0f;
         return getRandom(min, max);
-    }
-
-
+    }*/
 
     // static long minn = 10000000;
     //  static long maxn = -10;
@@ -583,35 +592,52 @@ public class RandomTraderM extends AutoTraderBase
     private Order doBuy() {
         long money_avail = account.getMoney_Long();
         // how much money we ant to invest?
+        if (callctr == 1422973-1) {
+            System.out.printf("callctrl called %s\n", getName());
+        }
+
         long money = getRandomDelta_Long(money_avail, amountToBuy[0], amountToBuy[1], minAmountToBuyDeviation);
         if (money > money_avail) {
             money = money_avail;
         }
 
-        Quote q = market.getBestPrice_0();
+        Quote q = market.getBestQuote_0();
         long lp = q.getPrice_Long();
+        
+        lp = market.getBestPrice_0();
+        if (callctr == 1422973-1) {
+            System.out.printf("callctrl called\n");
+        }
+        long limit = getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minAbsBuyDeviation);
 
-        long limit = this.getRandomPrice_Long(lp, this.buyLimit[0], this.buyLimit[1], minBuyDeviation);
-
-        long volume = money / limit;
+        long volume = FixedPoint.floorDivide(money, limit); // money / limit;
+        
 
         return market.createOrder_Long(account, Order.BUYLIMIT, volume, limit, 0, leverage);
 
     }
 
     private Order doSell() {
-        long shares = account.getShares_Long();
+        long shares = account.getShares_Long(sim.getDefaultMarket());
         // how many shares we want to sell?
+        
+if (callctr==1422973-1){
+    System.out.printf("callctrl called %s\n", getName());
+}        
         long volume = getRandomDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
         if (volume > shares) {
             volume = shares;
         }
+    //    volume = market.getAsset().round_Long(volume);
 
         //    float lp = 100.0; //se.getBestLimit(type);
-        Quote q = market.getBestPrice_0();
+        Quote q = market.getBestQuote_0();
         long lp = q.getPrice_Long();
+        if (callctr == 1422973-1) {
+            System.out.printf("callctrl1 called\n");
+        }
 
-        long limit = this.getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1], minSellDeviation);
+        long limit = getRandomPrice_Long(lp, this.sellLimit[0], this.sellLimit[1], minAbsSellDeviation);
         //   limit = lp + getRandomAmmount(lp, sell_limit);
         //  limit = lp + market.random.nextLong(0, 4) - 2;
 
@@ -624,42 +650,39 @@ public class RandomTraderM extends AutoTraderBase
         float currentMoodiness = 0.0f;
         float bmoodyness = 1.0f;
         float smoodyness = 1.0f;
-        
-        
-   //     float moodiness = 0.5f;
-        
+
+        //     float moodiness = 0.5f;
         private final Event MYEVENT = new Event(this);
 
         Global(boolean enable) {
-            if (!enable){
+            if (!enable) {
                 return;
             }
-            
-            
-            sim.addEvent(sim.getCurrentTimeMillis() + (long)(moodFrequency*1000), MYEVENT);
+
+            sim.addEvent(sim.getCurrentTimeMillis() + (long) (moodFrequency * 1000), MYEVENT);
         }
 
         @Override
         public void processEvent(long time, Event e) {
-            sim.addEvent(sim.getCurrentTimeMillis() + (long)(moodFrequency*1000), MYEVENT);
-          //  long r = getRandom(0, 2);
-          boolean r = Sim.random.nextBoolean();
-       
+            
+            sim.addEvent(sim.getCurrentTimeMillis() + (long) (moodFrequency * 1000), MYEVENT);
+            //  long r = getRandom(0, 2);
+            boolean r = Sim.random.nextBoolean();
+
             if (r) {
                 currentMoodiness += moodiness;
             } else {
                 currentMoodiness -= moodiness;
             }
-            if (currentMoodiness>=0){
-                bmoodyness=currentMoodiness+1.0f;
-                smoodyness=1.0f;
-            }else{
-                smoodyness=Math.abs(currentMoodiness)+1.0f;
-                bmoodyness=1.0f;
+            if (currentMoodiness >= 0) {
+                bmoodyness = currentMoodiness + 1.0f;
+                smoodyness = 1.0f;
+            } else {
+                smoodyness = Math.abs(currentMoodiness) + 1.0f;
+                bmoodyness = 1.0f;
             }
-            
-    // System.out.printf("Hello %b, %f!\n", r, moodyness);
-          
+
+            // System.out.printf("Hello %b, %f!\n", r, moodyness);
         }
     }
 
@@ -673,8 +696,6 @@ public class RandomTraderM extends AutoTraderBase
             return global;
 
         }
-        
-        
 
         this.global = new Global(cfg.optBoolean(MOOD_ENABLE));
         return this.global;

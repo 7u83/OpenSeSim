@@ -88,7 +88,7 @@ public class OrderBook extends RawOrderBook {
 
     @Override
     protected ArrayList<? extends OrderBookEntry> getOrderBook() {
-        TreeMap<Long, OrderBookEntry> map = Globals.sim.getExchange().getCompressedOrderBook(type, depth);
+        TreeMap<Long, OrderBookEntry> map = Globals.sim.getDefaultMarket().getCompressedOrderBook(type, depth);
 
         //TreeMap<Float, OrderBookEntry> cmap = new TreeMap<>();
         ArrayList<OrderBookEntry> r = new ArrayList<>();

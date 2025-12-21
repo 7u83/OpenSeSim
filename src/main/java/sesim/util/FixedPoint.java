@@ -23,53 +23,51 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders;
+package sesim.util;
 
-import org.json.JSONObject;
-import sesim.AutoTraderBase;
-import sesim.AutoTraderGui;
-import sesim.Scheduler;
 
-/**
- *
- * @author tube
- */
-public class MoodyRandomTraderL extends AutoTraderBase {
 
-    @Override
-    public void start() {
+public class FixedPoint {
+    public static final long SCALE = 1_0000; // 4 decimals
+
+    // double -> long
+    public static long toInternal(double value) {
         
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return Math.round(value * SCALE);
     }
 
-    @Override
-    public boolean getDevelStatus() {
-        return true;
+    // long -> double
+    public static double toExternal(long internal) {
+        return internal / (double) SCALE;
     }
 
-    @Override
-    public String getDisplayName() {
-        return "MoodyRandomL";
+    // Addition
+    static long add(long a, long b) {
+        return a + b;
     }
 
-    @Override
-    public AutoTraderGui getGui() {
-        return null;
+    // Subtraktion
+    static long subtract(long a, long b) {
+        return a - b;
     }
 
-    @Override
-    public JSONObject getConfig() {
-        return new JSONObject();
-    }
-
-    @Override
-    public void setConfig(JSONObject cfg) {
-        
-    }
-
-    @Override
-    public void processEvent(long time, Scheduler.Event e) {
-        
+    // Multiplikation mit Rundung auf 4 Nachkommastellen
+    public static long multiply(long a, long b) {
+        return Math.round((a * b) / (double) SCALE);
     }
     
+    public static long floorMultiply(long a,long b){
+        return (a*b)/SCALE;
+    }
+
+    // Division mit Rundung auf 4 Nachkommastellen
+    public static long divide(long a, long b) {
+        return Math.round((a * (double) SCALE) / b);
+    }
+    
+    public static long floorDivide(long a, long b){
+        return Math.floorDiv(a*SCALE, b);
+    }
+
+
 }

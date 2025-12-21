@@ -48,8 +48,8 @@ public class OrderBooksHorizontal extends javax.swing.JPanel {
     }
 
     public final void start() {
-        bidBook.start(Globals.sim.getExchange(), Order.BUYLIMIT);
-        askBook.start(Globals.sim.getExchange(), Order.SELLLIMIT);
+        bidBook.start(Globals.sim.getDefaultMarket(), Order.BUYLIMIT);
+        askBook.start(Globals.sim.getDefaultMarket(), Order.SELLLIMIT);
         this.quoteVertical2.reset();
         askBook.UpdateOrderBook();
         bidBook.UpdateOrderBook();

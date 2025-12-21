@@ -34,7 +34,7 @@ import javax.swing.BoxLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sesim.AutoTraderGui;
-import sesim.AutoTraderInterface;
+import sesim.AutoTrader;
 
 /**
  * Dialog for creating, editing, and removing trading strategies. Displays the
@@ -47,7 +47,7 @@ public final class EditStrategiesDialog extends EscDialog {
     /**
      * Currently selected AutoTrader
      */
-    transient AutoTraderInterface currentAutoTrader = null;
+    transient AutoTrader currentAutoTrader = null;
 
     /**
      * GUI component of the current AutoTrader
@@ -406,7 +406,7 @@ System.out.println("guiPanel preferredSize nach add: " + guiPanel.getPreferredSi
             return;
         }
 
-        AutoTraderInterface ac = Globals.sim.tloader.getStrategyBase(sd.result.base);
+        AutoTrader ac = Globals.sim.tloader.getStrategyBase(sd.result.base);
         JSONObject cfg = ac.getConfig();
 
         cfg.put("base", ac.getClass().getCanonicalName());

@@ -25,13 +25,15 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
+
 /**
  *
  * @author tube
  */
 public class Quote implements Comparable {
 
-    Market se;
+    Market market;
     long bid;
     long bid_volume;
     long ask;
@@ -54,8 +56,8 @@ public class Quote implements Comparable {
 
     }
 
-    public Quote(Market se) {
-        this.se = se;
+    public Quote(Market market) {
+        this.market = market;
     }
 
     @Override
@@ -71,20 +73,20 @@ public class Quote implements Comparable {
 
     }
 
-    public float getPrice() {
-        return price / se.money_df;
+    public double getPrice() {
+        return FixedPoint.toExternal(price); 
     }
 
-    public float getBid() {
-        return bid / se.money_df;
+    public double getBid() {
+        return FixedPoint.toExternal(bid);
     }
 
-    public float getAsk() {
-        return ask / se.money_df;
+    public double getAsk() {
+        return FixedPoint.toExternal(ask); 
     }
 
-    public float getVolume() {
-        return volume / se.shares_df;
+    public double getVolume() {
+        return FixedPoint.toExternal(volume); 
     }
 
     public long getPrice_Long() {

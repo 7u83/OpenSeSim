@@ -180,9 +180,9 @@ public class TradingLogWriter extends Thread {
             orderType = o.getType();
             owner = o.getOwnerName();
 
-            volume = o.getVolume();
-            limit = o.getLimit();
-            stop = o.getStop();
+            volume = (float)o.getVolume();
+            limit = (float)o.getLimit();
+            stop = (float)o.getStop();
 
         }
 

@@ -25,6 +25,7 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
 import sesim.util.MinMax;
 import java.util.*;
 
@@ -70,12 +71,12 @@ public class OHLCData {
         }
     }
 
-    public float getMax() {
-        return max / market.money_df;
+    public double getMax() {
+        return FixedPoint.toExternal(max);
     }
 
-    public float getMin() {
-        return min / market.money_df;
+    public double getMin() {
+        return FixedPoint.toExternal(min); 
     }
 
     public int size() {
@@ -101,11 +102,11 @@ public class OHLCData {
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
-            return new MinMax(market.money_df, di.low, di.high);
+            return new MinMax(market.currency.getDf(), di.low, di.high);
         }
 
         OHLCDataItem di = data.get(first);
-        MinMax minmax = new MinMax(market.money_df, di.low, di.high);
+        MinMax minmax = new MinMax(market.currency.getDf(), di.low, di.high);
 
         for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);
@@ -123,11 +124,11 @@ public class OHLCData {
 
         if (first >= data.size()) {
             OHLCDataItem di = data.get(data.size() - 1);
-            return new MinMax(market.shares_df, di.volume, di.volume);
+            return new MinMax(market.getAsset().getDf(), di.volume, di.volume);
         }
 
         OHLCDataItem di = data.get(first);
-        MinMax minmax = new MinMax(market.shares_df, di.volume, di.volume);
+        MinMax minmax = new MinMax(market.getAsset().getDf(), di.volume, di.volume);
 
         for (int i = first + 1; i < last && i < data.size(); i++) {
             di = data.get(i);

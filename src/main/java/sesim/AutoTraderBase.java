@@ -31,12 +31,13 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import org.json.JSONObject;
 import sesim.Scheduler.EventProcessor;
+import sesim.util.FixedPoint;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
-public abstract class AutoTraderBase implements AutoTraderInterface, EventProcessor {
+public abstract class AutoTraderBase implements AutoTrader, EventProcessor {
 
     protected Account account;
     protected Market market;
@@ -84,7 +85,6 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         return color;
     }
 
-
     @Override
     public long getID() {
         return id;
@@ -97,12 +97,13 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     }
 
     @Override
-    public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
-        this.account = new Account(sim.getExchange(), money, shares); // market.createAccount(money, shares);
+    public void init(Sim sim, long id, String name, long money, String strat, JSONObject cfg) {
+
+        this.account = new Account(sim.defaultCurrency, money); // market.createAccount(money, shares);
         //       market.getAccount(account_id).owner = this;
 
         this.sim = sim;
-        this.market = sim.getExchange();
+        this.market = sim.getDefaultMarket();
         this.account.owner = this;
 //        this.market = market;
         this.name = name;
@@ -164,6 +165,8 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
         return true;
     }
 
+    public static int callctr = 0;
+
     /**
      * Generates a random price delta (change) based on the given last price and
      * deviation parameters.
@@ -175,8 +178,7 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
      * not produce a zero delta.
      * </p>
      *
-     * @param value the current price (in smallest currency unit, e.g.,
-     * cents)
+     * @param value the current price (in smallest currency unit, e.g., cents)
      * @param minDeviation the minimum relative deviation (per mille, can be
      * negative)
      * @param maxDeviation the maximum relative deviation (per mille)
@@ -188,20 +190,21 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
     static public long getRandomDelta_Long(long value,
             long minDeviation, long maxDeviation, long minAbsoluteDeviation) {
 
-        // Calculate minimum and maximum delta based on relative deviations 
+        callctr++;
+
+// Calculate minimum and maximum delta based on relative deviations 
         // (per mille)
         long product;
         product = value * minDeviation;
-       long minDelta = (product >= 0)
-                ? (product + 5000) / 10000
-                : (product - 5000) / 10000;
+        long minDelta = (product >= 0)
+                ? (product + 5 * FixedPoint.SCALE) / (100 * FixedPoint.SCALE)
+                : (product - 5 * FixedPoint.SCALE) / (100 * FixedPoint.SCALE);
         //long minDelta = (value * minDeviation) / 10000;
-        
-        
+
         product = value * maxDeviation;
         long maxDelta = (product >= 0)
-                ? (product + 5000) / 10000
-                : (product - 5000) / 10000;
+                ? (product + 5 * FixedPoint.SCALE) / (100 * FixedPoint.SCALE)
+                : (product - 5 * FixedPoint.SCALE) / (100 * FixedPoint.SCALE);
         //long maxDelta = (value * maxDeviation) / 10000;
 
         // Ensure minimum delta is at least the absolute minimum
@@ -219,7 +222,9 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
 
         // Calculate range of possible deltas
         long range = maxDelta - minDelta + 1;
-
+        if (range < 0) {
+            System.out.printf("Name: %s\n", "hello");
+        }
         // Generate random delta within the range
         long delta = Sim.random.nextLong(range) + minDelta;
 
@@ -232,9 +237,9 @@ public abstract class AutoTraderBase implements AutoTraderInterface, EventProces
      * parameters.
      * <p>
      * This function internally computes a random price delta using
-     * {@link #getRandomDelta_Long(long, long, long, long)} and adds it to
-     * the last price. The resulting price is guaranteed to be at least 1
-     * (cannot go below 1 unit).
+     * {@link #getRandomDelta_Long(long, long, long, long)} and adds it to the
+     * last price. The resulting price is guaranteed to be at least 1 (cannot go
+     * below 1 unit).
      * </p>
      *
      * @param lastPrice the current price (in smallest currency unit, e.g.,

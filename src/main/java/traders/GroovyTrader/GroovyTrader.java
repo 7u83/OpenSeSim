@@ -161,12 +161,12 @@ public class GroovyTrader extends AutoTraderBase {
 
     public class AccountApi {
 
-        public float getCashBalance() {
+        public double getCashBalance() {
             return account.getMoney();
         }
 
-        public float getShares() {
-            return account.getShares();
+        public double getShares() {
+            return account.getShares(sim.getDefaultMarket());
         }
 
     }
@@ -208,8 +208,8 @@ public class GroovyTrader extends AutoTraderBase {
         }
 
         public Order createOrder(byte type, double vol, double limit, double stop) {
-            limit = market.roundMoney(limit);
-            vol = market.roundShares(vol);
+            limit = market.getCurrency().round(limit);
+            vol = market.getAsset().round(vol);
             return market.createOrder(account, type, (float) vol, (float) limit, (float) stop);
         }
 
@@ -235,7 +235,7 @@ public class GroovyTrader extends AutoTraderBase {
             return market.getLastQuoete();
         }
 
-        public float getLastPrice() {
+        public double getLastPrice() {
             return getLastQuote().getPrice();
         }
 
@@ -286,23 +286,23 @@ public class GroovyTrader extends AutoTraderBase {
         }
 
         public GroovyPriceEvent scheduleOnPriceAbove(String groovyFun, double price) {
-            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getExchange(), price);
-            sim.getExchange().sheduleOnPriceAbove(e);
+            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getDefaultMarket(), price);
+            sim.getDefaultMarket().sheduleOnPriceAbove(e);
             return e;
         }
 
         public void cancelScheduleOnPriceAbove(GroovyPriceEvent e) {
-            sim.getExchange().cancelScheduleOnPriceAbove(e);
+            sim.getDefaultMarket().cancelScheduleOnPriceAbove(e);
         }
 
         public GroovyPriceEvent scheduleOnPriceBelow(String groovyFun, double price) {
-            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getExchange(), price);
-            sim.getExchange().sheduleOnPriceBelow(e);
+            GroovyPriceEvent e = new GroovyPriceEvent(groovyFun, sim.getDefaultMarket(), price);
+            sim.getDefaultMarket().sheduleOnPriceBelow(e);
             return e;
         }
 
         public void cancelSchedulePriceBelow(GroovyPriceEvent e) {
-            sim.getExchange().cancelScheduleOnPriceBelow(e);
+            sim.getDefaultMarket().cancelScheduleOnPriceBelow(e);
         }
 
         String groovyAccountUpdateFun = null;

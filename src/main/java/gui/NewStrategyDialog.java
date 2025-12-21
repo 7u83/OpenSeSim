@@ -26,7 +26,7 @@
 package gui;
 
 import java.util.ArrayList;
-import sesim.AutoTraderInterface;
+import sesim.AutoTrader;
 
 /**
  *
@@ -64,7 +64,7 @@ public class NewStrategyDialog extends EscDialog {
         this.baseComboBox.removeAllItems();
 
         for (String name : names) {
-            AutoTraderInterface ac = Globals.sim.tloader.getStrategyBase(name);
+            AutoTrader ac = Globals.sim.tloader.getStrategyBase(name);
 
             Result r = new Result();
             r.base = name;

@@ -49,7 +49,6 @@ import sesim.AutoTraderBase;
 
 //import sesim.AutoTraderConfig;
 import sesim.AutoTraderGui;
-import sesim.AutoTraderInterface;
 import sesim.Market;
 import sesim.Market.AccountListener;
 import sesim.Order;
@@ -62,13 +61,14 @@ import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import sesim.Market.QuoteReceiver;
 import sesim.Quote;
+import sesim.AutoTrader;
 
 /**
  *
  * @author 7u83 <7u83@mail.ru>
  */
 public class ManTrader extends AutoTraderBase
-        implements AccountListener, AutoTraderInterface, QuoteReceiver {
+        implements AccountListener, AutoTrader, QuoteReceiver {
 
     String soundFile = null;
     int soundVolume = 50;
@@ -85,8 +85,8 @@ public class ManTrader extends AutoTraderBase
     }
 
     @Override
-    public void init(Sim sim, long id, String name, float money, float shares, String strat, JSONObject cfg) {
-        super.init(sim, id, name, money, shares, strat, cfg);
+    public void init(Sim sim, long id, String name, long money, String strat, JSONObject cfg) {
+        super.init(sim, id, name, money, strat, cfg);
         getAccount().setListener(this);
     }
     ManTraderConsoleDialog consoleDialog = null;

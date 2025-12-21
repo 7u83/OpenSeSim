@@ -25,15 +25,13 @@
  */
 package sesim;
 
+import sesim.util.FixedPoint;
 import java.io.FileNotFoundException;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONObject;
 import sesim.Scheduler.Event;
 import sesim.TradingLogWriter.TradingLogRecord;
@@ -42,100 +40,19 @@ import sesim.TradingLogWriter.TradingLogRecord;
  * @desc Market class
  * @author 7u83
  */
-public class Market implements Asset {
+public class Market {
 
-    //   ConcurrentLinkedQueue<Order> order_queue = new ConcurrentLinkedQueue();
-    public float money_df = 100;
-    private int money_decimals = 2;
-    DecimalFormat money_formatter = getFormatter(2);
+    Asset currency;
 
-    /**
-     * Set the number of decimals used with money
-     *
-     * @param n number of decimals
-     */
-    public void setMoneyDecimals(int n) {
-        money_df = (float) Math.pow(10, n);
-        money_decimals = n;
-        money_formatter = getFormatter(n);
+    public Asset getCurrency() {
+        return currency;
     }
 
-    @Override
-    public float getDf() {
-        return shares_df;
+    //   @Override
+    public String getName() {
+        return "";
     }
 
-    @Override
-    public DecimalFormat getFormatter() {
-        return money_formatter;
-    }
-
-    public int getMoneyDecimals() {
-        return money_decimals;
-    }
-
-    public int getSharesDecimals() {
-        return shares_decimals;
-    }
-
-    public float shares_df = 1;
-    private int shares_decimals = 0;
-    private DecimalFormat shares_formatter = getFormatter(0);
-
-    /**
-     * Set the number of decimals for shares
-     *
-     * @param n number of decimals
-     */
-    public void setSharesDecimals(int n) {
-        shares_df = (float) Math.pow(10, n);
-        shares_decimals = n;
-        shares_formatter = getFormatter(n);
-    }
-
-    public float roundToDecimals(double val, double f) {
-        return (float) ((Math.floor(val * f) / f));
-    }
-
-    public float roundShares(double shares) {
-        return roundToDecimals(shares, shares_df);
-    }
-
-    public float roundMoney(double money) {
-        return roundToDecimals(money, money_df);
-    }
-
-    public DecimalFormat getFormatter(int n) {
-        //      DecimalFormat formatter;
-        String s = "#0.";
-        if (n == 0) {
-            s = "#";
-        } else {
-            for (int i = 0; i < n; i++) {
-                s = s + "0";
-            }
-        }
-        return new DecimalFormat(s);
-    }
-
-    public DecimalFormat getMoneyFormatter() {
-        return money_formatter;
-    }
-
-    public DecimalFormat getSharesFormatter() {
-        return shares_formatter;
-    }
-
-    @Override
-    public Market getMarket() {
-        return this;
-    }
-
-    //public Scheduler timer; 
-    //public ArrayList<AutoTraderInterface> traders_old;
-    /**
-     *
-     */
     public interface AccountListener {
 
         public void accountUpdated(Account a, Order o);
@@ -149,25 +66,12 @@ public class Market implements Asset {
     int minOHLCBarDuration = 5000;
     HashMap<Integer, OHLCData> ohlcByTimeFrameLength = new HashMap<>();
 
-    /*    private OHLCData buildOHLCData(int timeFrame) {
-        OHLCData data = new OHLCData(this, timeFrame);
-        if (this.quoteHistory == null) {
-            return data;
-        }
-
-        //      System.out.printf("--- build quote hostory for tf: %d\n", timeFrame);
-        for (Quote q : quoteHistory) {
-            data.realTimeAdd(q.time, q.price, q.volume);
-        }
-
-        return data;
-    }*/
     public OHLCData getOHLCdata(Integer timeFrameLength) {
         OHLCData data;
         data = ohlcByTimeFrameLength.get(timeFrameLength);
         if (data == null) {
 
-            synchronized (executor) {
+            synchronized (this) {
                 OHLCData o = new OHLCData(this, timeFrameLength, ohlcByTimeFrameLength.get(this.minOHLCBarDuration));
                 //    data = this.buildOHLCData(timeFrameLength);
                 ohlcByTimeFrameLength.put(timeFrameLength, o);
@@ -282,33 +186,6 @@ public class Market implements Asset {
             // Stabile Sortierung: ID als Tie-Breaker
             return Long.compare(a.id, b.id);
         }
-        /*
-        @Override
-        public int compare(Position left, Position right) {
-
-            long d;
-
-            if (isLong) {
-                d = left.getStopPrice_Long() - right.getStopPrice_Long();
-            } else {
-                d = right.getStopPrice_Long() - left.getStopPrice_Long();
-            }
-
-            if (d != 0) {
-                return d > 0 ? 1 : -1;
-            }
-
-            if (left.id < right.id) {
-                return -1;
-            }
-            if (left.id > right.id) {
-                return 1;
-            }
-
-            return 0;
-
-        }
-         */
 
     }
 
@@ -351,7 +228,6 @@ public class Market implements Asset {
 
     }
 
-//    IDGenerator order_id = new IDGenerator();
     public static class CompOrderBookEntry implements OrderBookEntry {
 
         long limit;
@@ -377,13 +253,13 @@ public class Market implements Asset {
         }
 
         @Override
-        public float getVolume() {
-            return volume / se.shares_df;
+        public double getVolume() {
+            return FixedPoint.toExternal(volume); // / se.getAsset().getDf(); //shares_df;
         }
 
         @Override
-        public float getLimit() {
-            return limit / se.money_df;
+        public double getLimit() {
+            return FixedPoint.toExternal(limit); // / se.currency.getDf();
         }
 
         @Override
@@ -397,7 +273,7 @@ public class Market implements Asset {
         }
 
         @Override
-        public float getStop() {
+        public double getStop() {
             return -1;
         }
 
@@ -422,10 +298,6 @@ public class Market implements Asset {
         }
     }
 
-    /**
-     * Histrory of quotes
-     */
-    // public List<Quote> quoteHistory; // = new TreeSet<>();
     SortedSet bidBook;
     SortedSet askBook;
     SortedSet marketBidBook;
@@ -539,7 +411,7 @@ public class Market implements Asset {
 
         public PriceEvent(Market se, double price) {
             this();
-            this.price = (long) (price * se.money_df);
+            this.price = FixedPoint.toInternal(price); //long) (price * se.currency.getDf());
         }
 
         public PriceEvent(long price) {
@@ -549,17 +421,25 @@ public class Market implements Asset {
 
     }
 
+    Asset asset;
+
+    public Asset getAsset() {
+        return asset;
+    }
+
     /**
      * Constructor
      */
-    public Market(Sim sim) {
+    public Market(Sim sim, Asset currency, Asset asset, JSONObject cfg) {
 
         quoteReceiverList = (new CopyOnWriteArrayList<>());
         this.sim = sim;
         //  this.money_formatter = getMoneyFormatter(2);
+        this.currency = currency;
+        this.asset = asset;
+        this.setCfg(cfg);
 
         initExchange();
-        //       executor.start();
 
     }
 
@@ -567,8 +447,8 @@ public class Market implements Asset {
 
         public long trades = 0;
         public long orders = 0;
-        public float high = 0;
-        public float low = 0;
+        public double high = 0;
+        public double low = 0;
 
         public long lastTradeTime = 0;
 
@@ -580,8 +460,8 @@ public class Market implements Asset {
             orders = numOrders;
             lastTradeTime = lastQuote.time;
             OHLCData d = getOHLCdata(minOHLCBarDuration);
-            high = priceHigh / money_df;
-            low = priceLow / money_df;
+            high = FixedPoint.toExternal(priceHigh); // / currency.getDf();
+            low = FixedPoint.toExternal(priceLow); // / currency.getDf();
 
         }
 
@@ -598,61 +478,20 @@ public class Market implements Asset {
         return new Statistics();
     }
 
-    class Executor extends Thread {
-
-        @Override
-        public void run() {
-            /*          synchronized (this) {
-                try {
-                    while (true) {
-
-                        this.wait();
-
-                        Order o;
-                        while (null != (o = order_queue.poll())) {
-                            addOrderToBook(o);
-                            Account a = o.account;
-                            a.orders.put(o.id, o);
-                            a.update(o);
-                            executeOrders();
-                        }
-
-                        updateBookReceivers(Order.SELLLIMIT);
-                        updateBookReceivers(Order.BUYLIMIT);
-                    }
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Exchange.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }*/
-        }
-
-    }
-
-    final Executor executor = new Executor();
-
-    /**
-     * Start the exchange
-     */
-    /*    public void start() {
-        timer.start();
-
-    }*/
     public void reset() {
         initExchange();
     }
 
-    void setFairValue(float v) {
-        this.fairValue = (long) (v * money_df);
-    }
+    /*    void setFairValue(float v) {
+        this.fairValue = (long) (v * currency.getDf());
+    }*/
 
-    /*   public void terminate() {
+ /*   public void terminate() {
         timer.terminate();
     }*/
-    public void initLastQuote() {
+    public void initLastQuote(double price) {
         Quote q = new Quote(this);
-        q.price = this.fairValue;
+        q.price = FixedPoint.toInternal(price);
         q.volume = 0;
         q.ask = q.price;
         q.bid = q.price;
@@ -665,13 +504,13 @@ public class Market implements Asset {
         this.updateQuoteReceivers(q);
     }
 
-    public float getLastPrice() {
+    public double getLastPrice() {
         Quote q = this.getLastQuoete();
         if (q == null) {
             //  System.out.printf("get last quote failed\n");
             return 0f;
         }
-        return q.price / money_df;
+        return FixedPoint.toExternal(q.price);
     }
 
     public long getLastPrice_Long() {
@@ -706,9 +545,16 @@ public class Market implements Asset {
     public final String CFG_AUTO_INITIAL_PRICE = "auto_initial_price";
     public final String CFG_INITIAL_PRICE = "initial_price";
 
-    public void putConfig(JSONObject cfg) {
-        this.setMoneyDecimals(cfg.optInt(CFG_MONEY_DECIMALS, 2));
+    /*    public void putConfig(JSONObject cfg) {
+  //      this.setMoneyDecimals(cfg.optInt(CFG_MONEY_DECIMALS, 2));
         this.setSharesDecimals(cfg.optInt(CFG_SHARES_DECIMALS, 0));
+    }*/
+    double initalPrice = 100.0f;
+    boolean autoInitialPrice = true;
+
+    void setCfg(JSONObject cfg) {
+        this.initalPrice = (float) cfg.optDouble("initial_price", 100.00);
+        this.autoInitialPrice = cfg.optBoolean("auto_initial_price", true);
     }
 
     private Long getBestPrice_Long() {
@@ -790,78 +636,129 @@ public class Market implements Asset {
         return lq.price;
     }
 
-    public Quote getBestPrice_0() {
+    public Quote getBestQuote_0() {
 
-        synchronized (executor) {
-            SortedSet<Order> bid = bidBook;
-            SortedSet<Order> ask = askBook;
+        //      synchronized (executor) {
+        SortedSet<Order> bid = bidBook;
+        SortedSet<Order> ask = askBook;
 
-            Quote lq = this.getLastQuoete();
-            Order b = null, a = null;
-            if (!bid.isEmpty()) {
-                b = bid.first();
-            }
-            if (!ask.isEmpty()) {
-                a = ask.first();
-            }
+        Quote lq = this.getLastQuoete();
+        Order b = null, a = null;
+        if (!bid.isEmpty()) {
+            b = bid.first();
+        }
+        if (!ask.isEmpty()) {
+            a = ask.first();
+        }
 
-            // If there is neither bid nor ask and no last quote
-            // we can't return a quote
-            if (lq == null && b == null && a == null) {
-                return null;
-            }
+        // If there is neither bid nor ask and no last quote
+        // we can't return a quote
+        if (lq == null && b == null && a == null) {
+            return null;
+        }
 
-            // there is bid and ask
-            if (a != null && b != null) {
-                Quote q = new Quote(this);
+        // there is bid and ask
+        if (a != null && b != null) {
+            Quote q = new Quote(this);
 
-                // if there is no last quote calculate from bid and ask
-                if (lq == null) {
-                    q.price = (bid.first().limit + ask.first().limit) / 2;
-                    return q;
-                }
-
-                if (lq.price < b.limit) {
-                    q.price = b.limit;
-                    return q;
-                }
-                if (lq.price > a.limit) {
-                    q.price = a.limit;
-                    return q;
-                }
-                return lq;
+            // if there is no last quote calculate from bid and ask
+            if (lq == null) {
+                q.price = (bid.first().limit + ask.first().limit) / 2;
+                return q;
             }
 
-            if (a != null) {
-                Quote q = new Quote(this);
-                if (lq == null) {
-
-                    q.price = a.limit;
-                    return q;
-                }
-                if (lq.price > a.limit) {
-                    q.price = a.limit;
-                    return q;
-                }
-                return lq;
+            if (lq.price < b.limit) {
+                q.price = b.limit;
+                return q;
             }
+            if (lq.price > a.limit) {
+                q.price = a.limit;
+                return q;
+            }
+            return lq;
+        }
 
-            if (b != null) {
-                Quote q = new Quote(this);
-                if (lq == null) {
-                    q.price = b.limit;
-                    return q;
-                }
-                if (lq.price < b.limit) {
-                    q.price = b.limit;
-                    return q;
-                }
+        if (a != null) {
+            Quote q = new Quote(this);
+            if (lq == null) {
 
-                return lq;
+                q.price = a.limit;
+                return q;
+            }
+            if (lq.price > a.limit) {
+                q.price = a.limit;
+                return q;
+            }
+            return lq;
+        }
+
+        if (b != null) {
+            Quote q = new Quote(this);
+            if (lq == null) {
+                q.price = b.limit;
+                return q;
+            }
+            if (lq.price < b.limit) {
+                q.price = b.limit;
+                return q;
             }
 
             return lq;
         }
+
+        return lq;
+//        }
+    }
+
+    public long getBestPrice_0() {
+
+        SortedSet<Order> bid = bidBook;
+        SortedSet<Order> ask = askBook;
+
+        Quote lq = this.getLastQuoete();
+
+        Order b = null, a = null;
+        if (!bid.isEmpty()) {
+            b = bid.first();
+        }
+        if (!ask.isEmpty()) {
+            a = ask.first();
+        }
+
+        if (b == null && a == null) {
+            return lq.price;
+        }
+
+        if (a != null && b != null) {
+
+            if (lq.price < b.limit) {
+                return b.limit;
+
+            }
+            if (lq.price > a.limit) {
+                return a.limit;
+
+            }
+            return lq.price;
+        }
+
+        if (a != null) {
+
+            if (lq.price > a.limit) {
+                return a.limit;
+            }
+            return lq.price;
+        }
+
+        if (b != null) {
+
+            if (lq.price < b.limit) {
+                return b.limit;
+
+            }
+            return lq.price;
+        }
+        return lq.price;
     }
 
     // Class to describe an executed order
@@ -1083,9 +980,17 @@ public class Market implements Asset {
         Order o;
 
 //        System.out.printf("Getting executor %d\n", Thread.currentThread().getId());
-        synchronized (executor) {
+        synchronized (this) {
 //            System.out.printf("Have executor %d\n", Thread.currentThread().getId());
             o = a.orders.get(order_id);
+
+            if (logging) {
+                TradingLogRecord e = new TradingLogRecord(
+                        sim.scheduler.getCurrentTimeMillis(),
+                        TradingLogRecord.Action.CANCEL_ORDER,
+                        o);
+                tradingLog.add(e);
+            }
 
             //   System.out.print("The Order:"+o.limit+"\n");
             if (o != null) {
@@ -1148,8 +1053,7 @@ public class Market implements Asset {
      * @param o
      */
     //  long nextQuoteId = 0;
-    private long fairValue = 0;
-
+    //private long fairValue = 0;
     private void removeOrderIfExecuted(Order o) {
 
         if (o.volume != 0 && o.status != Order.CLOSED) {
@@ -1262,10 +1166,10 @@ public class Market implements Asset {
         // buyer.account.cash -= money;
         // seller.account.cash += money;
         //  buyer.position.shares += volume;
-        buyer.position.addShares(volume, price, buyer.leverage);
+        buyer.position.addShares_Long(volume, price, buyer.leverage);
         // buyer.position.updateLiquidationOrder(buyer.leverage);
 
-        seller.position.addShares(-volume, price, seller.leverage);
+        seller.position.addShares_Long(-volume, price, seller.leverage);
 
         //seller.position.updateLiquidationOrder(seller.leverage);
         //seller.position.shares -= volume;
@@ -1286,16 +1190,16 @@ public class Market implements Asset {
                     this.sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.SELL,
                     seller);
-            e.trasaction_volume = (float) volume / shares_df;
-            e.transaction_price = (float) price / money_df;
+            e.trasaction_volume = (float) FixedPoint.toExternal(volume); // / asset.getDf(); //shares_df;
+            e.transaction_price = (float) FixedPoint.toExternal(price); // / currency.getDf();
             tradingLog.add(e);
 
             e = new TradingLogRecord(
                     this.sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.BUY,
                     buyer);
-            e.trasaction_volume = (float) volume / shares_df;
-            e.transaction_price = (float) price / money_df;
+            e.trasaction_volume = (float) FixedPoint.toExternal(volume); // / asset.getDf(); //shares_df;
+            e.transaction_price = (float) FixedPoint.toExternal(price); // / currency.getDf();
             tradingLog.add(e);
         }
 
@@ -1614,26 +1518,30 @@ public class Market implements Asset {
     public Order createOrder_Long(Account a, byte type, long volume,
             long limit, long stop, int leverage) {
 
+        volume = asset.round_Long(volume);
         if (volume <= 0) {
             return null;
         }
+
+        limit = currency.round_Long(limit);
 
         if ((type & Order.LIMIT) != 0) {
             if (limit <= 0) {
                 return null;
             }
+
         }
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-        /*        if (logging) {
+        if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
-        }*/
-        synchronized (executor) {
+        }
+        synchronized (this) {
 
             //num_orders++;
             numOrders++;
@@ -1671,47 +1579,48 @@ public class Market implements Asset {
 
         Order o = new Order(this, a, type, volume, limit, stop, leverage);
 
-        /*      if (logging) {
+        if (logging) {
             TradingLogRecord e = new TradingLogRecord(
                     sim.scheduler.getCurrentTimeMillis(),
                     TradingLogRecord.Action.CREATE_ORDER,
                     o);
             tradingLog.add(e);
-        }*/
-        synchronized (executor) {
-
-            //num_orders++;
-            numOrders++;
-
-            addOrderToBook(o);
-
-            a.orders.put(o.id, o);
-            a.update(o);
-
         }
+//        synchronized (executor) {
+        //num_orders++;
+        numOrders++;
 
+        addOrderToBook(o);
+
+        a.orders.put(o.id, o);
+        a.update(o);
+
+        //      }
         return o;
     }
 
-    public Order createOrder(Account a, byte type, float volume, float limit, float stop) {
+    public Order createOrder(Account a, byte type, double volume, double limit, double stop, int leverage) {
         return createOrder_Long(a, type,
-                (long) (volume * shares_df),
-                (long) (limit * money_df),
-                (long) (stop * money_df),
-                1
-        );
-    }
-
-    public Order createOrder(Account a, byte type, float volume, float limit, float stop, int leverage) {
-        return createOrder_Long(a, type,
-                (long) (volume * shares_df),
-                (long) (limit * money_df),
-                (long) (stop * money_df),
+                FixedPoint.toInternal(volume),
+                FixedPoint.toInternal(limit),
+                FixedPoint.toInternal(stop),
+                /*    (long) (volume * asset.getDf()),
+                (long) (limit * currency.getDf()),
+                (long) (stop * currency.getDf()),*/
                 leverage
         );
     }
 
-    public Order createLeveragedOrder(Account a, byte type, long money) {
+    public Order createOrder(Account a, byte type, double volume, double limit, double stop) {
+        return createOrder(a, type,
+                volume,
+                limit,
+                stop,
+                1
+        );
+    }
+
+    private Order createLeveragedOrder(Account a, byte type, long money) {
         if (!Order.isSell(type)) {
             return null;
         }

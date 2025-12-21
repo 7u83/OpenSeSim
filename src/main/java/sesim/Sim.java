@@ -31,16 +31,23 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.SortedMap;
 import java.util.SplittableRandom;
+import java.util.TreeMap;
+import java.util.function.Consumer;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import sesim.Scheduler.Event;
+import sesim.util.FixedPoint;
 
 /**
  *
  * @author 7u83
  */
 public class Sim {
+
+    private HashMap<String, Asset> assets = new HashMap<>();
+    private HashMap<Asset, HashMap<Asset, Market>> currencies = new HashMap();
 
     /**
      * Keys in cconfig file used by Sim
@@ -52,13 +59,8 @@ public class Sim {
         public static final String TRADERS = "traders";
         public static final String EXCHANGE = "exchange";
         public static final String RANDOM = "random";
-    }
 
-    public static final String DEFAULT_RANDOM_CFG
-            = "{"
-            + "seed: 0,"
-            + "use_seed: false"
-            + "}";
+    }
 
     public static int randNextInt() {
         return random.nextInt();
@@ -76,13 +78,13 @@ public class Sim {
 
     }
 
-    private Market se;
+    private Market defaultMarket;
 
-    public Market getExchange() {
-        return se;
+    public Market getDefaultMarket() {
+        return defaultMarket;
     }
 
-    static class TempAsset implements Asset {
+    /*   static class TempAsset implements Asset {
 
         private final String symbol;
         private final Market se;
@@ -113,19 +115,25 @@ public class Sim {
             return null;
         }
 
-    }
+        @Override
+        public String getName() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
 
-    HashMap<String, Asset> assets = new HashMap<>();
+        @Override
+        public int getDecimals() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
 
-    public Asset getAsset(String symbol) {
+    }*/
+ /*    public Asset getAsset(String symbol) {
         Asset a = assets.get(symbol);
         if (a == null) {
             a = new TempAsset(symbol, se);
             assets.put(symbol, a);
         }
         return a;
-    }
-
+    }*/
     public AutoTraderLoader tloader;
 
     Scheduler scheduler;
@@ -148,6 +156,10 @@ public class Sim {
 
     public void startScheduler() {
         scheduler.start();
+        for(Long time:breakPoints.keySet()){
+            BreakPoint bp = breakPoints.get(time);
+            scheduler.addEvent(time, bp);
+        }
     }
 
     public void stop() {
@@ -163,24 +175,29 @@ public class Sim {
         return scheduler.delEvent(t, e);
     }
 
+    Asset defaultAsset = new AssetBase("RBTN", "VEB Robotron", 0);
+
     public Sim() {
         scheduler = new Scheduler();
-        se = new Market(this);
+        defaultMarket = new Market(this, defaultCurrency, defaultAsset, new JSONObject());
         initAutoTraderLoader();
         reset();
     }
 
-    public ArrayList<AutoTraderInterface> traders = null;
+    AssetBase defaultCurrency = new AssetBase("TLR", "Taler", 2);
+
+    public ArrayList<AutoTrader> traders = null;
 
     public final void reset() {
         if (traders != null) {
-            for (AutoTraderInterface t : traders) {
+            for (AutoTrader t : traders) {
                 t.stop();
             }
         }
         traders = new ArrayList();
         scheduler = new Scheduler();
-        se.reset();
+
+        defaultMarket.reset();
     }
 
     /**
@@ -193,15 +210,15 @@ public class Sim {
      * @param cfg
      * @return
      */
-    private AutoTraderInterface createTraderNew(Market se, long id, String name, float money, float shares, String strat, JSONObject cfg) {
+    private AutoTrader createTraderNew(Market se, long id, String name, long money, String strat, JSONObject cfg) {
 
         String base = cfg.getString("base");
-        AutoTraderInterface ac = tloader.getStrategyBase(base);
+        AutoTrader ac = tloader.getStrategyBase(base);
         if (ac == null) {
             return null;
         }
         ac.setConfig(cfg);
-        ac.init(this, id, name, money, shares, strat, cfg);
+        ac.init(this, id, name, money, strat, cfg);
 
         return ac;
     }
@@ -209,7 +226,7 @@ public class Sim {
     void resetAutoTraders() {
         ArrayList<String> names = tloader.getDefaultStrategyNames();
         for (String name : names) {
-            AutoTraderInterface ac = tloader.getStrategyBase(name);
+            AutoTrader ac = tloader.getStrategyBase(name);
             ac.reset();
         }
     }
@@ -225,61 +242,22 @@ public class Sim {
         tloader = new AutoTraderLoader(pathlist);
     }
 
-    static public final JSONObject getStrategies(JSONObject cfg) {
-        return cfg.getJSONObject(CfgKeys.STRATEGIES);
-    }
-
-    static public final void putStrategies(JSONObject sobj, JSONObject strategies) {
-        sobj.put(CfgKeys.STRATEGIES, strategies);
-    }
-
-    static public final JSONArray getTraders(JSONObject cfg) {
-        JSONArray traders = cfg.getJSONArray(CfgKeys.TRADERS);
-        return traders;
-    }
-
-    static public final void putTraders(JSONObject cfg, JSONArray traders) {
-        cfg.put(CfgKeys.TRADERS, traders);
-    }
-
-    static public JSONObject getStrategy(JSONObject cfg, String name) {
-        return getStrategies(cfg).optJSONObject(name);
-    }
     public static String DEFAULT_EXCHANGE_CFG
             = "{"
             + "  money_decimals: 2,"
             + "  shares_decimals: 0"
             + "}";
 
-    public static JSONObject getExchangeCfg(JSONObject cfg) {
+    /*    public static JSONObject getExchangeCfg(JSONObject cfg) {
         JSONObject exchange = cfg.optJSONObject(CfgKeys.EXCHANGE);
         if (exchange == null) {
             exchange = new JSONObject(DEFAULT_EXCHANGE_CFG);
         }
         return exchange;
         //return cfg.getJSONObject(CfgKeys.EXCHANGE);
-    }
-
-    public static JSONObject getRandomCfg(JSONObject cfg) {
-        JSONObject rand = cfg.optJSONObject(CfgKeys.RANDOM);
-        if (rand != null) {
-            return rand;
-        }
-        return new JSONObject(DEFAULT_RANDOM_CFG);
-    }
-
+    }*/
     static public final void putExchangeCfg(JSONObject sobj, JSONObject exchange) {
         sobj.put(CfgKeys.EXCHANGE, exchange);
-    }
-
-    public static boolean useRandomSeed(JSONObject cfg) {
-        JSONObject rand = getRandomCfg(cfg);
-        return rand.optBoolean("use_seed", false);
-    }
-
-    public static long getRandomSeed(JSONObject cfg) {
-        JSONObject rand = getRandomCfg(cfg);
-        return rand.optLong("seed", 0);
     }
 
     public static double calculateInitialPrice(JSONArray tlist) {
@@ -301,21 +279,14 @@ public class Sim {
 
         }
         return shares == 0 ? 100.0 : cash / shares;
+
     }
 
     public static SplittableRandom random = new SplittableRandom(12);
 
-    public void startTraders(JSONObject cfg) {
-
-        Order.resetIdGenerator();
-
-        Logger.info("Sim started");
-        se.putConfig(getExchangeCfg(cfg));
-
-        long randomSeed = getRandomSeed(cfg);
-        boolean useSeed = useRandomSeed(cfg);
-        resetAutoTraders();
-
+    private void startRandomGenerator(JSONObject cfg) {
+        long randomSeed = Config.getRandomSeed(cfg);
+        boolean useSeed = Config.getUseRandomSeed(cfg);
         if (useSeed) {
             random = new SplittableRandom(randomSeed);
         } else {
@@ -325,21 +296,80 @@ public class Sim {
         }
 
         Logger.info("Random seed is %d", randomSeed);
+    }
 
-        JSONArray tlist = Sim.getTraders(cfg);
+    private void initAssets(JSONObject cfg) {
+        assets = new HashMap<>();
+        JSONObject jassets = Config.getAssets(cfg);
+        for (String symbol : jassets.keySet()) {
+            JSONObject jasset = jassets.optJSONObject(symbol);
+            AssetBase a = new AssetBase(
+                    symbol,
+                    jasset.optString("name", symbol),
+                    jasset.optInt("decimals", 0)
+            );
+            assets.put(symbol, a);
+        }
+    }
 
-        boolean autoInitialPrice = Sim.getExchangeCfg(cfg).optBoolean(se.CFG_AUTO_INITIAL_PRICE, true);
+    private void initMarkets(JSONObject cfg) {
+        JSONObject jcurrencies = Config.getMarkets(cfg);
+
+        String defaultCurrencySymbol = Config.getDefaultCurrency(cfg);
+        String defaultAssetSymbol = Config.getDefaultAsset(cfg);
+
+        for (String currencySymbol : jcurrencies.keySet()) {
+            JSONObject jmarkets = jcurrencies.optJSONObject(currencySymbol);
+
+            HashMap<Asset, Market> markets = new HashMap<>();
+            Asset currency = assets.get(currencySymbol);
+
+            for (String assetSymbol : jmarkets.keySet()) {
+                Asset asset = assets.get(assetSymbol);
+                Market market = new Market(this, currency, asset, jmarkets.optJSONObject(assetSymbol));
+
+                markets.put(asset, market);
+
+                if (assetSymbol.equals(defaultAssetSymbol)
+                        && currencySymbol.equals(defaultCurrencySymbol)) {
+
+                    this.defaultMarket = market;
+                }
+
+                System.out.printf("Pair: %s/%s\n", currencySymbol, assetSymbol);
+            }
+            this.currencies.put(currency, markets);
+        }
+
+    }
+
+    public void startTraders(JSONObject cfg) {
+
+        Logger.info("Sim started");
+
+        Order.resetIdGenerator();
+        startRandomGenerator(cfg);
+
+        this.initAssets(cfg);
+        this.initMarkets(cfg);
+
+        //     defaultMarket.putConfig(getExchangeCfg(cfg));
+        resetAutoTraders();
+
+        JSONArray tlist = Config.getTraders(cfg);
+
+        boolean autoInitialPrice = defaultMarket.autoInitialPrice;
         double initialPrice;
         if (autoInitialPrice) {
             initialPrice = Sim.calculateInitialPrice(tlist);
         } else {
-            initialPrice = (float) (Sim.getExchangeCfg(cfg).optDouble(se.CFG_INITIAL_PRICE, 100.0f));
+            initialPrice = defaultMarket.initalPrice;
         }
 
         Logger.info("Initial prices is: %f", initialPrice);
-        this.se.setFairValue((float) initialPrice);
+//        this.defaultMarket.setFairValue((float) initialPrice);
 
-        se.initLastQuote();
+        defaultMarket.initLastQuote(initialPrice);
 
         Float moneyTotal = 0.0f;
         Float sharesTotal = 0.0f;
@@ -350,10 +380,10 @@ public class Sim {
             if (strategy_name == null) {
                 continue;
             }
-            JSONObject strategyCfg = getStrategy(cfg, strategy_name);
+            JSONObject strategyCfg = Config.getStrategy(cfg, strategy_name);
 
             // String base = strategy.getString("base");
-            //    AutoTraderInterface ac = Globals.tloader.getStrategyBase(base);
+            //    AutoTrader ac = Globals.tloader.getStrategyBase(base);
             //     System.out.printf("Load Strat: %s\n", strategy_name);
             //      System.out.printf("Base %s\n", base);
             Integer count = t.getInt("Count");
@@ -373,7 +403,7 @@ public class Sim {
             Object global = null;
 
             for (int i1 = 0; i1 < count; i1++) {
-                AutoTraderInterface trader;
+                AutoTrader trader;
 
                 String base = strategyCfg.getString("base");
                 trader = tloader.getStrategyBase(base);
@@ -386,10 +416,20 @@ public class Sim {
                 trader.setConfig(strategyCfg);
 
                 //trader.init(this, id, t.getString("Name") + "-" + i1, money, shares, strategy_name, strategyCfg);
-                trader.init(this, id, t.getString("Name") + "-" + i1, money + (float) (initialPrice * shares), 0, strategy_name, strategyCfg);
-                trader.getAccount().getPosition(se).addShares(
-                        (long) (shares * se.shares_df),
-                        (long) (initialPrice * se.money_df),
+                long iniPrice_Long = defaultMarket.currency.round_Long(
+                        FixedPoint.toInternal(initialPrice));
+                long shares_Long = defaultMarket.asset.round_Long(
+                        FixedPoint.toInternal(shares));
+
+                long money_Long = defaultMarket.currency.round_Long(
+                        FixedPoint.toInternal(money));
+
+                trader.init(this, id, t.getString("Name") + "-" + i1,
+                        money_Long + FixedPoint.floorMultiply(iniPrice_Long, shares_Long),
+                        strategy_name, strategyCfg);
+                trader.getAccount().getPosition(defaultMarket).addShares(
+                        shares,
+                        initialPrice,
                         1);
                 trader.getAccount().makeSnapShot();
 
@@ -402,7 +442,7 @@ public class Sim {
                 ((AutoTraderBase) trader).setStrategyName(strategy_name);
 
                 this.traders.add(trader);
-                ((AutoTraderBase)trader).id=traders.size()-1;
+                ((AutoTraderBase) trader).id = traders.size() - 1;
 
                 Boolean exclude = t.optBoolean("ExcludeInitial", false);
                 if (!exclude) {
@@ -442,5 +482,42 @@ public class Sim {
     public Scheduler getScheduler() {
         return scheduler;
     }
+
+    public class BreakPoint extends Event implements Scheduler.EventProcessor {
+
+        private final Consumer<Long> callback;
+        private final long time;
+
+        BreakPoint(long time, Consumer<Long> callback) {
+            this.eventProcessor=this;
+            this.time = time;
+            this.callback = callback;
+        }
+
+        @Override
+        public void processEvent(long time, Event e) {
+
+            callback.accept(time);
+        }
+
+    }
+    
+    TreeMap<Long, BreakPoint> breakPoints = new TreeMap<>();
+
+    public void addBreakPoint(long time, Consumer<Long> callback) {
+        BreakPoint p = new BreakPoint(time, callback);
+        breakPoints.put(time, p);
+        scheduler.addEvent(time, p);
+    }
+
+    public void removeBreakPoint(long time) {
+        Event e = breakPoints.remove(time);
+        scheduler.delEvent(time, e);
+    }
+    
+    public TreeMap<Long, BreakPoint> getBreakPoints(){
+        return breakPoints;
+    }
+     
 
 }

@@ -31,7 +31,7 @@ import java.util.function.Function;
  *
  * @author tube
  */
-public class Math {
+public class SeSimMath {
 
     public static long toLong(double v) {
         if (v >= 0.0) {
@@ -58,8 +58,8 @@ public class Math {
         
         // Die Funktion, deren Nullstelle wir suchen
         Function<Double, Double> equation = x -> {
-            double term1 = (1 + x) * Math.log(1 + x) - (1 + x);
-            double term2 = (1 + leftBound) * Math.log(1 + leftBound) - (1 + leftBound);
+            double term1 = (1 + x) * SeSimMath.log(1 + x) - (1 + x);
+            double term2 = (1 + leftBound) * SeSimMath.log(1 + leftBound) - (1 + leftBound);
             return term1 - term2;
         };
         
@@ -80,7 +80,7 @@ public class Math {
             mid = (lower + upper) / 2;
             double result = equation.apply(mid);
             
-            if (Math.abs(result) < PRECISION) {
+            if (SeSimMath.abs(result) < PRECISION) {
                 break;
             }
             
@@ -102,7 +102,7 @@ public class Math {
             throw new IllegalArgumentException("Linke Grenze muss negativ sein");
         }
         // Näherungsformel: x ≈ |a| + a²/2
-        double a = Math.abs(leftBound);
+        double a = SeSimMath.abs(leftBound);
         return a + (a * a) / 2;
     }
     

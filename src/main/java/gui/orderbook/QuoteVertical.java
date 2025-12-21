@@ -58,9 +58,9 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
     }
 
     public final void reset() {
-        Quote q = Globals.sim.getExchange().getLastQuoete();
+        Quote q = Globals.sim.getDefaultMarket().getLastQuoete();
         this.UpdateQuote(q);
-        Globals.sim.getExchange().addQuoteReceiver(this);
+        Globals.sim.getDefaultMarket().addQuoteReceiver(this);
 
     }
 
@@ -124,7 +124,7 @@ public class QuoteVertical extends javax.swing.JPanel implements QuoteReceiver {
     private javax.swing.JLabel volumeLabel;
     // End of variables declaration//GEN-END:variables
 
-    float last_price = -1;
+    double last_price = -1;
 
     boolean busy;
     boolean update;

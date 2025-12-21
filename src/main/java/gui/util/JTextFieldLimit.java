@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, tube
+ * Copyright (c) 2018, 7u83 <7u83@mail.ru>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,12 +23,57 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package sesim;
+package opensesim.gui.util;
+
+import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 /**
  *
- * @author tube
+ * @author 7u83 <7u83@mail.ru>
  */
-public interface NewInterface {
+public class JTextFieldLimit extends JTextField {
+
+ /*  JTextFieldLimit() {
+        super();
+        this.setDocument(new PlainDocumentLimit());
+        setLimit(0);
+    }
+   */ 
+    private int limit;
     
+    
+    public final void setLimit(int limit){
+        this.limit = limit;
+        String text = getText();
+        setDocument(new PlainDocumentLimit());        
+        setText(text);
+    }
+    
+    public final int getLimit(){
+        return limit;
+    }
+        
+    class PlainDocumentLimit extends PlainDocument {
+
+        //private int limit;
+
+        PlainDocumentLimit() {
+            super();
+        
+        }
+
+        @Override
+        public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+            if (str == null) {
+                return;
+            }
+            if ((getLength() + str.length()) <= limit || limit==0) {
+                super.insertString(offset, str, attr);
+            }
+        }
+    }
+
 }
