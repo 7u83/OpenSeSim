@@ -343,7 +343,13 @@ public class Sim {
 
     }
 
-    public void startTraders(JSONObject cfg) {
+    public void startTraders(JSONObject cfg){
+        synchronized(this.traders){
+            startTraders0(cfg);
+        }
+        
+    }
+    public void startTraders0(JSONObject cfg) {
 
         Logger.info("Sim started");
 

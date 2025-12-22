@@ -502,17 +502,20 @@ public class TraderListPanel extends javax.swing.JPanel {
         public void copyTraders() {
             // ArrayList<AutoTrader> t = new  ArrayList<>();
 
-            ArrayList<ArrayList<Object>> t = new ArrayList<>();
-            for (AutoTrader a : Globals.sim.traders) {
-                //t.add(a);
-                ArrayList<Object> objects = new ArrayList<>();
-                for (Column c : Column.values()) {
-                    objects.add(getValue(a, c.ordinal()));
+            synchronized (Globals.sim.traders) {
+                ArrayList<ArrayList<Object>> t = new ArrayList<>();
+                for (AutoTrader a : Globals.sim.traders) {
+                    //t.add(a);
+                    ArrayList<Object> objects = new ArrayList<>();
+                    for (Column c : Column.values()) {
+                        objects.add(getValue(a, c.ordinal()));
+                    }
+                    t.add(objects);
                 }
-                t.add(objects);
+
+                //      t.sort(new TraderComparator(sortCol, !sortAsc));
+                tTraders = t;
             }
-            //      t.sort(new TraderComparator(sortCol, !sortAsc));
-            tTraders = t;
             //traders = t;
 
         }
@@ -944,29 +947,26 @@ public class TraderListPanel extends javax.swing.JPanel {
 
     private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
         if (evt.getClickCount() == 2) {
-            
+
             System.out.printf("double clicked\n");
-            
-            
+
             int index = list.rowAtPoint(evt.getPoint());
-            
-            System.out.printf("Index: %d\n",index);
-            
+
+            System.out.printf("Index: %d\n", index);
 
             index = list.getRowSorter().convertRowIndexToModel(index);
-            
-            System.out.printf("Model Index: %d",index);
-                        
+
+            System.out.printf("Model Index: %d", index);
+
             Integer tid = (Integer) model.getValueAt(index, 0);
-            
-            
-                        System.out.printf("TID Index: %d\n",index);
+
+            System.out.printf("TID Index: %d\n", index);
             // System.out.printf("Trader ID %d\n", tid);
 
             //  JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             JDialog console = Globals.sim.traders.get(tid).getGuiConsole(parentFrame);
             if (console == null) {
-                
+
                 System.out.printf("Console was 0 \n");
                 return;
             }
