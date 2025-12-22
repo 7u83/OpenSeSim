@@ -71,7 +71,7 @@ import sesim.AutoTrader;
  */
 public class TraderListPanel extends javax.swing.JPanel {
 
-    DefaultTableModel model;
+    MyModel model;
     Frame parentFrame = null;
     TimerTask updater;
     // NEU: Map zum Speichern ausgeblendeter Spalten
@@ -176,11 +176,13 @@ public class TraderListPanel extends javax.swing.JPanel {
         addContextMenu();
     }
 
+    MyRowSorter sorter;
+
     private void setupTable() {
         model = new MyModel(Column.values());
         list.setModel(model);
 
-        MyRowSorter sorter = new MyRowSorter((MyModel) model);
+        sorter = new MyRowSorter((MyModel) model);
         list.setRowSorter(sorter);
 
         for (Column a : Column.values()) {
@@ -233,10 +235,10 @@ public class TraderListPanel extends javax.swing.JPanel {
                     return;
                 }
                 running.set(true);
-                try {
-                    updateModel();
-                } catch (Exception e) {
-                }
+                //          try {
+                updateModel();
+                //         } catch (Exception e) {
+                //       }
                 running.set(false);
 
             }
@@ -258,7 +260,10 @@ public class TraderListPanel extends javax.swing.JPanel {
             return;
         }
 
-        ((MyModel) (model)).sortTraders();
+        //System.out.printf("Sorting Traderes\n");
+        model.copyTraders();
+        sorter.sortTraders();
+        //System.out.printf("Model updated\n");
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -272,22 +277,16 @@ public class TraderListPanel extends javax.swing.JPanel {
                 }
 
                 Long selectedTraderId = null;
+// 1. Index sichern (Model-Ebene)
                 int selectedViewRow = list.getSelectedRow();
+                int modelRowToRestore = -1;
 
-                // Überprüfe, ob überhaupt eine Zeile markiert ist
                 if (selectedViewRow != -1) {
-                    // Konvertiere die Ansichts-Zeilennummer in die Model-Zeilennummer
-                    int selectedModelRow = list.convertRowIndexToModel(selectedViewRow);
-
-                    // Hole die ID aus dem Model (Spalte Column.ID hat Index 0)
-                    Object value = model.getValueAt(selectedModelRow, Column.ID.ordinal());
-                    if (value instanceof Long) {
-                        selectedTraderId = (Long) value;
-                    } else if (value instanceof Integer) {
-                        // Da Sie Long.class im Enum verwenden, aber Integer bekommen könnten:
-                        selectedTraderId = ((Integer) value).longValue();
-                    }
+                    modelRowToRestore = list.convertRowIndexToModel(selectedViewRow);
                 }
+
+                sorter.updateSortedTraders();
+                model.traders = model.tTraders;
 
                 List l = list.getRowSorter().getSortKeys();
                 //   model.fireTableRowsUpdated(0, model.getRowCount() - 1);
@@ -302,31 +301,12 @@ public class TraderListPanel extends javax.swing.JPanel {
 
                 }
 
-                /*        if (selectedTraderId != null) {
-                    // Durchlaufe das Model, um die Zeilennummer der ID zu finden
-                    for (int i = 0; i < model.getRowCount(); i++) {
-                        Object value = model.getValueAt(i, Column.ID.ordinal());
-                        Long currentId = null;
-                        if (value instanceof Long) {
-                            currentId = (Long) value;
-                        } else if (value instanceof Integer) {
-                            currentId = ((Integer) value).longValue();
-                        }
+                if (modelRowToRestore != -1 && modelRowToRestore < model.getRowCount()) {
+                    // Zurück von Model zu View (falls die Sortierung den Index optisch verschoben hat)
+                    int viewRowToRestore = list.convertRowIndexToView(modelRowToRestore);
+                    list.setRowSelectionInterval(viewRowToRestore, viewRowToRestore);
+                }
 
-                        if (selectedTraderId.equals(currentId)) {
-
-                            // Konvertiere die Model-Zeilennummer in die Ansichts-Zeilennummer
-                            int viewRow = list.convertRowIndexToView(i);
-
-                            // Setze die Markierung
-                            list.getSelectionModel().setSelectionInterval(viewRow, viewRow);
-
-                            // Optional: Scrolle zur markierten Zeile
-                            //          list.scrollRectToVisible(list.getCellRect(viewRow, 0, true));
-                            break; // Gefunden, Schleife verlassen
-                        }
-                    }
-                }*/
             }
         });
     }
@@ -514,14 +494,13 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         }
 
-        //public ArrayList<AutoTraderInterface> traders = null;
-        public ArrayList<ArrayList<Object>> sortedTraders = null;
+        //  public ArrayList<AutoTrader> traders = Globals.sim.traders;
+        //public ArrayList<ArrayList<Object>> sortedTraders = null;
+        ArrayList<ArrayList<Object>> traders = null;
+        ArrayList<ArrayList<Object>> tTraders = null;
 
-        byte sortCol = 0;
-        boolean sortAsc = false;
-
-        void sortTraders() {
-            //ArrayList<AutoTraderInterface> t = new ArrayList<>();
+        public void copyTraders() {
+            // ArrayList<AutoTrader> t = new  ArrayList<>();
 
             ArrayList<ArrayList<Object>> t = new ArrayList<>();
             for (AutoTrader a : Globals.sim.traders) {
@@ -532,50 +511,9 @@ public class TraderListPanel extends javax.swing.JPanel {
                 }
                 t.add(objects);
             }
-            t.sort(new TraderComparator(sortCol, !sortAsc));
-            sortedTraders = t;
+            //      t.sort(new TraderComparator(sortCol, !sortAsc));
+            tTraders = t;
             //traders = t;
-        }
-
-        class TraderComparator implements Comparator<ArrayList<Object>> {
-
-            byte col;
-            boolean asc;
-
-            TraderComparator(byte col, boolean asc) {
-                this.col = col;
-                this.asc = asc;
-            }
-
-            @Override
-            public int compare(ArrayList<Object> left, ArrayList<Object> right) {
-                Object l, r;
-                l = left.get(col); //getValue(left, col);
-                r = right.get(col); //getValue(right, col);
-
-                if (l == null && r == null) {
-                    return 0;
-                }
-
-                if (asc) {
-                    if (l == null) {
-                        return 1;
-                    }
-                    if (r == null) {
-                        return -1;
-                    }
-                    return ((Comparable<Object>) r).compareTo(l);
-                }
-
-                if (l == null) {
-                    return -1;
-                }
-                if (r == null) {
-                    return 1;
-                }
-                return ((Comparable<Object>) l).compareTo(r);
-
-            }
 
         }
 
@@ -639,19 +577,24 @@ public class TraderListPanel extends javax.swing.JPanel {
         @Override
         public Object getValueAt(int row, int column) {
 
-            AutoTrader at;
-            if (sortedTraders == null) {
-                at = Globals.sim.traders.get(row);
+            if (traders == null) {
+                AutoTrader at = Globals.sim.traders.get(row);
                 return this.getValue(at, column);
-            } else {
-                return sortedTraders.get(row).get(column);
-
-                //at = traders.get(row);
             }
-            //Account a = at.getAccount();
-            //float price = Globals.sim.getDefaultMarket().getLastPrice();
 
-            //return this.getValue(at, column);
+            return traders.get(row).get(column);
+
+        }
+
+        public Object getTValueAt(int row, int column) {
+
+            if (tTraders == null) {
+                AutoTrader at = Globals.sim.traders.get(row);
+                return this.getValue(at, column);
+            }
+
+            return tTraders.get(row).get(column);
+
         }
 
         @Override
@@ -736,6 +679,97 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         private final MyModel model;
         private List<SortKey> sortKeys = Collections.emptyList();
+        byte sortCol = 0;
+        boolean sortAsc = false;
+        ArrayList<Integer> viewToModel = null;
+        ArrayList<Integer> modelToView = null;
+
+        ArrayList<Integer> tViewToModel = new ArrayList<>();
+        ArrayList<Integer> tModelToView = new ArrayList<>();
+
+        public void sortTraders() {
+
+            tViewToModel = new ArrayList<>();
+            tModelToView = new ArrayList<>();
+            for (int i = 0; i < model.getRowCount(); i++) {
+                tViewToModel.add(i);
+                tModelToView.add(i);
+            }
+            tViewToModel.sort(new TraderComparator(sortCol, sortAsc));
+
+            for (int i = 0; i < tViewToModel.size(); i++) {
+                int modelIndex = tViewToModel.get(i);
+                tModelToView.set(modelIndex, i);
+            }
+
+        }
+
+        void updateSortedTraders() {
+            viewToModel = tViewToModel;
+            modelToView = tModelToView;
+        }
+
+        class TraderComparator implements Comparator<Integer> {
+
+            byte col;
+            boolean asc;
+
+            TraderComparator(byte col, boolean asc) {
+                this.col = col;
+                this.asc = asc;
+            }
+
+            @Override
+            public int compare(Integer left, Integer right) {
+                Object lo, ro;
+
+                lo = model.getTValueAt(left, col);
+                ro = model.getTValueAt(right, col);
+
+                Comparable<Object> l = (Comparable<Object>) lo;
+
+                Comparable<Object> r = (Comparable<Object>) ro;
+
+                //.get(col); //getValue(right, col);
+                // Null-Behandlung
+                if (l == null && r == null) {
+                    return 0;
+                }
+                if (l == null) {
+                    return asc ? 1 : -1;
+                }
+                if (r == null) {
+                    return asc ? -1 : 1;
+                }
+
+                // Vergleich in richtiger Richtung
+                return asc ? l.compareTo(r) : r.compareTo(l);
+
+                /*                if (l == null && r == null) {
+                    return 0;
+                }
+
+                if (asc) {
+                    if (l == null) {
+                        return 1;
+                    }
+                    if (r == null) {
+                        return -1;
+                    }
+                    return ((Comparable<Object>) r).compareTo(l);
+                }
+
+                if (l == null) {
+                    return -1;
+                }
+                if (r == null) {
+                    return 1;
+                }
+                return ((Comparable<Object>) l).compareTo(r);
+                 */
+            }
+
+        }
 
         public MyRowSorter(MyModel model) {
             this.model = model;
@@ -748,33 +782,39 @@ public class TraderListPanel extends javax.swing.JPanel {
 
         @Override
         public void setSortKeys(List<? extends SortKey> keys) {
-            // In Java 8 besser in eine modifizierbare Liste kopieren
-            this.sortKeys = new ArrayList<SortKey>(keys);
+            this.sortKeys = new ArrayList<>(keys);
 
             if (!keys.isEmpty()) {
                 SortKey k = keys.get(0);
                 int col = k.getColumn();
                 boolean asc = k.getSortOrder() == SortOrder.ASCENDING;
-                //    model.reloadSorted(col, asc);
-            }
 
+            }
+            System.out.print(sortKeys);
             fireSortOrderChanged();
         }
 
         @Override
         public List<SortKey> getSortKeys() {
+
             return sortKeys;
         }
 
-        // Keine Abbildung nötig, 1:1 Durchreichung
         @Override
         public int convertRowIndexToModel(int row) {
-            return row;
+            if (viewToModel == null) {
+                return row;
+            }
+            return viewToModel.get(row);
         }
 
         @Override
         public int convertRowIndexToView(int row) {
-            return row;
+            if (modelToView == null) {
+                return row;
+            }
+
+            return modelToView.get(row);
         }
 
         @Override
@@ -819,13 +859,13 @@ public class TraderListPanel extends javax.swing.JPanel {
                 }
             }
 
-            model.sortCol = (byte) column;
-            model.sortAsc = asc;
+            sortCol = (byte) column;
+            sortAsc = asc;
 
-            // Neue SortKeys-Liste setzen
             List<SortKey> newKeys = new ArrayList<>();
             newKeys.add(new SortKey(column, asc ? SortOrder.ASCENDING : SortOrder.DESCENDING));
 
+            System.out.print(newKeys);
             setSortKeys(newKeys);
         }
 
@@ -904,15 +944,30 @@ public class TraderListPanel extends javax.swing.JPanel {
 
     private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
         if (evt.getClickCount() == 2) {
+            
+            System.out.printf("double clicked\n");
+            
+            
             int index = list.rowAtPoint(evt.getPoint());
+            
+            System.out.printf("Index: %d\n",index);
+            
 
             index = list.getRowSorter().convertRowIndexToModel(index);
+            
+            System.out.printf("Model Index: %d",index);
+                        
             Integer tid = (Integer) model.getValueAt(index, 0);
+            
+            
+                        System.out.printf("TID Index: %d\n",index);
             // System.out.printf("Trader ID %d\n", tid);
 
             //  JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             JDialog console = Globals.sim.traders.get(tid).getGuiConsole(parentFrame);
             if (console == null) {
+                
+                System.out.printf("Console was 0 \n");
                 return;
             }
             console.setVisible(true);
