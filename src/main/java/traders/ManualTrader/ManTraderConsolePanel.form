@@ -202,12 +202,12 @@
         </Component>
         <Component class="traders.ManualTrader.EditOrderPanel" name="sellEditOrderPanel">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,Order.SELL)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(market,account,Order.SELL)"/>
           </AuxValues>
         </Component>
         <Component class="traders.ManualTrader.EditOrderPanel" name="buyEditOrderPanel">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,Order.BUY)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(market,account,Order.BUY)"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="buyButton">

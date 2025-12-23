@@ -81,17 +81,16 @@ public class EditOrderPanel extends javax.swing.JPanel {
         this.stopSpinner.setEnabled(o.hasStop());
     }
 
-
     private void setPrice() {
         double vol = this.getVolume();
-        if (Order.isSell(type)){
-            vol=-vol;
+        if (Order.isSell(type)) {
+            vol = -vol;
         }
-        double price = this.account.getRequiredCashForOrder(market, 
+        double price = this.account.getRequiredCashForOrder(market,
                 vol,
                 this.getLimit(),
                 this.getLeverage()
-                );
+        );
         String s = market.getCurrency().getFormatter().format(price);
         this.priceLabel.setText(s);
     }
@@ -114,9 +113,9 @@ public class EditOrderPanel extends javax.swing.JPanel {
     public double getLimit() {
         return (double) limitSpinner.getValue();
     }
-    
+
     public int getLeverage() {
-        return (int) Integer.parseInt((String)leverageComboBox.getSelectedItem());
+        return (int) Integer.parseInt((String) leverageComboBox.getSelectedItem());
     }
 
     public byte getOrderType() {
@@ -136,14 +135,13 @@ public class EditOrderPanel extends javax.swing.JPanel {
         limitSpinner.addChangeListener(c);
         limitCheckBox.addChangeListener(c);
         leverageComboBox.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // ChangeListener manuell benachrichtigen
-            c.stateChanged(new ChangeEvent(leverageComboBox));
-        }
-    });
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // ChangeListener manuell benachrichtigen
+                c.stateChanged(new ChangeEvent(leverageComboBox));
+            }
+        });
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -251,12 +249,12 @@ public class EditOrderPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(leverageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(priceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(priceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(setVolButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -341,7 +339,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
         }
         if (type == Order.SELL) {
-      //      double avail = account.getSharesAvailable();
+            //      double avail = account.getSharesAvailable();
 
 //            this.volumeSpinner.setValue(market.roundShares(account.getSharesAvailable()));
         }        // TODO add your handling code here:

@@ -116,7 +116,7 @@ public class Position {
 
     public long getPnL_Long() {
         return getPnL_Long(market.getLastPrice_Long());
-                //market.getLastPrice_Long() * shares + netCashFlow;
+        //market.getLastPrice_Long() * shares + netCashFlow;
     }
 
     public double getPnL() {
@@ -279,7 +279,7 @@ public class Position {
     }
 
     public double getStopPrice() {
-        return FixedPoint.toExternal(this.stopPrice); 
+        return FixedPoint.toExternal(this.stopPrice);
     }
 
     public long getStopPrice_Long() {
@@ -298,30 +298,22 @@ public class Position {
     public long getRequiredCashForOrder_Long(long volume, long price, long leverage) {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
-            long val = volume * price;
+            long val = FixedPoint.multiply(volume, price);
             long marginRequired = Math.abs(val / leverage);
             return marginRequired; // Ziehe die benötigte Initial Margin vom Cash ab
 
-        } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
-        else {
+        } else {
 
             long nextShares = shares + volume;
 
-            // A. Positionsumkehr (Nulldurchlauf): sharesAfter hat ein anderes 
-            // Vorzeichen als sharesBefore.
             if (Long.signum(shares) != Long.signum(nextShares) && nextShares != 0) {
-                long val = nextShares * price;
+                long val = FixedPoint.multiply(nextShares , price);
                 long marginRequired = Math.abs(val) / leverage;
                 return marginRequired;
 
-            } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
-            else {
+            } else {
                 return 0;
-                /*   long val = volume * price;
 
-                long reductionFactor = Math.abs(volume) * 10000 / Math.abs(shares);
-                long marginReduction = (margin * reductionFactor) / 10000;
-                return marginReduction;   // Freigegebene Margin zurück zu Cash*/
             }
         }
     }

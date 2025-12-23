@@ -49,7 +49,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
 
     public ManTrader trader;
     Account account;
-    Market se;
+    Market market;
 
     public OpenOrdersList getOrderListPanel() {
 
@@ -68,9 +68,9 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         //  this.ordersList1.account=trader.getAccount();
     }
 
-    public ManTraderConsolePanel(Market e, Account a) {
+    public ManTraderConsolePanel(Market m, Account a) {
         account = a;
-        se = e;
+        market = m;
         initComponents();
 
         // JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -79,20 +79,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2 && !evt.isConsumed()) {
                     evt.consume();
-                    System.out.println("Doppelklick auf Order!");
-                    //    Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(ManTraderConsolePanel.this);
-
-                    // 1. Übergeordnetes Window finden (korrigierter Cast)
                     Window parentWindow = SwingUtilities.getWindowAncestor(ManTraderConsolePanel.this);
-
-                    // 2. Parent an den Dialog-Konstruktor übergeben
-                    //    Wenn ModifyOrderDialog einen java.awt.Frame oder java.awt.Dialog erwartet:
                     Frame parentFrame = (parentWindow instanceof Frame) ? (Frame) parentWindow : null;
-                    // ODER (falls der Konstruktor auch Dialoge akzeptiert, was üblich ist):
-                    // Dialog parentDialog = (parentWindow instanceof Dialog) ? (Dialog) parentWindow : null;
-
-                    // Da Sie Frame verwenden wollten, bleiben wir bei dieser Logik,
-                    // setzen aber auf null, wenn es kein Frame ist, um den Fehler zu vermeiden.
                     Point point = evt.getPoint();
                     int currentRow = ordersList.table.rowAtPoint(point);
                     if (currentRow != -1) {
@@ -100,7 +88,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
                         ordersList.table.setRowSelectionInterval(currentRow, currentRow);
                         Long oid = (Long) ordersList.table.getModel().getValueAt(currentRow, 0);
                         Order o = account.getOrderByID(oid);
-                        ModifyOrderDialog d = new ModifyOrderDialog(parentFrame, true, se, o);
+                        ModifyOrderDialog d = new ModifyOrderDialog(parentFrame, true, m, o);
                         d.setLocationRelativeTo(parentWindow);
                         d.setVisible(true);
                     } else {
@@ -142,7 +130,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         double limit = this.buyEditOrderPanel.getLimit();
         byte type = this.buyEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
-        boolean b = account.isOrderCovered(se, vol, limit, leverage) | true;
+        boolean b = account.isOrderCovered(market, vol, limit, leverage) | true;
 
         this.buyButton.setEnabled(b);
         return b;
@@ -153,7 +141,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         double limit = this.sellEditOrderPanel.getLimit();
         byte type = this.sellEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
-        boolean b = account.isOrderCovered(se, -vol, limit, leverage) | true;
+        boolean b = account.isOrderCovered(market, -vol, limit, leverage) | true;
 
         //     boolean b = account.isOrderCovered(type, vol, limit);
         //    this.sellButton.setEnabled(b);
@@ -198,8 +186,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         closedOrderList = new gui.OpenOrdersList();
         tradingPanel = new javax.swing.JPanel();
         sellButton = new javax.swing.JButton();
-        sellEditOrderPanel = new EditOrderPanel(se,account,Order.SELL);
-        buyEditOrderPanel = new EditOrderPanel(se,account,Order.BUY);
+        sellEditOrderPanel = new EditOrderPanel(market,account,Order.SELL);
+        buyEditOrderPanel = new EditOrderPanel(market,account,Order.BUY);
         buyButton = new javax.swing.JButton();
         accountBalance2 = new traders.ManualTrader.AccountBalance();
 
@@ -335,8 +323,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         byte type = this.buyEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
 
-        //    synchronized (se.timer) {
-        Order o = se.createOrder(account, type, vol, limit, stop, leverage);
+        //    synchronized (market.timer) {
+        Order o = market.createOrder(account, type, vol, limit, stop, leverage);
 
         //    }
         this.updateBuyButton();
@@ -350,9 +338,9 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         double stop = this.sellEditOrderPanel.getStop();
         byte type = this.sellEditOrderPanel.getOrderType();
         int leverage = this.sellEditOrderPanel.getLeverage();
-        //      synchronized (se.timer) {
-        Order o = se.createOrder(account, type, vol, limit, stop, leverage);
-        //Order o = se.createLeveragedOrder(account, type, (long)(limit*100));
+        //      synchronized (market.timer) {
+        Order o = market.createOrder(account, type, vol, limit, stop, leverage);
+        //Order o = market.createLeveragedOrder(account, type, (long)(limit*100));
 
         //    }
         this.updateSellButton();

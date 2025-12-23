@@ -621,9 +621,7 @@ public class RandomTraderM extends AutoTraderBase
         long shares = account.getShares_Long(sim.getDefaultMarket());
         // how many shares we want to sell?
         
-if (callctr==1422973-1){
-    System.out.printf("callctrl called %s\n", getName());
-}        
+     
         long volume = getRandomDelta_Long(shares, amountToSell[0], amountToSell[1], minAmountToSellDeviation);
         if (volume > shares) {
             volume = shares;
