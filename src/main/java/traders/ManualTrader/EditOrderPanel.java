@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package traders.ManTrader;
+package traders.ManualTrader;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -83,11 +83,11 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
 
     private void setPrice() {
-        float vol = this.getVolume();
+        double vol = this.getVolume();
         if (Order.isSell(type)){
             vol=-vol;
         }
-        float price = this.account.getRequiredCashForOrder(market, 
+        double price = this.account.getRequiredCashForOrder(market, 
                 vol,
                 this.getLimit(),
                 this.getLeverage()
@@ -96,18 +96,18 @@ public class EditOrderPanel extends javax.swing.JPanel {
         this.priceLabel.setText(s);
     }
 
-    public float getPrice() {
-        float price = this.getVolume() * this.getLimit();
+    public double getPrice() {
+        double price = this.getVolume() * this.getLimit();
         price = market.getCurrency().round(price);
         return price;
     }
 
-    public float getStop() {
-        return (float) stopSpinner.getValue();
+    public double getStop() {
+        return (double) stopSpinner.getValue();
     }
 
-    public float getVolume() {
-        return (float) volumeSpinner.getValue();
+    public double getVolume() {
+        return (double) volumeSpinner.getValue();
 
     }
 

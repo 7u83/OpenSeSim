@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders.ManTrader;
+package traders.ManualTrader;
 
 import gui.OpenOrdersList;
 import gui.util.UpdateExecutor;
@@ -138,7 +138,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
     }
 
     private boolean updateBuyButton() {
-        float vol = this.buyEditOrderPanel.getVolume();
+        double vol = this.buyEditOrderPanel.getVolume();
         float limit = this.buyEditOrderPanel.getLimit();
         byte type = this.buyEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
@@ -149,8 +149,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
     }
 
     private boolean updateSellButton() {
-        float vol = this.sellEditOrderPanel.getVolume();
-        float limit = this.sellEditOrderPanel.getLimit();
+        double vol = this.sellEditOrderPanel.getVolume();
+        double limit = this.sellEditOrderPanel.getLimit();
         byte type = this.sellEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
         boolean b = account.isOrderCovered(se, -vol, limit, leverage) | true;
@@ -201,7 +201,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         sellEditOrderPanel = new EditOrderPanel(se,account,Order.SELL);
         buyEditOrderPanel = new EditOrderPanel(se,account,Order.BUY);
         buyButton = new javax.swing.JButton();
-        accountBalance2 = new traders.ManTrader.AccountBalance();
+        accountBalance2 = new traders.ManualTrader.AccountBalance();
 
         ctxMenuCreateBuyOrder.setText("Create Buy Order");
         ctxMenuCreateBuyOrder.addActionListener(new java.awt.event.ActionListener() {
@@ -329,9 +329,9 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
     }// </editor-fold>//GEN-END:initComponents
 
     private void buyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyButtonActionPerformed
-        float vol = this.buyEditOrderPanel.getVolume();
-        float limit = this.buyEditOrderPanel.getLimit();
-        float stop = this.buyEditOrderPanel.getStop();
+        double vol = this.buyEditOrderPanel.getVolume();
+        double limit = this.buyEditOrderPanel.getLimit();
+        double stop = this.buyEditOrderPanel.getStop();
         byte type = this.buyEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
 
@@ -345,9 +345,9 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
     }//GEN-LAST:event_buyButtonActionPerformed
 
     private void sellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellButtonActionPerformed
-        float vol = this.sellEditOrderPanel.getVolume();
-        float limit = this.sellEditOrderPanel.getLimit();
-        float stop = this.sellEditOrderPanel.getStop();
+        double vol = this.sellEditOrderPanel.getVolume();
+        double limit = this.sellEditOrderPanel.getLimit();
+        double stop = this.sellEditOrderPanel.getStop();
         byte type = this.sellEditOrderPanel.getOrderType();
         int leverage = this.sellEditOrderPanel.getLeverage();
         //      synchronized (se.timer) {
@@ -380,9 +380,9 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private traders.ManTrader.AccountBalance accountBalance2;
+    private traders.ManualTrader.AccountBalance accountBalance2;
     private javax.swing.JButton buyButton;
-    private traders.ManTrader.EditOrderPanel buyEditOrderPanel;
+    private traders.ManualTrader.EditOrderPanel buyEditOrderPanel;
     private gui.OpenOrdersList closedOrderList;
     private javax.swing.JPopupMenu ctxMenu;
     private javax.swing.JMenuItem ctxMenuCancelOrder;
@@ -394,7 +394,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
     private gui.OpenOrdersList ordersList;
     private gui.PositionsListPanel positionList;
     private javax.swing.JButton sellButton;
-    private traders.ManTrader.EditOrderPanel sellEditOrderPanel;
+    private traders.ManualTrader.EditOrderPanel sellEditOrderPanel;
     private javax.swing.JPanel tradingPanel;
     // End of variables declaration//GEN-END:variables
 

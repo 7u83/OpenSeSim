@@ -57,7 +57,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="traders.ManTrader.EditOrderPanel" name="editOrderPanel1">
+    <Component class="traders.ManualTrader.EditOrderPanel" name="editOrderPanel1">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,order)"/>
       </AuxValues>

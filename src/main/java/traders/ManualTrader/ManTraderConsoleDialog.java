@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders.ManTrader;
+package traders.ManualTrader;
 
 import gui.EscDialog;
 import gui.util.UpdateExecutor;
@@ -183,6 +183,6 @@ public class ManTraderConsoleDialog extends EscDialog {
     private javax.swing.JMenuItem ctxMenuCreateBuyOrder;
     private javax.swing.JMenuItem ctxMenuCreateSellOrder;
     private javax.swing.JMenuItem ctxMenuModifyOder;
-    private traders.ManTrader.ManTraderConsolePanel manTraderConsole;
+    private traders.ManualTrader.ManTraderConsolePanel manTraderConsole;
     // End of variables declaration//GEN-END:variables
 }

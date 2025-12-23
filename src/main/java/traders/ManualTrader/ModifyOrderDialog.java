@@ -23,7 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package traders.ManTrader;
+package traders.ManualTrader;
 
 import gui.EscDialog;
 import javax.swing.event.ChangeEvent;
@@ -59,8 +59,8 @@ public class ModifyOrderDialog extends EscDialog {
             @Override
             public void stateChanged(ChangeEvent e) {
                 
-                float vol = editOrderPanel1.getVolume();
-                float limit = editOrderPanel1.getLimit();
+                double vol = editOrderPanel1.getVolume();
+                double limit = editOrderPanel1.getLimit();
                 byte type = editOrderPanel1.getOrderType();
            //     boolean b = account.isOrderCovered(type, vol, limit,order.id);
                 
@@ -175,7 +175,7 @@ public class ModifyOrderDialog extends EscDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton deleteButton;
-    private traders.ManTrader.EditOrderPanel editOrderPanel1;
+    private traders.ManualTrader.EditOrderPanel editOrderPanel1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton modifyButton;
     // End of variables declaration//GEN-END:variables

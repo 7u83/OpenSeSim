@@ -218,14 +218,14 @@ public class Account {
         return isOrderCovered_Long(getPosition(market), volume, price, leverage);
     }
 
-    public boolean isOrderCovered(Market market, float volume, float price, int leverage) {
+    public boolean isOrderCovered(Market market, double volume, double price, int leverage) {
         return isOrderCovered_Long(getPosition(market),
                 (long) (volume * market.getAsset().getDf()),
                 (long) (price * currency.getDf()),
                 leverage);
     }
 
-    public float getRequiredCashForOrder(Market market, float volume, float price, int leverage) {
+    public double getRequiredCashForOrder(Market market, double volume, double price, int leverage) {
         return getPosition(market).getRequiredCashForOrder_Long(
                 (long) (volume * market.getAsset().getDf()),
                 (long) (price * currency.getDf()),
@@ -361,6 +361,10 @@ public class Account {
             p.setStopPrice(stopPrice);
         }
 
+    }
+    
+    public Asset getCurrency(){
+        return currency;
     }
 
 }

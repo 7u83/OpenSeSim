@@ -200,12 +200,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sellButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="traders.ManTrader.EditOrderPanel" name="sellEditOrderPanel">
+        <Component class="traders.ManualTrader.EditOrderPanel" name="sellEditOrderPanel">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,Order.SELL)"/>
           </AuxValues>
         </Component>
-        <Component class="traders.ManTrader.EditOrderPanel" name="buyEditOrderPanel">
+        <Component class="traders.ManualTrader.EditOrderPanel" name="buyEditOrderPanel">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new EditOrderPanel(se,account,Order.BUY)"/>
           </AuxValues>
@@ -223,7 +223,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="traders.ManTrader.AccountBalance" name="accountBalance2">
+    <Component class="traders.ManualTrader.AccountBalance" name="accountBalance2">
     </Component>
   </SubComponents>
 </Form>
