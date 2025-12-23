@@ -139,7 +139,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
 
     private boolean updateBuyButton() {
         double vol = this.buyEditOrderPanel.getVolume();
-        float limit = this.buyEditOrderPanel.getLimit();
+        double limit = this.buyEditOrderPanel.getLimit();
         byte type = this.buyEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
         boolean b = account.isOrderCovered(se, vol, limit, leverage) | true;

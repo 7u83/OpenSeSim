@@ -34,9 +34,9 @@ public class MinMax {
     public long min;
     public long max;
 
-    float df;
+    double df;
 
-    public MinMax(float df, long min, long max) {
+    public MinMax(double df, long min, long max) {
         this.df = df;
         this.min = min;
         this.max = max;

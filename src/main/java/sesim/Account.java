@@ -171,7 +171,7 @@ public class Account {
         return getCashInOpenOrders_Long(-1);
     }
 
-    public float getCashInOpenOrders() {
+    public double getCashInOpenOrders() {
         return getCashInOpenOrders_Long() / currency.getDf();
     }
 

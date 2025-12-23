@@ -111,8 +111,8 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
     }
 
-    public float getLimit() {
-        return (float) limitSpinner.getValue();
+    public double getLimit() {
+        return (double) limitSpinner.getValue();
     }
     
     public int getLeverage() {
@@ -173,7 +173,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
         jCheckBox3.setText("fill or kill");
 
-        limitSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
+        limitSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
         limitSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 limitSpinnerStateChanged(evt);
@@ -182,7 +182,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 
         jLabel4.setText("Volume:");
 
-        volumeSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
+        volumeSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
         volumeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 volumeSpinnerStateChanged(evt);
@@ -222,7 +222,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
             }
         });
 
-        stopSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
+        stopSpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
         stopSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 stopSpinnerStateChanged(evt);
@@ -309,7 +309,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         Quote q = market.getBestQuote_0();
 
         //if (type == Order.BUY) {
-        this.limitSpinner.setValue((Float) market.getCurrency().round(q.getPrice()));
+        this.limitSpinner.setValue((Double) market.getCurrency().round(q.getPrice()));
         //  this.volumeSpinner.setValue(market.roundShares(account.getMoney() / price));
         //}
         //if (type == Order.SELL) {
@@ -332,7 +332,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         // Float price = q == null ? 0.0f : q.getPrice();
 
         if ((type & 0x01) == Order.BUY) {
-            float l = this.getLimit();
+            double l = this.getLimit();
             if (l < 1 / market.getAsset().getDf()) {
                 l = 1 / 1 / market.getAsset().getDf();
             }
@@ -366,7 +366,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         Quote q = market.getBestQuote_0();
 
         //if (type == Order.BUY) {
-        this.stopSpinner.setValue((Float) market.getCurrency().round(q.getPrice()));
+        this.stopSpinner.setValue((Double) market.getCurrency().round(q.getPrice()));
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 

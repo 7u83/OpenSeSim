@@ -62,7 +62,7 @@ public class AssetBase implements Asset {
     }*/
 
     @Override
-    public float getDf() {
+    public double getDf() {
         return df;
     }
 
@@ -99,12 +99,12 @@ public class AssetBase implements Asset {
     }
 
     @Override
-    public float round(double val) {
+    public double round(double val) {
         return roundToDecimals(val, df);
     }
 
-    public float roundToDecimals(double val, double f) {
-        return (float) ((Math.floor(val * f) / f));
+    public double roundToDecimals(double val, double f) {
+        return (double) ((Math.floor(val * f) / f));
     }
     
     @Override

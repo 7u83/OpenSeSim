@@ -36,8 +36,8 @@ public interface Asset {
     public String getName();
  //   public Market getMarket();
     public int getDecimals();
-    public float getDf();
+    public double getDf();
     public DecimalFormat getFormatter();
-    public float round(double val);
+    public double round(double val);
     public long round_Long(long val);
 }
