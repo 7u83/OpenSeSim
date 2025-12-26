@@ -532,10 +532,10 @@ public class EditPreferencesDialog extends javax.swing.JDialog {
             return;
 
         int option = JOptionPane.showConfirmDialog(this,
-                "✓ Look and Feel wurde gespeichert\n\n"
-                + "Um Darstellungsprobleme zu vermeiden, wird ein Neustart empfohlen.\n\n"
-                + "Jetzt neu starten?",
-                "Einstellung gespeichert",
+                "✓ Look and Feel has changed\n\n"
+                + "It is recomended to reastart the application.\n\n"
+                + "Restart now?",
+                "Settings saved",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.INFORMATION_MESSAGE);
 

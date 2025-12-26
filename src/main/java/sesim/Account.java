@@ -160,7 +160,10 @@ public class Account {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
             if (o.isBuy() && o.hasLimit() && o.id != exclude) {
-                orderCash += (o.getInitialVolume() - o.getExecuted_Long()) * o.getLimit_Long();
+                orderCash += (o.getInitialVolume() - 
+                        FixedPoint.multiply(
+                        o.getExecuted_Long(), o.getLimit_Long())
+                        );
             }
         }
         return orderCash;
