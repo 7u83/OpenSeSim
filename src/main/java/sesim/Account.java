@@ -47,8 +47,10 @@ public class Account {
     private Market.AccountListener listener = null;
 
     long cash;
+    
+    long maxMargin = 50;
 
-    long initial_equity;
+  //  long initial_equity;
 
     protected AutoTrader owner;
 
@@ -74,7 +76,7 @@ public class Account {
         positions = new HashMap<>();
         this.currency = currency;
         this.cash = currency.round_Long(initialCash);
-        initial_equity = this.getEquity_Long();
+//        initial_equity = this.getEquity_Long();
     }
 
     Account(Asset currency, double initialCash) {
@@ -293,7 +295,7 @@ public class Account {
     }
 
     public long getFreeMargin_Long() {
-        return getEquity_Long() - getMarginUsed_Long();
+        return getEquity_Long() * this.maxMargin/100 - getMarginUsed_Long();
     }
 
     public double getFreeMargin() {
