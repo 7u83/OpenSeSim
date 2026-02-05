@@ -61,10 +61,10 @@
                   <Component id="marginUsed" min="-2" max="-2" attributes="0"/>
                   <Component id="sharesLabelText" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel1" alignment="3" min="-2" pref="17" max="-2" attributes="0"/>
-                  <Component id="equity" alignment="3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="equity" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel1" alignment="0" min="-2" pref="17" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -98,7 +98,10 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Equity"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Noto Sans" size="12" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Total Equity"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="marginUsed">
@@ -121,7 +124,10 @@
     </Component>
     <Component class="javax.swing.JLabel" name="equity">
       <Properties>
-        <Property name="horizontalAlignment" type="int" value="4"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Noto Sans" size="12" style="1"/>
+        </Property>
+        <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="text" type="java.lang.String" value="0"/>
       </Properties>
     </Component>

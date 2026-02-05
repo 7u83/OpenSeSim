@@ -164,7 +164,8 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
 
         volAvailLabel.setText("Free Margin");
 
-        jLabel1.setText("Equity");
+        jLabel1.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
+        jLabel1.setText("Total Equity");
 
         marginUsed.setText("0");
 
@@ -173,7 +174,8 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
 
         cashLabel.setText("0.0000");
 
-        equity.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        equity.setFont(new java.awt.Font("Noto Sans", 1, 12)); // NOI18N
+        equity.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         equity.setText("0");
 
         totalLabel.setFont(new java.awt.Font("Noto Sans", 0, 24)); // NOI18N
@@ -219,10 +221,10 @@ public class AccountBalance extends javax.swing.JPanel implements QuoteReceiver 
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(marginUsed)
                     .addComponent(sharesLabelText))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(equity))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(equity)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sharesLabelText1)

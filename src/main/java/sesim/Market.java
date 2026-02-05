@@ -1095,7 +1095,7 @@ public class Market {
 
     }
 
-    String symbol = "RBTN";
+/*    String symbol = "RBTN";
 
     public String getSymbol() {
         return symbol;
@@ -1103,7 +1103,7 @@ public class Market {
 
     void setSymbol(String symbol) {
         this.symbol = symbol;
-    }
+    }*/
 
     void checkSLOrders(long price) {
         SortedSet<Order> ss = stopSellBook; //order_books.get(Order.STOPLOSS);

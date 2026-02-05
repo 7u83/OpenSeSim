@@ -66,7 +66,7 @@ public class Position {
     }
 
     public String getName() {
-        return market.getSymbol();
+        return market.getAsset().getSymbol();
     }
 
     public long getShares_Long() {
@@ -257,7 +257,7 @@ public class Position {
             }
         }
 
-        if (shares == 0 || (shares > 0 && netCashFlow + margin >= 0)) {
+        if (shares == 0 || (shares > 0 && netCashFlow + margin >= 0 && account.cash + netCashFlow >= 0)) {
 
             //cash += margin;
             account.cash += netCashFlow; // + margin;
@@ -276,6 +276,89 @@ public class Position {
             market.removeLiquidationStop(this);
         }
 
+    }
+
+    /*
+    private void closePosition(long currentPrice) {
+        long positionValue = FixedPoint.floorMultiply(this.shares, currentPrice);
+
+        // Die Rückrechnung ist immer gleich: Wert + Flow + Margin
+        account.cash += (positionValue + netCashFlow + margin);
+
+        this.shares = 0;
+        this.margin = 0;
+        this.netCashFlow = 0;
+    }
+
+    void addShares_Long(long volume, long price, int leverage) {
+        if (volume == 0) {
+            return;
+        }
+
+        // FALL 1: Zukauf / Eröffnung
+        if (shares == 0 || Long.signum(shares) == Long.signum(volume)) {
+            long totalVal = FixedPoint.floorMultiply(volume, price);
+            long absVal = Math.abs(totalVal);
+
+            // 1. Wie viel Cash können/müssen wir nehmen?
+            long requiredCash = absVal / leverage;
+
+            // WICHTIG: Niemals mehr nehmen als da ist -> verhindert account.cash < 0
+            long cashToTake = Math.min(account.cash, requiredCash);
+
+            account.cash -= cashToTake;
+
+            // 2. Verbuchung je nach Hebel-Typ
+            if (leverage == 1) {
+                // SPEZIALFALL HEBEL 1: Der User will margin == 0 sehen.
+                // Wir regeln alles über den Flow.
+
+                if (volume > 0) { // LONG
+                    // Wenn wir zu wenig Cash hatten (z.B. Mischkalkulation),
+                    // erhöhen wir die "Schuld" im Flow um den fehlenden Betrag.
+                    // Flow -= (Wert - Gezahltes)
+                    this.netCashFlow -= (absVal - cashToTake);
+                } else { // SHORT
+                    // Bei Short Hebel 1: Wir haben Cash hinterlegt (cashToTake) 
+                    // UND den Verkaufserlös (absVal) erhalten. Beides muss zurückkommen.
+                    // Da Margin 0 sein muss, packen wir beides in den Flow.
+                    this.netCashFlow += (absVal + cashToTake);
+                }
+                // Margin bleibt unangetastet (0)!
+
+            } else {
+                // STANDARD MARGIN TRADING (Hebel > 1)
+                this.margin += cashToTake;
+                this.netCashFlow -= totalVal; // Long: -Wert, Short: +Wert
+            }
+
+            this.shares += volume;
+        } // FALL 2: Umkehr (Flip)
+        else if (Math.abs(volume) >= Math.abs(shares)) {
+            long remaining = volume + shares; // shares hat anderes Vorzeichen
+            closePosition(price);
+            if (remaining != 0) {
+                addShares_Long(remaining, price, leverage);
+            }
+        } // FALL 3: Teil-Schließung
+        else {
+            long factor = Math.abs(volume) * 10000 / Math.abs(shares);
+            long mRelease = (margin * factor) / 10000;
+            long fRelease = (netCashFlow * factor) / 10000;
+            long saleValue = FixedPoint.floorMultiply(-volume, price);
+
+            account.cash += (saleValue + fRelease + mRelease);
+            this.margin -= mRelease;
+            this.netCashFlow -= fRelease;
+            this.shares += volume;
+        }
+    }*/
+    private void updateLiquidation(long price) {
+        if (this.margin != 0 || this.netCashFlow != 0) {
+            this.account.calculateLiquidationStops(price);
+        } else {
+            market.removeLiquidationStop(this);
+        }
     }
 
     public double getStopPrice() {
@@ -307,7 +390,7 @@ public class Position {
             long nextShares = shares + volume;
 
             if (Long.signum(shares) != Long.signum(nextShares) && nextShares != 0) {
-                long val = FixedPoint.multiply(nextShares , price);
+                long val = FixedPoint.multiply(nextShares, price);
                 long marginRequired = Math.abs(val) / leverage;
                 return marginRequired;
 
@@ -321,7 +404,7 @@ public class Position {
     public long getTradableShares_Long(long volume, long price, long leverage) {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
-            long val = volume * price;
+            long val = FixedPoint.floorMultiply(volume, price);
             long marginRequired = Math.abs(val / leverage);
 
             long freeMargin = account.getFreeMargin_Long();
@@ -330,7 +413,9 @@ public class Position {
             }
 
             if (freeMargin < marginRequired) {
-                return freeMargin * leverage / price;
+
+                return FixedPoint.floorDivide(freeMargin * leverage, price);
+
             }
 
         } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
@@ -342,12 +427,12 @@ public class Position {
             // Vorzeichen als sharesBefore.
             if (Long.signum(shares) != Long.signum(nextShares) && nextShares != 0) {
 
-                long c = netCashFlow - (-shares * price) + margin + account.cash;
+                long c = netCashFlow - FixedPoint.multiply(-shares, price) + margin + account.cash;
 
-                long val = nextShares * price;
+                long val = FixedPoint.multiply(nextShares, price);
                 long marginRequired = Math.abs(val) / leverage;
                 if (c < marginRequired) {
-                    return Math.abs(shares) + (c) * leverage / price;
+                    return Math.abs(shares) + FixedPoint.divide((c) * leverage, price);
                 }
 
                 //return marginRequired;

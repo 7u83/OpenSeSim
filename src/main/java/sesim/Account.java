@@ -58,7 +58,7 @@ public class Account {
     private HashMap<Market, Position> snap_positions = new HashMap<>();
     private long snap_cash;
 
-/*    Account(Asset currency, Market se, double cash) {
+    /*    Account(Asset currency, Market se, double cash) {
         this.currency = currency;
 
         //this.defaultMarket = se;
@@ -69,13 +69,21 @@ public class Account {
 
         initial_equity = this.getEquity_Long();
     }*/
-
     Account(Asset currency, long initialCash) {
         orders = new ConcurrentHashMap();
         positions = new HashMap<>();
         this.currency = currency;
         this.cash = currency.round_Long(initialCash);
         initial_equity = this.getEquity_Long();
+    }
+
+    Account(Asset currency, double initialCash) {
+/*        orders = new ConcurrentHashMap();
+        positions = new HashMap<>();
+        this.currency = currency;
+        this.cash = currency.getDf()*initialCash();
+        initial_equity = this.getEquity_Long();*/
+        this(currency,(long)(FixedPoint.toInternal(initialCash)));
     }
 
     void makeSnapShot() {
@@ -128,6 +136,10 @@ public class Account {
         return cash;
     }
 
+    void addCash(double m) {
+        cash += m * this.currency.getDf();
+    }
+
     public AutoTrader getOwner() {
         return owner;
     }
@@ -160,10 +172,9 @@ public class Account {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
             if (o.isBuy() && o.hasLimit() && o.id != exclude) {
-                orderCash += (o.getInitialVolume() - 
-                        FixedPoint.multiply(
-                        o.getExecuted_Long(), o.getLimit_Long())
-                        );
+                orderCash += (o.getInitialVolume()
+                        - FixedPoint.multiply(
+                                o.getExecuted_Long(), o.getLimit_Long()));
             }
         }
         return orderCash;
@@ -365,8 +376,8 @@ public class Account {
         }
 
     }
-    
-    public Asset getCurrency(){
+
+    public Asset getCurrency() {
         return currency;
     }
 
