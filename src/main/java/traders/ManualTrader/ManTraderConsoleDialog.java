@@ -115,7 +115,7 @@ public class ManTraderConsoleDialog extends EscDialog {
         ctxMenuCreateSellOrder = new javax.swing.JMenuItem();
         ctxMenuCancelOrder = new javax.swing.JMenuItem();
         ctxMenuModifyOder = new javax.swing.JMenuItem();
-        manTraderConsole = new ManTraderConsolePanel(se,account);
+        manTraderConsole = new traders.ManualTrader.ManTraderConsolePanel(se,account);
 
         ctxMenuCreateBuyOrder.setText("Create Buy Order");
         ctxMenuCreateBuyOrder.addActionListener(new java.awt.event.ActionListener() {
@@ -154,7 +154,7 @@ public class ManTraderConsoleDialog extends EscDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(manTraderConsole, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+            .addComponent(manTraderConsole, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
         );
 
         pack();
