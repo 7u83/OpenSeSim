@@ -48,7 +48,7 @@ public class Account {
 
     long cash;
     
-    long maxMargin = 50;
+    long maxMargin = 100;
 
   //  long initial_equity;
 
@@ -381,6 +381,16 @@ public class Account {
 
     public Asset getCurrency() {
         return currency;
+    }
+    
+    public long setMaxMargin(long m){
+        if (m<=100 && m>=0)
+            maxMargin=m;
+        return maxMargin;
+    }
+    
+    public long getMaxMargin(){
+        return maxMargin;
     }
 
 }
