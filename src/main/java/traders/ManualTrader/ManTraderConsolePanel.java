@@ -130,7 +130,7 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         double limit = this.buyEditOrderPanel.getLimit();
         byte type = this.buyEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
-        boolean b = account.isOrderCovered(market, vol, limit, leverage) | true;
+        boolean b = account.isOrderCovered(market, type, vol, limit, leverage);
 
         this.buyButton.setEnabled(b);
         return b;
@@ -141,10 +141,8 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         double limit = this.sellEditOrderPanel.getLimit();
         byte type = this.sellEditOrderPanel.getOrderType();
         int leverage = this.buyEditOrderPanel.getLeverage();
-        boolean b = account.isOrderCovered(market, -vol, limit, leverage) | true;
-
-        //     boolean b = account.isOrderCovered(type, vol, limit);
-        //    this.sellButton.setEnabled(b);
+        boolean b = account.isOrderCovered(market, type, -vol, limit, leverage);
+        this.sellButton.setEnabled(b);
         return b;
     }
 
@@ -321,6 +319,9 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         int leverage = this.buyEditOrderPanel.getLeverage();
 
         //    synchronized (market.timer) {
+        //  boolean rc = account.isOrderCovered(market, vol, limit, leverage);
+        double cash = account.getRequiredCashForOrder(market, vol, limit, leverage);
+
         Order o = market.createOrder(account, type, vol, limit, stop, leverage);
 
         //    }
@@ -335,6 +336,9 @@ public class ManTraderConsolePanel extends javax.swing.JPanel implements QuoteRe
         double stop = this.sellEditOrderPanel.getStop();
         byte type = this.sellEditOrderPanel.getOrderType();
         int leverage = this.sellEditOrderPanel.getLeverage();
+
+        double cash = account.getRequiredCashForOrder(market, -vol, limit, leverage);
+
         //      synchronized (market.timer) {
         Order o = market.createOrder(account, type, vol, limit, stop, leverage);
         //Order o = market.createLeveragedOrder(account, type, (long)(limit*100));

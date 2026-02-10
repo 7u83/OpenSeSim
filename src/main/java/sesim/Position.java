@@ -200,6 +200,104 @@ public class Position {
     }
 
     void addShares_Long(long volume, long price, int leverage) {
+        if (account.maxMargin==0){
+            // traditional trading, just buy/sell with 100% coverage 
+            
+            long val = FixedPoint.floorMultiply(volume, price);
+            shares+=volume;
+            account.cash-=val;
+            return;
+        }
+        
+        
+        
+
+        if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
+
+            long val = FixedPoint.floorMultiply(volume, price);
+            netCashFlow -= val;
+            totalEntryCost += val;
+
+            // Führt zu Zukauf (Long->Long oder Short->Short).
+            // Hier muss die Initial Margin des neuen Trades hinzugefügt werden.
+            long marginRequired = Math.abs(val / leverage);
+
+            shares += volume;
+            margin += marginRequired;
+            //    account.cash -= marginRequired; // Ziehe die benötigte Initial Margin vom Cash ab
+
+        } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
+        else {
+
+            long nextShares = shares + volume;
+
+            // A. Positionsumkehr (Nulldurchlauf): sharesAfter hat ein anderes 
+            // Vorzeichen als sharesBefore.
+            if (Long.signum(shares) != Long.signum(nextShares)) {
+                // close old position
+
+                netCashFlow += FixedPoint.floorMultiply(shares, price); //shares * price;
+                //   totalEntryCost += (-shares * price);
+
+                account.cash += netCashFlow; // + margin;
+                shares = nextShares;
+
+                long val = FixedPoint.floorMultiply(shares, price);
+                netCashFlow = -val;
+                totalEntryCost = val;
+
+                // 2. Neue Margin für den "Überhang" berechnen
+                long marginRequired = Math.abs(val) / leverage;
+
+                //      account.cash -= marginRequired;
+                margin = marginRequired;
+
+            } // B. Positionsreduzierung (Teilverkauf/Rückkauf: Vorzeichen bleibt gleich)
+            else {
+                long val = FixedPoint.floorMultiply(volume, price);
+                netCashFlow -= val;
+                totalEntryCost += val;
+
+                // Hier ist Ihr Prinzip der anteiligen Reduzierung korrekt.
+                // Die Margin muss proportional zum geschlossenen Teil reduziert werden.
+                // Anteil des geschlossenen Teils: |volume| / |sharesBefore| (mit 1000er Faktor)
+                long reductionFactor = Math.abs(volume) * 10000 / Math.abs(shares);
+                long marginReduction = (margin * reductionFactor) / 10000;
+                shares = nextShares;
+                margin -= marginReduction; // Reduziere die aggregierte Margin
+                //    account.cash += marginReduction;   // Freigegebene Margin zurück zu Cash
+            }
+        }
+
+/*        if (shares == 0 || (shares > 0 && netCashFlow + margin >= 0 && account.cash + netCashFlow >= 0)) {
+
+            //cash += margin;
+            account.cash += netCashFlow; // + margin;
+            //     cash+=Math.abs(margin);
+            margin = 0;
+            netCashFlow = 0;
+            if (shares == 0) {
+                totalEntryCost = 0;
+            }
+
+        }*/
+
+        if (this.margin != 0) {
+            this.account.calculateLiquidationStops(price);
+        } else {
+            market.removeLiquidationStop(this);
+        }
+
+    }
+
+    /*   
+    this is the very general add shares funtion which handles both
+    leveraged and noh leveraged orders. But its to complex.
+    
+    void addShares_Long(long volume, long price, int leverage) {
+        
+        
+        
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
             long val = FixedPoint.floorMultiply(volume, price);
@@ -276,9 +374,9 @@ public class Position {
             market.removeLiquidationStop(this);
         }
 
-    }
+    }*/
 
-    /*
+ /*
     private void closePosition(long currentPrice) {
         long positionValue = FixedPoint.floorMultiply(this.shares, currentPrice);
 
@@ -378,6 +476,13 @@ public class Position {
         market.setLiquidationStop(this);
     }
 
+    long getSharesToTrade(long volume) {
+        if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
+            return volume;
+        }
+        return shares + volume;
+    }
+
     public long getRequiredCashForOrder_Long(long volume, long price, long leverage) {
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
@@ -402,6 +507,26 @@ public class Position {
     }
 
     public long getTradableShares_Long(long volume, long price, long leverage) {
+        // account w/o margin (simple)
+        if (account.maxMargin==0){
+            if (volume<0){
+                
+                if (shares+volume<=0){
+                    return shares;
+                }
+                return Math.abs(volume);
+            }
+            long vmax = FixedPoint.floorDivide(account.cash,price);
+            if (vmax<volume){
+                return market.getAsset().round_Long(vmax);
+            }
+            return volume;
+        }
+        
+        
+        // account w/ margin (complex)
+        
+        
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
             long val = FixedPoint.floorMultiply(volume, price);

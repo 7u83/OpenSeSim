@@ -82,7 +82,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
     }
 
     private void setPrice() {
-        double vol = this.getVolume();
+/*        double vol = this.getVolume();
         if (Order.isSell(type)) {
             vol = -vol;
         }
@@ -92,7 +92,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
                 this.getLeverage()
         );
         String s = market.getCurrency().getFormatter().format(price);
-        this.priceLabel.setText(s);
+        this.priceLabel.setText(s);*/
     }
 
     public double getPrice() {

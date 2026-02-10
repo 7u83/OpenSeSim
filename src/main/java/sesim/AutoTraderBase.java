@@ -99,8 +99,8 @@ public abstract class AutoTraderBase implements AutoTrader, EventProcessor {
     @Override
     public void init(Sim sim, long id, String name, long money, String strat, JSONObject cfg) {
 
-        this.account = new Account(sim.defaultCurrency, money); // market.createAccount(money, shares);
-        //       market.getAccount(account_id).owner = this;
+        this.account = new Account(sim.defaultCurrency, money); 
+        this.account.maxMargin=this.getMaxMargin();
 
         this.sim = sim;
         this.market = sim.getDefaultMarket();
@@ -268,6 +268,11 @@ public abstract class AutoTraderBase implements AutoTrader, EventProcessor {
         }
 
         return newPrice;
+    }
+    
+    @Override
+    public long getMaxMargin(){
+        return 0;
     }
 
 }

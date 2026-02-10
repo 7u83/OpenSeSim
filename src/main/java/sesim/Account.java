@@ -225,19 +225,34 @@ public class Account {
         return orders.get(oid);
     }
 
-    public boolean isOrderCovered_Long(Position p, long volume, long price, int leverage) {
-        long cashNeeded = p.getRequiredCashForOrder_Long(volume, price, leverage);
-        return cashNeeded <= this.getFreeMargin();
+    public boolean isOrderCovered_Long(Position p, byte type, long volume, long price, int leverage) {
+        if (this.maxMargin==0){
+            if (volume<0){
+                return p.shares+volume >= 0;
+            }
+            if ((type & Order.LIMIT) != 0){
+                long c = FixedPoint.multiply(volume, price);    
+                return c<=cash;
+            }
+            
+            return true;
+        }
+        
+        return true;
+
     }
 
-    public boolean isOrderCovered_Long(Market market, long volume, long price, int leverage) {
+ /*   public boolean isOrderCovered_Long(Market market, byte type, long volume, long price, int leverage) {
         return isOrderCovered_Long(getPosition(market), volume, price, leverage);
-    }
+    }*/
 
-    public boolean isOrderCovered(Market market, double volume, double price, int leverage) {
+    public boolean isOrderCovered(Market market, byte type, double volume, double price, int leverage) {
+        
+        
         return isOrderCovered_Long(getPosition(market),
-                (long) (volume * market.getAsset().getDf()),
-                (long) (price * currency.getDf()),
+                type,
+                FixedPoint.toInternal(volume),
+                FixedPoint.toInternal(price),
                 leverage);
     }
 

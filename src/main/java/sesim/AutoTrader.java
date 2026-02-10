@@ -101,4 +101,6 @@ public interface AutoTrader {
         
     public long getID();
     
+    public long getMaxMargin();
+    
 }

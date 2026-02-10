@@ -39,39 +39,39 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author tube
  */
 public class AccountTest {
-    
+
     Sim sim;
     Market market;
- //   Account account;
+    Account account;
     double initialCash = 10000.0;
-    
+
     public AccountTest() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
     AssetBase currency;
     AssetBase asset;
-    
+
     @BeforeEach
     public void setUp() {
-                // Create sim
+        // Create sim
         sim = new sesim.Sim();
-        
+
         // Create assets
         currency = new AssetBase("TLR", "Taler", 2);
         asset = new AssetBase("RBTN", "RBTN", 0);
-        
+
         // Create market and an account
-      //  market = new Market(sim, currency, asset, new JSONObject());
-      //  account = new sesim.Account(currency, initialCash);
+        market = new Market(sim, currency, asset, new JSONObject());
+        account = new sesim.Account(currency, initialCash);
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -148,8 +148,8 @@ public class AccountTest {
     @Test
     public void testGetShares() {
         System.out.println("getShares");
-        Market m = null;
-        Account instance = null;
+        Market m = market;
+        Account instance = account;
         double expResult = 0.0;
         double result = instance.getShares(m);
         assertEquals(expResult, result, 0);
@@ -163,13 +163,16 @@ public class AccountTest {
     @Test
     public void testGetShares_Long() {
         System.out.println("getShares_Long");
-        Market m = null;
-        Account instance = null;
+        Market m = market;
+        Account instance = account;
         long expResult = 0L;
         long result = instance.getShares_Long(m);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        account.getPosition(market).addShares_Long(1000, 100, 1);
+        
+        result = instance.getShares_Long(m);
+        assertEquals(1000, result);
     }
 
     /**
@@ -445,7 +448,7 @@ public class AccountTest {
         int leverage = 0;
         Account instance = null;
         boolean expResult = false;
-        boolean result = instance.isOrderCovered(market, volume, price, leverage);
+        boolean result = instance.isOrderCovered(market, 0, volume, price, leverage);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -519,7 +522,7 @@ public class AccountTest {
     @Test
     public void testGetCash() {
         System.out.println("getCash");
-        Account instance = new Account(currency,10000.0);
+        Account instance = new Account(currency, 10000.0);
         double expResult = 10000.0;
         double result = instance.getCash();
         assertEquals(expResult, result, 0);
@@ -651,5 +654,5 @@ public class AccountTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
-    
+
 }
