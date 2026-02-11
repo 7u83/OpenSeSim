@@ -174,11 +174,14 @@ public class Account {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
             if (o.isBuy() && o.hasLimit() && o.id != exclude) {
-                orderCash += (o.getInitialVolume()
+                orderCash += (
+                        FixedPoint.multiply(o.getInitialVolume_Long(),o.getLimit_Long())
+                        
                         - FixedPoint.multiply(
                                 o.getExecuted_Long(), o.getLimit_Long()));
             }
         }
+      
         return orderCash;
 
     }
@@ -191,22 +194,25 @@ public class Account {
         return getCashInOpenOrders_Long() / currency.getDf();
     }
 
-    public long getSharesInOpenOrders_Long(long exclude) {
+    public long getSharesInOpenOrders_Long(Position p, long exclude) {
         Iterator<Map.Entry<Long, Order>> it = this.getOrders().entrySet().iterator();
         long volume = 0;
 
         while (it.hasNext()) {
             Map.Entry e = it.next();
             Order o = (Order) e.getValue();
+            if (o.position!=p)
+                continue;
+            
             if (o.isSell() && o.id != exclude) {
-                volume += o.getInitialVolume() - o.getExecuted();
+                volume += o.getInitialVolume_Long() - o.getExecuted_Long();
             }
         }
         return volume;
     }
 
-    public long getSharesInOpenOrders_Long() {
-        return getSharesInOpenOrders_Long(-1);
+    public long getSharesInOpenOrders_Long(Position p) {
+        return getSharesInOpenOrders_Long(p,-1);
     }
 
     public float getSharesInOpenOrders() {
@@ -225,14 +231,20 @@ public class Account {
         return orders.get(oid);
     }
 
-    public boolean isOrderCovered_Long(Position p, byte type, long volume, long price, int leverage) {
+    public boolean isOrderCovered_Long(Position p, byte type, long volume,
+            long price, int leverage, long ignoid) {
+        
+        
+        
         if (this.maxMargin==0){
             if (volume<0){
-                return p.shares+volume >= 0;
+                long so = this.getSharesInOpenOrders_Long(p,ignoid);
+                return p.shares+volume-so >= 0;
             }
             if ((type & Order.LIMIT) != 0){
                 long c = FixedPoint.multiply(volume, price);    
-                return c<=cash;
+
+                return c<=cash - getCashInOpenOrders_Long(ignoid);
             }
             
             return true;
@@ -246,14 +258,15 @@ public class Account {
         return isOrderCovered_Long(getPosition(market), volume, price, leverage);
     }*/
 
-    public boolean isOrderCovered(Market market, byte type, double volume, double price, int leverage) {
+    public boolean isOrderCovered(Market market, byte type, double volume, 
+            double price, int leverage, long ignoid) {
         
         
         return isOrderCovered_Long(getPosition(market),
                 type,
                 FixedPoint.toInternal(volume),
                 FixedPoint.toInternal(price),
-                leverage);
+                leverage,ignoid);
     }
 
     public double getRequiredCashForOrder(Market market, double volume, double price, int leverage) {

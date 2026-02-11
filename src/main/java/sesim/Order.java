@@ -212,6 +212,10 @@ public class Order implements OrderBookEntry {
     public double getInitialVolume() {
         return FixedPoint.toExternal(initial_volume); 
     }
+    
+    public long getInitialVolume_Long(){
+        return initial_volume;
+    }
 
     public double getCost() {
         return cost / FixedPoint.toExternal(cost); 
