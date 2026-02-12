@@ -123,6 +123,12 @@ public class ManTrader extends AutoTraderBase
         return new ManTraderGui(this);
 
     }
+    
+    @Override
+    public long getMaxMargin(){
+        return 50;
+    }
+    
 
     @Override
     public JSONObject getConfig() {

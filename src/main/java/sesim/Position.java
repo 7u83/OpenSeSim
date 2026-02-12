@@ -525,23 +525,28 @@ public class Position {
         
         
         // account w/ margin (complex)
-        
+      
         
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
+            // Zukauf/Zuverkauf
+            
+            long freeMargin = account.getFreeMargin_Long();
+            if (freeMargin <= 0) {
+                return 0;
+                //freeMargin = 0;
+            }
 
             long val = FixedPoint.floorMultiply(volume, price);
             long marginRequired = Math.abs(val / leverage);
 
-            long freeMargin = account.getFreeMargin_Long();
-            if (freeMargin < 0) {
-                freeMargin = 0;
-            }
 
             if (freeMargin < marginRequired) {
 
-                return FixedPoint.floorDivide(freeMargin * leverage, price);
+                return this.market.getAsset().round_Long(
+                        FixedPoint.floorDivide(freeMargin * leverage, price));
 
             }
+            
 
         } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
         else {
