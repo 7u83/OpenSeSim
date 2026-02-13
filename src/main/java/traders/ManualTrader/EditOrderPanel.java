@@ -348,7 +348,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
             
         }
         if (type == Order.SELL) {
-            //      double avail = account.getSharesAvailable();
+            //     double avail = account.getSharesAvailable();
 
 //            this.volumeSpinner.setValue(market.roundShares(account.getSharesAvailable()));
         }        // TODO add your handling code here:

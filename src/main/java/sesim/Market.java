@@ -1620,7 +1620,7 @@ public class Market {
         );
     }
 
-    private Order createLeveragedOrder(Account a, byte type, long money) {
+/*    private Order createLeveragedOrder(Account a, byte type, long money) {
         if (!Order.isSell(type)) {
             return null;
         }
@@ -1643,6 +1643,6 @@ public class Market {
         );
 
         return null;
-    }
+    }*/
 
 }

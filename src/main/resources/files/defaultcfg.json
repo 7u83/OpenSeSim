@@ -36,53 +36,113 @@
             "Name": "Bob"
         }
     ],
-    "strategies": {"Simple Random": {
-        "min_buy_deviation": 1,
-        "amount_to_sell": [
-            100,
-            100
-        ],
-        "min_amount_to_sell_deviation": 0,
-        "sleep_after_buy": [
-            0,
-            0
-        ],
-        "bankrupt_cash": 100,
-        "sell_order_timeout": [
-            10,
-            50
-        ],
-        "modiness": 0.5,
-        "min_sell_deviation": 1,
-        "buy_limit": [
-            -2,
-            2
-        ],
-        "initial_delay": [
-            0,
-            0
-        ],
-        "buy_order_timeout": [
-            10,
-            50
-        ],
-        "sleep_after_sell": [
-            0,
-            0
-        ],
-        "sell_limit": [
-            -2,
-            2
-        ],
-        "mood_enable": false,
-        "amount_to_buy": [
-            100,
-            100
-        ],
-        "bankrupt_shares": 1,
-        "mood_frequency": 60,
-        "min_amount_to_buy_deviation": 0,
-        "base": "traders.RandomTraderM.RandomTraderM"
-    }},
+    "strategies": {
+        "Human": {
+            "margin_account": false,
+            "sound_file": "",
+            "base": "traders.ManualTrader.ManTrader"
+        },
+        "Moody Random": {
+            "min_buy_deviation": 1,
+            "amount_to_sell": [
+                100,
+                100
+            ],
+            "min_amount_to_sell_deviation": 0,
+            "sleep_after_buy": [
+                10,
+                120
+            ],
+            "bankrupt_cash": 1,
+            "sell_order_timeout": [
+                10,
+                50
+            ],
+            "modiness": 0.009999999776482582,
+            "min_sell_deviation": 1,
+            "buy_limit": [
+                -5,
+                5
+            ],
+            "initial_delay": [
+                0,
+                0
+            ],
+            "buy_order_timeout": [
+                10,
+                50
+            ],
+            "sleep_after_sell": [
+                10,
+                120
+            ],
+            "sell_limit": [
+                -5,
+                5
+            ],
+            "mood_enable": true,
+            "amount_to_buy": [
+                100,
+                100
+            ],
+            "bankrupt_shares": 1,
+            "mood_frequency": 60,
+            "min_amount_to_buy_deviation": 0,
+            "base": "traders.RandomTraderM.RandomTraderM"
+        },
+        "Human - Margin": {
+            "margin_account": true,
+            "sound_file": "",
+            "base": "traders.ManualTrader.ManTrader"
+        },
+        "Simple Random": {
+            "min_buy_deviation": 1,
+            "amount_to_sell": [
+                100,
+                100
+            ],
+            "min_amount_to_sell_deviation": 0,
+            "sleep_after_buy": [
+                0,
+                0
+            ],
+            "bankrupt_cash": 1,
+            "sell_order_timeout": [
+                10,
+                50
+            ],
+            "modiness": 0.5,
+            "min_sell_deviation": 1,
+            "buy_limit": [
+                -2,
+                2
+            ],
+            "initial_delay": [
+                0,
+                0
+            ],
+            "buy_order_timeout": [
+                10,
+                50
+            ],
+            "sleep_after_sell": [
+                0,
+                0
+            ],
+            "sell_limit": [
+                -2,
+                2
+            ],
+            "mood_enable": false,
+            "amount_to_buy": [
+                100,
+                100
+            ],
+            "bankrupt_shares": 1,
+            "mood_frequency": 60,
+            "min_amount_to_buy_deviation": 0,
+            "base": "traders.RandomTraderM.RandomTraderM"
+        }
+    },
     "version": 0.1
 }
