@@ -126,7 +126,7 @@ public class ManTrader extends AutoTraderBase
     
     @Override
     public long getMaxMargin(){
-        return 50;
+        return 100;
     }
     
 

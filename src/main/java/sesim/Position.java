@@ -107,9 +107,18 @@ public class Position {
      */
     // unrealized PnL für aktuelle Preis
     public long getPnL_Long(long currentPrice) {
+        if (account.maxMargin == 0) {
+            if (shares == 0) {
+                return 0;
+            }
 
-        return FixedPoint.multiply(currentPrice, shares) - netCashFlow;
+            long ep = FixedPoint.divide(this.totalEntryCost, shares);
 
+        }
+
+        return this.netCashFlow;
+
+        //return FixedPoint.multiply(currentPrice, shares) - netCashFlow;
         //long diff = currentPrice - entryPrice;
         //return isShort ? -shares * diff : shares * diff;
     }
@@ -127,20 +136,30 @@ public class Position {
     }
 
     public double getPnLPercent() {
-        double base;
+        
 
-        if (getMargin() != 0) {
-            // gehebelter Trade → Prozent relativ zur eingesetzten Margin
-            base = getMargin();
-        } else {
-            // ungehebelter Trade → Prozent relativ zu den gesamten Entry-Kosten
-            base = -netCashFlow;
-            if (base == 0) {
+        if (account.maxMargin == 0) {
+            if (shares == 0) {
                 return 0;
             }
-        }
 
-        return (getPnL() / base) * 100.0f;
+            double te = FixedPoint.toExternal(this.totalEntryCost);
+            return 100 * (this.getEquityValue() - te) / te;
+
+        }
+        
+        double mu,nc;
+        mu = getMargin();
+        nc = getNetCashFlow();
+        double te = FixedPoint.toExternal(this.totalEntryCost);
+        
+        System.out.printf("MU: %f, NC: %f\n", mu, nc);
+        double ev = this.getEquityValue();
+        if (mu ==0)
+            return 0;
+        
+        return 100 * ((mu+ev)-mu) / mu;
+
     }
 
     /**
@@ -157,6 +176,10 @@ public class Position {
     }
 
     public long getEquityValue_Long(long price) {
+        if (account.maxMargin == 0) {
+            return FixedPoint.multiply(shares, price);
+        }
+
         return netCashFlow + FixedPoint.multiply(shares, price); //asset.getMarket().getLastPrice_Long();
     }
 
@@ -200,17 +223,26 @@ public class Position {
     }
 
     void addShares_Long(long volume, long price, int leverage) {
-        if (account.maxMargin==0){
+        if (account.maxMargin == 0) {
             // traditional trading, just buy/sell with 100% coverage 
-            
+
             long val = FixedPoint.floorMultiply(volume, price);
-            shares+=volume;
-            account.cash-=val;
+            
+            account.cash -= val;
+            
+            if (volume > 0) {
+                totalEntryCost += val;
+                shares += volume;
+                
+            } else {
+                long pps = FixedPoint.divide(totalEntryCost, shares);
+                shares += volume;
+                this.totalEntryCost = FixedPoint.multiply(shares, pps);
+
+            }
+
             return;
         }
-        
-        
-        
 
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
 
@@ -269,7 +301,7 @@ public class Position {
             }
         }
 
-/*        if (shares == 0 || (shares > 0 && netCashFlow + margin >= 0 && account.cash + netCashFlow >= 0)) {
+        /*        if (shares == 0 || (shares > 0 && netCashFlow + margin >= 0 && account.cash + netCashFlow >= 0)) {
 
             //cash += margin;
             account.cash += netCashFlow; // + margin;
@@ -281,7 +313,6 @@ public class Position {
             }
 
         }*/
-
         if (this.margin != 0) {
             this.account.calculateLiquidationStops(price);
         } else {
@@ -508,28 +539,25 @@ public class Position {
 
     public long getTradableShares_Long(long volume, long price, long leverage) {
         // account w/o margin (simple)
-        if (account.maxMargin==0){
-            if (volume<0){
-                
-                if (shares+volume<=0){
+        if (account.maxMargin == 0) {
+            if (volume < 0) {
+
+                if (shares + volume <= 0) {
                     return shares;
                 }
                 return Math.abs(volume);
             }
-            long vmax = FixedPoint.floorDivide(account.cash,price);
-            if (vmax<volume){
+            long vmax = FixedPoint.floorDivide(account.cash, price);
+            if (vmax < volume) {
                 return market.getAsset().round_Long(vmax);
             }
             return volume;
         }
-        
-        
+
         // account w/ margin (complex)
-      
-        
         if (Long.signum(shares) == Long.signum(volume) || shares == 0) {
             // Zukauf/Zuverkauf
-            
+
             long freeMargin = account.getFreeMargin_Long();
             if (freeMargin <= 0) {
                 return 0;
@@ -539,14 +567,12 @@ public class Position {
             long val = FixedPoint.floorMultiply(volume, price);
             long marginRequired = Math.abs(val / leverage);
 
-
             if (freeMargin < marginRequired) {
 
                 return this.market.getAsset().round_Long(
                         FixedPoint.floorDivide(freeMargin * leverage, price));
 
             }
-            
 
         } // 2. Positionsverringerung/Umkehrung (Verkauf/Rückkauf: Vorzeichen sind gegensätzlich)
         else {
