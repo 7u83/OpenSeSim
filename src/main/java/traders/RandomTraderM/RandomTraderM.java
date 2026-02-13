@@ -48,14 +48,19 @@ public class RandomTraderM extends AutoTraderBase
 
     public long[] initialDelay = {0, 0};
 
-    public long[] amountToBuy = {1000, 1000};
-    public long[] amountToSell = {1000, 1000};
+    public long[] amountToBuy = {FixedPoint.toInternal(100), 
+                            FixedPoint.toInternal(100)};
+    public long[] amountToSell = {FixedPoint.toInternal(100), 
+                            FixedPoint.toInternal(100)};
 
     public long minAmountToBuyDeviation = 0;
     public long minAmountToSellDeviation = 0;
 
-    public long[] buyLimit = {-200, 200};
-    public long[] sellLimit = {-200, 200};
+    public long[] buyLimit = {FixedPoint.toInternal(-2.0), 
+                            FixedPoint.toInternal(2.0)};
+    
+    public long[] sellLimit = {FixedPoint.toInternal(-2.0), 
+                            FixedPoint.toInternal(2.0)};
 
     public long minAbsBuyDeviation = 1;
     public long minAbsSellDeviation = 1;
@@ -70,8 +75,8 @@ public class RandomTraderM extends AutoTraderBase
 
     //  public float bankrupt_shares_cfg = 1f;
 //    public float bankrupt_cash_cfg = 1f;
-    public long bankrupt_shares = 0;
-    public long bankrupt_cash = 0;
+    public long bankrupt_shares = FixedPoint.toInternal(1);
+    public long bankrupt_cash = FixedPoint.toInternal(1.0);
 
     public boolean moodEnable = false;
     public float moodiness = 0.5f;
