@@ -433,6 +433,7 @@ public class Sim {
                 trader.init(this, id, t.getString("Name") + "-" + i1,
                         money_Long + FixedPoint.floorMultiply(iniPrice_Long, shares_Long),
                         strategy_name, strategyCfg);
+                
                 trader.getAccount().getPosition(defaultMarket).addShares(
                         shares,
                         initialPrice,

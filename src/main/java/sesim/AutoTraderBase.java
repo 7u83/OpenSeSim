@@ -112,9 +112,9 @@ public abstract class AutoTraderBase implements AutoTrader, EventProcessor {
 
     }
 
-    public Market getSE() {
+ /*   public Market getSE() {
         return market;
-    }
+    }*/
 
     @Override
     public abstract void start();

@@ -47,11 +47,13 @@ public class ManTraderGui extends AutoTraderGui {
         if (trader.soundFile != null) {
             this.soundFile.setText(trader.soundFile);
         }
+        this.marginCheckBox.setSelected(trader.marginTrading);
     }
 
     @Override
     public void save() {
         trader.soundFile = this.soundFile.getText();
+        trader.marginTrading = this.marginCheckBox.isSelected();
     }
 
     /**
@@ -66,8 +68,7 @@ public class ManTraderGui extends AutoTraderGui {
         soundFile = new javax.swing.JTextField();
         soundFileSelectButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
-        jLabel1 = new javax.swing.JLabel();
+        marginCheckBox = new javax.swing.JCheckBox();
 
         soundFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -84,9 +85,12 @@ public class ManTraderGui extends AutoTraderGui {
 
         jLabel2.setText("Play sound when order is closed or executed:");
 
-        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Long.valueOf(0L), Long.valueOf(0L), Long.valueOf(100L), Long.valueOf(1L)));
-
-        jLabel1.setText("Max. allowed margin:");
+        marginCheckBox.setText("Margin trading");
+        marginCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                marginCheckBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -101,9 +105,7 @@ public class ManTraderGui extends AutoTraderGui {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(soundFileSelectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(marginCheckBox)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -116,11 +118,9 @@ public class ManTraderGui extends AutoTraderGui {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(soundFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(soundFileSelectButton))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(152, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(marginCheckBox)
+                .addContainerGap(160, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -139,11 +139,14 @@ public class ManTraderGui extends AutoTraderGui {
         // TODO add your handling code here:
     }//GEN-LAST:event_soundFileActionPerformed
 
+    private void marginCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marginCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_marginCheckBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JCheckBox marginCheckBox;
     private javax.swing.JTextField soundFile;
     private javax.swing.JButton soundFileSelectButton;
     // End of variables declaration//GEN-END:variables

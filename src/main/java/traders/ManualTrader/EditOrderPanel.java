@@ -22,7 +22,7 @@ import sesim.Quote;
  * @author tube
  */
 public class EditOrderPanel extends javax.swing.JPanel {
-
+    
     Market market;
     Account account;
     byte type;
@@ -32,57 +32,66 @@ public class EditOrderPanel extends javax.swing.JPanel {
      */
     public EditOrderPanel() {
         initComponents();
-
+        
         JSpinner spinner = limitSpinner;
         JComponent comp = spinner.getEditor();
         JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
         DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
         formatter.setCommitsOnValidEdit(true);
-
+        
         limitSpinner.setEnabled(false);
-
+        
         spinner = volumeSpinner;
         comp = spinner.getEditor();
         field = (JFormattedTextField) comp.getComponent(0);
         formatter = (DefaultFormatter) field.getFormatter();
         formatter.setCommitsOnValidEdit(true);
-
+        
         spinner = stopSpinner;
         comp = spinner.getEditor();
         field = (JFormattedTextField) comp.getComponent(0);
         formatter = (DefaultFormatter) field.getFormatter();
         formatter.setCommitsOnValidEdit(true);
         this.stopSpinner.setEnabled(false);
-
+        
     }
-
+    
     public EditOrderPanel(Market e, Account a, byte type) {
         this();
         market = e;
         account = a;
         this.type = type;
         //this.loadFields();
+        
+                if (account.getMaxMargin() == 0) {
+            this.leverageComboBox.setEnabled(false);
+        }
     }
-
+    
     public EditOrderPanel(Market e, Account a, Order o) {
         this();
         account = a;
         market = e;
         type = o.getType();
-
+        
         this.volumeSpinner.setValue(o.getVolume());
-
+        
         this.limitSpinner.setValue(o.getLimit());
         this.limitCheckBox.setSelected(o.hasLimit());
         this.limitSpinner.setEnabled(o.hasLimit());
-
+        
         this.stopCheckBox.setSelected(o.hasStop());
         this.stopSpinner.setValue(o.getStop());
         this.stopSpinner.setEnabled(o.hasStop());
+        
+     //   if (account.getMaxMargin() == 0) {
+            this.leverageComboBox.setEnabled(false);
+     //   }
+        
     }
-
+    
     private void setPrice() {
-/*        double vol = this.getVolume();
+        /*        double vol = this.getVolume();
         if (Order.isSell(type)) {
             vol = -vol;
         }
@@ -94,33 +103,33 @@ public class EditOrderPanel extends javax.swing.JPanel {
         String s = market.getCurrency().getFormatter().format(price);
         this.priceLabel.setText(s);*/
     }
-
+    
     public double getPrice() {
         double price = this.getVolume() * this.getLimit();
         price = market.getCurrency().round(price);
         return price;
     }
-
+    
     public double getStop() {
         return (double) stopSpinner.getValue();
     }
-
+    
     public double getVolume() {
         return (double) volumeSpinner.getValue();
-
+        
     }
-
+    
     public double getLimit() {
         return (double) limitSpinner.getValue();
     }
-
+    
     public int getLeverage() {
         return (int) Integer.parseInt((String) leverageComboBox.getSelectedItem());
     }
-
+    
     public byte getOrderType() {
         byte t = (byte) (this.type & 0x01);
-
+        
         if (this.limitCheckBox.isSelected()) {
             t |= Order.LIMIT;
         }
@@ -129,7 +138,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
         }
         return t;
     }
-
+    
     void addChangeListeners(ChangeListener c) {
         volumeSpinner.addChangeListener(c);
         limitSpinner.addChangeListener(c);
@@ -334,9 +343,9 @@ public class EditOrderPanel extends javax.swing.JPanel {
             if (l < 1 / market.getAsset().getDf()) {
                 l = 1 / 1 / market.getAsset().getDf();
             }
-
+            
             this.volumeSpinner.setValue(market.getAsset().round(account.getCashAvailable() / l));
-
+            
         }
         if (type == Order.SELL) {
             //      double avail = account.getSharesAvailable();
@@ -344,7 +353,7 @@ public class EditOrderPanel extends javax.swing.JPanel {
 //            this.volumeSpinner.setValue(market.roundShares(account.getSharesAvailable()));
         }        // TODO add your handling code here:
         this.volumeSpinner.revalidate();
-
+        
 
     }//GEN-LAST:event_setVolButtonActionPerformed
 

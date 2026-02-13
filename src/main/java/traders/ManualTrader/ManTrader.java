@@ -71,6 +71,7 @@ public class ManTrader extends AutoTraderBase
         implements AccountListener, AutoTrader, QuoteReceiver {
 
     String soundFile = null;
+    boolean marginTrading=false;
     int soundVolume = 50;
 
 //    public ManTrader(Exchange market, long id, String name, float money, float shares, AutoTraderConfig config) {
@@ -86,7 +87,10 @@ public class ManTrader extends AutoTraderBase
 
     @Override
     public void init(Sim sim, long id, String name, long money, String strat, JSONObject cfg) {
+        this.marginTrading = cfg.optBoolean("margin_account",false);
         super.init(sim, id, name, money, strat, cfg);
+        
+            
         getAccount().setListener(this);
     }
     ManTraderConsoleDialog consoleDialog = null;
@@ -126,7 +130,9 @@ public class ManTrader extends AutoTraderBase
     
     @Override
     public long getMaxMargin(){
-        return 100;
+        if (this.marginTrading)
+            return 100;
+        return 0;
     }
     
 
@@ -135,12 +141,14 @@ public class ManTrader extends AutoTraderBase
 
         JSONObject cfg = new JSONObject();
         cfg.put("sound_file", soundFile);
+        cfg.put("margin_account",this.marginTrading);
         return cfg;
     }
 
     @Override
     public void setConfig(JSONObject cfg) {
         soundFile = cfg.optString("sound_file", null);
+        this.marginTrading = cfg.optBoolean("margin_account", false);
 
     }
 
