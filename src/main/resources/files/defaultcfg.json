@@ -1,9 +1,12 @@
 {
     "markets": {"DDM": {"RBTN": {
-        "auto_initial_price": true,
+        "auto_initial_price": false,
         "initial_price": 100
     }}},
-    "default_market": {},
+    "default_market": {
+        "currency": "DDM",
+        "asset": "RBTN"
+    },
     "assets": {
         "DDM": {
             "decimals": 2,
@@ -41,6 +44,102 @@
             "margin_account": false,
             "sound_file": "",
             "base": "traders.ManualTrader.ManTrader"
+        },
+        "BuyHighSellLow": {
+            "min_buy_deviation": 1.0E-4,
+            "amount_to_sell": [
+                100,
+                100
+            ],
+            "min_amount_to_sell_deviation": 0,
+            "sleep_after_buy": [
+                0,
+                0
+            ],
+            "bankrupt_cash": 1,
+            "sell_order_timeout": [
+                10,
+                50
+            ],
+            "modiness": 0.5,
+            "min_sell_deviation": 1.0E-4,
+            "buy_limit": [
+                -2,
+                0
+            ],
+            "initial_delay": [
+                0,
+                0
+            ],
+            "buy_order_timeout": [
+                10,
+                50
+            ],
+            "sleep_after_sell": [
+                0,
+                0
+            ],
+            "sell_limit": [
+                -20,
+                -2
+            ],
+            "mood_enable": false,
+            "amount_to_buy": [
+                100,
+                100
+            ],
+            "bankrupt_shares": 1,
+            "mood_frequency": 60,
+            "min_amount_to_buy_deviation": 0,
+            "base": "traders.RandomTraderM.RandomTraderM"
+        },
+        "Holder": {
+            "min_buy_deviation": 1,
+            "amount_to_sell": [
+                100,
+                100
+            ],
+            "min_amount_to_sell_deviation": 0,
+            "sleep_after_buy": [
+                20,
+                300
+            ],
+            "bankrupt_cash": 1,
+            "sell_order_timeout": [
+                15,
+                20
+            ],
+            "modiness": 0.5,
+            "min_sell_deviation": 1,
+            "buy_limit": [
+                -2,
+                2
+            ],
+            "initial_delay": [
+                0,
+                4000
+            ],
+            "buy_order_timeout": [
+                15,
+                20
+            ],
+            "sleep_after_sell": [
+                20,
+                120
+            ],
+            "sell_limit": [
+                -2,
+                2
+            ],
+            "mood_enable": false,
+            "amount_to_buy": [
+                100,
+                100
+            ],
+            "bankrupt_shares": 1,
+            "mood_frequency": 60,
+            "min_amount_to_buy_deviation": 0,
+            "base": "traders.RandomTraderM.RandomTraderM"
         },
         "Moody Random": {
             "min_buy_deviation": 1,
@@ -90,6 +189,54 @@
             "min_amount_to_buy_deviation": 0,
             "base": "traders.RandomTraderM.RandomTraderM"
         },
+        "BuyLowSellHigh": {
+            "min_buy_deviation": 1.0E-4,
+            "amount_to_sell": [
+                100,
+                100
+            ],
+            "min_amount_to_sell_deviation": 0,
+            "sleep_after_buy": [
+                0,
+                0
+            ],
+            "bankrupt_cash": 1,
+            "sell_order_timeout": [
+                10,
+                50
+            ],
+            "modiness": 0.5,
+            "min_sell_deviation": 1.0E-4,
+            "buy_limit": [
+                -2,
+                2
+            ],
+            "initial_delay": [
+                0,
+                0
+            ],
+            "buy_order_timeout": [
+                10,
+                50
+            ],
+            "sleep_after_sell": [
+                0,
+                0
+            ],
+            "sell_limit": [
+                2,
+                20
+            ],
+            "mood_enable": false,
+            "amount_to_buy": [
+                100,
+                100
+            ],
+            "bankrupt_shares": 1,
+            "mood_frequency": 60,
+            "min_amount_to_buy_deviation": 0,
+            "base": "traders.RandomTraderM.RandomTraderM"
+        },
         "Human - Margin": {
             "margin_account": true,
             "sound_file": "",
@@ -108,8 +255,8 @@
             ],
             "bankrupt_cash": 1,
             "sell_order_timeout": [
-                10,
-                50
+                15,
+                20
             ],
             "modiness": 0.5,
             "min_sell_deviation": 1,
@@ -122,8 +269,8 @@
                 0
             ],
             "buy_order_timeout": [
-                10,
-                50
+                15,
+                20
             ],
             "sleep_after_sell": [
                 0,
