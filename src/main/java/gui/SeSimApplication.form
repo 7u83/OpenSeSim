@@ -438,6 +438,7 @@
                   <Image iconType="3" name="/icons/stop.gif"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Stop"/>
+                <Property name="toolTipText" type="java.lang.String" value="Stop the simulation!"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -451,6 +452,7 @@
                   <Image iconType="3" name="/icons/pause.gif"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Pause"/>
+                <Property name="toolTipText" type="java.lang.String" value="Pause simulation"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -484,7 +486,7 @@
         <Component class="javax.swing.JCheckBox" name="tradingLogCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="Trading Log"/>
-            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;If checked, a log of all created order, &lt;br&gt;&#xa;transactions between traders and more details&lt;br&gt;&#xa; will be written to disk. You can later anlyze the details.&lt;br&gt; &#xa;&lt;font color=&apos;red&apos;&gt;ATTENTION: &lt;br&gt;&#xa;turning this option on, A LOT of date will be written&lt;br&gt;&#xa; to your disk. You may run out of disk space. &lt;/font&gt;&#xa;&lt;/html&gt;&#xa; "/>
+            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;If checked, a log of all created orders,&lt;br&gt;&#xa;transactions between traders, and additional details&lt;br&gt;&#xa;will be written to disk. You can analyze these details later.&lt;br&gt;&#xa;&lt;font color=&apos;red&apos;&gt;ATTENTION:&lt;br&gt;&#xa;Turning this option on will write a large amount of data&lt;br&gt;&#xa;to your disk. You may run out of disk space.&lt;/font&gt;&#xa;&lt;/html&gt;"/>
             <Property name="horizontalTextPosition" type="int" value="10"/>
           </Properties>
           <Events>

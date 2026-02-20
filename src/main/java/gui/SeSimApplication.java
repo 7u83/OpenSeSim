@@ -231,6 +231,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stop.gif"))); // NOI18N
             stopButton.setText("Stop");
+            stopButton.setToolTipText("Stop the simulation!");
             stopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
             stopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
             stopButton.addActionListener(new java.awt.event.ActionListener() {
@@ -241,6 +242,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
             pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pause.gif"))); // NOI18N
             pauseButton.setText("Pause");
+            pauseButton.setToolTipText("Pause simulation");
             pauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
             pauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
             pauseButton.addActionListener(new java.awt.event.ActionListener() {
@@ -285,7 +287,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             );
 
             tradingLogCheckBox.setText("Trading Log");
-            tradingLogCheckBox.setToolTipText("<html>\nIf checked, a log of all created order, <br>\ntransactions between traders and more details<br>\n will be written to disk. You can later anlyze the details.<br> \n<font color='red'>ATTENTION: <br>\nturning this option on, A LOT of date will be written<br>\n to your disk. You may run out of disk space. </font>\n</html>\n ");
+            tradingLogCheckBox.setToolTipText("<html>\nIf checked, a log of all created orders,<br>\ntransactions between traders, and additional details<br>\nwill be written to disk. You can analyze these details later.<br>\n<font color='red'>ATTENTION:<br>\nTurning this option on will write a large amount of data<br>\nto your disk. You may run out of disk space.</font>\n</html>");
             tradingLogCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
             tradingLogCheckBox.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
