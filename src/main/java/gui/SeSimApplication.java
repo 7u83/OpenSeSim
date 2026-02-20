@@ -73,8 +73,8 @@ public class SeSimApplication extends javax.swing.JFrame {
     public SeSimApplication() {
 
         initComponents();
-        
-        Globals.theApp=this;
+
+        Globals.theApp = this;
 
         ToolTipManager.sharedInstance().setInitialDelay(200); // Zeit bis Tooltip erscheint (ms)
         ToolTipManager.sharedInstance().setDismissDelay(50000); // Zeit bis Tooltip verschwindet (ms)
@@ -126,14 +126,11 @@ public class SeSimApplication extends javax.swing.JFrame {
         CustomHelpHandler.installHelp(this, hs);
 
         this.meinToolBar.setFloatable(false);
-        
-      //  Globals.sim.addBreakPoint(1000*60, this::acceptBreakPoint);
-        
-        
-        
+
+        //  Globals.sim.addBreakPoint(1000*60, this::acceptBreakPoint);
     }
-    
-    public void acceptBreakPoint(Long time){
+
+    public void acceptBreakPoint(Long time) {
         /*Globals.sim.setPause(true);
         this.pauseButton.setEnabled(false);*/
         this.pauseSim();
@@ -632,7 +629,7 @@ public class SeSimApplication extends javax.swing.JFrame {
             sesim.Logger.error("Cannot write log %s: %s", logFileName, ex.getMessage());
             tradingLogCheckBox.setSelected(false);
         }
-        
+
         Globals.sim.setPause(false);
         Globals.sim.startScheduler();
 
@@ -1078,22 +1075,16 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     void setTradingLogFile() {
 
-        String logDir = Globals.prefs_new.get(Globals.DATADIR, "");
-        Path directoryPath = Paths.get(logDir);
+        String dataDir = Globals.getDataDir();
 
-        if (Files.notExists(directoryPath)) {
-            try {
-                Files.createDirectories(directoryPath);
+        Path directoryPath = Paths.get(dataDir);
+        logFileName = directoryPath
+                .resolve("tradinglog.dat")
+                .toString();
 
-            } catch (IOException e) {
-                sesim.Logger.error("Creating data directory %s: %s", logDir, e.getMessage());
-                this.tradingLogCheckBox.setSelected(false);
-                return;
-            }
-        }
-
-        logFileName = directoryPath.resolve("tradinglog.dat").toString();
         Globals.sim.getDefaultMarket().setTradingLogFile(logFileName);
+
+
     }
 
 
@@ -1138,7 +1129,7 @@ public class SeSimApplication extends javax.swing.JFrame {
 
     private void marketsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marketsMenuItemActionPerformed
         // TODO add your handling code here:
-        AssetListDialog ad = new AssetListDialog(this,true);
+        AssetListDialog ad = new AssetListDialog(this, true);
         ad.pack();
         ad.setMinimumSize(ad.getSize());
         ad.setLocationRelativeTo(this);
@@ -1146,14 +1137,11 @@ public class SeSimApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_marketsMenuItemActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-       BreakPointsDialog bpd = new BreakPointsDialog(this,true);
-       bpd.setLocationRelativeTo(this);
-       bpd.setVisible(true);
+        BreakPointsDialog bpd = new BreakPointsDialog(this, true);
+        bpd.setLocationRelativeTo(this);
+        bpd.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
     static boolean f = false;
-
-
-
 
     /**
      * @param args the command line arguments
@@ -1162,10 +1150,9 @@ public class SeSimApplication extends javax.swing.JFrame {
      */
     public static void main(String args[]) throws IllegalAccessException, InstantiationException {
 
-     /*   Platform.startup(() -> {
+        /*   Platform.startup(() -> {
             // Initialize JavaFX Runtime 
         });*/
-
         // Initialize logging
         Logger rootLogger = sesim.Logger.getLogger();
 
@@ -1180,7 +1167,7 @@ public class SeSimApplication extends javax.swing.JFrame {
         // init globals
         Globals.initGlobals();
         Globals.prefs_new = Preferences.userRoot().node("/opensesim");
-        
+
         sesim.Logger.info("Data directory is %s", Globals.getDataDir());
 
         Globals.setLookAndFeel();
@@ -1190,16 +1177,16 @@ public class SeSimApplication extends javax.swing.JFrame {
         // Create a Sim instance
         Globals.sim = new sesim.Sim();
 
-    /*    JDialog.setDefaultLookAndFeelDecorated(true);
+        /*    JDialog.setDefaultLookAndFeelDecorated(true);
         JFrame.setDefaultLookAndFeelDecorated(false);
         JPopupMenu.setDefaultLightWeightPopupEnabled(true);*/
 
-     /*   UIManager.installLookAndFeel("FlatLaf Light", "com.formdev.flatlaf.FlatLightLaf");
+ /*   UIManager.installLookAndFeel("FlatLaf Light", "com.formdev.flatlaf.FlatLightLaf");
         UIManager.installLookAndFeel("FlatLaf Dark", "com.formdev.flatlaf.FlatDarkLaf");
         UIManager.installLookAndFeel("FlatLaf IntelliJ", "com.formdev.flatlaf.FlatIntelliJLaf");
         UIManager.installLookAndFeel("FlatLaf Darcula", "com.formdev.flatlaf.FlatDarculaLaf");*/
 
-        /*          try {
+ /*          try {
             Class.forName("mdlaf.MaterialLookAndFeel");
             UIManager.installLookAndFeel("Material UI", "mdlaf.MaterialLookAndFeel");
         } catch (ClassNotFoundException e) {
