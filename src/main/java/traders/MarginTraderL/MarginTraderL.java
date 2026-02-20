@@ -297,5 +297,10 @@ public class MarginTraderL extends AutoTraderBase
     public AutoTraderGui getGui() {
         return new MarginTraderGui(cfg);
     }
+    
+    @Override
+    public long getMaxMargin(){
+        return 100;
+    }
 
 }
